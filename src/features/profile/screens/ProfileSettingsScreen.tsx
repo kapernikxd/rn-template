@@ -1,8 +1,34 @@
-import { StyleSheet, Switch, Text, View } from 'react-native';
-import { useState } from 'react';
+import {
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+  processColor,
+  type ColorValue,
+  type SwitchProps,
+} from 'react-native';
+import { useMemo, useState } from 'react';
+
+const toNativeColor = (color: string): ColorValue => processColor(color) ?? color;
 
 export const ProfileSettingsScreen = () => {
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true);
+
+  const trackColors = useMemo<NonNullable<SwitchProps['trackColor']>>(
+    () => ({
+      false: toNativeColor('#CBD5F5'),
+      true: toNativeColor('#1E40AF'),
+    }),
+    [],
+  );
+
+  const thumbColors = useMemo(
+    () => ({
+      active: toNativeColor('#1E40AF'),
+      inactive: toNativeColor('#E5E7EB'),
+    }),
+    [],
+  );
 
   return (
     <View style={styles.container}>
@@ -12,7 +38,8 @@ export const ProfileSettingsScreen = () => {
         <Switch
           value={isNotificationsEnabled}
           onValueChange={setIsNotificationsEnabled}
-          trackColor={{ true: '#1E40AF' }}
+          trackColor={trackColors}
+          thumbColor={isNotificationsEnabled ? thumbColors.active : thumbColors.inactive}
         />
       </View>
       <Text style={styles.helper}>
