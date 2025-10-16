@@ -1,13 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
-import { BottomTabs } from './src/navigation/BottomTabs';
+import { AppNavigator } from './src/navigation';
 
 export default function App() {
   return (
     <SafeAreaProvider>
       <StatusBar style="auto" />
-      <BottomTabs />
+      <AppNavigator />
     </SafeAreaProvider>
   );
 }
