@@ -1,11 +1,12 @@
 import { isAxiosError } from "axios";
-import { $api } from "../../helpers";
+import { $api, registerTokenRefreshFailureHandler, registerTokenRefreshHandler } from "../../helpers";
 import { makeAutoObservable, runInAction } from "mobx";
 import AuthService from "../../services/auth/AuthService";
 import { getRefreshToken, removeAccessToken, removeLocalUserId, removeRefreshToken, setAccessToken, setLocalUserId, setRefreshToken } from "../../helpers/storageHelper";
 import { BaseStore, StoreListener } from "./BaseStore";
 import { RootStore } from "../rootStore";
 import { AuthProvider, AuthUser, AuthUserLike, FormErrorResponse, LoginParams, NewPasswordParams, ParamsVerificateEmail, RegistrationParams } from "../../types/auth";
+import type { TokenRefreshPayload } from "../../helpers";
 
 
 export class AuthStore {
@@ -21,6 +22,39 @@ export class AuthStore {
     lastProvider: AuthProvider | null = null;
     hasAttemptedAutoLogin = false;
 
+    private readonly handleTokenRefresh = async ({ accessToken, refreshToken, user }: TokenRefreshPayload) => {
+        const normalizedUser = this.normalizeUser(user);
+        runInAction(() => {
+            this.user = normalizedUser;
+            this.accessToken = accessToken;
+            this.isAuth = true;
+            this.lastProvider = this.lastProvider ?? 'demo';
+        });
+
+        await setAccessToken(accessToken);
+        await setRefreshToken(refreshToken);
+        await setLocalUserId(user.id);
+
+        $api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+
+        this.notify();
+    };
+
+    private readonly handleTokenRefreshFailure = async () => {
+        await removeRefreshToken();
+        await removeAccessToken();
+        await removeLocalUserId();
+
+        runInAction(() => {
+            this.user = null;
+            this.accessToken = null;
+            this.isAuth = false;
+            this.lastProvider = null;
+        });
+
+        this.notify();
+    };
+
     constructor(root: RootStore) {
         this.root = root;
         this.subscribe = this.baseStore.subscribe;
@@ -30,6 +64,9 @@ export class AuthStore {
             notify: false,
             root: false,
         } as any);
+
+        registerTokenRefreshHandler(this.handleTokenRefresh);
+        registerTokenRefreshFailureHandler(this.handleTokenRefreshFailure);
     }
 
     private notify() {
@@ -331,32 +368,15 @@ export class AuthStore {
                 return false;
             }
             const { data } = await AuthService.refreshAccessTokenRequest(refreshToken);
-            const normalizedUser = this.normalizeUser(data.user);
-            runInAction(() => {
-                this.user = normalizedUser;
-                this.accessToken = data.accessToken;
-                this.isAuth = true;
-                this.lastProvider = this.lastProvider ?? 'demo';
+            await this.handleTokenRefresh({
+                accessToken: data.accessToken,
+                refreshToken: data.refreshToken,
+                user: data.user,
             });
-
-            // Persist обновленные токены для последующих запросов
-            await setAccessToken(data.accessToken);
-            await setRefreshToken(data.refreshToken);
-            await setLocalUserId(data.user.id);
-
-            // Обновляем заголовок авторизации для axios
-            $api.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
 
             didRefresh = true;
         } catch (e: any) {
-            await removeRefreshToken();
-            await removeAccessToken();
-            runInAction(() => {
-                this.user = null;
-                this.isAuth = false;
-                this.accessToken = null;
-                this.lastProvider = null;
-            });
+            await this.handleTokenRefreshFailure();
             console.log(e)
         } finally {
             runInAction(() => {

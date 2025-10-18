@@ -1,13 +1,14 @@
 import axios from "axios";
-import { 
-  getRefreshToken, 
-  getAccessToken, 
-  setRefreshToken, 
-  setAccessToken, 
-  removeRefreshToken, 
-  removeAccessToken, 
-  setLocalUserId, 
-  removeLocalUserId 
+import type { AuthUserLike } from "../../types/auth";
+import {
+  getRefreshToken,
+  getAccessToken,
+  setRefreshToken,
+  setAccessToken,
+  removeRefreshToken,
+  removeAccessToken,
+  setLocalUserId,
+  removeLocalUserId
 } from "../storageHelper";
 import { logToServer } from "../utils/logger";
 import Constants from 'expo-constants';
@@ -32,6 +33,26 @@ export const API_URL = `${BASE_URL}api/`;
 const $api = axios.create({
   baseURL: API_URL,
 });
+
+type TokenRefreshPayload = {
+  accessToken: string;
+  refreshToken: string;
+  user: AuthUserLike;
+};
+
+type TokenRefreshHandler = (payload: TokenRefreshPayload) => Promise<void> | void;
+type TokenRefreshFailureHandler = (error: unknown) => Promise<void> | void;
+
+let tokenRefreshHandler: TokenRefreshHandler | null = null;
+let tokenRefreshFailureHandler: TokenRefreshFailureHandler | null = null;
+
+export const registerTokenRefreshHandler = (handler: TokenRefreshHandler) => {
+  tokenRefreshHandler = handler;
+};
+
+export const registerTokenRefreshFailureHandler = (handler: TokenRefreshFailureHandler) => {
+  tokenRefreshFailureHandler = handler;
+};
 
 // **Interceptor для запросов**
 $api.interceptors.request.use(
@@ -80,16 +101,25 @@ $api.interceptors.response.use(
 
         const { accessToken: newAccessToken, refreshToken: newRefreshToken, user } = response.data;
 
-        await setAccessToken(newAccessToken);
-        await setRefreshToken(newRefreshToken);
-        await setLocalUserId(user.id);
+        if (tokenRefreshHandler) {
+          await tokenRefreshHandler({ accessToken: newAccessToken, refreshToken: newRefreshToken, user });
+        } else {
+          await setAccessToken(newAccessToken);
+          await setRefreshToken(newRefreshToken);
+          await setLocalUserId(user.id);
+          $api.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
+        }
 
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return $api.request(originalRequest);
       } catch (e) {
-        await removeAccessToken();
-        await removeRefreshToken();
-        await removeLocalUserId();
+        if (tokenRefreshFailureHandler) {
+          await tokenRefreshFailureHandler(e);
+        } else {
+          await removeAccessToken();
+          await removeRefreshToken();
+          await removeLocalUserId();
+        }
 
         // delete $api.defaults.headers.common['Authorization'];
 
@@ -108,3 +138,4 @@ $api.interceptors.response.use(
 );
 
 export default $api;
+export type { TokenRefreshPayload };
