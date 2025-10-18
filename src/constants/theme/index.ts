@@ -63,3 +63,10 @@ export const THEME_COLORS = {
 export const Theme = {
     colors: THEME_COLORS
 };
+
+export { inputHeight } from "./styles/commonFormStyles";
+
+
+export const IMAGES = {
+    google: require("../../assets/google.png"),
+}

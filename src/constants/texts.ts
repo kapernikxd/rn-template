@@ -1,0 +1,1 @@
+export const LARGE_FILE_ERROR = "Image is too large (more than 40MB). Please choose a smaller file.";

@@ -18,6 +18,13 @@ import type { CompositeNavigationProp, CompositeScreenProps } from '@react-navig
  *    Если потребуется переименовать — меняем здесь.
  */
 export const ROUTES = {
+  // auth screens
+  Register: 'Register',
+  Otp: 'Otp',
+  Login: 'Login',
+  ForgotPassword: 'ForgotPassword',
+  ChangePassword: 'ChangePassword',
+
   // Tabs
   DashboardTab: 'DashboardTab',
   DiscoverTab: 'DiscoverTab',
@@ -42,6 +49,9 @@ export const ROUTES = {
   // Root-level (модалки/auth и т.п.)
   RootTabs: 'RootTabs',
   Auth: 'Auth',
+
+  //docs
+  TermsOfUse: 'TermsOfUse',
 } as const;
 export type RouteName = typeof ROUTES[keyof typeof ROUTES];
 
@@ -82,8 +92,17 @@ export type MainTabParamList = {
  * 4) Root: обычно содержит Tabs и, например, модальные экраны
  */
 export type RootStackParamList = {
+  // auth screens
+  [ROUTES.Register]: undefined;
+  [ROUTES.Otp]: { email: string, reset?: boolean };
+  [ROUTES.Login]: undefined;
+  [ROUTES.ForgotPassword]: undefined;
+  [ROUTES.ChangePassword]: { link: string };
+
   [ROUTES.RootTabs]: NavigatorScreenParams<MainTabParamList>;
   [ROUTES.Auth]: undefined;
+
+  [ROUTES.TermsOfUse]: undefined;
 };
 
 /**
@@ -99,9 +118,9 @@ export type RootNav = NativeStackNavigationProp<RootStackParamList>;
 
 // Навигация конкретного стэка:
 export type DashboardNav = NativeStackNavigationProp<DashboardStackParamList>;
-export type DiscoverNav  = NativeStackNavigationProp<DiscoverStackParamList>;
-export type ActivityNav  = NativeStackNavigationProp<ActivityStackParamList>;
-export type ProfileNav   = NativeStackNavigationProp<ProfileStackParamList>;
+export type DiscoverNav = NativeStackNavigationProp<DiscoverStackParamList>;
+export type ActivityNav = NativeStackNavigationProp<ActivityStackParamList>;
+export type ProfileNav = NativeStackNavigationProp<ProfileStackParamList>;
 
 // Пример: пропсы экрана Dashboard, вложенного в табы + стек
 export type DashboardScreenProps = CompositeScreenProps<
@@ -131,6 +150,6 @@ export type DiscoverCollectionRoute = RouteProp<
  */
 declare global {
   namespace ReactNavigation {
-    interface RootParamList extends RootStackParamList {}
+    interface RootParamList extends RootStackParamList { }
   }
 }
