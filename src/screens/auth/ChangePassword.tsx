@@ -8,9 +8,9 @@ import { useRootStore } from '../../store/StoreProvider';
 import { useTheme } from 'rn-vs-lb/theme';
 import { Spacer, Button } from 'rn-vs-lb';
 import { Logo } from '../../components';
-import { RootStackParamList } from '../../navigation';
+import { ROUTES, type AuthStackParamList } from '../../navigation';
 
-type AuthScreenNavigationProp = RouteProp<RootStackParamList, 'ChangePassword'>;
+type AuthScreenNavigationProp = RouteProp<AuthStackParamList, typeof ROUTES.ChangePassword>;
 
 const ChangePassword: FC = () => {
     const { globalStyleSheet, theme, isDark, typography } = useTheme();
