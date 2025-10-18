@@ -1,4 +1,5 @@
-import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { Button } from "rn-vs-lb";
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
@@ -22,13 +23,7 @@ export const DiscoverScreen = () => {
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.listContent}
       renderItem={({ item }) => (
-        <Pressable
-          style={styles.card}
-          onPress={() => navigation.navigate('DiscoverCollection', { collectionId: item.id })}
-        >
-          <Text style={styles.cardTitle}>{item.title}</Text>
-          <Text style={styles.cardSubtitle}>Откройте подборку #{item.id}</Text>
-        </Pressable>
+        <Button onPress={() => navigation.navigate('DiscoverCollection', { collectionId: item.id })} title={`Откройте подборку ${item.id}`}/>
       )}
       ListHeaderComponent={() => (
         <View style={styles.header}>

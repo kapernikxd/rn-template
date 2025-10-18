@@ -1,7 +1,8 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useCallback } from 'react';
+import { Button } from 'rn-vs-lb';
 
 import type { DashboardStackParamList } from '../../../navigation';
 
@@ -21,9 +22,7 @@ export const DashboardScreen = () => {
         Это базовый пример домашнего экрана. Здесь может быть лента, статистика или другие
         ключевые данные вашего приложения.
       </Text>
-      <Pressable style={styles.button} onPress={handleOpenDetails}>
-        <Text style={styles.buttonText}>Открыть подробности</Text>
-      </Pressable>
+      <Button onPress={handleOpenDetails} title='Открыть' />
     </View>
   );
 };

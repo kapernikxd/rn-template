@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Button } from "rn-vs-lb";
 import { useCallback } from 'react';
 
 import type { ProfileStackParamList } from '../../../navigation';
@@ -21,9 +22,7 @@ export const ProfileScreen = () => {
       </View>
       <Text style={styles.title}>Иван Петров</Text>
       <Text style={styles.subtitle}>Продуктовый дизайнер</Text>
-      <Pressable style={styles.button} onPress={handleOpenSettings}>
-        <Text style={styles.buttonText}>Настройки профиля</Text>
-      </Pressable>
+      <Button onPress={handleOpenSettings} title='Настройки профиля'/>
     </View>
   );
 };
