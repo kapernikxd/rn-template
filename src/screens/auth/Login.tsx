@@ -1,4 +1,4 @@
-import React, { useEffect, FC } from 'react';
+import React, { FC, useCallback, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useRootStore } from '../../store/StoreProvider';
@@ -8,6 +8,7 @@ import { useTheme } from 'rn-vs-lb/theme';
 import { observer } from 'mobx-react-lite';
 
 import { usePortalNavigation, usePushNotifications } from '../../helpers/hooks';
+import { RouteProp, useRoute } from '@react-navigation/native';
 
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import * as AppleAuthentication from 'expo-apple-authentication';
@@ -15,6 +16,7 @@ import { LoginParams } from '../../types/auth';
 import { Logo } from '../../components';
 
 import { IMAGES } from '../../constants/theme';
+import { ROUTES, type AuthStackParamList } from '../../navigation';
 
 
 const Login: FC = observer(() => {
@@ -23,6 +25,7 @@ const Login: FC = observer(() => {
   const { authStore } = useRootStore();
   const { goToOtp, goToForgotPassword, goToMain, goToRegister } = usePortalNavigation();
   const { expoPushToken } = usePushNotifications();
+  const route = useRoute<RouteProp<AuthStackParamList, typeof ROUTES.Login>>();
 
   const [termsAccepted, setTermsAccepted] = React.useState(false);
   const [showTermsError, setShowTermsError] = React.useState(false);
@@ -31,9 +34,19 @@ const Login: FC = observer(() => {
   const [loadingGoogle, setloadingGoogle] = React.useState(false);
   const [loadingApple, setloadingApple] = React.useState(false);
 
+  const redirectTo = route.params?.redirectTo;
+
+  const navigateToMain = useCallback(() => {
+    if (redirectTo) {
+      goToMain(redirectTo.tab, redirectTo.params);
+    } else {
+      goToMain();
+    }
+  }, [goToMain, redirectTo]);
+
   const refreshAccessToken = async () => {
     await authStore.refreshAccessToken();
-    if (authStore.isAuth) goToMain()
+    if (authStore.isAuth) navigateToMain();
   }
 
   const handleSubmit = methods.handleSubmit(async (data: any) => {
@@ -46,8 +59,8 @@ const Login: FC = observer(() => {
     try {
       setLoading(true);
       const response = await authStore.login(data as LoginParams, expoPushToken);
-      if (!response.user.isActivated) goToOtp(response.user.email)
-      else goToMain()
+      if (!response.user.isActivated) goToOtp(response.user.email, { redirect: redirectTo })
+      else navigateToMain();
     } catch (errors: any) {
       // Устанавливаем ошибки для полей
       Object.entries(errors).forEach(([field, message]) => {
@@ -75,8 +88,8 @@ const Login: FC = observer(() => {
       if (!idToken) throw new Error('No idToken from Google');
 
       const response = await authStore.loginByGoogle(idToken, expoPushToken); // отправка idToken на бэкенд
-      if (!response.user.isActivated) goToOtp(response.user.email)
-      else goToMain()
+      if (!response.user.isActivated) goToOtp(response.user.email, { redirect: redirectTo })
+      else navigateToMain();
 
     } catch (error) {
       console.error('Google Sign-In error:', error);
@@ -108,7 +121,7 @@ const Login: FC = observer(() => {
       if (!identityToken) throw new Error('No identityToken from Apple');
 
       await authStore.loginByApple(identityToken, expoPushToken);
-      goToMain();
+      navigateToMain();
 
     } catch (error) {
       console.error('Apple Sign-In error:', error);

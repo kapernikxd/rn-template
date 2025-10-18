@@ -88,19 +88,27 @@ export type MainTabParamList = {
   [ROUTES.ProfileTab]: NavigatorScreenParams<ProfileStackParamList>;
 };
 
+export type AuthRedirect = {
+  [Tab in keyof MainTabParamList]: {
+    tab: Tab;
+    params?: MainTabParamList[Tab];
+  };
+}[keyof MainTabParamList];
+
+export type AuthStackParamList = {
+  [ROUTES.Login]: { redirectTo?: AuthRedirect } | undefined;
+  [ROUTES.Register]: undefined;
+  [ROUTES.Otp]: { email: string; reset?: boolean; redirectTo?: AuthRedirect };
+  [ROUTES.ForgotPassword]: undefined;
+  [ROUTES.ChangePassword]: { link: string };
+};
+
 /**
  * 4) Root: обычно содержит Tabs и, например, модальные экраны
  */
 export type RootStackParamList = {
-  // auth screens
-  [ROUTES.Register]: undefined;
-  [ROUTES.Otp]: { email: string, reset?: boolean };
-  [ROUTES.Login]: undefined;
-  [ROUTES.ForgotPassword]: undefined;
-  [ROUTES.ChangePassword]: { link: string };
-
   [ROUTES.RootTabs]: NavigatorScreenParams<MainTabParamList>;
-  [ROUTES.Auth]: undefined;
+  [ROUTES.Auth]: NavigatorScreenParams<AuthStackParamList>;
 
   [ROUTES.TermsOfUse]: undefined;
 };

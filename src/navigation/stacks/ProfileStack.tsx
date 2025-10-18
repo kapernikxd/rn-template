@@ -2,9 +2,24 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { ProfileScreen } from '../../screens/profile/screens/ProfileScreen';
 import { ProfileSettingsScreen } from '../../screens/profile/screens/ProfileSettingsScreen';
-import type { ProfileStackParamList } from '../types';
+import { withAuthGuard } from '../guards/withAuthGuard';
+import { ROUTES, type ProfileStackParamList } from '../types';
 
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
+
+const GuardedProfileScreen = withAuthGuard(ProfileScreen, {
+  redirect: {
+    tab: ROUTES.ProfileTab,
+    params: { screen: ROUTES.Profile },
+  },
+});
+
+const GuardedProfileSettingsScreen = withAuthGuard(ProfileSettingsScreen, {
+  redirect: {
+    tab: ROUTES.ProfileTab,
+    params: { screen: ROUTES.ProfileSettings },
+  },
+});
 
 export const ProfileStack = () => (
   <Stack.Navigator
@@ -16,14 +31,14 @@ export const ProfileStack = () => (
   >
     <Stack.Screen
       name="Profile"
-      component={ProfileScreen}
+      component={GuardedProfileScreen}
       options={{
         title: 'Профиль',
       }}
     />
     <Stack.Screen
       name="ProfileSettings"
-      component={ProfileSettingsScreen}
+      component={GuardedProfileSettingsScreen}
       options={{
         title: 'Настройки',
         headerBackTitle: 'Назад',

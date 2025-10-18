@@ -7,10 +7,10 @@ import { OtpInput } from '../../components/form';
 import { usePortalNavigation } from '../../helpers/hooks';
 import { useTheme } from 'rn-vs-lb/theme';
 import { Logo } from '../../components';
-import { RootStackParamList } from '../../navigation';
+import { ROUTES, type AuthStackParamList } from '../../navigation';
 import { Button, Spacer } from 'rn-vs-lb';
 
-type AuthScreenNavigationProp = RouteProp<RootStackParamList, 'Otp'>;
+type AuthScreenNavigationProp = RouteProp<AuthStackParamList, typeof ROUTES.Otp>;
 
 type OtpFormData = {
     code: string[]; // ['abc', 'xyz', '123'] → итого 9 символов
@@ -22,7 +22,7 @@ const Otp: FC = () => {
     const { globalStyleSheet, theme, isDark, typography } = useTheme();
     const route = useRoute<AuthScreenNavigationProp>();
     const { goToLogin, goToMain, goToChangePassword } = usePortalNavigation();
-    const { email, reset } = route.params;
+    const { email, reset, redirectTo } = route.params;
 
     const { authStore } = useRootStore();
     const methods = useForm<OtpFormData>({
@@ -32,6 +32,14 @@ const Otp: FC = () => {
     });
 
     if (!email) goToLogin()
+
+    const navigateToMain = React.useCallback(() => {
+        if (redirectTo) {
+            goToMain(redirectTo.tab, redirectTo.params);
+        } else {
+            goToMain();
+        }
+    }, [goToMain, redirectTo]);
 
     const handleSubmit = methods.handleSubmit(async (data) => {
         const fullOtp = data.code.join('');
@@ -50,7 +58,7 @@ const Otp: FC = () => {
             }
             else {
                 await authStore.otp({ verificationCode: fullOtp, email });
-                goToMain()
+                navigateToMain();
             }
         } catch (errors: any) {
             // Устанавливаем ошибки для полей

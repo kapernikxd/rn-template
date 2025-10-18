@@ -19,7 +19,7 @@ const Forgot: FC = () => {
         const email = data.email
         try {
             await authStore.activateEmail(email);
-            goToOtp(data.email, true)
+            goToOtp(data.email, { reset: true })
 
         } catch (errors: any) {
             Object.entries(errors).forEach(([field, message]) => {
