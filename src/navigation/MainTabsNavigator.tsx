@@ -28,7 +28,11 @@ const TABS: TabConfig[] = [
   { name: 'ProfileTab', label: 'Профиль', icon: 'user', component: ProfileStack },
 ];
 
-const MainTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
+type MainTabBarProps = BottomTabBarProps & {
+  showLabels?: boolean;
+};
+
+const MainTabBar = ({ state, descriptors, navigation, showLabels = true }: MainTabBarProps) => {
   const { colors } = useTheme();
   const { buildHref } = useLinkBuilder();
   const { bottom } = useSafeAreaInsets();
@@ -87,9 +91,11 @@ const MainTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
               <View style={[styles.iconWrapper, isFocused && styles.iconWrapperActive]}>
                 <Feather name={tab.icon} size={20} color={color} />
               </View>
-              <Text style={[styles.label, isFocused && [styles.labelActive, { color: colors.primary }]]}>
-                {tab.label}
-              </Text>
+              {showLabels ? (
+                <Text style={[styles.label, isFocused && [styles.labelActive, { color: colors.primary }]]}>
+                  {tab.label}
+                </Text>
+              ) : null}
             </View>
           </PlatformPressable>
         );
@@ -98,7 +104,11 @@ const MainTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   );
 };
 
-export const MainTabsNavigator = () => {
+type MainTabsNavigatorProps = {
+  showLabels?: boolean;
+};
+
+export const MainTabsNavigator = ({ showLabels = true }: MainTabsNavigatorProps) => {
   const tabBarScreenOptions = useMemo(
     () => ({
       headerShown: false,
@@ -107,7 +117,10 @@ export const MainTabsNavigator = () => {
   );
 
   return (
-    <Tab.Navigator screenOptions={tabBarScreenOptions} tabBar={(props) => <MainTabBar {...props} />}>
+    <Tab.Navigator
+      screenOptions={tabBarScreenOptions}
+      tabBar={(props) => <MainTabBar {...props} showLabels={showLabels} />}
+    >
       {TABS.map((tab) => (
         <Tab.Screen key={tab.name} name={tab.name} component={tab.component} options={{ title: tab.label }} />
       ))}
