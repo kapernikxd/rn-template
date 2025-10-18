@@ -1,9 +1,9 @@
-import { useMemo, type ComponentType } from 'react';
+import React, { useMemo, type ComponentType } from 'react';
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { createBottomTabNavigator, type BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { useLinkBuilder, useTheme } from '@react-navigation/native';
+import { useLinkBuilder } from '@react-navigation/native';
 import { PlatformPressable } from '@react-navigation/elements';
 import { Feather } from '@expo/vector-icons';
-import { StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ActivityStack } from './stacks/ActivityStack';
@@ -11,6 +11,7 @@ import { DashboardStack } from './stacks/DashboardStack';
 import { DiscoverStack } from './stacks/DiscoverStack';
 import { ProfileStack } from './stacks/ProfileStack';
 import type { MainTabParamList } from './types';
+import { useTheme } from 'rn-vs-lb/theme';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -32,72 +33,74 @@ type MainTabBarProps = BottomTabBarProps & {
   showLabels?: boolean;
 };
 
+const ICON_SIZE = 44;
+const ICON_RADIUS = ICON_SIZE / 2;
+
 const MainTabBar = ({ state, descriptors, navigation, showLabels = true }: MainTabBarProps) => {
-  const { colors } = useTheme();
+  const { theme } = useTheme();
   const { buildHref } = useLinkBuilder();
   const { bottom } = useSafeAreaInsets();
+  const isWeb = Platform.OS === 'web';
 
   return (
     <View
       style={[
         styles.tabBar,
-        { backgroundColor: '#FFFFFF', borderTopColor: '#E5E7EB', paddingBottom: 16 + bottom },
+        { backgroundColor: theme.white, borderTopColor: theme.border, paddingBottom: 16 + bottom },
       ]}
     >
       {state.routes.map((route, index) => {
         const tab = TABS.find(({ name }) => name === route.name);
-
-        if (!tab) {
-          return null;
-        }
+        if (!tab) return null;
 
         const isFocused = state.index === index;
+        const iconColor = isFocused ? theme.primaryLight : '#9CA3AF';
 
         const onPress = () => {
-          const event = navigation.emit({
-            type: 'tabPress',
-            target: route.key,
-            canPreventDefault: true,
-          });
-
+          const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
           if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name, route.params);
+            navigation.navigate(route.name as never, route.params as never);
           }
         };
+        const onLongPress = () => navigation.emit({ type: 'tabLongPress', target: route.key });
 
-        const onLongPress = () => {
-          navigation.emit({
-            type: 'tabLongPress',
-            target: route.key,
-          });
-        };
+        // web: оставляем href; native: без href
+        const href = isWeb ? buildHref(route.name, route.params) : undefined;
 
-        const color = isFocused ? colors.primary : '#9CA3AF';
-        const href = buildHref(route.name, route.params);
+        // Кнопка только на круге: этот элемент и задаёт borderRadius + overflow
+        const CircleButton = isWeb ? PlatformPressable : Pressable;
+        const circleProps: any = isWeb
+          ? {
+              ...(href ? { href } : {}),
+            }
+          : {
+              android_ripple: { color: theme.primaryLight + '22', borderless: false, radius: ICON_RADIUS + 4 },
+            };
 
         return (
-          <PlatformPressable
-            key={route.key}
-            href={href}
-            accessibilityRole="button"
-            accessibilityState={isFocused ? { selected: true } : undefined}
-            accessibilityLabel={descriptors[route.key].options.tabBarAccessibilityLabel}
-            testID={descriptors[route.key].options.tabBarButtonTestID}
-            onPress={onPress}
-            onLongPress={onLongPress}
-            style={styles.tabButton}
-          >
-            <View style={styles.iconContainer}>
-              <View style={[styles.iconWrapper, isFocused && styles.iconWrapperActive]}>
-                <Feather name={tab.icon} size={20} color={color} />
-              </View>
-              {showLabels ? (
-                <Text style={[styles.label, isFocused && [styles.labelActive, { color: colors.primary }]]}>
-                  {tab.label}
-                </Text>
-              ) : null}
-            </View>
-          </PlatformPressable>
+          <View key={route.key} style={styles.tabButton}>
+            <CircleButton
+              {...circleProps}
+              onPress={onPress}
+              onLongPress={onLongPress}
+              accessibilityRole="button"
+              accessibilityState={isFocused ? { selected: true } : undefined}
+              accessibilityLabel={descriptors[route.key].options.tabBarAccessibilityLabel}
+              testID={descriptors[route.key].options.tabBarButtonTestID}
+              style={[
+                styles.circlePressable,
+                isFocused && { backgroundColor: theme.primaryLight + '22' }, // активный круглый фон
+              ]}
+            >
+              <Feather name={tab.icon} size={20} color={iconColor} />
+            </CircleButton>
+
+            {showLabels ? (
+              <Text style={[styles.label, isFocused && [styles.labelActive, { color: theme.primaryLight }]]}>
+                {tab.label}
+              </Text>
+            ) : null}
+          </View>
         );
       })}
     </View>
@@ -111,7 +114,7 @@ type MainTabsNavigatorProps = {
 export const MainTabsNavigator = ({ showLabels = true }: MainTabsNavigatorProps) => {
   const tabBarScreenOptions = useMemo(
     () => ({
-      headerShown: false,
+      headerShown: false as const,
     }),
     [],
   );
@@ -132,28 +135,24 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    minHeight: 72,
+    minHeight: 65,
     paddingTop: 12,
-    paddingBottom: 16,
     borderTopWidth: StyleSheet.hairlineWidth,
   },
   tabButton: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+  },
+  // ВАЖНО: это и есть «круглая кнопка».
+  // Размер = круг, borderRadius = половина, overflow: 'hidden' — обрезает риппл.
+  circlePressable: {
+    width: ICON_SIZE,
+    height: ICON_SIZE,
+    borderRadius: ICON_RADIUS,
+    alignItems: 'center',
     justifyContent: 'center',
-    alignItems: 'center',
-  },
-  iconContainer: {
-    alignItems: 'center',
-  },
-  iconWrapper: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconWrapperActive: {
-    backgroundColor: '#E0E7FF',
+    overflow: 'hidden',
   },
   label: {
     marginTop: 6,
@@ -165,3 +164,5 @@ const styles = StyleSheet.create({
     color: '#1E1E1E',
   },
 });
+
+export default MainTabsNavigator;
