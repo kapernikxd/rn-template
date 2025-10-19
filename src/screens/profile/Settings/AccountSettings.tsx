@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -10,12 +10,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CardContainer, HeaderDefault, Spacer, Button } from 'rn-vs-lb';
 import { ThemeType, useTheme } from 'rn-vs-lb/theme';
 import { FormProvider, useForm } from 'react-hook-form';
+import { observer } from 'mobx-react-lite';
 
 import { TextInput } from '../../../components/form';
 import { useRootStore } from '../../../store/StoreProvider';
 import { usePortalNavigation } from '../../../helpers/hooks';
 
-export const AccountSettingsScreen: FC = () => {
+export const AccountSettingsScreen: FC = observer(() => {
   const { theme } = useTheme();
   const styles = getStyles({ theme });
   const { profileStore, authStore, uiStore } = useRootStore();
@@ -40,6 +41,19 @@ export const AccountSettingsScreen: FC = () => {
   const handleReset = () => {
     methods.reset();
   };
+
+  useEffect(() => {
+    if (!profileStore.myProfile?.id) {
+      profileStore.fetchMyProfile();
+    }
+  }, [profileStore, profileStore.myProfile?.id]);
+
+  useEffect(() => {
+    methods.reset({
+      username: profileStore.myProfile?.username ?? '',
+      email: authStore.user?.email ?? '',
+    });
+  }, [profileStore.myProfile?.username, authStore.user?.email, methods]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -94,7 +108,7 @@ export const AccountSettingsScreen: FC = () => {
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
-};
+});
 
 const getStyles = ({ theme }: { theme: ThemeType }) => StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.white },
