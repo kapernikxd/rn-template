@@ -5,6 +5,7 @@ import { StoreProvider } from './src/store/StoreProvider';
 import { AppNavigator } from './src/navigation';
 import { Theme } from './src/constants/theme';
 import { Host } from 'react-native-portalize';
+import CustomSnackbar from './src/components/CustomSnackbar';
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
           <StatusBar style="auto" />
           <StoreProvider>
             <AppNavigator />
+            <CustomSnackbar />
           </StoreProvider>
         </ThemeProvider>
       </SafeAreaProvider>

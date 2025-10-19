@@ -1,10 +1,14 @@
-import { BASE_URL } from "../http";
 import { Image } from "react-native";
 import { capitalizeFirstLetter } from "./common";
 import { UserBasicDTO, UserDTO } from "../../types";
+import { BASE_URL } from "../../constants/links";
+
+// const IMAGE_MOCK = Image.resolveAssetSource(
+//   require("../../../assets/noProfile.jpg")
+// ).uri;
 
 const IMAGE_MOCK = Image.resolveAssetSource(
-  require('../../assets/images/noProfile.jpg')
+  require("../../assets/noProfile.png")
 ).uri;
 
 export const getUserId = (user: UserDTO) => (user ? user._id : undefined);

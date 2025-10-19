@@ -2,7 +2,7 @@ import { FC, useCallback, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
-// import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
     CardContainer,
     DeleteAccountButton,
@@ -72,7 +72,7 @@ export const ProfileSettingsScreen: FC = () => {
     );
 
     return (
-        // <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.content}>
                 <HeaderDefault title={'Settings'} onBackPress={goBack} />
                 <View style={styles.body}>
@@ -111,7 +111,7 @@ export const ProfileSettingsScreen: FC = () => {
                     </View>
                 </View>
             </View>
-        // </SafeAreaView>
+        </SafeAreaView>
     );
 }
 
