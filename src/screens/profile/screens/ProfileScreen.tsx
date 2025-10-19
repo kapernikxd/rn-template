@@ -1,18 +1,21 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Button } from "rn-vs-lb";
+import { Button } from 'rn-vs-lb';
 import { useCallback } from 'react';
 
-import type { ProfileStackParamList } from '../../../navigation/types';
+import { ROUTES, type ProfileStackParamList } from '../../../navigation/types';
 
-type NavigationProp = NativeStackNavigationProp<ProfileStackParamList, 'Profile'>;
+type NavigationProp = NativeStackNavigationProp<
+  ProfileStackParamList,
+  typeof ROUTES.Profile
+>;
 
 export const ProfileScreen = () => {
   const navigation = useNavigation<NavigationProp>();
 
   const handleOpenSettings = useCallback(() => {
-    navigation.navigate('ProfileSettings');
+    navigation.navigate(ROUTES.ProfileSettings);
   }, [navigation]);
 
   return (

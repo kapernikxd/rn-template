@@ -1,13 +1,28 @@
-import { FC } from 'react';
+import { FC, useCallback, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 // import { SafeAreaView } from 'react-native-safe-area-context';
-import { CardContainer, DeleteAccountButton, HeaderDefault, TelegramFeedbackLink, ListItem, ThemeSwitcher } from 'rn-vs-lb';
+import {
+    CardContainer,
+    DeleteAccountButton,
+    HeaderDefault,
+    TelegramFeedbackLink,
+    ListItem,
+    ThemeSwitcher,
+} from 'rn-vs-lb';
 import { useTheme, ThemeType, SizesType, GlobalStyleSheetType } from 'rn-vs-lb/theme';
 import { appVersion, TELEGRAM_URL } from '../../../constants/links';
 import { useRootStore } from '../../../store/StoreProvider';
 import { useActions, usePortalNavigation } from '../../../helpers/hooks';
+import { ProfileNav, ROUTES } from '../../../navigation/types';
+
+type SettingsRoute =
+    | typeof ROUTES.ProfileEdit
+    | typeof ROUTES.ProfileAccountSettings
+    | typeof ROUTES.ProfileChangePassword
+    | typeof ROUTES.ProfileSocialProfiles
+    | typeof ROUTES.ProfileNotificationSettings;
 
 export const ProfileSettingsScreen: FC = () => {
     const { globalStyleSheet, theme, sizes, typography } = useTheme();
@@ -16,31 +31,45 @@ export const ProfileSettingsScreen: FC = () => {
     const { authStore, profileStore, uiStore } = useRootStore();
     const { goBack, goToLogin } = usePortalNavigation();
     const { handleShareUserLink, myId } = useActions();
-    const navigation = useNavigation<any>();
+    const navigation = useNavigation<ProfileNav>();
 
-    const handleLogOut = async () => {
+    const handleLogOut = useCallback(async () => {
         await authStore.logout();
         goToLogin();
-    }
+    }, [authStore, goToLogin]);
 
-    const handleDeleteAccount = async () => {
+    const handleDeleteAccount = useCallback(async () => {
         await profileStore.deleteAccount();
         uiStore.showSnackbar("Your request has been sent. Your account will be deleted within 24 hours.", "success");
-    };
+    }, [profileStore, uiStore]);
 
-    const SETTING_LIST = [
-        { icon: 'user-o', label: 'Edit Profile', action: () => navigation.navigate('editProfileSetting') },
-        { icon: 'gear', label: 'Account Settings', action: () => navigation.navigate('accountSetting') },
-        { icon: 'key', label: 'Change Password', action: () => navigation.navigate('changePasswordSetting') },
-        { icon: 'group', label: 'Social Profiles', action: () => navigation.navigate('socialProfilesSetting') },
-        { icon: 'bell', label: 'Notifications', action: () => navigation.navigate('notificationSetting') },
-    ];
+    const navigateTo = useCallback(
+        (screen: SettingsRoute) => () => navigation.navigate(screen),
+        [navigation],
+    );
 
-    const COPY_LINK = [
-        { icon: 'copy', label: 'Copy link', action: () => handleShareUserLink(myId) },
-    ];
+    const SETTING_LIST = useMemo(
+        () => [
+            { icon: 'user-o', label: 'Edit Profile', action: navigateTo(ROUTES.ProfileEdit) },
+            { icon: 'gear', label: 'Account Settings', action: navigateTo(ROUTES.ProfileAccountSettings) },
+            { icon: 'key', label: 'Change Password', action: navigateTo(ROUTES.ProfileChangePassword) },
+            { icon: 'group', label: 'Social Profiles', action: navigateTo(ROUTES.ProfileSocialProfiles) },
+            { icon: 'bell', label: 'Notifications', action: navigateTo(ROUTES.ProfileNotificationSettings) },
+        ],
+        [navigateTo],
+    );
 
-    const LOGOUT = { icon: 'sign-out', label: 'Logout', action: () => handleLogOut() }
+    const COPY_LINK = useMemo(
+        () => [
+            { icon: 'copy', label: 'Copy link', action: () => handleShareUserLink(myId) },
+        ],
+        [handleShareUserLink, myId],
+    );
+
+    const LOGOUT = useMemo(
+        () => ({ icon: 'sign-out', label: 'Logout', action: () => handleLogOut() }),
+        [handleLogOut],
+    );
 
     return (
         // <SafeAreaView style={styles.container}>
