@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback } from 'react';
+import React, { FC, useState, useCallback, useEffect } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -16,6 +16,7 @@ import { FormProvider, useForm, Controller } from 'react-hook-form';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import * as Notifications from 'expo-notifications';
 import { useFocusEffect } from '@react-navigation/native';
+import { observer } from 'mobx-react-lite';
 
 import { useRootStore } from '../../../../store/StoreProvider';
 import { usePortalNavigation, usePushNotifications } from '../../../../helpers/hooks';
@@ -56,7 +57,7 @@ const NOTIFICATION_SETTINGS: {
     { key: 'pollInvites', label: 'Poll Invites', icon: <Ionicons name="stats-chart-outline" size={18} /> },
   ];
 
-export const NotificationSettingsScreen: FC = () => {
+export const NotificationSettingsScreen: FC = observer(() => {
   const { theme, globalStyleSheet, typography } = useTheme();
   const styles = getStyles({ theme });
   const { profileStore, uiStore, authStore } = useRootStore();
@@ -136,6 +137,35 @@ export const NotificationSettingsScreen: FC = () => {
   const handleReset = () => {
     methods.reset();
   };
+
+  useEffect(() => {
+    if (!profileStore.myProfile?.id) {
+      profileStore.fetchMyProfile();
+    }
+  }, [profileStore, profileStore.myProfile?.id]);
+
+  useEffect(() => {
+    methods.reset({
+      likes: initialSettings.likes ?? false,
+      followers: initialSettings.followers ?? false,
+      groupMessages: initialSettings.groupMessages ?? true,
+      participants: initialSettings.participants ?? false,
+      newPost: initialSettings.newPost ?? true,
+      invites: initialSettings.invites ?? true,
+      pollAnswers: initialSettings.pollAnswers ?? true,
+      pollInvites: initialSettings.pollInvites ?? true,
+    });
+  }, [
+    initialSettings.likes,
+    initialSettings.followers,
+    initialSettings.groupMessages,
+    initialSettings.participants,
+    initialSettings.newPost,
+    initialSettings.invites,
+    initialSettings.pollAnswers,
+    initialSettings.pollInvites,
+    methods,
+  ]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -223,7 +253,7 @@ export const NotificationSettingsScreen: FC = () => {
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
-};
+});
 
 const getStyles = ({ theme }: { theme: ThemeType }) => StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.white },

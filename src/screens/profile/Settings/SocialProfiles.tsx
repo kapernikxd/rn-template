@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import {
     KeyboardAvoidingView,
     Platform,
@@ -11,6 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { CardContainer, HeaderDefault, Spacer, Button } from 'rn-vs-lb';
 import { ThemeType, useTheme } from 'rn-vs-lb/theme';
 import { FormProvider, useForm } from 'react-hook-form';
+import { observer } from 'mobx-react-lite';
 
 import { TextInput } from '../../../components/form';
 import { useRootStore } from '../../../store/StoreProvider';
@@ -20,9 +21,10 @@ type SocialMediaForm = {
     facebook?: string,
     instagram?: string,
     vk?: string,
+    tg?: string,
 }
 
-export const SocialProfilesScreen: FC = () => {
+export const SocialProfilesScreen: FC = observer(() => {
     const { theme } = useTheme();
     const styles = getStyles({ theme });
     const { profileStore, uiStore } = useRootStore();
@@ -36,6 +38,27 @@ export const SocialProfilesScreen: FC = () => {
             tg: profileStore.myProfile?.socialMediaLinks?.tg,
         },
     });
+
+    useEffect(() => {
+        if (!profileStore.myProfile?.id) {
+            profileStore.fetchMyProfile();
+        }
+    }, [profileStore, profileStore.myProfile?.id]);
+
+    useEffect(() => {
+        methods.reset({
+            facebook: profileStore.myProfile?.socialMediaLinks?.facebook ?? '',
+            instagram: profileStore.myProfile?.socialMediaLinks?.instagram ?? '',
+            vk: profileStore.myProfile?.socialMediaLinks?.vk ?? '',
+            tg: profileStore.myProfile?.socialMediaLinks?.tg ?? '',
+        });
+    }, [
+        profileStore.myProfile?.socialMediaLinks?.facebook,
+        profileStore.myProfile?.socialMediaLinks?.instagram,
+        profileStore.myProfile?.socialMediaLinks?.vk,
+        profileStore.myProfile?.socialMediaLinks?.tg,
+        methods,
+    ]);
 
     const handleSubmit = methods.handleSubmit(async (data: SocialMediaForm) => {
         try {
@@ -140,7 +163,7 @@ export const SocialProfilesScreen: FC = () => {
             </KeyboardAvoidingView>
         </SafeAreaView>
     );
-};
+});
 
 const getStyles = ({ theme }: { theme: ThemeType }) => StyleSheet.create({
     container: { flex: 1, backgroundColor: theme.white },
