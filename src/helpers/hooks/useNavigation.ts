@@ -64,6 +64,8 @@ export const usePortalNavigation = () => {
 
     goToMain,
 
+    goBack: () => navigation.goBack(),
+
     goToTermOfUse: () => navigation.navigate(ROUTES.TermsOfUse),
   };
 };
