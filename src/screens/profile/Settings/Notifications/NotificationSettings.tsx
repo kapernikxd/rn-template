@@ -139,10 +139,10 @@ export const NotificationSettingsScreen: FC = observer(() => {
   };
 
   useEffect(() => {
-    if (!profileStore.myProfile?.id) {
+    if (!profileStore.myProfile?._id) {
       profileStore.fetchMyProfile();
     }
-  }, [profileStore, profileStore.myProfile?.id]);
+  }, [profileStore, profileStore.myProfile?._id]);
 
   useEffect(() => {
     methods.reset({

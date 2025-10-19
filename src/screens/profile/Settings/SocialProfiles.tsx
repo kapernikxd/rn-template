@@ -40,12 +40,6 @@ export const SocialProfilesScreen: FC = observer(() => {
     });
 
     useEffect(() => {
-        if (!profileStore.myProfile?.id) {
-            profileStore.fetchMyProfile();
-        }
-    }, [profileStore, profileStore.myProfile?.id]);
-
-    useEffect(() => {
         methods.reset({
             facebook: profileStore.myProfile?.socialMediaLinks?.facebook ?? '',
             instagram: profileStore.myProfile?.socialMediaLinks?.instagram ?? '',

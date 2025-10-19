@@ -43,12 +43,6 @@ export const AccountSettingsScreen: FC = observer(() => {
   };
 
   useEffect(() => {
-    if (!profileStore.myProfile?.id) {
-      profileStore.fetchMyProfile();
-    }
-  }, [profileStore, profileStore.myProfile?.id]);
-
-  useEffect(() => {
     methods.reset({
       username: profileStore.myProfile?.username ?? '',
       email: authStore.user?.email ?? '',
