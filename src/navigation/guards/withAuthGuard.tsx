@@ -2,6 +2,8 @@ import React, { useCallback, useMemo } from 'react';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NavigationProp } from '@react-navigation/native';
 
+import { NoAuth } from 'rn-vs-lb';
+
 import { ScreenLoader } from '../../components/ScreenLoader';
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { ROUTES, type AuthRedirect, type MainTabParamList, type RootStackParamList } from '../types';
@@ -72,7 +74,7 @@ export function withAuthGuard<P extends { route?: { params?: Record<string, unkn
     }
 
     if (!isAuthenticated) {
-      return null;
+      return <NoAuth />;
     }
 
     return <Component {...props} />;
