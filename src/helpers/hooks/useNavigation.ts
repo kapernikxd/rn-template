@@ -5,7 +5,7 @@ import {
   type MainTabParamList,
   type RootStackParamList,
   ROUTES,
-} from '../../navigation';
+} from '../../navigation/types';
 
 export const usePortalNavigation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();

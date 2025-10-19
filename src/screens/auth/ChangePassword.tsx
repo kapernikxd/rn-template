@@ -8,7 +8,7 @@ import { useRootStore } from '../../store/StoreProvider';
 import { useTheme } from 'rn-vs-lb/theme';
 import { Spacer, Button } from 'rn-vs-lb';
 import { Logo } from '../../components';
-import { ROUTES, type AuthStackParamList } from '../../navigation';
+import { ROUTES, type AuthStackParamList } from '../../navigation/types';
 
 type AuthScreenNavigationProp = RouteProp<AuthStackParamList, typeof ROUTES.ChangePassword>;
 
