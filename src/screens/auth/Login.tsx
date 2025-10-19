@@ -28,7 +28,7 @@ const Login: FC = observer(() => {
   const { expoPushToken } = usePushNotifications();
   const route = useRoute<RouteProp<AuthStackParamList, typeof ROUTES.Login>>();
 
-  const [termsAccepted, setTermsAccepted] = React.useState(false);
+  const [termsAccepted, setTermsAccepted] = React.useState(true);
   const [showTermsError, setShowTermsError] = React.useState(false);
 
   const [loading, setLoading] = React.useState(false);

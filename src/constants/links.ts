@@ -14,5 +14,7 @@ export const API_URL = `${BASE_URL}api/`;
 
 export const EMAIL = "pllace.support@gmail.com";
 
+export const SITE_NAME = "Pllace";
+
 
 export const appVersion = Constants.expoConfig?.version || '1.0.0';
