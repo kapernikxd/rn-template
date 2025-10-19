@@ -45,20 +45,6 @@ type NotificationSettingsViewProps = {
   isSubmitting: boolean;
 };
 
-const NOTIFICATION_SETTINGS: {
-  key: NotificationType;
-  label: string;
-  icon: React.ReactNode;
-}[] = [
-  { key: 'likes', label: 'Likes', icon: <FontAwesome name="heart-o" size={18} /> },
-  { key: 'followers', label: 'Followers', icon: <Ionicons name="person-add-outline" size={18} /> },
-  { key: 'groupMessages', label: 'Group Messages', icon: <FontAwesome name="comments-o" size={18} /> },
-  { key: 'participants', label: 'Participants', icon: <Ionicons name="add-outline" size={18} /> },
-  { key: 'newPost', label: 'Created/Updated Post', icon: <FontAwesome name="calendar-o" size={18} /> },
-  { key: 'invites', label: 'Post Invites', icon: <FontAwesome name="calendar-plus-o" size={18} /> },
-  { key: 'pollAnswers', label: 'Poll Answers', icon: <Ionicons name="bar-chart-outline" size={18} /> },
-  { key: 'pollInvites', label: 'Poll Invites', icon: <Ionicons name="stats-chart-outline" size={18} /> },
-];
 
 export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
   methods,
@@ -71,6 +57,21 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
 }) => {
   const { theme, globalStyleSheet, typography } = useTheme();
   const styles = getStyles({ theme });
+
+  const NOTIFICATION_SETTINGS: {
+    key: NotificationType;
+    label: string;
+    icon: React.ReactNode;
+  }[] = [
+      { key: 'likes', label: 'Likes', icon: <FontAwesome color={theme.text} name="heart-o" size={18} /> },
+      { key: 'followers', label: 'Followers', icon: <Ionicons color={theme.text} name="person-add-outline" size={18} /> },
+      { key: 'groupMessages', label: 'Group Messages', icon: <FontAwesome color={theme.text} name="comments-o" size={18} /> },
+      { key: 'participants', label: 'Participants', icon: <Ionicons color={theme.text} name="add-outline" size={18} /> },
+      { key: 'newPost', label: 'Created/Updated Post', icon: <FontAwesome color={theme.text} name="calendar-o" size={18} /> },
+      { key: 'invites', label: 'Post Invites', icon: <FontAwesome color={theme.text} name="calendar-plus-o" size={18} /> },
+      { key: 'pollAnswers', label: 'Poll Answers', icon: <Ionicons color={theme.text} name="bar-chart-outline" size={18} /> },
+      { key: 'pollInvites', label: 'Poll Invites', icon: <Ionicons color={theme.text} name="stats-chart-outline" size={18} /> },
+    ];
 
   return (
     <SafeAreaView style={styles.container}>
@@ -92,7 +93,7 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
                   <View style={globalStyleSheet.flexRowCenterBetween}>
                     <View style={globalStyleSheet.flexRowCenterCenter}>
                       <View style={styles.iconContainer}>
-                        <Ionicons name="notifications-outline" size={18} />
+                        <Ionicons color={theme.text} name="notifications-outline" size={18} />
                       </View>
                       <View style={{ marginLeft: 8 }}>
                         <Spacer size="xs" />
@@ -165,6 +166,7 @@ const getStyles = ({ theme }: { theme: ThemeType }) =>
       marginRight: 4,
       left: 4,
       top: 3,
+      color: theme.text,
     },
     switch: {
       marginVertical: -4,
