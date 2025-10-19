@@ -18,10 +18,11 @@ export function withAuthGuard<P extends { route?: { params?: Record<string, unkn
     const { authStore } = useRootStore();
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-    const { isAuthenticated, hasAttemptedAutoLogin } = useStoreData(authStore, (store) => ({
-      isAuthenticated: store.isAuthenticated,
-      hasAttemptedAutoLogin: store.hasAttemptedAutoLogin,
-    }));
+    const isAuthenticated = useStoreData(authStore, (store) => store.isAuthenticated);
+    const hasAttemptedAutoLogin = useStoreData(
+      authStore,
+      (store) => store.hasAttemptedAutoLogin,
+    );
 
     const redirectConfig = useMemo(() => {
       const baseRedirect = options?.redirect ?? { tab: ROUTES.DashboardTab };
