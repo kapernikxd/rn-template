@@ -12,9 +12,10 @@ const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export const AppNavigator = () => {
   const { authStore } = useRootStore();
-  const { hasAttemptedAutoLogin } = useStoreData(authStore, (store) => ({
-    hasAttemptedAutoLogin: store.hasAttemptedAutoLogin,
-  }));
+  const hasAttemptedAutoLogin = useStoreData(
+    authStore,
+    (store) => store.hasAttemptedAutoLogin,
+  );
 
   const screenOptions = useMemo(
     () => ({

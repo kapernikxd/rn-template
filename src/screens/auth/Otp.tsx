@@ -7,7 +7,7 @@ import { OtpInput } from '../../components/form';
 import { usePortalNavigation } from '../../helpers/hooks';
 import { useTheme } from 'rn-vs-lb/theme';
 import { Logo } from '../../components';
-import { ROUTES, type AuthStackParamList } from '../../navigation';
+import { ROUTES, type AuthStackParamList } from '../../navigation/types';
 import { Button, Spacer } from 'rn-vs-lb';
 
 type AuthScreenNavigationProp = RouteProp<AuthStackParamList, typeof ROUTES.Otp>;

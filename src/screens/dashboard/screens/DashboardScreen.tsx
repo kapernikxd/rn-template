@@ -4,7 +4,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useCallback } from 'react';
 import { Button } from 'rn-vs-lb';
 
-import type { DashboardStackParamList } from '../../../navigation';
+import type { DashboardStackParamList } from '../../../navigation/types';
 
 type NavigationProp = NativeStackNavigationProp<DashboardStackParamList, 'Dashboard'>;
 

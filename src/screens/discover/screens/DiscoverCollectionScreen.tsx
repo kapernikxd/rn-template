@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 
-import type { DiscoverStackParamList } from '../../../navigation';
+import type { DiscoverStackParamList } from '../../../navigation/types';
 import type { RouteProp } from '@react-navigation/native';
 
 type Route = RouteProp<DiscoverStackParamList, 'DiscoverCollection'>;

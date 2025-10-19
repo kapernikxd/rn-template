@@ -4,7 +4,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Button } from "rn-vs-lb";
 import { useCallback } from 'react';
 
-import type { ProfileStackParamList } from '../../../navigation';
+import type { ProfileStackParamList } from '../../../navigation/types';
 
 type NavigationProp = NativeStackNavigationProp<ProfileStackParamList, 'Profile'>;
 

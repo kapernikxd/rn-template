@@ -3,7 +3,7 @@ import { Button } from "rn-vs-lb";
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import type { DiscoverStackParamList } from '../../../navigation';
+import type { DiscoverStackParamList } from '../../../navigation/types';
 
 const COLLECTIONS = [
   { id: '01', title: 'Лучшие практики' },

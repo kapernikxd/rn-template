@@ -16,7 +16,7 @@ import { LoginParams } from '../../types/auth';
 import { Logo } from '../../components';
 
 import { IMAGES } from '../../constants/theme';
-import { ROUTES, type AuthStackParamList } from '../../navigation';
+import { ROUTES, type AuthStackParamList } from '../../navigation/types';
 
 
 const Login: FC = observer(() => {
