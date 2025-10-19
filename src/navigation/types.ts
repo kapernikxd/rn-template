@@ -45,6 +45,11 @@ export const ROUTES = {
   // Profile stack
   Profile: 'Profile',
   ProfileSettings: 'ProfileSettings',
+  ProfileEdit: 'ProfileEdit',
+  ProfileAccountSettings: 'ProfileAccountSettings',
+  ProfileChangePassword: 'ProfileChangePassword',
+  ProfileSocialProfiles: 'ProfileSocialProfiles',
+  ProfileNotificationSettings: 'ProfileNotificationSettings',
 
   // Root-level (модалки/auth и т.п.)
   RootTabs: 'RootTabs',
@@ -76,6 +81,11 @@ export type ActivityStackParamList = {
 export type ProfileStackParamList = {
   [ROUTES.Profile]: undefined;
   [ROUTES.ProfileSettings]: undefined;
+  [ROUTES.ProfileEdit]: undefined;
+  [ROUTES.ProfileAccountSettings]: undefined;
+  [ROUTES.ProfileChangePassword]: undefined;
+  [ROUTES.ProfileSocialProfiles]: undefined;
+  [ROUTES.ProfileNotificationSettings]: undefined;
 };
 
 /**
