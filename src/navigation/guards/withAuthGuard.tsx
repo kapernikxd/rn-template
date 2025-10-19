@@ -1,16 +1,30 @@
-import React, { useCallback, useMemo } from 'react';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import type { NavigationProp } from '@react-navigation/native';
-
+import React from 'react';
 import { NoAuth } from 'rn-vs-lb';
 
 import { ScreenLoader } from '../../components/ScreenLoader';
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
-import { ROUTES, type AuthRedirect, type MainTabParamList, type RootStackParamList } from '../types';
+import { usePortalNavigation } from '../../helpers/hooks';
+import type { AuthRedirect } from '../types';
 
 type GuardOptions = {
+  /**
+   * Сериализуемый редирект по умолчанию (если нельзя вывести из текущего экрана).
+   * Важно: только plain-данные (строки/числа/объекты/массивы), без функций/классов/инстансов!
+   */
   redirect?: AuthRedirect;
 };
+
+/**
+ * Хелпер: можно вычислить редирект из текущих пропсов.
+ * По умолчанию — используем options?.redirect (если он задан).
+ * Если нужно — тут можно добавить свою логику извлечения экрана/параметров.
+ */
+function getRedirectFromProps<P extends { route?: { params?: Record<string, unknown> } }>(
+  _props: P,
+  fallback?: AuthRedirect,
+): AuthRedirect | undefined {
+  return fallback;
+}
 
 export function withAuthGuard<P extends { route?: { params?: Record<string, unknown> } }>(
   Component: React.ComponentType<P>,
@@ -18,70 +32,26 @@ export function withAuthGuard<P extends { route?: { params?: Record<string, unkn
 ): React.ComponentType<P> {
   const GuardedComponent: React.FC<P> = (props) => {
     const { authStore } = useRootStore();
-    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+    const { goToLogin } = usePortalNavigation();
 
-    const isAuthenticated = useStoreData(authStore, (store) => store.isAuthenticated);
-    const hasAttemptedAutoLogin = useStoreData(
-      authStore,
-      (store) => store.hasAttemptedAutoLogin,
-    );
-
-    const redirectConfig = useMemo(() => {
-      const baseRedirect = options?.redirect ?? { tab: ROUTES.DashboardTab };
-      const params = baseRedirect.params;
-      const routeParams = props.route?.params;
-
-      if (!routeParams) {
-        return baseRedirect;
-      }
-
-      if (params && typeof params === 'object') {
-        const existingNestedParams = (params as { params?: Record<string, unknown> }).params;
-
-        return {
-          ...baseRedirect,
-          params: {
-            ...params,
-            params: {
-              ...(existingNestedParams ?? {}),
-              ...routeParams,
-            },
-          },
-        } as AuthRedirect;
-      }
-
-      return {
-        ...baseRedirect,
-        params: {
-          params: routeParams,
-        } as MainTabParamList[keyof MainTabParamList],
-      } as AuthRedirect;
-    }, [options?.redirect, props.route?.params]);
-
-    useFocusEffect(
-      useCallback(() => {
-        if (hasAttemptedAutoLogin && !isAuthenticated) {
-          navigation.navigate(ROUTES.Auth, {
-            screen: ROUTES.Login,
-            params: { redirectTo: redirectConfig },
-          });
-        }
-      }, [hasAttemptedAutoLogin, isAuthenticated, navigation, redirectConfig]),
-    );
+    const isAuthenticated = useStoreData(authStore, (s) => s.isAuthenticated);
+    const hasAttemptedAutoLogin = useStoreData(authStore, (s) => s.hasAttemptedAutoLogin);
 
     if (!hasAttemptedAutoLogin) {
       return <ScreenLoader />;
     }
 
     if (!isAuthenticated) {
-      return <NoAuth />;
+      // ВАЖНО: redirect — только сериализуемые данные
+      const redirect = getRedirectFromProps(props, options?.redirect);
+
+      // ВАЖНО: лямбда, чтобы в goToLogin не попал PressEvent из onPress
+      return <NoAuth onPress={() => goToLogin(redirect)} />;
     }
 
-    return <Component {...props} />;
+    return <Component {...(props as P)} />;
   };
 
-  const wrappedName = Component.displayName || Component.name || 'Component';
-  GuardedComponent.displayName = `withAuthGuard(${wrappedName})`;
-
+  GuardedComponent.displayName = `withAuthGuard(${Component.displayName || Component.name || 'Component'})`;
   return GuardedComponent;
 }

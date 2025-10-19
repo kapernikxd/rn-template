@@ -7,6 +7,10 @@ import {
   ROUTES,
 } from '../../navigation/types';
 
+/**
+ * Хук-обёртка для навигации.
+ * Следим, чтобы в params попадали ТОЛЬКО сериализуемые значения (plain-данные).
+ */
 export const usePortalNavigation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
@@ -14,6 +18,7 @@ export const usePortalNavigation = () => {
     tab: keyof MainTabParamList = ROUTES.DashboardTab,
     params?: MainTabParamList[keyof MainTabParamList],
   ) => {
+    // reset допустим, главное — сериализуемые params
     navigation.reset({
       index: 0,
       routes: [
@@ -21,7 +26,7 @@ export const usePortalNavigation = () => {
           name: ROUTES.RootTabs,
           params: {
             screen: tab,
-            params,
+            params, // <= не кладём сюда функции/классы/инстансы/события
           },
         } as never,
       ],
@@ -29,15 +34,19 @@ export const usePortalNavigation = () => {
   };
 
   return {
-    goToLogin: (redirect?: AuthRedirect) =>
+    goToLogin: (redirectTo?: AuthRedirect) =>
       navigation.navigate(ROUTES.Auth, {
         screen: ROUTES.Login,
-        params: redirect ? { redirectTo: redirect } : undefined,
+        params: redirectTo ? { redirectTo } : undefined,
       }),
     goToOtp: (email: string, options?: { reset?: boolean; redirect?: AuthRedirect }) =>
       navigation.navigate(ROUTES.Auth, {
         screen: ROUTES.Otp,
-        params: { email, reset: options?.reset, redirectTo: options?.redirect },
+        params: {
+          email,
+          reset: !!options?.reset,
+          redirectTo: options?.redirect,
+        },
       }),
     goToForgotPassword: () =>
       navigation.navigate(ROUTES.Auth, {
