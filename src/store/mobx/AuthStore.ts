@@ -2,11 +2,24 @@ import { isAxiosError } from "axios";
 import { $api, registerTokenRefreshFailureHandler, registerTokenRefreshHandler } from "../../helpers";
 import { makeAutoObservable, runInAction } from "mobx";
 import AuthService from "../../services/auth/AuthService";
-import { getRefreshToken, removeAccessToken, removeLocalUserId, removeRefreshToken, setAccessToken, setLocalUserId, setRefreshToken } from "../../helpers/storageHelper";
+import {
+    getAccessToken,
+    getAuthUser,
+    getRefreshToken,
+    removeAccessToken,
+    removeAuthUser,
+    removeLocalUserId,
+    removeRefreshToken,
+    setAccessToken,
+    setAuthUser,
+    setLocalUserId,
+    setRefreshToken,
+} from "../../helpers/storageHelper";
 import { BaseStore, StoreListener } from "./BaseStore";
 import { RootStore } from "../rootStore";
 import { AuthProvider, AuthUser, AuthUserLike, FormErrorResponse, LoginParams, NewPasswordParams, ParamsVerificateEmail, RegistrationParams } from "../../types/auth";
 import type { TokenRefreshPayload } from "../../helpers";
+import { isTokenValid } from "../../helpers/auth/tokenUtils";
 
 
 export class AuthStore {
@@ -24,26 +37,11 @@ export class AuthStore {
 
     private readonly handleTokenRefresh = async ({ accessToken, refreshToken, user }: TokenRefreshPayload) => {
         const normalizedUser = this.normalizeUser(user);
-        runInAction(() => {
-            this.user = normalizedUser;
-            this.accessToken = accessToken;
-            this.isAuth = true;
-            this.lastProvider = this.lastProvider ?? 'demo';
-        });
-
-        await setAccessToken(accessToken);
-        await setRefreshToken(refreshToken);
-        await setLocalUserId(user.id);
-
-        $api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
-
-        this.notify();
+        await this.setAuthenticatedUser(normalizedUser, accessToken, { refreshToken });
     };
 
     private readonly handleTokenRefreshFailure = async () => {
-        await removeRefreshToken();
-        await removeAccessToken();
-        await removeLocalUserId();
+        await this.clearPersistedAuthState();
 
         runInAction(() => {
             this.user = null;
@@ -51,6 +49,8 @@ export class AuthStore {
             this.isAuth = false;
             this.lastProvider = null;
         });
+
+        delete $api.defaults.headers.common['Authorization'];
 
         this.notify();
     };
@@ -89,6 +89,46 @@ export class AuthStore {
         };
     }
 
+    private async setAuthenticatedUser(
+        user: AuthUser,
+        accessToken: string,
+        options: { refreshToken?: string; provider?: AuthProvider | null } = {},
+    ) {
+        const provider = options.provider ?? this.lastProvider ?? 'demo';
+
+        runInAction(() => {
+            this.user = user;
+            this.isAuth = true;
+            this.accessToken = accessToken;
+            this.lastProvider = provider;
+        });
+
+        $api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+
+        const tasks: Promise<unknown>[] = [
+            setAccessToken(accessToken),
+            setAuthUser(user),
+            setLocalUserId(user.id),
+        ];
+
+        if (options.refreshToken) {
+            tasks.push(setRefreshToken(options.refreshToken));
+        }
+
+        await Promise.all(tasks);
+
+        this.notify();
+    }
+
+    private async clearPersistedAuthState() {
+        await Promise.all([
+            removeRefreshToken(),
+            removeAccessToken(),
+            removeAuthUser(),
+            removeLocalUserId(),
+        ]);
+    }
+
     get isAuthenticated() {
         return this.user !== null;
     }
@@ -120,6 +160,7 @@ export class AuthStore {
             this.lastProvider = this.lastProvider ?? 'demo';
         });
         this.notify();
+        void setAuthUser(normalizedUser);
     }
 
     cancelAuth() {
@@ -140,20 +181,10 @@ export class AuthStore {
             const { data } = await AuthService.loginByGoogle(credential);
             const normalizedUser = this.normalizeUser(data.user);
 
-            runInAction(() => {
-                this.user = normalizedUser;
-                this.isAuth = true;
-                this.accessToken = data.accessToken;
-                this.lastProvider = 'google';
+            await this.setAuthenticatedUser(normalizedUser, data.accessToken, {
+                refreshToken: data.refreshToken,
+                provider: 'google',
             });
-
-            this.notify();
-
-            await setRefreshToken(data.refreshToken);
-            await setAccessToken(data.accessToken);
-            await setLocalUserId(data.user.id);
-
-            $api.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
 
             if (expoPushToken) {
                 await this.sendPushToken(expoPushToken);
@@ -171,20 +202,10 @@ export class AuthStore {
 
             const normalizedUser = this.normalizeUser(data.user);
 
-            runInAction(() => {
-                this.user = normalizedUser;
-                this.isAuth = true;
-                this.accessToken = data.accessToken;
-                this.lastProvider = 'apple';
+            await this.setAuthenticatedUser(normalizedUser, data.accessToken, {
+                refreshToken: data.refreshToken,
+                provider: 'apple',
             });
-
-            this.notify();
-
-            await setRefreshToken(data.refreshToken);
-            await setAccessToken(data.accessToken);
-            await setLocalUserId(data.user.id);
-
-            $api.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
 
             if (expoPushToken) {
                 await this.sendPushToken(expoPushToken);
@@ -202,20 +223,9 @@ export class AuthStore {
             const { data } = await AuthService.login(props);
 
             const normalizedUser = this.normalizeUser(data.user);
-            runInAction(() => {
-                this.user = normalizedUser;
-                this.isAuth = true;
-                this.accessToken = data.accessToken;
-                this.lastProvider = this.lastProvider ?? 'demo';
+            await this.setAuthenticatedUser(normalizedUser, data.accessToken, {
+                refreshToken: data.refreshToken,
             });
-
-            this.notify();
-
-            await setRefreshToken(data.refreshToken);
-            await setAccessToken(data.accessToken);
-            await setLocalUserId(data.user.id);
-
-            $api.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
 
             if (expoPushToken) {
                 await this.sendPushToken(expoPushToken);
@@ -244,9 +254,8 @@ export class AuthStore {
                 this.lastProvider = null;
             });
             this.notify();
-            await removeRefreshToken();
-            await removeAccessToken();
-            await removeLocalUserId();
+            delete $api.defaults.headers.common['Authorization'];
+            await this.clearPersistedAuthState();
         }
     }
 
@@ -257,20 +266,9 @@ export class AuthStore {
             const { data } = await AuthService.registration(props);
 
             const normalizedUser = this.normalizeUser(data.user);
-            runInAction(() => {
-                this.user = normalizedUser;
-                this.isAuth = true;
-                this.accessToken = data.accessToken;
-                this.lastProvider = this.lastProvider ?? 'demo';
+            await this.setAuthenticatedUser(normalizedUser, data.accessToken, {
+                refreshToken: data.refreshToken,
             });
-
-            this.notify();
-
-            await setAccessToken(data.accessToken);
-            await setRefreshToken(data.refreshToken);
-            await setLocalUserId(data.user.id);
-
-            $api.defaults.headers.common['Authorization'] = `Bearer ${data.accessToken}`;
 
             if (expoPushToken) {
                 await this.sendPushToken(expoPushToken);
@@ -361,12 +359,25 @@ export class AuthStore {
     }
 
     async refreshAccessToken() {
-        let didRefresh = false;
+        let didRestoreSession = false;
         try {
+            const [accessToken, storedUser] = await Promise.all([
+                getAccessToken(),
+                getAuthUser(),
+            ]);
+
+            if (accessToken && storedUser && isTokenValid(accessToken)) {
+                await this.setAuthenticatedUser(storedUser, accessToken);
+                didRestoreSession = true;
+                return true;
+            }
+
             const refreshToken = await getRefreshToken();
             if (!refreshToken) {
+                await this.handleTokenRefreshFailure();
                 return false;
             }
+
             const { data } = await AuthService.refreshAccessTokenRequest(refreshToken);
             await this.handleTokenRefresh({
                 accessToken: data.accessToken,
@@ -374,17 +385,18 @@ export class AuthStore {
                 user: data.user,
             });
 
-            didRefresh = true;
+            didRestoreSession = true;
         } catch (e: any) {
             await this.handleTokenRefreshFailure();
-            console.log(e)
+            console.log(e);
+            return false;
         } finally {
             runInAction(() => {
                 this.hasAttemptedAutoLogin = true;
             });
             this.notify();
         }
-        return didRefresh;
+        return didRestoreSession;
     }
 
     async sendPushToken(token: string) {

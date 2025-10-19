@@ -1,8 +1,10 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import uuid from "react-native-uuid";
+import type { AuthUser } from "../../types/auth";
 
 const REFRESH_TOKEN = "refreshToken";
 const ACCESS_TOKEN = "accessToken";
+const AUTH_USER = "authUser";
 
 // Универсальные функции для работы с AsyncStorage
 const setItem = async (key: string, value: string) => {
@@ -25,6 +27,24 @@ export const removeRefreshToken = async () => removeItem(REFRESH_TOKEN);
 export const setAccessToken = async (token: string) => setItem(ACCESS_TOKEN, token);
 export const getAccessToken = async () => getItem(ACCESS_TOKEN);
 export const removeAccessToken = async () => removeItem(ACCESS_TOKEN);
+
+// Работа с пользователем
+export const setAuthUser = async (user: AuthUser) => setItem(AUTH_USER, JSON.stringify(user));
+export const getAuthUser = async (): Promise<AuthUser | null> => {
+    const storedUser = await getItem(AUTH_USER);
+    if (!storedUser) {
+        return null;
+    }
+
+    try {
+        return JSON.parse(storedUser) as AuthUser;
+    } catch (error) {
+        console.warn("Failed to parse stored auth user", error);
+        await removeAuthUser();
+        return null;
+    }
+};
+export const removeAuthUser = async () => removeItem(AUTH_USER);
 
 // Работа с ID пользователя
 export const setLocalUserId = async (userId: string) => {
@@ -64,7 +84,7 @@ export const addViewedEvent = async (eventId: string): Promise<void> => {
     } catch (e) {
         console.error("Error adding viewed event:", e);
     }
-}; 
+};
 
 export const hasViewedEvent = async (eventId: string): Promise<boolean> => {
     try {
