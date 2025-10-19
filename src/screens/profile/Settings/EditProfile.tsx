@@ -6,17 +6,34 @@ import { ThemeType, useTheme } from 'rn-vs-lb/theme';
 import { FormProvider, useForm } from 'react-hook-form';
 import { observer } from 'mobx-react-lite';
 
+import { File, Directory, Paths } from 'expo-file-system';
+import uuid from 'react-native-uuid';
+import { launchImageLibrary } from 'react-native-image-picker';
+
 import { TextArea, TextInput } from '../../../components/form';
 import { useRootStore } from '../../../store/StoreProvider';
 import { IOScrollView } from 'react-native-intersection-observer';
-import { usePortalNavigation } from '../../../helpers/hooks';
+import { useImageCompressor, usePortalNavigation } from '../../../helpers/hooks';
 import { UpdateProfileProps } from '../../../types/profile';
 import { getUserAvatar } from '../../../helpers/utils/user';
+import { LARGE_FILE_ERROR } from '../../../constants';
+
+function safeCreateDirectory(dir: Directory) {
+  try {
+    dir.create({ intermediates: true });
+  } catch (e: any) {
+    const msg = String(e?.message ?? e);
+    if (!/already exists/i.test(msg)) {
+      throw e; // какие-то другие ошибки не скрываем
+    }
+  }
+}
 
 export const EditProfilesScreen: FC = observer(() => {
     const { theme } = useTheme();
     const styles = getStyles({ theme });
     const { profileStore, uiStore } = useRootStore();
+    const { compressImage } = useImageCompressor();
     const { goBack } = usePortalNavigation();
 
     const initialValues = {
@@ -39,7 +56,6 @@ export const EditProfilesScreen: FC = observer(() => {
 
     const handleSubmit = methods.handleSubmit(async (data: UpdateProfileProps) => {
         try {
-            // получаем только измененные поля
             const changedFields = Object.fromEntries(
                 Object.entries(data).filter(([key, value]) => value !== initialValues[key as keyof typeof initialValues])
             );
@@ -51,9 +67,8 @@ export const EditProfilesScreen: FC = observer(() => {
 
             await profileStore.updateProfile(changedFields);
             uiStore.showSnackbar('Updated', 'success');
-        }
-        catch (e) {
-            uiStore.showSnackbar('Failed', 'error')
+        } catch (e) {
+            uiStore.showSnackbar('Failed', 'error');
         }
     });
 
@@ -67,11 +82,121 @@ export const EditProfilesScreen: FC = observer(() => {
         });
     };
 
-    const imageUri = profileStore.myProfile?.avatarFile ? getUserAvatar(profileStore.myProfile) : null
+    const imageUriFromStore = profileStore.myProfile?.avatarFile
+        ? getUserAvatar(profileStore.myProfile)
+        : null;
+
+    // локальное управление фоткой и превью для «чистого» компонента
+    const [previewVisible, setPreviewVisible] = useState(false);
+    const [localImageUri, setLocalImageUri] = useState<string | null>(imageUriFromStore);
+
+    // синхронизуем локальное с тем, что пришло из стора
+    useEffect(() => {
+        setLocalImageUri(imageUriFromStore);
+    }, [imageUriFromStore]);
+
+    // === ХЭНДЛЕРЫ ДЛЯ ProfilePhotoUpload (чистого) ===
+
+    const onRequestOpenPreview = () => setPreviewVisible(true);
+    const onRequestClosePreview = () => setPreviewVisible(false);
+    const onPressEye = () => setPreviewVisible(true);
+
+    const onPressSelect = async () => {
+        try {
+            const result = await launchImageLibrary({
+                mediaType: 'photo',
+                quality: 1,
+                maxHeight: 1024,
+                maxWidth: 1024,
+                includeBase64: false,
+                selectionLimit: 1,
+            });
+            if (result.didCancel) return;
+
+            const asset = result.assets?.[0];
+            if (!asset?.uri) return;
+
+            const MAX = 40 * 1024 * 1024;
+            if (asset.fileSize && asset.fileSize > MAX) {
+                uiStore.showSnackbar(LARGE_FILE_ERROR, 'warning');
+                return;
+            }
+
+            const ext = asset.fileName?.includes('.') ? asset.fileName.split('.').pop() : 'jpg';
+            const fileName = `avatar-${uuid.v4()}.${ext}`;
+
+            // ✅ безопасно создаём папку, не падаем если уже есть
+            const avatarsDir = new Directory(Paths.document, 'avatars');
+            safeCreateDirectory(avatarsDir);
+
+            let src = new File({
+                uri: asset.uri,
+                name: asset.fileName ?? fileName,
+                type: asset.type || 'image/jpeg',
+            } as any);
+
+            if (asset.width && asset.height) {
+                try {
+                    const compressedUri = await compressImage(asset.uri, asset.width, asset.height);
+                    src = new File({ uri: compressedUri, name: fileName, type: asset.type || 'image/jpeg' } as any);
+                } catch (e) {
+                    console.warn('compressImage failed, fallback to original', e);
+                }
+            }
+
+            const dst = new File(avatarsDir, fileName);
+            src.copy(dst); // если когда-нибудь вдруг попадёшь на коллизию — можно предварительно dst.delete()
+
+            setLocalImageUri(dst.uri);
+
+            const formData = new FormData();
+            formData.append('file', {
+                uri: dst.uri,
+                name: fileName,
+                type: asset.type || 'image/jpeg',
+            } as any);
+
+            await profileStore.uploadProfilePhoto(formData);
+            await profileStore.fetchMyProfile();
+            uiStore.showSnackbar('Photo uploaded successfully', 'success');
+        } catch (e) {
+            console.error('onPressSelect error:', e);
+            uiStore.showSnackbar('Upload failed', 'error');
+        }
+    };
+
+
+
+    const onPressRemove = async () => {
+        try {
+            const fullPath = profileStore?.myProfile?.avatarFile;
+            if (!fullPath) {
+                uiStore.showSnackbar('No photo to delete', 'warning');
+                return;
+            }
+            const fileName = fullPath.split('/').pop();
+            if (!fileName) {
+                uiStore.showSnackbar('Invalid file path', 'error');
+                return;
+            }
+
+            // сразу скрываем локально
+            setLocalImageUri(null);
+            setPreviewVisible(false);
+
+            await profileStore.deleteProfilePhoto(fileName);
+            await profileStore.fetchMyProfile();
+
+            uiStore.showSnackbar('Photo deleted successfully', 'success');
+        } catch (e) {
+            console.error('onPressRemove error:', e);
+            uiStore.showSnackbar('Failed to delete photo', 'error');
+        }
+    };
 
     useEffect(() => {
-        onRefresh()
-    }, [])
+        onRefresh();
+    }, []);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -92,7 +217,20 @@ export const EditProfilesScreen: FC = observer(() => {
                         }>
                         <CardContainer style={styles.card} styleTitleContainer={styles.cardTitleContainer} subTitle='Set Up Your Personal Information'>
                             <View>
-                                <ProfilePhotoUpload imageUri={imageUri} />
+                                <ProfilePhotoUpload
+                                    imageUri={localImageUri}
+                                    previewVisible={previewVisible}
+                                    onRequestOpenPreview={onRequestOpenPreview}
+                                    onRequestClosePreview={onRequestClosePreview}
+                                    onPressSelect={onPressSelect}
+                                    onPressRemove={onPressRemove}
+                                    onPressEye={onPressEye}
+                                // при желании можно прокинуть кастомные цвета/размер:
+                                // size={180}
+                                // enableOverlay
+                                // autoHideMs={1000}
+                                // colors={{ primary: theme.primary, white: theme.white }}
+                                />
                             </View>
                             <View style={styles.cardContent}>
                                 <TextInput

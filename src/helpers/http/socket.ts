@@ -1,6 +1,6 @@
 // src/socket.ts
 import { io, Socket } from 'socket.io-client';
-import { BASE_URL } from '.';
+import { BASE_URL } from '../../constants/links';
 
 // Делаем socket типом Socket | null
 let socket: Socket | null = null;
