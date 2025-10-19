@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput as VSTextInput } from '../../components/form';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useRootStore } from '../../store/StoreProvider';

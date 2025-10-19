@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, SafeAreaView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaView } from "react-native-safe-area-context";
 import { FormProvider, useForm } from 'react-hook-form';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { usePortalNavigation } from '../../helpers/hooks';

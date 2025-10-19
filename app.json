@@ -21,10 +21,21 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.kapernikrs.expoTemplate"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.728122372039-a6jj9godm62p3o7vov8f7q5psjfppiu7"
+        }
+      ],
+      "expo-apple-authentication",
+      "expo-notifications"
+    ]
   }
 }
