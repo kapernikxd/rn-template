@@ -15,37 +15,48 @@ export const usePushNotifications = (): PushNotificationState & {
   const [expoPushToken, setExpoPushToken] = useState<string | undefined>();
   const [notification, setNotification] = useState<Notifications.Notification | undefined>();
 
-  const notificationListener = useRef<Notifications.EventSubscription | null>(null);
-  const responseListener = useRef<Notifications.EventSubscription | null>(null);
+  // ✅ актуальный тип
+  const notificationListener = useRef<Notifications.Subscription | null>(null);
 
   const registerForPushNotificationsAsync = useCallback(async () => {
+    // Опционально верни проверку реального девайса (симулятор iOS не даст токен)
     // if (!Device.isDevice) {
-    //   alert("Must use physical device for Push Notifications");
+    //   console.warn("Must use physical device for Push Notifications");
     //   return;
     // }
 
+    // Разрешения
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
 
     if (existingStatus !== "granted") {
-      const { status } = await Notifications.requestPermissionsAsync();
+      const { status } = await Notifications.requestPermissionsAsync({
+        // iOS: можно добавить provisional: true, если нужно тихое разрешение
+      });
       finalStatus = status;
     }
 
     if (finalStatus !== "granted") {
-      alert("Failed to get push token for push notification!");
+      console.warn("Failed to get permission for push notifications");
       return;
     }
 
+    // Проектный ID
     const projectId =
       Constants.easConfig?.projectId ?? Constants.expoConfig?.extra?.eas?.projectId;
+    if (!projectId) {
+      console.warn("No EAS projectId configured. Set it in app.json/app.config.ts");
+      return;
+    }
 
-    const tokenData = await Notifications.getExpoPushTokenAsync({
-      projectId: projectId,
-    });
-
-    setExpoPushToken(tokenData.data);
-    return tokenData.data;
+    try {
+      const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
+      setExpoPushToken(tokenData.data);
+      return tokenData.data;
+    } catch (err) {
+      console.error("getExpoPushTokenAsync error:", err);
+      return;
+    }
   }, []);
 
   const configureNotificationChannel = useCallback(async () => {
@@ -60,7 +71,7 @@ export const usePushNotifications = (): PushNotificationState & {
   }, []);
 
   useEffect(() => {
-    // Устанавливаем глобальный обработчик
+    // ✅ только поддерживаемые поля
     Notifications.setNotificationHandler({
       handleNotification: async () => ({
         shouldPlaySound: false,
@@ -71,10 +82,13 @@ export const usePushNotifications = (): PushNotificationState & {
       }),
     });
 
-    registerForPushNotificationsAsync();
-    configureNotificationChannel();
+    // init
+    (async () => {
+      await configureNotificationChannel();
+      await registerForPushNotificationsAsync();
+    })();
 
-    // ОСТАВЛЯЕМ только received, без навигации
+    // слушатель входящих уведомлений
     notificationListener.current = Notifications.addNotificationReceivedListener((notif) => {
       setNotification(notif);
     });
