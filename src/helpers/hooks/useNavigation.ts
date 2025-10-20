@@ -62,7 +62,16 @@ export const usePortalNavigation = () => {
         params: { link },
       }),
 
-    goToChatMessages: (chatId?: string) => navigation.goBack(),
+    goToChatMessages: ({ chatId }: { chatId: string }) =>
+      navigation.navigate(ROUTES.RootTabs, {
+        screen: ROUTES.ChatsTab,
+        params: {
+          screen: ROUTES.ChatMessages,
+          params: {
+            chatId,
+          },
+        },
+      }),
     goToMain,
 
     goBack: () => navigation.goBack(),
