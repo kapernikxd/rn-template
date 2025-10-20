@@ -4,7 +4,7 @@ import { createBottomTabNavigator, type BottomTabBarProps } from '@react-navigat
 import { useLinkBuilder } from '@react-navigation/native';
 import { PlatformPressable } from '@react-navigation/elements';
 import { Feather } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaInsetsContext, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatsStack } from './stacks/ChatsStack';
 import { DashboardStack } from './stacks/DashboardStack';
@@ -31,22 +31,26 @@ const TABS: TabConfig[] = [
 
 type MainTabBarProps = BottomTabBarProps & {
   showLabels?: boolean;
+  bottomInset: number;
 };
 
 const ICON_SIZE = 44;
 const ICON_RADIUS = ICON_SIZE / 2;
 
-const MainTabBar = ({ state, descriptors, navigation, showLabels = true }: MainTabBarProps) => {
+const MainTabBar = ({ state, descriptors, navigation, showLabels = true, bottomInset }: MainTabBarProps) => {
   const { theme } = useTheme();
   const { buildHref } = useLinkBuilder();
-  const { bottom } = useSafeAreaInsets();
   const isWeb = Platform.OS === 'web';
 
   return (
     <View
       style={[
         styles.tabBar,
-        { backgroundColor: theme.white, borderTopColor: theme.border, paddingBottom: 16 + bottom },
+        {
+          backgroundColor: theme.white,
+          borderTopColor: theme.border,
+          paddingBottom: 16 + bottomInset,
+        },
       ]}
     >
       {state.routes.map((route, index) => {
@@ -112,6 +116,8 @@ type MainTabsNavigatorProps = {
 };
 
 export const MainTabsNavigator = ({ showLabels = true }: MainTabsNavigatorProps) => {
+  const insets = useSafeAreaInsets();
+
   const tabBarScreenOptions = useMemo(
     () => ({
       headerShown: false as const,
@@ -120,14 +126,16 @@ export const MainTabsNavigator = ({ showLabels = true }: MainTabsNavigatorProps)
   );
 
   return (
-    <Tab.Navigator
-      screenOptions={tabBarScreenOptions}
-      tabBar={(props) => <MainTabBar {...props} showLabels={showLabels} />}
-    >
-      {TABS.map((tab) => (
-        <Tab.Screen key={tab.name} name={tab.name} component={tab.component} options={{ title: tab.label }} />
-      ))}
-    </Tab.Navigator>
+    <SafeAreaInsetsContext.Provider value={{ ...insets, bottom: 0 }}>
+      <Tab.Navigator
+        screenOptions={tabBarScreenOptions}
+        tabBar={(props) => <MainTabBar {...props} showLabels={showLabels} bottomInset={insets.bottom} />}
+      >
+        {TABS.map((tab) => (
+          <Tab.Screen key={tab.name} name={tab.name} component={tab.component} options={{ title: tab.label }} />
+        ))}
+      </Tab.Navigator>
+    </SafeAreaInsetsContext.Provider>
   );
 };
 
@@ -136,7 +144,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     minHeight: 65,
-    paddingTop: 12,
     borderTopWidth: StyleSheet.hairlineWidth,
   },
   tabButton: {
