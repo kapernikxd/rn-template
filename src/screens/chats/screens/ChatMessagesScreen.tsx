@@ -548,18 +548,16 @@ const getStyles = ({ theme, sizes, commonStyles }: { theme: ThemeType; sizes: Si
     },
     messagesList: {
       flex: 1,
-      borderTopLeftRadius: 40,
-      borderTopRightRadius: 40,
-      paddingHorizontal: 12,
-      backgroundColor: theme.white,
     },
     messagesListContent: {
       paddingTop: 8,
       paddingBottom: 12,
     },
     pinnedWrapper: {
-      paddingVertical: sizes.xs,
-      paddingHorizontal: sizes.sm,
+      paddingVertical: 0,
+      paddingHorizontal: 0,
+      borderColor: theme.border,
+      borderBottomWidth: 1,
     },
     emptyStateWrapper: {
       paddingVertical: sizes.lg,

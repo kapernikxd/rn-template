@@ -144,6 +144,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     minHeight: 65,
+    paddingTop: 10,
     borderTopWidth: StyleSheet.hairlineWidth,
   },
   tabButton: {
