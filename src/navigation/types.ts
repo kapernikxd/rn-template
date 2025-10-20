@@ -28,7 +28,7 @@ export const ROUTES = {
   // Tabs
   DashboardTab: 'DashboardTab',
   DiscoverTab: 'DiscoverTab',
-  ActivityTab: 'ActivityTab',
+  ChatsTab: 'ChatsTab',
   ProfileTab: 'ProfileTab',
 
   // Dashboard stack
@@ -39,8 +39,9 @@ export const ROUTES = {
   Discover: 'Discover',
   DiscoverCollection: 'DiscoverCollection',
 
-  // Activity stack
-  Activity: 'Activity',
+  // Chats stack
+  Chats: 'Chats',
+  ChatMessages: 'ChatMessages',
 
   // Profile stack
   Profile: 'Profile',
@@ -74,8 +75,9 @@ export type DiscoverStackParamList = {
   [ROUTES.DiscoverCollection]: { collectionId: string };
 };
 
-export type ActivityStackParamList = {
-  [ROUTES.Activity]: undefined;
+export type ChatsStackParamList = {
+  [ROUTES.Chats]: undefined;
+  [ROUTES.ChatMessages]: { chatId: string; title: string };
 };
 
 export type ProfileStackParamList = {
@@ -94,7 +96,7 @@ export type ProfileStackParamList = {
 export type MainTabParamList = {
   [ROUTES.DashboardTab]: NavigatorScreenParams<DashboardStackParamList>;
   [ROUTES.DiscoverTab]: NavigatorScreenParams<DiscoverStackParamList>;
-  [ROUTES.ActivityTab]: NavigatorScreenParams<ActivityStackParamList>;
+  [ROUTES.ChatsTab]: NavigatorScreenParams<ChatsStackParamList>;
   [ROUTES.ProfileTab]: NavigatorScreenParams<ProfileStackParamList>;
 };
 
@@ -137,7 +139,7 @@ export type RootNav = NativeStackNavigationProp<RootStackParamList>;
 // Навигация конкретного стэка:
 export type DashboardNav = NativeStackNavigationProp<DashboardStackParamList>;
 export type DiscoverNav = NativeStackNavigationProp<DiscoverStackParamList>;
-export type ActivityNav = NativeStackNavigationProp<ActivityStackParamList>;
+export type ChatsNav = NativeStackNavigationProp<ChatsStackParamList>;
 export type ProfileNav = NativeStackNavigationProp<ProfileStackParamList>;
 
 // Пример: пропсы экрана Dashboard, вложенного в табы + стек
@@ -160,6 +162,11 @@ export type DashboardRoute = RouteProp<
 export type DiscoverCollectionRoute = RouteProp<
   DiscoverStackParamList,
   typeof ROUTES.DiscoverCollection
+>;
+
+export type ChatMessagesRoute = RouteProp<
+  ChatsStackParamList,
+  typeof ROUTES.ChatMessages
 >;
 
 /**

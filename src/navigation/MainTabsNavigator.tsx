@@ -6,7 +6,7 @@ import { PlatformPressable } from '@react-navigation/elements';
 import { Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ActivityStack } from './stacks/ActivityStack';
+import { ChatsStack } from './stacks/ChatsStack';
 import { DashboardStack } from './stacks/DashboardStack';
 import { DiscoverStack } from './stacks/DiscoverStack';
 import { ProfileStack } from './stacks/ProfileStack';
@@ -25,7 +25,7 @@ type TabConfig = {
 const TABS: TabConfig[] = [
   { name: 'DashboardTab', label: 'Главная', icon: 'home', component: DashboardStack },
   { name: 'DiscoverTab', label: 'Обзор', icon: 'grid', component: DiscoverStack },
-  { name: 'ActivityTab', label: 'Активность', icon: 'bell', component: ActivityStack },
+  { name: 'ChatsTab', label: 'Чаты', icon: 'message-circle', component: ChatsStack },
   { name: 'ProfileTab', label: 'Профиль', icon: 'user', component: ProfileStack },
 ];
 
