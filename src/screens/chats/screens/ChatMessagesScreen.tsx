@@ -30,6 +30,7 @@ import { ChatsStackParamList } from '../../../navigation';
 import { MessageDTOExtented, UserDTO } from '../../../types';
 import { Linking } from 'react-native';
 import { getSmartTime } from '../../../helpers/utils/date';
+import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
 
 const chatBackground = require('../../../assets/chat-background.png');
 
@@ -67,7 +68,8 @@ const pickImages = async (max = 1): Promise<ImageAsset[]> => {
 };
 
 export const ChatMessagesScreen: FC = observer(() => {
-  const { theme, sizes, commonStyles, globalStyleSheet, typography } = useTheme();
+  const { theme, sizes, commonStyles, globalStyleSheet, typography, isDark } = useTheme();
+  const { setColors } = useSafeAreaColors();
   const styles = getStyles({ theme, sizes, commonStyles });
 
   const { chatStore, authStore, uiStore, onlineStore } = useRootStore();
@@ -163,6 +165,13 @@ export const ChatMessagesScreen: FC = observer(() => {
       chatStore.getLastReadedMessage({ chatId, userId: chatStore.opponentId });
     }
   }, [chatStore.opponentId]);
+
+  useEffect(() => {
+    setColors({
+      topColor: theme.backgroundThird,
+      bottomColor: theme.white,
+    });
+  }, [theme, setColors]);
 
   useFocusEffect(
     useCallback(() => {
@@ -352,192 +361,193 @@ export const ChatMessagesScreen: FC = observer(() => {
   const hasPinnedMessages = pinnedMessages.length > 0;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.backgroundThird, height: '100%' }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 16 : 0}
-        style={{ flex: 1 }}
-      >
-        <View style={styles.container}>
-          {/* Header */}
-          <HeaderSwitcher
-            isFirst={editMode}
-            componentA={
-              <HeaderEdit
-                onClosePress={exitEditMode}
-                onReportMessage={() => {
-                  if (selectedMessage) {
-                    chatStore.reportMessage(selectedMessage._id);
-                    uiStore.showSnackbar('The report has been sent', 'success');
-                    setSelectedMessage(null);
-                    toggleMode();
-                  }
-                }}
-                onCopy={() => {
-                  if (selectedMessage?.content) {
-                    Clipboard.setStringAsync(selectedMessage.content);
-                    setSelectedMessage(null);
-                    uiStore.showSnackbar('Copied', 'success');
-                    toggleMode();
-                  }
-                }}
-                onEdit={
-                  selectedMessage?.sender?._id === myId
-                    ? () => {
-                      if (!selectedMessage) return;
-                      setSelectedMessage({ ...selectedMessage, actionType: 'edit' });
-                      toggleMode();
-                    }
-                    : undefined
+    <View style={{flex: 1, backgroundColor: theme.backgroundThird}}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 16 : 0}
+      style={{ flex: 1 }}
+    >
+      <View style={styles.container}>
+        {/* Header */}
+        <HeaderSwitcher
+          isFirst={editMode}
+          componentA={
+            <HeaderEdit
+              onClosePress={exitEditMode}
+              onReportMessage={() => {
+                if (selectedMessage) {
+                  chatStore.reportMessage(selectedMessage._id);
+                  uiStore.showSnackbar('The report has been sent', 'success');
+                  setSelectedMessage(null);
+                  toggleMode();
                 }
-                onPinToggle={() => {
-                  if (selectedMessage) {
-                    if (chatStore.isMessagePinned(selectedMessage._id)) {
-                      chatStore.unpinMessage(selectedMessage._id);
-                    } else {
-                      chatStore.pinMessage(selectedMessage);
-                    }
-                    setSelectedMessage(null);
+              }}
+              onCopy={() => {
+                if (selectedMessage?.content) {
+                  Clipboard.setStringAsync(selectedMessage.content);
+                  setSelectedMessage(null);
+                  uiStore.showSnackbar('Copied', 'success');
+                  toggleMode();
+                }
+              }}
+              onEdit={
+                selectedMessage?.sender?._id === myId
+                  ? () => {
+                    if (!selectedMessage) return;
+                    setSelectedMessage({ ...selectedMessage, actionType: 'edit' });
                     toggleMode();
                   }
-                }}
-                isPinned={selectedMessage ? chatStore.isMessagePinned(selectedMessage._id) : false}
+                  : undefined
+              }
+              onPinToggle={() => {
+                if (selectedMessage) {
+                  if (chatStore.isMessagePinned(selectedMessage._id)) {
+                    chatStore.unpinMessage(selectedMessage._id);
+                  } else {
+                    chatStore.pinMessage(selectedMessage);
+                  }
+                  setSelectedMessage(null);
+                  toggleMode();
+                }
+              }}
+              isPinned={selectedMessage ? chatStore.isMessagePinned(selectedMessage._id) : false}
+            />
+          }
+          componentB={
+            <HeaderWithImg
+              users={users ?? []}
+              isGroupChat={!!chatStore.selectedChat?.isGroupChat}
+              onBackPress={goBack}
+              onImgPress={onImgPress}
+              onActionPress={onActionPress}
+              title={chatTitle}
+              imgUrl={chatImg}
+            />
+          }
+        />
+
+        {/* Список сообщений */}
+        <ImageBackground source={chatBackground} style={styles.background}>
+          {hasPinnedMessages ? (
+            <View style={styles.pinnedWrapper}>
+              <PinnedMessagesBar
+                pinnedMessages={pinnedMessages}
+                onUnpin={handleUnpinMessage}
+                onPress={handlePinnedMessagePress}
+                isGroupChat={isGroupChat}
+                myId={myId!}
+                lastReadMessageIdOpponent={chatStore?.lastReadedMessage?.lastReadedMessageId || null}
+              />
+            </View>
+          ) : null}
+
+          <FlatList
+            style={styles.messagesList}
+            keyboardShouldPersistTaps="handled"
+            ref={flatListRef}
+            data={groupedMessages as any}
+            keyExtractor={(item, index) => (item._id ? String(item._id) : `index-${index}`)}
+            renderItem={renderMessageItem}
+            initialNumToRender={10}
+            maxToRenderPerBatch={5}
+            removeClippedSubviews
+            windowSize={5}
+            contentContainerStyle={styles.messagesListContent}
+            onEndReached={loadMoreMessages}
+            onEndReachedThreshold={0.1}
+            refreshControl={
+              <RefreshControl
+                onRefresh={onRefresh}
+                refreshing={refreshing}
+                colors={[theme.primary]}
+                tintColor={theme.primary}
               />
             }
-            componentB={
-              <HeaderWithImg
-                users={users ?? []}
-                isGroupChat={!!chatStore.selectedChat?.isGroupChat}
-                onBackPress={goBack}
-                onImgPress={onImgPress}
-                onActionPress={onActionPress}
-                title={chatTitle}
-                imgUrl={chatImg}
-              />
+            inverted
+            maintainVisibleContentPosition={{ minIndexForVisible: 0 }}
+            onTouchStart={Keyboard.dismiss}
+            ListEmptyComponent={
+              !hasPinnedMessages ? (
+                <View style={styles.emptyStateWrapper}>
+                  <Text style={styles.emptyStateTitle}>No messages yet</Text>
+                  <Text style={styles.emptyStateDescription}>Start the conversation</Text>
+                </View>
+              ) : null
             }
           />
+        </ImageBackground>
 
-          {/* Список сообщений */}
-          <ImageBackground source={chatBackground} style={styles.background}>
-            {hasPinnedMessages ? (
-              <View style={styles.pinnedWrapper}>
-                <PinnedMessagesBar
-                  pinnedMessages={pinnedMessages}
-                  onUnpin={handleUnpinMessage}
-                  onPress={handlePinnedMessagePress}
-                  isGroupChat={isGroupChat}
-                  myId={myId!}
-                  lastReadMessageIdOpponent={chatStore?.lastReadedMessage?.lastReadedMessageId || null}
-                />
-              </View>
-            ) : null}
+        {/* Глобальный кликабельный слой при режиме выделения */}
+        {editMode && (
+          <Pressable onPress={exitEditMode} style={[StyleSheet.absoluteFill, { zIndex: 10 }]} />
+        )}
 
-            <FlatList
-              style={styles.messagesList}
-              keyboardShouldPersistTaps="handled"
-              ref={flatListRef}
-              data={groupedMessages as any}
-              keyExtractor={(item, index) => (item._id ? String(item._id) : `index-${index}`)}
-              renderItem={renderMessageItem}
-              initialNumToRender={10}
-              maxToRenderPerBatch={5}
-              removeClippedSubviews
-              windowSize={5}
-              contentContainerStyle={styles.messagesListContent}
-              onEndReached={loadMoreMessages}
-              onEndReachedThreshold={0.1}
-              refreshControl={
-                <RefreshControl
-                  onRefresh={onRefresh}
-                  refreshing={refreshing}
-                  colors={[theme.primary]}
-                  tintColor={theme.primary}
-                />
-              }
-              inverted
-              maintainVisibleContentPosition={{ minIndexForVisible: 0 }}
-              onTouchStart={Keyboard.dismiss}
-              ListEmptyComponent={
-                !hasPinnedMessages ? (
-                  <View style={styles.emptyStateWrapper}>
-                    <Text style={styles.emptyStateTitle}>No messages yet</Text>
-                    <Text style={styles.emptyStateDescription}>Start the conversation</Text>
-                  </View>
-                ) : null
-              }
-            />
-          </ImageBackground>
-
-          {/* Глобальный кликабельный слой при режиме выделения */}
-          {editMode && (
-            <Pressable onPress={exitEditMode} style={[StyleSheet.absoluteFill, { zIndex: 10 }]} />
-          )}
-
-          {editMode && (
-            <View style={styles.replyBar}>
-              <TouchableOpacity
-                onPress={() => {
-                  if (selectedMessage) {
-                    setSelectedMessage({ ...selectedMessage, actionType: 'reply' });
-                    toggleMode();
-                  }
-                }}
-                style={[globalStyleSheet.flexRowCenterStart, { gap: 8 }]}
-              >
-                <Ionicons name="arrow-undo-outline" size={25} color={theme.text} />
-                <Text style={[typography.body, { top: 3 }]}>Reply</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-
-          {/* Инпут (новый контракт пропсов) */}
-          <View>
-            <InputMessage
-              value={inputMessage}
-              onChange={setInputMessage}
-              onSubmit={handleSubmitFromInput}
-              replyToMessage={
-                selectedMessage?.actionType === 'reply'
-                  ? {
-                    content: selectedMessage.content ?? '',
-                    // при желании можно прокинуть превью изображения:
-                    // attachments: selectedMessage.attachments?.map(a => a.url),
-                    // images: selectedMessage.images?.map(i => i.url),
-                  }
-                  : null
-              }
-              onCancelReply={() => setSelectedMessage(null)}
-              editMessage={
-                selectedMessage?.actionType === 'edit'
-                  ? { content: selectedMessage.content ?? '' }
-                  : null
-              }
-              onCancelEdit={() => {
-                setSelectedMessage(null);
-                setInputMessage('');
+        {editMode && (
+          <View style={styles.replyBar}>
+            <TouchableOpacity
+              onPress={() => {
+                if (selectedMessage) {
+                  setSelectedMessage({ ...selectedMessage, actionType: 'reply' });
+                  toggleMode();
+                }
               }}
-              maxImages={1}
-              onAttachPress={async () => {
-                const picked = await pickImages(1);
-                return picked;
-              }}
-              onMaxImagesExceeded={(max) => uiStore.showSnackbar(`Max ${max} images`, 'warning')}
-            // Пример событий "печатает"
-            // onTyping={() => onlineStore.emitTyping?.(chatId)}
-            // onStopTyping={() => onlineStore.emitStopTyping?.(chatId)}
-            // Если хочешь контролировать лоадер отправки извне:
-            // sendingControlled
-            // isSending={chatStore.isSendingMessage}
-            />
+              style={[globalStyleSheet.flexRowCenterStart, { gap: 8 }]}
+            >
+              <Ionicons name="arrow-undo-outline" size={25} color={theme.text} />
+              <Text style={[typography.body, { top: 3 }]}>Reply</Text>
+            </TouchableOpacity>
           </View>
+        )}
+
+        {/* Инпут (новый контракт пропсов) */}
+        <View>
+          <InputMessage
+            value={inputMessage}
+            onChange={setInputMessage}
+            onSubmit={handleSubmitFromInput}
+            replyToMessage={
+              selectedMessage?.actionType === 'reply'
+                ? {
+                  content: selectedMessage.content ?? '',
+                  // при желании можно прокинуть превью изображения:
+                  // attachments: selectedMessage.attachments?.map(a => a.url),
+                  // images: selectedMessage.images?.map(i => i.url),
+                }
+                : null
+            }
+            onCancelReply={() => setSelectedMessage(null)}
+            editMessage={
+              selectedMessage?.actionType === 'edit'
+                ? { content: selectedMessage.content ?? '' }
+                : null
+            }
+            onCancelEdit={() => {
+              setSelectedMessage(null);
+              setInputMessage('');
+            }}
+            maxImages={1}
+            onAttachPress={async () => {
+              const picked = await pickImages(1);
+              return picked;
+            }}
+            onMaxImagesExceeded={(max) => uiStore.showSnackbar(`Max ${max} images`, 'warning')}
+          // Пример событий "печатает"
+          // onTyping={() => onlineStore.emitTyping?.(chatId)}
+          // onStopTyping={() => onlineStore.emitStopTyping?.(chatId)}
+          // Если хочешь контролировать лоадер отправки извне:
+          // sendingControlled
+          // isSending={chatStore.isSendingMessage}
+          />
         </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      </View>
+    </KeyboardAvoidingView>
+    </View>
   );
 });
 
 const getStyles = ({ theme, sizes, commonStyles }: { theme: ThemeType; sizes: SizesType; commonStyles: CommonStylesType }) =>
   StyleSheet.create({
+
     background: {
       flex: 1,
       resizeMode: 'cover',

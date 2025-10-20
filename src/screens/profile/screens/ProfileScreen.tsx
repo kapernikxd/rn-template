@@ -10,6 +10,7 @@ import { usePortalNavigation } from '../../../helpers/hooks';
 import { getUserAvatar, getUserFullName } from '../../../helpers/utils/user';
 import { useRootStore, useStoreData } from '../../../store/StoreProvider';
 import { ROUTES, type ProfileStackParamList } from '../../../navigation/types';
+import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
 
 // NB: этот экран обёрнут withAuthGuard в ProfileStack, поэтому доступен только авторизованным пользователям.
 type NavigationProp = NativeStackNavigationProp<
@@ -19,7 +20,8 @@ type NavigationProp = NativeStackNavigationProp<
 
 export const ProfileScreen = () => {
   const navigation = useNavigation<NavigationProp>();
-  const { theme } = useTheme();
+  const { theme, isDark } = useTheme();
+  const { setColors } = useSafeAreaColors();
   const { goToMain } = usePortalNavigation();
 
   const { authStore, profileStore, notificationStore, onlineStore, uiStore } = useRootStore();
@@ -36,6 +38,13 @@ export const ProfileScreen = () => {
     onlineStore,
     (store) => (profileId ? store.getIsUserOnline(profileId) : false),
   );
+
+  useEffect(() => {
+    setColors({
+      topColor: theme.backgroundLight,
+      bottomColor: theme.white,
+    });
+  }, [theme, setColors, isDark]);
 
   useEffect(() => {
     if (isAuthenticated && !profile?._id) {
@@ -84,28 +93,24 @@ export const ProfileScreen = () => {
   const canGoBack = navigation.canGoBack();
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View>
-          <ProfileCard
-            name={displayName}
-            imageUri={imageUri}
-            isAuth={isAuthenticated}
-            isMe
-            isOnline={isOnline}
-            onBack={canGoBack ? handleGoBack : undefined}
-            onOpenSettings={handleOpenSettings}
-            onOpenActivity={handleOpenChats}
-            onOpenSpecialist={handleFeatureSoon}
-            onOpenCreatePoll={handleFeatureSoon}
-            onOpenCreateEvent={handleFeatureSoon}
-            onOpenAiBots={handleFeatureSoon}
-            onOpenBots={handleFeatureSoon}
-            onLearnMorePress={handleFeatureSoon}
-            hasNotifications={hasNotifications}
-          />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ProfileCard
+        name={displayName}
+        imageUri={imageUri}
+        isAuth={isAuthenticated}
+        isMe
+        isOnline={isOnline}
+        onBack={canGoBack ? handleGoBack : undefined}
+        onOpenSettings={handleOpenSettings}
+        onOpenActivity={handleOpenChats}
+        onOpenSpecialist={handleFeatureSoon}
+        onOpenCreatePoll={handleFeatureSoon}
+        onOpenCreateEvent={handleFeatureSoon}
+        onOpenAiBots={handleFeatureSoon}
+        onOpenBots={handleFeatureSoon}
+        onLearnMorePress={handleFeatureSoon}
+        hasNotifications={hasNotifications}
+      />
+    </ScrollView>
   );
 };

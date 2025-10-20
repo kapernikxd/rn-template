@@ -16,6 +16,7 @@ import { appVersion, TELEGRAM_URL } from '../../../constants/links';
 import { useRootStore } from '../../../store/StoreProvider';
 import { useActions, usePortalNavigation } from '../../../helpers/hooks';
 import { ProfileNav, ROUTES } from '../../../navigation/types';
+import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
 
 type SettingsRoute =
     | typeof ROUTES.ProfileEdit
@@ -25,7 +26,8 @@ type SettingsRoute =
     | typeof ROUTES.ProfileNotificationSettings;
 
 export const ProfileSettingsScreen: FC = () => {
-    const { globalStyleSheet, theme, sizes, typography } = useTheme();
+    const { globalStyleSheet, theme, sizes, typography, isDark } = useTheme();
+    const { setColors } = useSafeAreaColors();
     const styles = getStyles({ globalStyleSheet, theme, sizes });
 
     const { authStore, profileStore, uiStore } = useRootStore();
@@ -77,47 +79,52 @@ export const ProfileSettingsScreen: FC = () => {
         }
     }, [profileStore, profileStore.myProfile?._id]);
 
+    useEffect(() => {
+        setColors({
+            topColor: theme.white,
+            bottomColor: theme.white,
+        });
+      }, [theme, setColors]);
+
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.content}>
-                <HeaderDefault title={'Settings'} onBackPress={goBack} />
-                <View style={styles.body}>
-                    <View style={styles.list}>
+        <View style={styles.content}>
+            <HeaderDefault title={'Settings'} onBackPress={goBack} />
+            <View style={styles.body}>
+                <View style={styles.list}>
+                    <CardContainer style={styles.card}>
+                        <View><Text style={styles.title}>Update Account</Text></View>
+                        {SETTING_LIST.map((item, index) => (
+                            <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine />
+                        ))}
+                    </CardContainer>
+                    <CardContainer style={styles.card}>
+                        <View><Text style={styles.title}>Theme</Text></View>
+                        <ThemeSwitcher />
+                    </CardContainer>
+                    <CardContainer style={styles.card}>
+                        {COPY_LINK.map((item, index) => (
+                            <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine hideArrow />
+                        ))}
+                    </CardContainer>
+                    <View style={styles.logoutContainer}>
                         <CardContainer style={styles.card}>
-                            <View><Text style={styles.title}>Update Account</Text></View>
-                            {SETTING_LIST.map((item, index) => (
-                                <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine />
-                            ))}
+                            <ListItem iconColor={theme.text} {...LOGOUT} hideBottomLine />
                         </CardContainer>
-                        <CardContainer style={styles.card}>
-                            <View><Text style={styles.title}>Theme</Text></View>
-                            <ThemeSwitcher />
-                        </CardContainer>
-                        <CardContainer style={styles.card}>
-                            {COPY_LINK.map((item, index) => (
-                                <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine hideArrow />
-                            ))}
-                        </CardContainer>
-                        <View style={styles.logoutContainer}>
-                            <CardContainer style={styles.card}>
-                                <ListItem iconColor={theme.text} {...LOGOUT} hideBottomLine />
-                            </CardContainer>
-                        </View>
                     </View>
-                    <View>
-                        <CardContainer style={styles.card}>
-                            <TelegramFeedbackLink link={TELEGRAM_URL} />
-                        </CardContainer>
-                        <CardContainer style={styles.card}>
-                            <DeleteAccountButton deleteAccount={handleDeleteAccount} />
-                        </CardContainer>
-                        <View style={styles.version}>
-                            <Text style={typography.body}>Ver {appVersion}</Text>
-                        </View>
+                </View>
+                <View>
+                    <CardContainer style={styles.card}>
+                        <TelegramFeedbackLink link={TELEGRAM_URL} />
+                    </CardContainer>
+                    <CardContainer style={styles.card}>
+                        <DeleteAccountButton deleteAccount={handleDeleteAccount} />
+                    </CardContainer>
+                    <View style={styles.version}>
+                        <Text style={typography.body}>Ver {appVersion}</Text>
                     </View>
                 </View>
             </View>
-        </SafeAreaView>
+        </View>
     );
 }
 

@@ -49,7 +49,7 @@ const MainTabBar = ({ state, descriptors, navigation, showLabels = true, bottomI
         {
           backgroundColor: theme.white,
           borderTopColor: theme.border,
-          paddingBottom: 16 + bottomInset,
+          paddingBottom: 10,
         },
       ]}
     >

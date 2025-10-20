@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -13,6 +13,7 @@ import { CardContainer, HeaderDefault, Spacer, Button } from 'rn-vs-lb';
 import { ThemeType, useTheme } from 'rn-vs-lb/theme';
 import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { useSafeAreaColors } from '../../../../store/SafeAreaColorProvider';
 
 type NotificationType =
   | 'likes'
@@ -55,8 +56,16 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
   onBackPress,
   isSubmitting,
 }) => {
-  const { theme, globalStyleSheet, typography } = useTheme();
+  const { theme, globalStyleSheet, typography, isDark } = useTheme();
   const styles = getStyles({ theme });
+  const { setColors } = useSafeAreaColors();
+
+  useEffect(() => {
+    setColors({
+      topColor: theme.white,
+      bottomColor: theme.white,
+    });
+  }, [theme, setColors]);
 
   const NOTIFICATION_SETTINGS: {
     key: NotificationType;
@@ -74,86 +83,84 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
     ];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      >
-        <FormProvider {...methods}>
-          <HeaderDefault title="Notification Settings" onBackPress={onBackPress} />
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
+      <FormProvider {...methods}>
+        <HeaderDefault title="Notification Settings" onBackPress={onBackPress} />
 
-          <ScrollView style={{ flex: 1 }}>
-            <CardContainer
-              style={styles.card}
-              styleTitleContainer={styles.cardTitleContainer}
-              subTitle="Update your push rules"
-            >
-              <View style={styles.cardContent}>
-                <View>
+        <ScrollView style={{ flex: 1 }}>
+          <CardContainer
+            style={styles.card}
+            styleTitleContainer={styles.cardTitleContainer}
+            subTitle="Update your push rules"
+          >
+            <View style={styles.cardContent}>
+              <View>
+                <View style={globalStyleSheet.flexRowCenterBetween}>
+                  <View style={globalStyleSheet.flexRowCenterCenter}>
+                    <View style={styles.iconContainer}>
+                      <Ionicons color={theme.text} name="notifications-outline" size={18} />
+                    </View>
+                    <View style={{ marginLeft: 8 }}>
+                      <Spacer size="xs" />
+                      <Text style={[typography.titleH6Regular, { color: theme.text }]}>Push Notifications</Text>
+                    </View>
+                  </View>
+                  <Switch
+                    value={hasPermission}
+                    onValueChange={onPermissionToggle}
+                    trackColor={{ false: theme.background4, true: theme.background4 }}
+                    thumbColor={hasPermission ? theme.primary : theme.black}
+                    style={styles.switch}
+                  />
+                </View>
+                <Spacer />
+              </View>
+
+              {NOTIFICATION_SETTINGS.map(({ key, label, icon }) => (
+                <View key={key}>
                   <View style={globalStyleSheet.flexRowCenterBetween}>
                     <View style={globalStyleSheet.flexRowCenterCenter}>
-                      <View style={styles.iconContainer}>
-                        <Ionicons color={theme.text} name="notifications-outline" size={18} />
-                      </View>
+                      <View style={styles.iconContainer}>{icon}</View>
                       <View style={{ marginLeft: 8 }}>
                         <Spacer size="xs" />
-                        <Text style={[typography.titleH6Regular, { color: theme.text }]}>Push Notifications</Text>
+                        <Text style={[typography.titleH6Regular, { color: theme.text }]}>{label}</Text>
                       </View>
                     </View>
-                    <Switch
-                      value={hasPermission}
-                      onValueChange={onPermissionToggle}
-                      trackColor={{ false: theme.background4, true: theme.background4 }}
-                      thumbColor={hasPermission ? theme.primary : theme.black}
-                      style={styles.switch}
+
+                    <Controller
+                      name={key}
+                      control={methods.control}
+                      render={({ field: { value, onChange } }) => (
+                        <Switch
+                          value={value}
+                          onValueChange={onChange}
+                          trackColor={{ false: theme.background4, true: theme.background4 }}
+                          thumbColor={value ? theme.primary : theme.black}
+                          style={styles.switch}
+                          disabled={!hasPermission}
+                        />
+                      )}
                     />
                   </View>
                   <Spacer />
                 </View>
+              ))}
 
-                {NOTIFICATION_SETTINGS.map(({ key, label, icon }) => (
-                  <View key={key}>
-                    <View style={globalStyleSheet.flexRowCenterBetween}>
-                      <View style={globalStyleSheet.flexRowCenterCenter}>
-                        <View style={styles.iconContainer}>{icon}</View>
-                        <View style={{ marginLeft: 8 }}>
-                          <Spacer size="xs" />
-                          <Text style={[typography.titleH6Regular, { color: theme.text }]}>{label}</Text>
-                        </View>
-                      </View>
+              <Spacer />
+            </View>
+          </CardContainer>
+        </ScrollView>
 
-                      <Controller
-                        name={key}
-                        control={methods.control}
-                        render={({ field: { value, onChange } }) => (
-                          <Switch
-                            value={value}
-                            onValueChange={onChange}
-                            trackColor={{ false: theme.background4, true: theme.background4 }}
-                            thumbColor={value ? theme.primary : theme.black}
-                            style={styles.switch}
-                            disabled={!hasPermission}
-                          />
-                        )}
-                      />
-                    </View>
-                    <Spacer />
-                  </View>
-                ))}
-
-                <Spacer />
-              </View>
-            </CardContainer>
-          </ScrollView>
-
-          <View style={styles.footer}>
-            <Button title="Update" onPress={onSubmit} loading={isSubmitting} />
-            <Spacer size="xs" />
-            <Button title="Reset" type="gray-outline" onPress={onReset} />
-          </View>
-        </FormProvider>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        <View style={styles.footer}>
+          <Button title="Update" onPress={onSubmit} loading={isSubmitting} />
+          <Spacer size="xs" />
+          <Button title="Reset" type="gray-outline" onPress={onReset} />
+        </View>
+      </FormProvider>
+    </KeyboardAvoidingView>
   );
 };
 
