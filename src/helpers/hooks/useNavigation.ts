@@ -74,6 +74,8 @@ export const usePortalNavigation = () => {
       }),
     goToMain,
 
+    goToProfile: (userId: string) => navigation.goBack(),
+
     goBack: () => navigation.goBack(),
 
     goToTermOfUse: () => navigation.navigate(ROUTES.TermsOfUse),
