@@ -27,6 +27,7 @@ export const ChatsStack = () => (
       headerLargeTitle: true,
       headerShadowVisible: false,
       contentStyle: { backgroundColor: '#F5F7FA' },
+      headerShown: false,
     }}
   >
     <Stack.Screen

@@ -75,7 +75,7 @@ export const ProfileStack = () => (
       component={GuardedProfileScreen}
       options={{
         title: 'Профиль',
-        headerLargeTitle: true,
+        headerShown: false,
       }}
     />
     <Stack.Screen

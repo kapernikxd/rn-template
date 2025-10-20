@@ -59,7 +59,7 @@ const MainTabBar = ({ state, descriptors, navigation, showLabels = true }: MainT
         const onPress = () => {
           const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
           if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name as never, route.params as never);
+            navigation.navigate(route.name as any, route.params as never);
           }
         };
         const onLongPress = () => navigation.emit({ type: 'tabLongPress', target: route.key });

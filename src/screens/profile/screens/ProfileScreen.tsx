@@ -85,8 +85,8 @@ export const ProfileScreen = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
-      <ScrollView contentContainerStyle={{ flexGrow: 1, padding: 16, alignItems: 'center' }}>
-        <View style={{ width: '100%', maxWidth: 480 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <View>
           <ProfileCard
             name={displayName}
             imageUri={imageUri}
