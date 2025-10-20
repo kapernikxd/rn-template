@@ -77,7 +77,7 @@ export type DiscoverStackParamList = {
 
 export type ChatsStackParamList = {
   [ROUTES.Chats]: undefined;
-  [ROUTES.ChatMessages]: { chatId: string; title: string };
+  [ROUTES.ChatMessages]: { chatId: string };
 };
 
 export type ProfileStackParamList = {

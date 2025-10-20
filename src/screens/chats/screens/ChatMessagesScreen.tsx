@@ -26,16 +26,17 @@ const MESSAGES = [
 
 export const ChatMessagesScreen = () => {
   const route = useRoute<ChatMessagesRoute>();
-  const { title } = route.params;
+  const { chatId } = route.params;
 
   return (
     <View style={styles.container}>
       <View style={styles.chatHeader}>
-        <Text style={styles.chatTitle}>{title}</Text>
-        <Text style={styles.chatSubtitle}>История переписки</Text>
+        <Text style={styles.chatTitle}>История переписки</Text>
+        <Text style={styles.chatSubtitle}>Новые сообщения появятся в этом списке</Text>
       </View>
 
       <FlatList
+        key={chatId}
         data={MESSAGES}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.messagesContent}

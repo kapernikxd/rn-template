@@ -41,7 +41,11 @@ export const ChatsScreen: FC = observer(() => {
     return (
       <ChatItem
         unread={item?.unread?.count > 0 ? String(item?.unread?.count) : undefined}
-        onPress={() => goToChatMessages(item._id)}
+        onPress={() =>
+          goToChatMessages({
+            chatId: item._id,
+          })
+        }
         variant="person"
         imgUrl={getUserAvatar(user as UserDTO)}
         senderFullName={getUserFullName(user as UserDTO)}
@@ -55,7 +59,11 @@ export const ChatsScreen: FC = observer(() => {
   const renderGroupItem = ({ item }: { item: any }) => (
     <ChatItem
       unread={item?.unread?.count > 0 ? String(item?.unread?.count) : undefined}
-      onPress={() => goToChatMessages(item._id)}
+      onPress={() =>
+        goToChatMessages({
+          chatId: item._id,
+        })
+      }
       variant="group"
       chatName={item?.title ?? 'Group'}
       createdAt={getSmartTime(item?.latestMessage?.createdAt)}
@@ -67,7 +75,11 @@ export const ChatsScreen: FC = observer(() => {
   const renderBotItem = ({ item }: { item: any }) => (
     <ChatItem
       unread={item?.unread?.count > 0 ? String(item?.unread?.count) : undefined}
-      onPress={() => goToChatMessages(item._id)}
+      onPress={() =>
+        goToChatMessages({
+          chatId: item._id,
+        })
+      }
       variant="bot"
       chatName={item?.title ?? 'Bot'}
       createdAt={getSmartTime(item?.latestMessage?.createdAt)}
