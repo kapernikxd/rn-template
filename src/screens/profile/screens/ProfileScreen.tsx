@@ -73,8 +73,8 @@ export const ProfileScreen = () => {
     navigation.navigate(ROUTES.ProfileSettings);
   }, [navigation]);
 
-  const handleOpenActivity = useCallback(() => {
-    goToMain(ROUTES.ActivityTab);
+  const handleOpenChats = useCallback(() => {
+    goToMain(ROUTES.ChatsTab);
   }, [goToMain]);
 
   const handleFeatureSoon = useCallback(() => {
@@ -95,7 +95,7 @@ export const ProfileScreen = () => {
             isOnline={isOnline}
             onBack={canGoBack ? handleGoBack : undefined}
             onOpenSettings={handleOpenSettings}
-            onOpenActivity={handleOpenActivity}
+            onOpenActivity={handleOpenChats}
             onOpenSpecialist={handleFeatureSoon}
             onOpenCreatePoll={handleFeatureSoon}
             onOpenCreateEvent={handleFeatureSoon}
