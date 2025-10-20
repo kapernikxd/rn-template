@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Animated } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { CHAT_LIMIT } from '../../../constants';
-import { useRootStore } from '../../../store/StoreProvider';
+import { useRootStore, useStoreData } from '../../../store/StoreProvider';
 import { FetchChatsOptions } from '../../../types/chat';
 
 export enum ChatTab {
@@ -18,7 +18,7 @@ export enum BotSubTab {
 }
 
 export function useChatScreen() {
-  const { chatStore, authStore, onlineStore, profileStore } = useRootStore();
+  const { chatStore, authStore, onlineStore } = useRootStore();
 
   // UI/листинг
   const [activeTab, setActiveTab] = useState<ChatTab>(ChatTab.Person);
@@ -29,7 +29,12 @@ export function useChatScreen() {
   const [chatIds, setChatIds] = useState<string[]>([]);
   const scrollY = useRef(new Animated.Value(0)).current;
 
-  const isUserPlus = profileStore.myProfile.role === 'userPlus';
+  const privateChats = useStoreData(chatStore, store => store.privateChats);
+  const groupChats = useStoreData(chatStore, store => store.groupChats);
+  const botChats = useStoreData(chatStore, store => store.botChats);
+  const isLoadingChats = useStoreData(chatStore, store => store.isLoadingChats);
+  const hasMoreChats = useStoreData(chatStore, store => store.hasMoreChats);
+  const onlineUsers = useStoreData(onlineStore, store => store.onlineUsers);
 
   const loadChats = useCallback(
     async (tab: ChatTab = activeTab, newPage: number = page, query: string = searchQuery) => {
@@ -113,11 +118,15 @@ export function useChatScreen() {
   );
 
   // данные для списка
-  const chatsByTab = activeTab === ChatTab.Person
-    ? chatStore.privateChats
-    : activeTab === ChatTab.Group
-    ? chatStore.groupChats
-    : chatStore.botChats;
+  const chatsByTab = useMemo(
+    () =>
+      activeTab === ChatTab.Person
+        ? privateChats
+        : activeTab === ChatTab.Group
+        ? groupChats
+        : botChats,
+    [activeTab, privateChats, groupChats, botChats]
+  );
 
 //   const filteredChats = useMemo(() => {
 //     if (activeTab !== ChatTab.Bot || !isUserPlus) return chatsByTab;
@@ -130,6 +139,14 @@ export function useChatScreen() {
 
   const myId = authStore.getMyId();
 
+  const getIsUserOnline = useCallback(
+    (userId?: string | null) => {
+      if (!userId) return false;
+      return onlineUsers.some(user => user.userId === userId && user.isOnline);
+    },
+    [onlineUsers]
+  );
+
   return {
     // state
     activeTab,
@@ -140,7 +157,10 @@ export function useChatScreen() {
     myId,
 
     // derived
-    // filteredChats,
+    chats: chatsByTab,
+    isLoadingChats,
+    hasMoreChats,
+    getIsUserOnline,
 
     // actions
     setSearchQuery,
