@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import {
   StyleSheet,
@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   Text,
   ImageBackground,
+  Platform,
 } from 'react-native';
 import { RouteProp, useRoute, useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -21,7 +22,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 import { getUserAvatar, getUserFullName } from '../../../helpers/utils/user';
 import { generateMessagesWithDates } from '../../../helpers/utils/date';
-import { EmptyState, LoadingScreen, Spacer, PinnedMessagesBar, HeaderWithImg, InputMessage, HeaderEdit, HeaderSwitcher, MessageItem } from 'rn-vs-lb';
+import { LoadingScreen, PinnedMessagesBar, HeaderWithImg, InputMessage, HeaderEdit, HeaderSwitcher, MessageItem } from 'rn-vs-lb';
 import { usePortalNavigation } from '../../../helpers/hooks';
 import { ThemeType, useTheme, SizesType, CommonStylesType } from 'rn-vs-lb/theme';
 import { useRootStore } from '../../../store/StoreProvider';
@@ -81,6 +82,7 @@ export const ChatMessagesScreen: FC = observer(() => {
 
   const flatListRef = useRef<FlatList>(null);
   const [skip, setSkip] = useState(0);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const [editMode, setEditMode] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<MessageDTOWithAction | null>(null);
@@ -91,12 +93,21 @@ export const ChatMessagesScreen: FC = observer(() => {
     setSelectedMessage(null);
   };
 
-  const loadMoreMessages = async () => {
-    if (chatStore.messages.length >= skip + OFFSET) {
-      setSkip(prev => prev + OFFSET);
-      await chatStore.fetchChatMessages(chatId, skip + OFFSET);
+  const loadMoreMessages = useCallback(async () => {
+    if (isLoadingMore || !chatStore.hasMoreMessages) {
+      return;
     }
-  };
+
+    setIsLoadingMore(true);
+    const nextSkip = skip + OFFSET;
+
+    try {
+      await chatStore.fetchChatMessages(chatId, nextSkip);
+      setSkip(nextSkip);
+    } finally {
+      setIsLoadingMore(false);
+    }
+  }, [chatId, chatStore, chatStore.hasMoreMessages, isLoadingMore, skip]);
 
   const handleLinkPress = (rawUrl: string) => {
     try {
@@ -112,10 +123,40 @@ export const ChatMessagesScreen: FC = observer(() => {
 
   const [inputMessage, setInputMessage] = useState<string>('');
 
-  const groupedMessages = generateMessagesWithDates(chatStore.messages);
+  const groupedMessages = useMemo(
+    () => generateMessagesWithDates(chatStore.messages),
+    [chatStore.messages]
+  );
 
   const user = chatStore?.selectedChat?.users?.find(u => u?._id !== myId) as UserDTO | undefined;
   const users = chatStore?.selectedChat?.users?.filter(u => u?._id !== myId) as UserDTO[] | undefined;
+
+  const isGroupChat = chatStore.isGroupChat;
+  const fallbackAvatar = useMemo(() => getUserAvatar({} as UserDTO), []);
+  const chatTitle = useMemo(() => {
+    if (isGroupChat) {
+      return (
+        chatStore.selectedChat?.chatName ||
+        chatStore.selectedChat?.post?.title ||
+        'Group chat'
+      );
+    }
+
+    const name = getUserFullName(user || ({} as UserDTO));
+    return name || 'Chat';
+  }, [chatStore.selectedChat, isGroupChat, user]);
+
+  const chatImg = useMemo(() => {
+    if (isGroupChat) {
+      return (
+        chatStore.selectedChat?.post?.image ||
+        chatStore.selectedChat?.post?.preview ||
+        fallbackAvatar
+      );
+    }
+
+    return getUserAvatar(user || ({} as UserDTO));
+  }, [chatStore.selectedChat, fallbackAvatar, isGroupChat, user]);
 
   useEffect(() => {
     if (!chatStore.isGroupChat && chatStore.opponentId) {
@@ -125,6 +166,10 @@ export const ChatMessagesScreen: FC = observer(() => {
 
   useFocusEffect(
     useCallback(() => {
+      if (!myId) {
+        return undefined;
+      }
+
       let isMounted = true;
 
       const init = async () => {
@@ -224,7 +269,7 @@ export const ChatMessagesScreen: FC = observer(() => {
       return (
         <MessageItem
           item={item}
-          myId={myId}
+          myId={myId!}
           isGroupChat={chatStore.isGroupChat}
           isReadByOpponent={isReadByOpponent}
           isSelected={selectedMessage?.actionType === 'select' && selectedMessage._id === item._id}
@@ -253,27 +298,66 @@ export const ChatMessagesScreen: FC = observer(() => {
     ]
   );
 
-  const chatTitle = getUserFullName(user!);
-  const chatImg = getUserAvatar(user!);
-  const onImgPress = () => user?._id && goToProfile(user._id);
+  const userId = user?._id;
+  const onImgPress = useCallback(() => {
+    if (!userId) return;
+    goToProfile(userId);
+  }, [goToProfile, userId]);
+
   const onActionPress = undefined;
+
+  if (!myId) {
+    return <LoadingScreen />;
+  }
 
   if (isLoading) {
     return <LoadingScreen />;
   }
 
-  const onRefresh = async () => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await chatStore.fetchChatMessages(chatId);
     if (!chatStore.isGroupChat && chatStore.opponentId) {
       chatStore.getLastReadedMessage({ chatId, userId: chatStore.opponentId });
     }
     setRefreshing(false);
-  };
+  }, [chatId, chatStore, chatStore.isGroupChat, chatStore.opponentId]);
+
+  useEffect(() => {
+    setSkip(0);
+  }, [chatId]);
+
+  const handlePinnedMessagePress = useCallback(
+    (messageId: string) => {
+      const index = groupedMessages.findIndex(m => m._id === messageId);
+      if (index !== -1 && flatListRef.current) {
+        try {
+          flatListRef.current.scrollToIndex({ index, animated: true, viewPosition: 0.5 });
+        } catch (error) {
+          console.warn('Failed to scroll to pinned message', error);
+        }
+      }
+    },
+    [groupedMessages]
+  );
+
+  const handleUnpinMessage = useCallback(
+    (messageId: string) => {
+      chatStore.unpinMessage(messageId);
+    },
+    [chatStore]
+  );
+
+  const pinnedMessages = chatStore.pinnedMessages;
+  const hasPinnedMessages = pinnedMessages.length > 0;
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: theme.backgroundThird, height: '100%' }}>
-      <KeyboardAvoidingView behavior={'padding'} style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 16 : 0}
+        style={{ flex: 1 }}
+      >
         <View style={styles.container}>
           {/* Header */}
           <HeaderSwitcher
@@ -300,6 +384,7 @@ export const ChatMessagesScreen: FC = observer(() => {
                 onEdit={
                   selectedMessage?.sender?._id === myId
                     ? () => {
+                      if (!selectedMessage) return;
                       setSelectedMessage({ ...selectedMessage, actionType: 'edit' });
                       toggleMode();
                     }
@@ -321,7 +406,7 @@ export const ChatMessagesScreen: FC = observer(() => {
             }
             componentB={
               <HeaderWithImg
-                users={users}
+                users={users ?? []}
                 isGroupChat={!!chatStore.selectedChat?.isGroupChat}
                 onBackPress={goBack}
                 onImgPress={onImgPress}
@@ -334,7 +419,21 @@ export const ChatMessagesScreen: FC = observer(() => {
 
           {/* Список сообщений */}
           <ImageBackground source={chatBackground} style={styles.background}>
+            {hasPinnedMessages ? (
+              <View style={styles.pinnedWrapper}>
+                <PinnedMessagesBar
+                  pinnedMessages={pinnedMessages}
+                  onUnpin={handleUnpinMessage}
+                  onPress={handlePinnedMessagePress}
+                  isGroupChat={isGroupChat}
+                  myId={myId!}
+                  lastReadMessageIdOpponent={chatStore?.lastReadedMessage?.lastReadedMessageId || null}
+                />
+              </View>
+            ) : null}
+
             <FlatList
+              style={styles.messagesList}
               keyboardShouldPersistTaps="handled"
               ref={flatListRef}
               data={groupedMessages as any}
@@ -344,25 +443,9 @@ export const ChatMessagesScreen: FC = observer(() => {
               maxToRenderPerBatch={5}
               removeClippedSubviews
               windowSize={5}
-              ListHeaderComponent={
-                chatStore.pinnedMessages.length > 0 ? (
-                  <PinnedMessagesBar
-                    pinnedMessages={chatStore.pinnedMessages}
-                    onUnpin={(messageId) => chatStore.unpinMessage(messageId)}
-                    onPress={(messageId) => {
-                      const index = groupedMessages.findIndex(m => m._id === messageId);
-                      if (index !== -1 && flatListRef.current) {
-                        flatListRef.current.scrollToIndex({ index, animated: true });
-                      }
-                    }}
-                    isGroupChat={chatStore.isGroupChat}
-                    myId={myId}
-                    lastReadMessageIdOpponent={chatStore?.lastReadedMessage?.lastReadedMessageId || null}
-                  />
-                ) : null
-              }
               contentContainerStyle={styles.messagesListContent}
               onEndReached={loadMoreMessages}
+              onEndReachedThreshold={0.1}
               refreshControl={
                 <RefreshControl
                   onRefresh={onRefresh}
@@ -372,7 +455,16 @@ export const ChatMessagesScreen: FC = observer(() => {
                 />
               }
               inverted
+              maintainVisibleContentPosition={{ minIndexForVisible: 0 }}
               onTouchStart={Keyboard.dismiss}
+              ListEmptyComponent={
+                !hasPinnedMessages ? (
+                  <View style={styles.emptyStateWrapper}>
+                    <Text style={styles.emptyStateTitle}>No messages yet</Text>
+                    <Text style={styles.emptyStateDescription}>Start the conversation</Text>
+                  </View>
+                ) : null
+              }
             />
           </ImageBackground>
 
@@ -465,16 +557,26 @@ const getStyles = ({ theme, sizes, commonStyles }: { theme: ThemeType; sizes: Si
       paddingTop: 8,
       paddingBottom: 12,
     },
-    pinnedContainer: {
-      paddingBottom: 8,
+    pinnedWrapper: {
+      paddingVertical: sizes.xs,
+      paddingHorizontal: sizes.sm,
     },
-    pinnedItem: {
-      marginBottom: 6,
+    emptyStateWrapper: {
+      paddingVertical: sizes.lg,
+      paddingHorizontal: sizes.md,
+      alignItems: 'center',
     },
-    unpinButton: {
-      position: 'absolute',
-      top: 4,
-      right: 4,
+    emptyStateTitle: {
+      textAlign: 'center',
+      fontWeight: '600',
+      color: theme.text,
+      fontSize: 16,
+      marginBottom: 4,
+    },
+    emptyStateDescription: {
+      textAlign: 'center',
+      color: theme.greyText,
+      fontSize: 14,
     },
     replyBar: {
       ...commonStyles.backgroundLight,
