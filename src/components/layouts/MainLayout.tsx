@@ -35,12 +35,9 @@ export const MainLayout = ({
   }, [isAuthenticated, onlineStore]);
 
   return (
-    <SafeAreaView
-      edges={edges}
-      style={[styles.safeArea, { backgroundColor: theme.background }, containerStyle]}
-    >
-      <View style={[styles.content, contentStyle]}>{children}</View>
-    </SafeAreaView>
+    <View style={{flex: 1}}>
+      {children}
+    </View>
   );
 };
 
