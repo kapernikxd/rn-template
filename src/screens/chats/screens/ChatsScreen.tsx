@@ -12,7 +12,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useTheme, type ThemeType } from 'rn-vs-lb/theme';
 
-import { ChatItem, type ChatItemProps } from '../../../components/Chat/ChatItem';
+import { ChatItem, type ChatItemProps } from 'rn-vs-lb/components/Chat/ChatItem';
 import { getUserAvatar, getUserFullName } from '../../../helpers/utils/user';
 import { ROUTES, type ChatsNav } from '../../../navigation/types';
 import { ChatTab, BotSubTab, useChatScreen } from '../logic/useChatScreen';
