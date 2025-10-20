@@ -1,16 +1,16 @@
 import React from 'react';
 import { ScrollView, View, Text, StyleSheet, Linking } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { HeaderDefault } from 'rn-vs-lb';
 import { usePortalNavigation } from '../../helpers/hooks';
 import { DOMAIN, EMAIL, SITE_NAME } from '../../constants/links';
+import { MainLayout } from '../../components';
 
 const TermsOfUseScreen = () => {
   const openLink = (url: string) => Linking.openURL(url);
   const { goBack } = usePortalNavigation();
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <MainLayout>
       <HeaderDefault title='Terms of Use' onBackPress={goBack} />
       <ScrollView contentContainerStyle={styles.container}>
         <Section title={`Welcome to ${SITE_NAME}!`}>
@@ -78,7 +78,7 @@ const TermsOfUseScreen = () => {
           </Text>
         </Section>
       </ScrollView>
-    </SafeAreaView>
+    </MainLayout>
   );
 };
 

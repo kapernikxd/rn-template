@@ -6,7 +6,6 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { CardContainer, HeaderDefault, ProfilePhotoUpload, Spacer, Button } from 'rn-vs-lb';
 import { ThemeType, useTheme } from 'rn-vs-lb/theme';
 import { FormProvider, UseFormReturn } from 'react-hook-form';
@@ -14,6 +13,7 @@ import { IOScrollView } from 'react-native-intersection-observer';
 
 import { TextArea, TextInput } from '../../../components/form';
 import { UpdateProfileProps } from '../../../types/profile';
+import { MainLayout } from '../../../components';
 
 type EditProfileFormValues = Pick<
   UpdateProfileProps,
@@ -57,7 +57,12 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
   const styles = getStyles({ theme });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <MainLayout
+      contentStyle={styles.container}
+      topBackgroundColor={theme.background}
+      bottomBackgroundColor={theme.backgroundSecond}
+      backgroundSplit={0.35}
+    >
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -151,13 +156,13 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
           </IOScrollView>
         </FormProvider>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </MainLayout>
   );
 };
 
 const getStyles = ({ theme }: { theme: ThemeType }) =>
   StyleSheet.create({
-    container: { flex: 1, backgroundColor: theme.white },
+    container: { flex: 1 },
     card: {
       padding: 0,
       marginVertical: 4,

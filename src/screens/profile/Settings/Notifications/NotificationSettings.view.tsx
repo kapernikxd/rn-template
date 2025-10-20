@@ -8,11 +8,11 @@ import {
   Text,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { CardContainer, HeaderDefault, Spacer, Button } from 'rn-vs-lb';
 import { ThemeType, useTheme } from 'rn-vs-lb/theme';
 import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { MainLayout } from '../../../../components';
 
 type NotificationType =
   | 'likes'
@@ -74,7 +74,12 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
     ];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <MainLayout
+      contentStyle={styles.container}
+      topBackgroundColor={theme.background}
+      bottomBackgroundColor={theme.backgroundSecond}
+      backgroundSplit={0.35}
+    >
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -153,13 +158,13 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
           </View>
         </FormProvider>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </MainLayout>
   );
 };
 
 const getStyles = ({ theme }: { theme: ThemeType }) =>
   StyleSheet.create({
-    container: { flex: 1, backgroundColor: theme.white },
+    container: { flex: 1 },
     iconContainer: {
       width: 24,
       alignItems: 'center',

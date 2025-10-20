@@ -1,13 +1,12 @@
 import React, { FC } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { SafeAreaView } from "react-native-safe-area-context";
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useRootStore } from '../../store/StoreProvider';
 import { OtpInput } from '../../components/form';
 import { usePortalNavigation } from '../../helpers/hooks';
 import { useTheme } from 'rn-vs-lb/theme';
-import { Logo } from '../../components';
+import { Logo, MainLayout } from '../../components';
 import { ROUTES, type AuthStackParamList } from '../../navigation/types';
 import { Button, Spacer } from 'rn-vs-lb';
 
@@ -71,14 +70,17 @@ const Otp: FC = () => {
     });
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <MainLayout
+            bottomBackgroundColor={theme.card}
+            backgroundSplit={0.35}
+        >
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             >
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                     <FormProvider {...methods}>
-                        <View style={{ backgroundColor: theme.background, flex: 1 }}>
+                        <View style={{ flex: 1 }}>
                             <View style={{ alignItems: 'center' }}>
                                 <View
                                     style={{
@@ -129,7 +131,7 @@ const Otp: FC = () => {
                     </FormProvider>
                 </ScrollView>
             </KeyboardAvoidingView>
-        </SafeAreaView>
+        </MainLayout>
     );
 };
 

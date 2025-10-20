@@ -2,7 +2,6 @@ import { FC, useCallback, useEffect, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import {
     CardContainer,
     DeleteAccountButton,
@@ -16,6 +15,7 @@ import { appVersion, TELEGRAM_URL } from '../../../constants/links';
 import { useRootStore } from '../../../store/StoreProvider';
 import { useActions, usePortalNavigation } from '../../../helpers/hooks';
 import { ProfileNav, ROUTES } from '../../../navigation/types';
+import { MainLayout } from '../../../components';
 
 type SettingsRoute =
     | typeof ROUTES.ProfileEdit
@@ -78,7 +78,12 @@ export const ProfileSettingsScreen: FC = () => {
     }, [profileStore, profileStore.myProfile?._id]);
 
     return (
-        <SafeAreaView style={styles.container}>
+        <MainLayout
+            contentStyle={styles.container}
+            topBackgroundColor={theme.white}
+            bottomBackgroundColor={theme.background}
+            backgroundSplit={0.3}
+        >
             <View style={styles.content}>
                 <HeaderDefault title={'Settings'} onBackPress={goBack} />
                 <View style={styles.body}>
@@ -117,14 +122,13 @@ export const ProfileSettingsScreen: FC = () => {
                     </View>
                 </View>
             </View>
-        </SafeAreaView>
+        </MainLayout>
     );
 }
 
 const getStyles = ({ sizes, globalStyleSheet, theme }: { theme: ThemeType, sizes: SizesType, globalStyleSheet: GlobalStyleSheetType }) => StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: theme.white
     },
     content: {
         backgroundColor: theme.background,

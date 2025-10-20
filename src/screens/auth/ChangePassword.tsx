@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { SafeAreaView } from "react-native-safe-area-context";
 import { FormProvider, useForm } from 'react-hook-form';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { usePortalNavigation } from '../../helpers/hooks';
@@ -8,7 +7,7 @@ import { TextInput as VSTextInput } from '../../components/form';
 import { useRootStore } from '../../store/StoreProvider';
 import { useTheme } from 'rn-vs-lb/theme';
 import { Spacer, Button } from 'rn-vs-lb';
-import { Logo } from '../../components';
+import { Logo, MainLayout } from '../../components';
 import { ROUTES, type AuthStackParamList } from '../../navigation/types';
 
 type AuthScreenNavigationProp = RouteProp<AuthStackParamList, typeof ROUTES.ChangePassword>;
@@ -37,14 +36,17 @@ const ChangePassword: FC = () => {
     });
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <MainLayout
+            bottomBackgroundColor={theme.card}
+            backgroundSplit={0.35}
+        >
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             >
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                     <FormProvider {...methods}>
-                        <View style={{ backgroundColor: theme.background, flex: 1 }}>
+                        <View style={{ flex: 1 }}>
                             <View style={{ alignItems: 'center' }}>
                                 <View
                                     style={{
@@ -120,7 +122,7 @@ const ChangePassword: FC = () => {
                     </FormProvider>
                 </ScrollView>
             </KeyboardAvoidingView>
-        </SafeAreaView>
+        </MainLayout>
     );
 };
 

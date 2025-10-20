@@ -1,10 +1,9 @@
 import React, { FC } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput as VSTextInput } from '../../components/form';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useRootStore } from '../../store/StoreProvider';
-import { Logo } from '../../components';
+import { Logo, MainLayout } from '../../components';
 import { usePortalNavigation, usePushNotifications } from '../../helpers/hooks';
 import { useTheme } from 'rn-vs-lb/theme';
 import { RegistrationParams } from '../../types/auth';
@@ -31,14 +30,17 @@ const Register: FC = () => {
     });
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <MainLayout
+            bottomBackgroundColor={theme.card}
+            backgroundSplit={0.35}
+        >
             <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             >
                 <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                     <FormProvider {...methods}>
-                        <View style={{ backgroundColor: theme.background, flex: 1 }}>
+                        <View style={{ flex: 1 }}>
                             <View style={{ alignItems: 'center' }}>
                                 <View
                                     style={{
@@ -155,7 +157,7 @@ const Register: FC = () => {
                     </FormProvider>
                 </ScrollView>
             </KeyboardAvoidingView>
-        </SafeAreaView>
+        </MainLayout>
     );
 };
 

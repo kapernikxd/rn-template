@@ -15,7 +15,6 @@ import {
   Platform,
 } from 'react-native';
 import { RouteProp, useRoute, useFocusEffect } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import * as Clipboard from 'expo-clipboard';
 import { Ionicons } from '@expo/vector-icons';
@@ -30,6 +29,7 @@ import { ChatsStackParamList } from '../../../navigation';
 import { MessageDTOExtented, UserDTO } from '../../../types';
 import { Linking } from 'react-native';
 import { getSmartTime } from '../../../helpers/utils/date';
+import { MainLayout } from '../../../components';
 
 const chatBackground = require('../../../assets/chat-background.png');
 
@@ -352,7 +352,12 @@ export const ChatMessagesScreen: FC = observer(() => {
   const hasPinnedMessages = pinnedMessages.length > 0;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.backgroundThird, height: '100%' }}>
+    <MainLayout
+      contentStyle={{ flex: 1 }}
+      topBackgroundColor={theme.background}
+      bottomBackgroundColor={theme.backgroundThird}
+      backgroundSplit={0.35}
+    >
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 16 : 0}
@@ -532,7 +537,7 @@ export const ChatMessagesScreen: FC = observer(() => {
           </View>
         </View>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </MainLayout>
   );
 });
 

@@ -1,6 +1,5 @@
 import React, { FC, useCallback, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
-import { SafeAreaView } from "react-native-safe-area-context";
 import { FormProvider, useForm } from 'react-hook-form';
 import { useRootStore } from '../../store/StoreProvider';
 import { TermsCheckbox, TextInput } from '../../components/form';
@@ -14,7 +13,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { LoginParams } from '../../types/auth';
-import { Logo } from '../../components';
+import { Logo, MainLayout } from '../../components';
 
 import { IMAGES } from '../../constants/theme';
 import { ROUTES, type AuthStackParamList } from '../../navigation/types';
@@ -147,8 +146,10 @@ const Login: FC = observer(() => {
   }, []);
 
   return (
-    <>
-      <SafeAreaView style={{ flex: 1 }}>
+      <MainLayout
+        bottomBackgroundColor={theme.card}
+        backgroundSplit={0.35}
+      >
 
         <KeyboardAvoidingView
           style={{ flex: 1 }}
@@ -156,7 +157,7 @@ const Login: FC = observer(() => {
         >
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <FormProvider {...methods}>
-              <View style={{ backgroundColor: theme.background, flex: 1 }}>
+              <View style={{ flex: 1 }}>
                 <View style={{ alignItems: 'center' }}>
                   <View
                     style={{
@@ -275,8 +276,7 @@ const Login: FC = observer(() => {
             </FormProvider>
           </ScrollView>
         </KeyboardAvoidingView>
-      </SafeAreaView>
-    </>
+      </MainLayout>
   );
 });
 

@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { ScrollView, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProfileCard } from 'rn-vs-lb';
@@ -10,6 +9,7 @@ import { usePortalNavigation } from '../../../helpers/hooks';
 import { getUserAvatar, getUserFullName } from '../../../helpers/utils/user';
 import { useRootStore, useStoreData } from '../../../store/StoreProvider';
 import { ROUTES, type ProfileStackParamList } from '../../../navigation/types';
+import { MainLayout } from '../../../components';
 
 // NB: этот экран обёрнут withAuthGuard в ProfileStack, поэтому доступен только авторизованным пользователям.
 type NavigationProp = NativeStackNavigationProp<
@@ -84,7 +84,12 @@ export const ProfileScreen = () => {
   const canGoBack = navigation.canGoBack();
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
+    <MainLayout
+      contentStyle={{ flex: 1 }}
+      topBackgroundColor={theme.background}
+      bottomBackgroundColor={theme.backgroundSecond}
+      backgroundSplit={0.45}
+    >
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View>
           <ProfileCard
@@ -106,6 +111,6 @@ export const ProfileScreen = () => {
           />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </MainLayout>
   );
 };

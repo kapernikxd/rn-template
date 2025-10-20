@@ -3,7 +3,6 @@ import { Animated, FlatList, RefreshControl, StyleSheet, View } from 'react-nati
 import { observer } from 'mobx-react-lite';
 import { EmptyState, Spacer, ChatItem } from 'rn-vs-lb';
 import { GlobalStyleSheetType, ThemeType, useTheme } from 'rn-vs-lb/theme';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { SearchInput } from '../../../components/form';
 import { usePortalNavigation } from '../../../helpers/hooks';
@@ -13,6 +12,7 @@ import { getSmartTime } from '../../../helpers/utils/date';
 import { useRootStore } from '../../../store/StoreProvider';
 import type { UserDTO } from '../../../types';
 import { ChatTab, useChats } from '../../../helpers/hooks/Chats/useChats';
+import { MainLayout } from '../../../components';
 
 export const ChatsScreen: FC = observer(() => {
   const { theme } = useTheme();
@@ -91,46 +91,49 @@ export const ChatsScreen: FC = observer(() => {
     activeTab === ChatTab.Person ? renderPrivateItem : activeTab === ChatTab.Group ? renderGroupItem : renderBotItem;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
-      <View style={styles.container}>
-        <View style={{ backgroundColor: theme.background, flex: 1 }}>
-          <Spacer />
+    <MainLayout
+      contentStyle={styles.container}
+      topBackgroundColor={theme.background}
+      bottomBackgroundColor={theme.backgroundThird}
+      backgroundSplit={0.4}
+    >
+      <View style={styles.content}>
+        <Spacer />
 
-          {/* здесь можно добавить TabSwitcher, который дергает setActiveTab */}
+        {/* здесь можно добавить TabSwitcher, который дергает setActiveTab */}
 
-          <View style={styles.searchContainer}>
-            <SearchInput
-              iconType="search"
-              placeholder="Search..."
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-            />
-          </View>
-
-          <FlatList
-            data={chats}
-            keyExtractor={(item) => item._id}
-            renderItem={renderItem}
-            ListEmptyComponent={<EmptyState />}
-            onScroll={Animated.event(
-              [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-              { useNativeDriver: false }
-            )}
-            scrollEventThrottle={16}
-            onEndReached={handleLoadMore}
-            onEndReachedThreshold={0.1}
-            refreshControl={
-              <RefreshControl
-                refreshing={isRefreshing}
-                onRefresh={handleRefresh}
-                colors={[theme.primary]}
-                tintColor={theme.primary}
-              />
-            }
+        <View style={styles.searchContainer}>
+          <SearchInput
+            iconType="search"
+            placeholder="Search..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
           />
         </View>
+
+        <FlatList
+          data={chats}
+          keyExtractor={(item) => item._id}
+          renderItem={renderItem}
+          ListEmptyComponent={<EmptyState />}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: false }
+          )}
+          scrollEventThrottle={16}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.1}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefreshing}
+              onRefresh={handleRefresh}
+              colors={[theme.primary]}
+              tintColor={theme.primary}
+            />
+          }
+        />
       </View>
-    </SafeAreaView>
+    </MainLayout>
   );
 });
 
@@ -138,7 +141,9 @@ const getStyles = ({ theme }: { theme: ThemeType }) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme.white,
+    },
+    content: {
+      flex: 1,
     },
     background: {
       flex: 1,

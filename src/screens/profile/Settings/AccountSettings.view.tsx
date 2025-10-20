@@ -6,12 +6,12 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { CardContainer, HeaderDefault, Spacer, Button } from 'rn-vs-lb';
 import { ThemeType, useTheme } from 'rn-vs-lb/theme';
 import { FormProvider, UseFormReturn } from 'react-hook-form';
 
 import { TextInput } from '../../../components/form';
+import { MainLayout } from '../../../components';
 
 type AccountSettingsFormValues = {
   username?: string;
@@ -37,7 +37,12 @@ export const AccountSettingsView: FC<AccountSettingsViewProps> = ({
   const styles = getStyles({ theme });
 
   return (
-    <SafeAreaView style={styles.container}>
+    <MainLayout
+      contentStyle={styles.container}
+      topBackgroundColor={theme.background}
+      bottomBackgroundColor={theme.backgroundSecond}
+      backgroundSplit={0.35}
+    >
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -79,13 +84,13 @@ export const AccountSettingsView: FC<AccountSettingsViewProps> = ({
           </View>
         </FormProvider>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </MainLayout>
   );
 };
 
 const getStyles = ({ theme }: { theme: ThemeType }) =>
   StyleSheet.create({
-    container: { flex: 1, backgroundColor: theme.white },
+    container: { flex: 1 },
     card: {
       padding: 0,
       marginVertical: 4,
