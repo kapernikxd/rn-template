@@ -134,6 +134,22 @@ export const ChatMessagesScreen: FC = observer(() => {
   const users = chatStore?.selectedChat?.users?.filter(u => u?._id !== myId) as UserDTO[] | undefined;
 
   const isGroupChat = chatStore.isGroupChat;
+  const participants = users ?? [];
+
+  const typingUsersInChat = onlineStore.typingUsers.filter(
+    typingUser =>
+      typingUser.userId !== myId &&
+      participants.some(participant => participant?._id === typingUser.userId)
+  );
+  const primaryTypingUser = typingUsersInChat[0];
+  const isOpponentTyping = !isGroupChat && Boolean(primaryTypingUser);
+  const typingUserName =
+    isGroupChat && primaryTypingUser
+      ? primaryTypingUser.userName || 'Someone'
+      : undefined;
+
+  const isOpponentOnline =
+    !isGroupChat && user?._id ? onlineStore.getIsUserOnline(user._id) : false;
   const fallbackAvatar = useMemo(() => getUserAvatar({} as UserDTO), []);
   const chatTitle = useMemo(() => {
     if (isGroupChat) {
@@ -165,6 +181,20 @@ export const ChatMessagesScreen: FC = observer(() => {
       chatStore.getLastReadedMessage({ chatId, userId: chatStore.opponentId });
     }
   }, [chatStore.opponentId]);
+
+  const handleTypingStart = useCallback(() => {
+    onlineStore.emitTyping(chatId);
+  }, [onlineStore, chatId]);
+
+  const handleTypingStop = useCallback(() => {
+    onlineStore.emitStopTyping(chatId);
+  }, [onlineStore, chatId]);
+
+  useEffect(() => {
+    return () => {
+      onlineStore.emitStopTyping(chatId);
+    };
+  }, [chatId, onlineStore]);
 
   useEffect(() => {
     setColors({
@@ -422,6 +452,9 @@ export const ChatMessagesScreen: FC = observer(() => {
               onActionPress={onActionPress}
               title={chatTitle}
               imgUrl={chatImg}
+              isOnline={isOpponentOnline}
+              isTyping={isOpponentTyping}
+              typingUserName={typingUserName}
             />
           }
         />
@@ -531,9 +564,8 @@ export const ChatMessagesScreen: FC = observer(() => {
               return picked;
             }}
             onMaxImagesExceeded={(max) => uiStore.showSnackbar(`Max ${max} images`, 'warning')}
-          // Пример событий "печатает"
-          // onTyping={() => onlineStore.emitTyping?.(chatId)}
-          // onStopTyping={() => onlineStore.emitStopTyping?.(chatId)}
+            onTyping={handleTypingStart}
+            onStopTyping={handleTypingStop}
           // Если хочешь контролировать лоадер отправки извне:
           // sendingControlled
           // isSending={chatStore.isSendingMessage}
