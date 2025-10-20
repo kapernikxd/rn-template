@@ -6,7 +6,7 @@ import { MainTabsNavigator } from './MainTabsNavigator';
 import { AuthStack } from './stacks/AuthStack';
 import { ROUTES, type RootStackParamList } from './types';
 import { useRootStore, useStoreData } from '../store/StoreProvider';
-import { ScreenLoader } from '../components/ScreenLoader';
+import { ScreenLoader, MainLayout } from '../components';
 import { TermsOfUseScreen } from '../screens/docs';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -33,7 +33,11 @@ export const AppNavigator = () => {
     <NavigationContainer>
       <RootStack.Navigator initialRouteName={ROUTES.RootTabs} screenOptions={screenOptions}>
         <RootStack.Screen name={ROUTES.RootTabs}>
-          {() => <MainTabsNavigator showLabels={false} />}
+          {() => (
+            <MainLayout>
+              <MainTabsNavigator showLabels={false} />
+            </MainLayout>
+          )}
         </RootStack.Screen>
         <RootStack.Screen name={ROUTES.Auth} component={AuthStack} />
         <RootStack.Screen name={ROUTES.TermsOfUse} component={TermsOfUseScreen} />
