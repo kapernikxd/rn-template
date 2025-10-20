@@ -62,6 +62,7 @@ export const usePortalNavigation = () => {
         params: { link },
       }),
 
+    goToChatMessages: (chatId?: string) => navigation.goBack(),
     goToMain,
 
     goBack: () => navigation.goBack(),

@@ -1,4 +1,5 @@
-import { API_URL } from "../http";
+import { API_URL } from "../../constants/links";
+
 
 export async function logToServer(
   level: 'info' | 'warn' | 'error',

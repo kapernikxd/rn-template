@@ -1,4 +1,4 @@
-import { BASE_URL } from "../http";
+import { BASE_URL } from "../../constants/links";
 import { isEmpty } from "./common";
 
 
