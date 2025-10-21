@@ -137,47 +137,72 @@ export class ChatStore {
     return chatIds
   }
 
-  async fetchChats(options?: FetchChatsOptions) {
-    if (this.isLoadingChats || (!this.hasMoreChats && options?.page && options.page > 1)) return [];
+  async fetchChats(options?: FetchChatsOptions): Promise<string[]> {
+    // не дергаем сеть, если уже грузим; и не грузим page>1, если дальше страниц нет
+    if (this.isLoadingChats || (options?.page && options.page > 1 && !this.hasMoreChats)) {
+      return [];
+    }
 
-    const requestId = ++this.chatsRequestId;
+    const requestId = ++this.chatsRequestId; // защитимся от устаревших ответов
     this.isLoadingChats = true;
+
     try {
       const response = await this.chatService.fetchChats(options);
 
+      // если за время ожидания пришел новый запрос — игнорим этот ответ
       if (requestId !== this.chatsRequestId) {
         return [];
       }
 
       runInAction(() => {
-        const incomingChats = response.data.chats;
+        const incomingChats: ChatDTO[] = response?.data?.chats ?? [];
 
         if (options?.page && options.page > 1) {
-          const chatMap = new Map(this.chats.map((chat) => [chat._id, chat]));
+          // ---- МЕРЖ СТРАНИЦЫ (>1), СОХРАНЯЕМ ТЕКУЩИЙ ПОРЯДОК ----
 
-          incomingChats.forEach((chat: ChatDTO) => {
-            chatMap.set(chat._id, chat);
-          });
+          // 1) карта существующих чатов
+          const existingById = new Map(this.chats.map((c) => [c._id, c]));
 
-          this.chats = Array.from(chatMap.values());
+          // 2) обновляем/дополняем данными из пришедшей страницы
+          for (const chat of incomingChats) {
+            const prev = existingById.get(chat._id);
+            existingById.set(chat._id, prev ? { ...prev, ...chat } : chat);
+          }
+
+          // 3) сохраняем порядок уже известных + добавляем новые в хвост
+          const knownIds = new Set(this.chats.map((c) => c._id));
+          const updatedKnown = this.chats.map((c) => existingById.get(c._id)!);
+          const appendedNew = incomingChats.filter((c) => !knownIds.has(c._id));
+
+          this.chats = [...updatedKnown, ...appendedNew];
         } else {
-          const chatMap = new Map<string, ChatDTO>();
-
-          incomingChats.forEach((chat: ChatDTO) => {
-            if (!chatMap.has(chat._id)) {
-              chatMap.set(chat._id, chat);
-            }
+          // ---- СТРАНИЦА 1: ПОЛНАЯ ПЕРЕЗАГРУЗКА ----
+          // Удаляем дубликаты, оставляя первое вхождение (порядок приходит с бэка)
+          const seen = new Set<string>();
+          this.chats = (incomingChats ?? []).filter((c) => {
+            if (seen.has(c._id)) return false;
+            seen.add(c._id);
+            return true;
           });
 
-          this.chats = Array.from(chatMap.values());
+          // Если нужно — можно ОДИН РАЗ отсортировать по свежести:
+          // this.chats.sort(
+          //   (a, b) =>
+          //     new Date(b.latestMessage?.createdAt || 0).getTime() -
+          //     new Date(a.latestMessage?.createdAt || 0).getTime()
+          // );
         }
-        this.hasMoreChats = response.data.hasMore;
+
+        // флажок «есть ли еще страницы»
+        this.hasMoreChats = Boolean(response?.data?.hasMore);
       });
-      return response.data.chats.map((chat: any) => chat._id);
+
+      return (response?.data?.chats ?? []).map((chat: ChatDTO) => chat._id);
     } catch (err) {
       console.error("Ошибка при получении чатов:", err);
-      return []
+      return [];
     } finally {
+      // снимаем флаг только если это актуальный запрос
       if (requestId === this.chatsRequestId) {
         runInAction(() => {
           this.isLoadingChats = false;
@@ -359,21 +384,25 @@ export class ChatStore {
     const isMyUnread = updatedChat?.unread?.userToId === this.root.authStore.getMyId();
 
     runInAction(() => {
-      // 1. Обновляем массив
-      const updatedChats = this.chats.map(chat =>
+      this.chats = this.chats.map(chat =>
         chat._id === updatedChat._id
           ? { ...chat, latestMessage: updatedChat.latestMessage, unread: (isMyUnread && updatedChat.unread) ?? null }
           : chat
       );
 
+      // ВАЖНО: сортировку делай только после первой загрузки страницы=1,
+      // а тут — не трогаем порядок,
+      // иначе FlatList будет прыгать при каждом входящем сообщении.
+
       // 2. Сортируем по времени latestMessage
-      this.chats = updatedChats.sort((a, b) => {
-        const aTime = new Date(a.latestMessage?.createdAt || 0).getTime();
-        const bTime = new Date(b.latestMessage?.createdAt || 0).getTime();
-        return bTime - aTime;
-      });
+      // this.chats = updatedChats.sort((a, b) => {
+      //   const aTime = new Date(a.latestMessage?.createdAt || 0).getTime();
+      //   const bTime = new Date(b.latestMessage?.createdAt || 0).getTime();
+      //   return bTime - aTime;
+      // });
     });
   };
+
 
   private handleNewMessage = (payload: any) => {
     // сервер может прислать либо объект latestMessage, либо готовое сообщение

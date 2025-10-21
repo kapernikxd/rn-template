@@ -39,7 +39,7 @@ export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
   };
 
   const loadChats = useCallback(
-    async (tab = activeTab, newPage = page, query = searchQuery) => {
+    async (tab: ChatTab, newPage: number, query: string) => {
       const options: FetchChatsOptions = {
         typeChat: tab === ChatTab.Person ? 'private' : tab === ChatTab.Group ? 'group' : 'bot',
         limit: CHAT_LIMIT,
@@ -50,7 +50,7 @@ export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
       const ids = await chatStore.fetchChats(options);
       setChatIds(prev => (newPage > 1 ? [...prev, ...ids] : ids));
     },
-    [activeTab, page, searchQuery, chatStore]
+    [chatStore] // только store
   );
 
   const setActiveTab = useCallback(
@@ -64,9 +64,8 @@ export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
   );
 
   const handleLoadMore = useCallback(() => {
-    if (chatStore.hasMoreChats && !chatStore.isLoadingChats) {
-      setPage(p => p + 1);
-    }
+    if (!chatStore.hasMoreChats || chatStore.isLoadingChats) return;
+    setPage(p => p + 1);
   }, [chatStore.hasMoreChats, chatStore.isLoadingChats]);
 
   const handleRefresh = useCallback(async () => {
@@ -79,7 +78,7 @@ export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
   // загрузка на смену таба/страницы
   useEffect(() => {
     loadChats(activeTab, page, searchQuery);
-  }, [activeTab, page, loadChats, searchQuery]);
+  }, [activeTab, page]);
 
   // сброс бейджей по фокусу экрана
   useFocusEffect(
@@ -100,7 +99,8 @@ export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
     }, debounceMs);
 
     return clearSearchTimer;
-  }, [searchQuery, activeTab, debounceMs, loadChats]);
+    // важно: без loadChats и page в deps
+  }, [searchQuery, activeTab, debounceMs]);
 
   // подписки на сокет и join в комнаты
   useFocusEffect(
@@ -124,8 +124,8 @@ export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
     activeTab === ChatTab.Person
       ? chatStore.privateChats
       : activeTab === ChatTab.Group
-      ? chatStore.groupChats
-      : chatStore.botChats;
+        ? chatStore.groupChats
+        : chatStore.botChats;
 
   return {
     // state

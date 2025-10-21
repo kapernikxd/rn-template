@@ -125,7 +125,10 @@ export const ChatsScreen: FC = observer(() => {
         )}
         scrollEventThrottle={16}
         onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.1}
+        onEndReachedThreshold={0.2}
+        removeClippedSubviews
+        initialNumToRender={20}
+        windowSize={7}
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}
