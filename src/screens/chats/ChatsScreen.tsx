@@ -2,18 +2,17 @@ import React, { FC, useEffect, useRef } from 'react';
 import { Animated, FlatList, RefreshControl, StyleSheet, View } from 'react-native';
 import { observer } from 'mobx-react-lite';
 import { EmptyState, Spacer, ChatItem } from 'rn-vs-lb';
-import { GlobalStyleSheetType, ThemeType, useTheme } from 'rn-vs-lb/theme';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { ThemeType, useTheme } from 'rn-vs-lb/theme';
 
-import { SearchInput } from '../../../components/form';
-import { usePortalNavigation } from '../../../helpers/hooks';
-import { getUserAvatar, getUserFullName } from '../../../helpers/utils/user';
-import { getCompanionUser } from '../../../helpers/utils/chat';
-import { getSmartTime } from '../../../helpers/utils/date';
-import { useRootStore } from '../../../store/StoreProvider';
-import type { UserDTO } from '../../../types';
-import { ChatTab, useChats } from '../../../helpers/hooks/Chats/useChats';
-import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
+import { SearchInput } from '../../components/form';
+import { usePortalNavigation } from '../../helpers/hooks';
+import { getUserAvatar, getUserFullName } from '../../helpers/utils/user';
+import { getCompanionUser } from '../../helpers/utils/chat';
+import { getSmartTime } from '../../helpers/utils/date';
+import { useRootStore } from '../../store/StoreProvider';
+import type { UserDTO } from '../../types';
+import { ChatTab, useChats } from '../../helpers/hooks/Chats/useChats';
+import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 
 export const ChatsScreen: FC = observer(() => {
   const { theme, isDark } = useTheme();

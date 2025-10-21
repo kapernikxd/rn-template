@@ -13,19 +13,17 @@ import {
   Text,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LoadingScreen, InputMessage, PinnedMessagesBar } from 'rn-vs-lb';
+import { LoadingScreen, InputMessage, PinnedMessagesBar, HeaderEdit, HeaderSwitcher } from 'rn-vs-lb';
 import { useTheme, type ThemeType, type SizesType, type CommonStylesType } from 'rn-vs-lb/theme';
-import HeaderWithImg from '../../../components/chatHeader/HeaderWithImg';
-import { HeaderEdit } from '../../../components/chatHeader/HeaderEdit';
-import { HeaderSwitcher } from '../../../components/chatHeader/HeaderSwitcher';
-import { usePortalNavigation } from '../../../helpers/hooks';
-import { getSmartTime } from '../../../helpers/utils/date';
-import type { MessageDTOExtented } from '../../../types';
-import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
-import { useChatMessages } from '../../../helpers/hooks/Chats/useChatMessages';
-import MessageItemWithPreview from '../../../components/chat/MessageItemWithPreview';
+import HeaderWithImg from '../../components/chat/HeaderWithImg';
+import { usePortalNavigation } from '../../helpers/hooks';
+import { getSmartTime } from '../../helpers/utils/date';
+import type { MessageDTOExtented } from '../../types';
+import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
+import { useChatMessages } from '../../helpers/hooks/Chats/useChatMessages';
+import MessageItemWithPreview from '../../components/chat/MessageItemWithPreview';
 
-const chatBackground = require('../../../assets/chat-background.png');
+const chatBackground = require('../../assets/chat-background.png');
 
 export const ChatMessagesScreen: FC = observer(() => {
   const { theme, sizes, commonStyles, globalStyleSheet, typography } = useTheme();
@@ -204,13 +202,19 @@ export const ChatMessagesScreen: FC = observer(() => {
               onSubmit={handleSubmitFromInput}
               replyToMessage={
                 selectedMessage?.actionType === 'reply'
-                  ? { content: selectedMessage.content ?? '' }
+                  ? selectedMessage?.content
+                    ? { content: selectedMessage.content }
+                    : selectedMessage?.attachments?.length
+                      ? { attachments: selectedMessage.attachments }
+                      : null
                   : null
               }
               onCancelReply={() => setSelectedMessage(null)}
               editMessage={
                 selectedMessage?.actionType === 'edit'
-                  ? { content: selectedMessage.content ?? '' }
+                  ? selectedMessage?.content
+                    ? { content: selectedMessage?.content ?? 'photo' }
+                    : null
                   : null
               }
               onCancelEdit={() => {

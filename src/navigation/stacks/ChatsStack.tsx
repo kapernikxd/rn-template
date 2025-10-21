@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { ChatsScreen } from '../../screens/chats/screens/ChatsScreen';
-import { ChatMessagesScreen } from '../../screens/chats/screens/ChatMessagesScreen';
+import { ChatsScreen } from '../../screens/chats/ChatsScreen';
+import { ChatMessagesScreen } from '../../screens/chats/ChatMessagesScreen';
 import { withAuthGuard } from '../guards/withAuthGuard';
 import { ROUTES, type ChatsStackParamList } from '../types';
 

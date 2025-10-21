@@ -1,28 +1,30 @@
 import { Alert } from 'react-native';
-import * as FileSystem from 'expo-file-system';
+import { Directory, File, Paths } from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
 
-type DownloadedFile = {
-  uri: string;
-  fileUri: string;
-};
-
 const ensureAbsoluteUrl = (url: string) => (url.startsWith('http') ? url : `https://${url}`);
 
-const buildFileUri = (url: string) => {
-  const fileName = url.split('/').pop() || `image_${Date.now()}.jpg`;
-  return `${FileSystem.cacheDirectory ?? ''}${fileName}`;
+const cacheDirectory = () => {
+  const directory = new Directory(Paths.cache, 'chat-images');
+  try {
+    directory.create({ intermediates: true, idempotent: true });
+  } catch (error) {
+    console.warn('cacheDirectory create error', error);
+  }
+  return directory;
 };
 
-const downloadToCache = async (url: string): Promise<DownloadedFile | null> => {
+const buildFileName = (url: string) => url.split('/').pop() || `image_${Date.now()}.jpg`;
+
+const downloadToCache = async (url: string): Promise<File | null> => {
   try {
     const finalUrl = ensureAbsoluteUrl(url);
-    const fileUri = buildFileUri(finalUrl);
+    const directory = cacheDirectory();
+    const fileName = buildFileName(finalUrl);
+    const targetFile = new File(directory, fileName);
 
-    const { uri } = await FileSystem.downloadAsync(finalUrl, fileUri);
-
-    return { uri, fileUri: uri };
+    return await File.downloadFileAsync(finalUrl, targetFile);
   } catch (error) {
     console.warn('downloadToCache error', error);
     Alert.alert('Error', 'Failed to process image');
@@ -46,7 +48,7 @@ export async function saveImageToPhotos(url: string) {
       Alert.alert('Saved', 'Image saved to Photos');
     } finally {
       try {
-        await FileSystem.deleteAsync(downloaded.fileUri, { idempotent: true });
+        downloaded.delete();
       } catch (cleanupError) {
         console.warn('saveImageToPhotos cleanup error', cleanupError);
       }
@@ -72,7 +74,7 @@ export async function shareImageFromUrl(url: string) {
       await Sharing.shareAsync(downloaded.uri);
     } finally {
       try {
-        await FileSystem.deleteAsync(downloaded.fileUri, { idempotent: true });
+        downloaded.delete();
       } catch (cleanupError) {
         console.warn('shareImageFromUrl cleanup error', cleanupError);
       }

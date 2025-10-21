@@ -13,8 +13,16 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
+      "usesAppleSignIn": true,
       "supportsTablet": true,
-      "bundleIdentifier": "com.kapernikrs.expoTemplate"
+      "bundleIdentifier": "com.kapernikrs.expoTemplate",
+      "buildNumber": "30",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "We need access to your photo library so you can upload images to your profile and events.",
+        "NSCameraUsageDescription": "We need access to your camera so you can take photos directly in the app.",
+        "NSLocationWhenInUseUsageDescription": "We need access to your location to show events near you.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -24,6 +32,10 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.kapernikrs.expoTemplate"
+    },
+    "notification": {
+      "icon": "./assets/notification-icon.png",
+      "color": "#6f2da8"
     },
     "web": {
       "favicon": "./assets/favicon.png"
