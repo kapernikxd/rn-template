@@ -384,22 +384,20 @@ export class ChatStore {
     const isMyUnread = updatedChat?.unread?.userToId === this.root.authStore.getMyId();
 
     runInAction(() => {
-      this.chats = this.chats.map(chat =>
-        chat._id === updatedChat._id
-          ? { ...chat, latestMessage: updatedChat.latestMessage, unread: (isMyUnread && updatedChat.unread) ?? null }
-          : chat
-      );
+      const existingChat = this.chats.find(chat => chat._id === updatedChat._id);
+      const unread = (isMyUnread && updatedChat.unread) ?? null;
 
-      // ВАЖНО: сортировку делай только после первой загрузки страницы=1,
-      // а тут — не трогаем порядок,
-      // иначе FlatList будет прыгать при каждом входящем сообщении.
+      const mergedChat = existingChat
+        ? {
+            ...existingChat,
+            ...updatedChat,
+            latestMessage: updatedChat.latestMessage ?? existingChat.latestMessage,
+            unread,
+          }
+        : { ...updatedChat, unread };
 
-      // 2. Сортируем по времени latestMessage
-      // this.chats = updatedChats.sort((a, b) => {
-      //   const aTime = new Date(a.latestMessage?.createdAt || 0).getTime();
-      //   const bTime = new Date(b.latestMessage?.createdAt || 0).getTime();
-      //   return bTime - aTime;
-      // });
+      const remainingChats = this.chats.filter(chat => chat._id !== updatedChat._id);
+      this.chats = [mergedChat, ...remainingChats];
     });
   };
 
