@@ -13,3 +13,13 @@ export function capitalizeFirstLetter(text?: string): string {
   if (trimmed.length === 0) return '';
   return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
 }
+
+export const extractFirstUrl = (text?: string): string | undefined => {
+  if (!text) return;
+  const regex = /(https?:\/\/[^\s]+|www\.[^\s]+)/i;
+  const m = text.match(regex);
+  if (!m) return;
+  const raw = m[0];
+  // нормализуем: если "www.", добавим "https://"
+  return raw.startsWith('http') ? raw : `https://${raw}`;
+};

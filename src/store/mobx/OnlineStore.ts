@@ -253,6 +253,10 @@ export class OnlineStore {
     return this.onlineUsers.some(user => user.userId === userId);
   }
 
+  getOnlineUsers() {
+    return this.onlineUsers.map(user => user.userId)
+  }
+
   handleTyping = (data: { userId: string; userName: string }) => {
     runInAction(() => { this.setTypingStatus(data.userId, data.userName, true); });
   };
