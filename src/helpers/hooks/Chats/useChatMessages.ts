@@ -279,6 +279,16 @@ export function useChatMessages() {
       toggleMode();
     },
     clearSelected: () => setSelectedMessage(null),
+    clearChatHistory: async () => {
+      try {
+        await chatStore.clearChatHistory(chatId);
+        setSkip(0);
+        uiStore.showSnackbar('Chat history cleared', 'success');
+      } catch (error) {
+        console.error('Failed to clear chat history', error);
+        uiStore.showSnackbar('Failed to clear chat history', 'error');
+      }
+    },
   };
 
   return {

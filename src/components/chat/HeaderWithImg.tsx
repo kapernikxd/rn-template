@@ -5,12 +5,15 @@ import { observer } from 'mobx-react-lite';
 import { useRootStore } from '../../store/StoreProvider';
 
 import { GlobalStyleSheetType, SizesType, ThemeType, useTheme, CommonStylesType } from 'rn-vs-lb/theme';
+import ThreeDotsMenu, { type ThreeDotsMenuItem } from './ThreeDotsMenu';
+
+export type HeaderActionItem = ThreeDotsMenuItem;
 
 interface HeaderProps {
   imgUrl: string;
   title: string;
   onImgPress: () => void;
-  onActionPress?: () => void;
+  onActionPress?: (() => void) | HeaderActionItem[];
   onBackPress: () => void;
   isGroupChat: boolean;
   users: any;
@@ -71,9 +74,17 @@ const HeaderWithImg: React.FC<HeaderProps> = observer(({ imgUrl, title, onImgPre
             </View>
           </TouchableOpacity>
           <View style={globalStyleSheet.flexRowCenter}>
-            {onActionPress && <TouchableOpacity style={styles.actionButton} onPress={onActionPress}>
-              <Ionicons name='ellipsis-horizontal-sharp' size={20} color={theme.primary} />
-            </TouchableOpacity>}
+            {onActionPress
+              ? Array.isArray(onActionPress)
+                ? (
+                  <ThreeDotsMenu items={onActionPress} triggerStyle={styles.actionButton} />
+                )
+                : (
+                  <TouchableOpacity style={styles.actionButton} onPress={onActionPress}>
+                    <Ionicons name='ellipsis-horizontal-sharp' size={20} color={theme.primary} />
+                  </TouchableOpacity>
+                )
+              : null}
           </View>
         </View>
       </View>
