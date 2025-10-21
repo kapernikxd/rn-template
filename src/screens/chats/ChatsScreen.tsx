@@ -5,6 +5,7 @@ import { EmptyState, Spacer, ChatItem } from 'rn-vs-lb';
 import { ThemeType, useTheme } from 'rn-vs-lb/theme';
 
 import { SearchInput } from '../../components/form';
+import { SwipeableChatItem } from '../../components/chat/SwipeableChatItem';
 import { usePortalNavigation } from '../../helpers/hooks';
 import { getUserAvatar, getUserFullName } from '../../helpers/utils/user';
 import { getCompanionUser } from '../../helpers/utils/chat';
@@ -31,6 +32,7 @@ export const ChatsScreen: FC = observer(() => {
     chats,
     handleLoadMore,
     handleRefresh,
+    handleDeleteChat,
   } = useChats();
 
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -48,6 +50,35 @@ export const ChatsScreen: FC = observer(() => {
     const isUserOnline = onlineStore.onlineUsers?.some(u => u.userId === user?._id) ?? false;
 
     return (
+      <SwipeableChatItem
+        onDelete={() => handleDeleteChat(item._id)}
+        actionBackgroundColor={theme.danger}
+        iconColor={theme.white}
+      >
+        <ChatItem
+          unread={item?.unread?.count > 0 ? String(item?.unread?.count) : undefined}
+          onPress={() =>
+            goToChatMessages({
+              chatId: item._id,
+            })
+          }
+          variant="person"
+          imgUrl={getUserAvatar(user as UserDTO)}
+          senderFullName={getUserFullName(user as UserDTO)}
+          isUserOnline={isUserOnline}
+          createdAt={getSmartTime(item?.latestMessage?.createdAt)}
+          lastMessage={item?.latestMessage?.content}
+        />
+      </SwipeableChatItem>
+    );
+  };
+
+  const renderGroupItem = ({ item }: { item: any }) => (
+    <SwipeableChatItem
+      onDelete={() => handleDeleteChat(item._id)}
+      actionBackgroundColor={theme.danger}
+      iconColor={theme.white}
+    >
       <ChatItem
         unread={item?.unread?.count > 0 ? String(item?.unread?.count) : undefined}
         onPress={() =>
@@ -55,45 +86,34 @@ export const ChatsScreen: FC = observer(() => {
             chatId: item._id,
           })
         }
-        variant="person"
-        imgUrl={getUserAvatar(user as UserDTO)}
-        senderFullName={getUserFullName(user as UserDTO)}
-        isUserOnline={isUserOnline}
+        variant="group"
+        chatName={item?.title ?? 'Group'}
         createdAt={getSmartTime(item?.latestMessage?.createdAt)}
         lastMessage={item?.latestMessage?.content}
+        imgUrl={item?.avatarUrl ?? ''}
       />
-    );
-  };
-
-  const renderGroupItem = ({ item }: { item: any }) => (
-    <ChatItem
-      unread={item?.unread?.count > 0 ? String(item?.unread?.count) : undefined}
-      onPress={() =>
-        goToChatMessages({
-          chatId: item._id,
-        })
-      }
-      variant="group"
-      chatName={item?.title ?? 'Group'}
-      createdAt={getSmartTime(item?.latestMessage?.createdAt)}
-      lastMessage={item?.latestMessage?.content}
-      imgUrl={item?.avatarUrl ?? ''}
-    />
+    </SwipeableChatItem>
   );
 
   const renderBotItem = ({ item }: { item: any }) => (
-    <ChatItem
-      unread={item?.unread?.count > 0 ? String(item?.unread?.count) : undefined}
-      onPress={() =>
-        goToChatMessages({
-          chatId: item._id,
-        })
-      }
-      variant="bot"
-      chatName={item?.title ?? 'Bot'}
-      createdAt={getSmartTime(item?.latestMessage?.createdAt)}
-      lastMessage={item?.latestMessage?.content}
-    />
+    <SwipeableChatItem
+      onDelete={() => handleDeleteChat(item._id)}
+      actionBackgroundColor={theme.danger}
+      iconColor={theme.white}
+    >
+      <ChatItem
+        unread={item?.unread?.count > 0 ? String(item?.unread?.count) : undefined}
+        onPress={() =>
+          goToChatMessages({
+            chatId: item._id,
+          })
+        }
+        variant="bot"
+        chatName={item?.title ?? 'Bot'}
+        createdAt={getSmartTime(item?.latestMessage?.createdAt)}
+        lastMessage={item?.latestMessage?.content}
+      />
+    </SwipeableChatItem>
   );
 
   const renderItem =

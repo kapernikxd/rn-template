@@ -256,6 +256,19 @@ export class ChatStore {
     });
   }
 
+  removeChat(chatId: string) {
+    runInAction(() => {
+      this.chats = this.chats.filter((chat) => chat._id !== chatId);
+
+      if (this.selectedChat?._id === chatId) {
+        this.selectedChat = null;
+        this.messages = [];
+        this.pinnedMessages = [];
+        this.opponentId = undefined;
+      }
+    });
+  }
+
   async fetchChat(chatId: string, myId: string) {
     try {
       const response = await this.chatService.fetchChatById(chatId);
