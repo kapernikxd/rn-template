@@ -75,6 +75,14 @@ export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
     setRefreshing(false);
   }, [activeTab, searchQuery, loadChats]);
 
+  const handleDeleteChat = useCallback(
+    (chatId: string) => {
+      chatStore.removeChat(chatId);
+      setChatIds(prev => prev.filter(id => id !== chatId));
+    },
+    [chatStore],
+  );
+
   // загрузка на смену таба/страницы
   useEffect(() => {
     loadChats(activeTab, page, searchQuery);
@@ -145,5 +153,6 @@ export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
     loadChats,
     handleLoadMore,
     handleRefresh,
+    handleDeleteChat,
   };
 }
