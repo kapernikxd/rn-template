@@ -57,7 +57,7 @@ export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
     (tab: ChatTab) => {
       setChatIds([]);
       setPage(1);
-      chatStore.resetChatsPagination();
+      chatStore.resetChatsPagination({ clearChats: true });
       setActiveTabState(tab);
     },
     [chatStore]
