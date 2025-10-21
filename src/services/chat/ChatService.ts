@@ -2,7 +2,7 @@ import { AxiosResponse } from "axios";
 import { ChatById, ReadedMessageResponse } from "../../types/chat/chat-api";
 import $api from "../../helpers/http";
 import { MessageDTO } from "../../types";
-import { FetchChatsOptions, FetchChatsResponse, FormDataImage, MessageByIdResponse, UnreadStatus, UploadImage } from "../../types/chat";
+import { DeleteMessageResponse, FetchChatsOptions, FetchChatsResponse, FormDataImage, MessageByIdResponse, UnreadStatus, UploadImage } from "../../types/chat";
 import { ImagePickerAsset } from "expo-image-picker";
 
 export default class ChatService {
@@ -44,7 +44,7 @@ export default class ChatService {
     return $api.put(`/messages/${chatId}/messages/markAsRead`);
   }
 
-  async deleteMessage(messageId: string): Promise<AxiosResponse<void>> {
+  async deleteMessage(messageId: string): Promise<AxiosResponse<DeleteMessageResponse>> {
     return $api.delete(`/messages/${messageId}`);
   }
 

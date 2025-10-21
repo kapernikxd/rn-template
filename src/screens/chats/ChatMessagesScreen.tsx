@@ -125,7 +125,7 @@ export const ChatMessagesScreen: FC = observer(() => {
               <HeaderEdit
                 onClosePress={exitEditMode}
                 onReportMessage={selectedMessage && selectedMessage.sender._id !== myId ? actions.reportSelected : undefined}
-                onDeleteMessage={selectedMessage && selectedMessage.sender._id === myId ? actions.reportSelected : undefined}
+                onDeleteMessage={selectedMessage && selectedMessage.sender._id === myId ? actions.deleteSelected : undefined}
                 onCopy={actions.copySelected}
                 onEdit={selectedMessage && selectedMessage.sender._id === myId ? actions.startEditSelected : undefined}
                 onPinToggle={actions.togglePinSelected}

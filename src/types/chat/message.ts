@@ -22,3 +22,8 @@ export type MessageLike = Omit<MessageDTO, "chat"> & {
 };
 
 export type IncomingMessagePayload = MessageLike | { latestMessage?: MessageLike };
+
+export type DeleteMessageResponse = {
+  status: 'success';
+  data: MessageDTO;
+};

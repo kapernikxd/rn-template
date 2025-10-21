@@ -8,8 +8,37 @@ import { extractFirstUrl } from '../../helpers/utils/common';
 
 type Props = Omit<MessageItemProps, 'linkPreview' | 'linkPreviewLoading' | 'linkHandler'>;
 
-export const MessageItemWithPreview: FC<Props> = (props) => {
-  const url = extractFirstUrl(props.item.content ?? undefined);
+export const MessageItemWithPreview: FC<Props> = ({ item, onLongPress, ...rest }) => {
+  const deletedPlaceholder = 'Message deleted';
+  const rawItem = item as any;
+  const isDeleted = rawItem?.status === 'deleted';
+
+  const replyToWithStatus = rawItem?.replyTo as any;
+  const sanitizedReplyTo = replyToWithStatus?.status === 'deleted'
+    ? {
+        ...replyToWithStatus,
+        content: deletedPlaceholder,
+        attachments: [],
+        images: [],
+      }
+    : replyToWithStatus ?? null;
+
+  const sanitizedItem = isDeleted
+    ? {
+        ...rawItem,
+        content: deletedPlaceholder,
+        attachments: [],
+        images: [],
+        replyTo: sanitizedReplyTo,
+      }
+    : sanitizedReplyTo !== rawItem.replyTo
+      ? {
+          ...rawItem,
+          replyTo: sanitizedReplyTo,
+        }
+      : rawItem;
+
+  const url = extractFirstUrl((sanitizedItem as any).content ?? undefined);
   const { data, loading } = useLinkPreview(url);
 
   const handleLink = useCallback(async (u: string) => {
@@ -23,7 +52,9 @@ export const MessageItemWithPreview: FC<Props> = (props) => {
 
   return (
     <MessageItem
-      {...props}
+      {...rest}
+      item={sanitizedItem as any}
+      onLongPress={isDeleted ? undefined : onLongPress}
       linkPreview={data}
       linkPreviewLoading={loading}
       linkHandler={handleLink}

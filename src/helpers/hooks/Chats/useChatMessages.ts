@@ -237,6 +237,19 @@ export function useChatMessages() {
       setSelectedMessage(null);
       toggleMode();
     },
+    deleteSelected: async () => {
+      if (!selectedMessage) return;
+      try {
+        await chatStore.deleteMessage(selectedMessage._id);
+        uiStore.showSnackbar('Message deleted', 'success');
+      } catch (error) {
+        console.error('Failed to delete message', error);
+        uiStore.showSnackbar('Failed to delete message', 'error');
+      } finally {
+        setSelectedMessage(null);
+        setEditMode(false);
+      }
+    },
     copySelected: async () => {
       if (!selectedMessage?.content) return;
       await Clipboard.setStringAsync(selectedMessage.content);

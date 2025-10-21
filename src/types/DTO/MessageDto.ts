@@ -6,6 +6,8 @@ export type MessageId = string;
 type Sender = {
   _id: UserId;
 }
+export type MessageStatus = 'active' | 'deleted';
+
 export interface MessageDTO {
   _id: MessageId;
   sender: Sender;
@@ -15,8 +17,11 @@ export interface MessageDTO {
   } | string;
   readBy: UserId[];
   createdAt: string;
+  updatedAt?: string;
   replyTo?: MessageDTO;
   isEdited: boolean;
+  status?: MessageStatus;
+  pinned?: boolean;
   images?: string[];
   attachments?: string[];
 }
@@ -28,7 +33,10 @@ export interface MessageDTOExtented {
   chat: ChatId;
   readBy: UserId[];
   createdAt: string;
+  updatedAt?: string;
   isEdited: boolean;
+  status?: MessageStatus;
+  pinned?: boolean;
   images?: string[];
   attachments?: string[];
 }
