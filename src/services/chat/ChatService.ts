@@ -44,6 +44,10 @@ export default class ChatService {
     return $api.put(`/messages/${chatId}/messages/markAsRead`);
   }
 
+  async deleteMessage(messageId: string): Promise<AxiosResponse<void>> {
+    return $api.delete(`/messages/${messageId}`);
+  }
+
   async clearChatHistory(chatId: string): Promise<AxiosResponse<void>> {
     return $api.delete(`/messages/${chatId}/messages`);
   }

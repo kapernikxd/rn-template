@@ -13,7 +13,7 @@ import {
   Text,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LoadingScreen, InputMessage, PinnedMessagesBar, HeaderEdit, HeaderSwitcher } from 'rn-vs-lb';
+import { LoadingScreen, InputMessage, PinnedMessagesBar, HeaderSwitcher } from 'rn-vs-lb';
 import { useTheme, type ThemeType, type SizesType, type CommonStylesType } from 'rn-vs-lb/theme';
 import HeaderWithImg from '../../components/chat/HeaderWithImg';
 import { usePortalNavigation } from '../../helpers/hooks';
@@ -22,6 +22,7 @@ import type { MessageDTOExtented } from '../../types';
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 import { useChatMessages } from '../../helpers/hooks/Chats/useChatMessages';
 import MessageItemWithPreview from '../../components/chat/MessageItemWithPreview';
+import { HeaderEdit } from '../../components/chat/HeaderEdit';
 
 const chatBackground = require('../../assets/chat-background.png');
 
@@ -123,9 +124,10 @@ export const ChatMessagesScreen: FC = observer(() => {
             componentA={
               <HeaderEdit
                 onClosePress={exitEditMode}
-                onReportMessage={actions.reportSelected}
+                onReportMessage={selectedMessage && selectedMessage.sender._id !== myId ? actions.reportSelected : undefined}
+                onDeleteMessage={selectedMessage && selectedMessage.sender._id === myId ? actions.reportSelected : undefined}
                 onCopy={actions.copySelected}
-                onEdit={actions.startEditSelected}
+                onEdit={selectedMessage && selectedMessage.sender._id === myId ? actions.startEditSelected : undefined}
                 onPinToggle={actions.togglePinSelected}
                 isPinned={selectedMessage ? Boolean(selectedMessage && selectedMessage._id && selectedMessage._id === selectedMessage._id && true && !!selectedMessage && selectedMessage._id && /* no-op; hook сам считает */ false) : false}
               />
