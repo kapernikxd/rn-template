@@ -177,6 +177,13 @@ export class ChatStore {
     }
   }
 
+  resetChatsPagination() {
+    runInAction(() => {
+      this.hasMoreChats = true;
+      this.isLoadingChats = false;
+    });
+  }
+
   async fetchChat(chatId: string, myId: string) {
     try {
       const response = await this.chatService.fetchChatById(chatId);

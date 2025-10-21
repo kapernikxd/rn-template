@@ -24,7 +24,7 @@ export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
   const { chatStore, authStore, onlineStore } = useRootStore();
 
   const [chatIds, setChatIds] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<ChatTab>(ChatTab.Person);
+  const [activeTab, setActiveTabState] = useState<ChatTab>(ChatTab.Person);
   const [searchQuery, setSearchQuery] = useState('');
   const [isRefreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(1);
@@ -51,6 +51,16 @@ export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
       setChatIds(prev => (newPage > 1 ? [...prev, ...ids] : ids));
     },
     [activeTab, page, searchQuery, chatStore]
+  );
+
+  const setActiveTab = useCallback(
+    (tab: ChatTab) => {
+      setChatIds([]);
+      setPage(1);
+      chatStore.resetChatsPagination();
+      setActiveTabState(tab);
+    },
+    [chatStore]
   );
 
   const handleLoadMore = useCallback(() => {
