@@ -1,11 +1,19 @@
 import React, { FC, useCallback, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import {
-  StyleSheet, View, FlatList, Pressable, RefreshControl, KeyboardAvoidingView,
-  Keyboard, ImageBackground, TouchableOpacity, Text
+  StyleSheet,
+  View,
+  FlatList,
+  Pressable,
+  RefreshControl,
+  KeyboardAvoidingView,
+  Keyboard,
+  ImageBackground,
+  TouchableOpacity,
+  Text,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LoadingScreen, InputMessage, MessageItem, PinnedMessagesBar } from 'rn-vs-lb';
+import { LoadingScreen, InputMessage, PinnedMessagesBar } from 'rn-vs-lb';
 import { useTheme, type ThemeType, type SizesType, type CommonStylesType } from 'rn-vs-lb/theme';
 import HeaderWithImg from '../../../components/chatHeader/HeaderWithImg';
 import { HeaderEdit } from '../../../components/chatHeader/HeaderEdit';
@@ -60,6 +68,8 @@ export const ChatMessagesScreen: FC = observer(() => {
     toggleMode,
     exitEditMode,
     pickImages,
+    handleDownloadImage,
+    handleShareImage,
     actions,
   } = useChatMessages();
 
@@ -87,11 +97,21 @@ export const ChatMessagesScreen: FC = observer(() => {
             setSelectedMessage({ ...item, actionType: 'select' });
             toggleMode();
           }}
-        // если нужно: onDownloadImage, onShareImage тоже сюда
+          onDownloadImage={handleDownloadImage}
+          onShareImage={handleShareImage}
         />
       );
     },
-    [isGroupChat, lastReadMessageIdOpponent, myId, selectedMessage, setSelectedMessage, toggleMode]
+    [
+      handleDownloadImage,
+      handleShareImage,
+      isGroupChat,
+      lastReadMessageIdOpponent,
+      myId,
+      selectedMessage,
+      setSelectedMessage,
+      toggleMode,
+    ]
   );
 
   if (isLoading) return <LoadingScreen />;

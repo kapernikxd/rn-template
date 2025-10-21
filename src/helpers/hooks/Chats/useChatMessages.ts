@@ -7,6 +7,7 @@ import * as Clipboard from 'expo-clipboard';
 import { useRootStore } from '../../../store/StoreProvider';
 import { generateMessagesWithDates } from '../../../helpers/utils/date';
 import { getUserAvatar, getUserFullName } from '../../../helpers/utils/user';
+import { saveImageToPhotos, shareImageFromUrl } from '../../utils/media';
 
 import type { ChatsStackParamList } from '../../../navigation';
 import type { ImageAsset } from 'rn-vs-lb';
@@ -217,6 +218,14 @@ export function useChatMessages() {
     [chatStore]
   );
 
+  const handleDownloadImage = useCallback(async (url: string) => {
+    await saveImageToPhotos(url);
+  }, []);
+
+  const handleShareImage = useCallback(async (url: string) => {
+    await shareImageFromUrl(url);
+  }, []);
+
   const pinnedMessages = chatStore.pinnedMessages;
   const hasPinnedMessages = pinnedMessages.length > 0;
 
@@ -296,6 +305,8 @@ export function useChatMessages() {
     handleTypingStop,
     handlePinnedMessagePress,
     handleUnpinMessage,
+    handleDownloadImage,
+    handleShareImage,
     toggleMode,
     exitEditMode,
     pickImages,
