@@ -49,6 +49,40 @@ export class ChatStore {
     this.baseStore.notify();
   }
 
+  private applyMessageDeletion(messageId: string, patch?: Partial<MessageDTO>) {
+    const sanitizedPatch: Partial<MessageDTO> = {
+      ...(patch ?? {}),
+      status: patch?.status ?? 'deleted',
+      content: patch?.content ?? 'deleted',
+      attachments: [],
+      images: [],
+    };
+
+    const applyToMessage = (message: MessageDTO): MessageDTO => {
+      if (message._id === messageId) {
+        return {
+          ...message,
+          ...sanitizedPatch,
+        };
+      }
+
+      if (message.replyTo?._id === messageId) {
+        return {
+          ...message,
+          replyTo: {
+            ...message.replyTo,
+            ...sanitizedPatch,
+          },
+        };
+      }
+
+      return message;
+    };
+
+    this.messages = this.messages.map(applyToMessage);
+    this.pinnedMessages = this.pinnedMessages.map(applyToMessage);
+  }
+
   get snapshotVersion() {
     return this.baseStore.snapshotVersion;
   }
@@ -334,6 +368,27 @@ export class ChatStore {
     }
   }
 
+  async deleteMessage(messageId: string) {
+    try {
+      const { data } = await this.chatService.deleteMessage(messageId);
+      const updatedMessage = data.data;
+
+      runInAction(() => {
+        this.applyMessageDeletion(messageId, {
+          ...updatedMessage,
+          status: updatedMessage?.status ?? 'deleted',
+          content: updatedMessage?.content ?? 'deleted',
+          attachments: [],
+          images: [],
+        });
+        this.updatePinnedFromMessages();
+      });
+    } catch (err) {
+      console.error("Ошибка при удалении сообщения:", err);
+      throw err;
+    }
+  }
+
   subscribeToChats() {
     if (!this.root.onlineStore.socket) return;
     console.log("📲 Подписываюсь на список чатов...");
@@ -360,12 +415,14 @@ export class ChatStore {
     this.root.onlineStore.socket.off('server-message:new', this.handleNewMessage);
     this.root.onlineStore.socket.off('editedMessage', this.handleEditedMessage);
     this.root.onlineStore.socket.off('server-message:read', this.handleMarkAsRead);
+    this.root.onlineStore.socket.off('server-message:deleted', this.handleDeletedMessage);
 
     this.root.onlineStore.socket.on("typing", this.root.onlineStore.handleTyping);
     this.root.onlineStore.socket.on("stop typing", this.root.onlineStore.handleStopTyping);
     this.root.onlineStore.socket.on('server-message:new', this.handleNewMessage);
     this.root.onlineStore.socket.on('editedMessage', this.handleEditedMessage);
     this.root.onlineStore.socket.on('server-message:read', this.handleMarkAsRead);
+    this.root.onlineStore.socket.on('server-message:deleted', this.handleDeletedMessage);
 
     this.currentChatSubscribedId = chatId;
   }
@@ -377,6 +434,7 @@ export class ChatStore {
     this.root.onlineStore.socket.off('server-message:new', this.handleNewMessage);
     this.root.onlineStore.socket.off('editedMessage', this.handleEditedMessage);
     this.root.onlineStore.socket.off('server-message:read', this.handleMarkAsRead);
+    this.root.onlineStore.socket.off('server-message:deleted', this.handleDeletedMessage);
     this.currentChatSubscribedId = null;
   }
 
@@ -435,6 +493,19 @@ export class ChatStore {
       }
     });
   }
+
+  private handleDeletedMessage = (payload: { chatId: string; messageId: string; status?: 'deleted'; deletedBy: string }) => {
+    const chatId = typeof payload?.chatId === 'string' ? payload.chatId : undefined;
+    if (!chatId || this.selectedChat?._id !== chatId) return;
+
+    runInAction(() => {
+      this.applyMessageDeletion(payload.messageId, {
+        status: payload.status ?? 'deleted',
+        content: 'deleted',
+      });
+      this.updatePinnedFromMessages();
+    });
+  };
 
   private handleMarkAsRead = (data: ReadedMessageResponse) => {
     if (data.senderId === this.opponentId) {
