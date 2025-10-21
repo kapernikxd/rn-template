@@ -8,13 +8,14 @@ export type MainLayoutProps = {
 };
 
 export const MainLayout = ({ children }: MainLayoutProps) => {
-  const { authStore, onlineStore } = useRootStore();
+  const { authStore, onlineStore, chatStore } = useRootStore();
   const isAuthenticated = useStoreData(authStore, (store) => store.isAuthenticated);
   const { theme } = useTheme();
 
   useEffect(() => {
     if (isAuthenticated) {
       void onlineStore.connectSocket();
+      void chatStore.hasUnreadMessages();
     } else {
       onlineStore.disconnectSocket();
     }

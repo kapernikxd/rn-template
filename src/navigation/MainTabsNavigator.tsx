@@ -12,6 +12,8 @@ import { DiscoverStack } from './stacks/DiscoverStack';
 import { ProfileStack } from './stacks/ProfileStack';
 import type { MainTabParamList } from './types';
 import { useTheme } from 'rn-vs-lb/theme';
+import { useRootStore } from '../store/StoreProvider';
+import { Dot } from 'rn-vs-lb';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -39,6 +41,7 @@ const ICON_RADIUS = ICON_SIZE / 2;
 
 const MainTabBar = ({ state, descriptors, navigation, showLabels = true, bottomInset }: MainTabBarProps) => {
   const { theme } = useTheme();
+  const { onlineStore } = useRootStore();
   const { buildHref } = useLinkBuilder();
   const isWeb = Platform.OS === 'web';
 
@@ -75,11 +78,11 @@ const MainTabBar = ({ state, descriptors, navigation, showLabels = true, bottomI
         const CircleButton = isWeb ? PlatformPressable : Pressable;
         const circleProps: any = isWeb
           ? {
-              ...(href ? { href } : {}),
-            }
+            ...(href ? { href } : {}),
+          }
           : {
-              android_ripple: { color: theme.primaryLight + '22', borderless: false, radius: ICON_RADIUS + 4 },
-            };
+            android_ripple: { color: theme.primaryLight + '22', borderless: false, radius: ICON_RADIUS + 4 },
+          };
 
         return (
           <View key={route.key} style={styles.tabButton}>
@@ -98,6 +101,11 @@ const MainTabBar = ({ state, descriptors, navigation, showLabels = true, bottomI
             >
               <Feather name={tab.icon} size={20} color={iconColor} />
             </CircleButton>
+
+            {route.name === "ChatsTab" && <Dot style={{
+              backgroundColor: theme.danger, right: 30,
+              top: 6,
+            }} display={ onlineStore.hasUserNewMessage }/>}
 
             {showLabels ? (
               <Text style={[styles.label, isFocused && [styles.labelActive, { color: theme.primaryLight }]]}>
