@@ -25,6 +25,8 @@ export class ChatStore {
   hasMoreChats = true;
   isLoadingChats = false;
 
+  private chatsRequestId = 0;
+
   isApiCheckedNewMessages = false;
 
   private currentChatSubscribedId: string | null = null;
@@ -138,9 +140,14 @@ export class ChatStore {
   async fetchChats(options?: FetchChatsOptions) {
     if (this.isLoadingChats || (!this.hasMoreChats && options?.page && options.page > 1)) return [];
 
+    const requestId = ++this.chatsRequestId;
     this.isLoadingChats = true;
     try {
       const response = await this.chatService.fetchChats(options);
+
+      if (requestId !== this.chatsRequestId) {
+        return [];
+      }
 
       runInAction(() => {
         const incomingChats = response.data.chats;
@@ -171,10 +178,23 @@ export class ChatStore {
       console.error("Ошибка при получении чатов:", err);
       return []
     } finally {
-      runInAction(() => {
-        this.isLoadingChats = false;
-      });
+      if (requestId === this.chatsRequestId) {
+        runInAction(() => {
+          this.isLoadingChats = false;
+        });
+      }
     }
+  }
+
+  resetChatsPagination({ clearChats = false }: { clearChats?: boolean } = {}) {
+    runInAction(() => {
+      this.chatsRequestId += 1;
+      this.hasMoreChats = true;
+      this.isLoadingChats = false;
+      if (clearChats) {
+        this.chats = [];
+      }
+    });
   }
 
   async fetchChat(chatId: string, myId: string) {
