@@ -1,4 +1,4 @@
-import React, { useMemo, type ComponentType } from 'react';
+import React, { useEffect, useMemo, type ComponentType } from 'react';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { createBottomTabNavigator, type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useLinkBuilder } from '@react-navigation/native';
@@ -12,7 +12,7 @@ import { DiscoverStack } from './stacks/DiscoverStack';
 import { ProfileStack } from './stacks/ProfileStack';
 import type { MainTabParamList } from './types';
 import { useTheme } from 'rn-vs-lb/theme';
-import { useRootStore } from '../store/StoreProvider';
+import { useRootStore, useStoreData } from '../store/StoreProvider';
 import { Dot } from 'rn-vs-lb';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -42,8 +42,16 @@ const ICON_RADIUS = ICON_SIZE / 2;
 const MainTabBar = ({ state, descriptors, navigation, showLabels = true, bottomInset }: MainTabBarProps) => {
   const { theme } = useTheme();
   const { onlineStore } = useRootStore();
+  const hasUserNewMessage = useStoreData(onlineStore, (store) => store.hasUserNewMessage);
   const { buildHref } = useLinkBuilder();
   const isWeb = Platform.OS === 'web';
+  const activeRouteName = state.routes[state.index]?.name;
+
+  useEffect(() => {
+    if (activeRouteName === 'ChatsTab' && hasUserNewMessage) {
+      onlineStore.setUserNewMessage(false);
+    }
+  }, [activeRouteName, hasUserNewMessage, onlineStore]);
 
   return (
     <View
@@ -105,7 +113,7 @@ const MainTabBar = ({ state, descriptors, navigation, showLabels = true, bottomI
             {route.name === "ChatsTab" && <Dot style={{
               backgroundColor: theme.danger, right: 30,
               top: 6,
-            }} display={ onlineStore.hasUserNewMessage }/>}
+            }} display={hasUserNewMessage}/>}
 
             {showLabels ? (
               <Text style={[styles.label, isFocused && [styles.labelActive, { color: theme.primaryLight }]]}>
