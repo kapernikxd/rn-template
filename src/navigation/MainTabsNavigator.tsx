@@ -42,7 +42,7 @@ const ICON_RADIUS = ICON_SIZE / 2;
 const MainTabBar = ({ state, descriptors, navigation, showLabels = true, bottomInset }: MainTabBarProps) => {
   const { theme } = useTheme();
   const { onlineStore } = useRootStore();
-  const hasUserNewMessage = useStoreData(onlineStore, (store) => store.hasUserNewMessage);
+  const hasUserNewMessage = useStoreData(onlineStore, (store) => store.hasUnreadPrivate);
   const { buildHref } = useLinkBuilder();
   const isWeb = Platform.OS === 'web';
   const activeRouteName = state.routes[state.index]?.name;
