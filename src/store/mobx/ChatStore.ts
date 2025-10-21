@@ -389,6 +389,32 @@ export class ChatStore {
     }
   }
 
+  async clearChatHistory(chatId: string) {
+    try {
+      await this.chatService.clearChatHistory(chatId);
+
+      runInAction(() => {
+        this.messages = [];
+        this.pinnedMessages = [];
+        this.hasMoreMessages = false;
+
+        if (this.selectedChat?._id === chatId && this.selectedChat) {
+          this.selectedChat = { ...this.selectedChat, latestMessage: undefined };
+        }
+
+        const chatIndex = this.chats.findIndex(chat => chat._id === chatId);
+        if (chatIndex !== -1) {
+          const updatedChat = { ...this.chats[chatIndex] } as any;
+          delete updatedChat.latestMessage;
+          this.chats[chatIndex] = updatedChat;
+        }
+      });
+    } catch (err) {
+      console.error("Ошибка при очистке истории чата:", err);
+      throw err;
+    }
+  }
+
   subscribeToChats() {
     if (!this.root.onlineStore.socket) return;
     console.log("📲 Подписываюсь на список чатов...");

@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect } from 'react';
+import React, { FC, useCallback, useEffect, useMemo } from 'react';
 import { observer } from 'mobx-react-lite';
 import {
   StyleSheet,
@@ -15,7 +15,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { LoadingScreen, InputMessage, PinnedMessagesBar, HeaderSwitcher } from 'rn-vs-lb';
 import { useTheme, type ThemeType, type SizesType, type CommonStylesType } from 'rn-vs-lb/theme';
-import HeaderWithImg from '../../components/chat/HeaderWithImg';
+import HeaderWithImg, { type HeaderActionItem } from '../../components/chat/HeaderWithImg';
 import { usePortalNavigation } from '../../helpers/hooks';
 import { getSmartTime } from '../../helpers/utils/date';
 import type { MessageDTOExtented } from '../../types';
@@ -79,6 +79,18 @@ export const ChatMessagesScreen: FC = observer(() => {
     });
   }, [theme, setColors]);
 
+  const headerActions = useMemo<HeaderActionItem[]>(
+    () => [
+      {
+        label: 'Clear chat history',
+        icon: 'trash-outline',
+        colorIcon: theme.danger,
+        onPress: actions.clearChatHistory,
+      },
+    ],
+    [actions.clearChatHistory, theme.danger]
+  );
+
   const renderMessageItem = useCallback(
     ({ item }: { item: MessageDTOExtented }) => {
       const isMyMessage = item.sender?._id === myId;
@@ -138,7 +150,7 @@ export const ChatMessagesScreen: FC = observer(() => {
                 isGroupChat={isGroupChat}
                 onBackPress={goBack}
                 onImgPress={() => { }}
-                onActionPress={undefined}
+                onActionPress={headerActions}
                 title={chatTitle}
                 imgUrl={chatImg}
               />
