@@ -17,4 +17,6 @@ export interface AiBotMainPageBot {
   createdAt?: string;
   updatedAt?: string;
   details: AiBotMainPageDetails;
+  followers?: number;
+  isFollowing?: boolean;
 }
