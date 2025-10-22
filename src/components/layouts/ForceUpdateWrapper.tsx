@@ -1,226 +1,184 @@
-import React, { Component } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
-    View,
-    Text,
-    Linking,
-    Platform,
-    ActivityIndicator,
-    StyleSheet,
-    ScrollView,
-    RefreshControl,
-    Animated,
-    Easing,
-    AppState,
-    AppStateStatus,
-    NativeEventSubscription,
+  View,
+  Text,
+  Linking,
+  Platform,
+  ActivityIndicator,
+  StyleSheet,
+  ScrollView,
+  RefreshControl,
+  Animated,
+  Easing,
 } from 'react-native';
 import axios from 'axios';
 import { Button, Spacer } from 'rn-vs-lb';
-import { ThemeContext } from 'rn-vs-lb/theme';
+import { useTheme } from 'rn-vs-lb/theme';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { API_URL, appVersion } from '../../constants/links';
 
 type VersionResponse = {
-    minVersion: string;
-    latestVersion: string;
-    iosStoreUrl: string;
-    androidStoreUrl: string;
+  minVersion: string;
+  latestVersion: string;
+  iosStoreUrl: string;
+  androidStoreUrl: string;
 };
 
 const compareVersions = (current: string, required: string): boolean => {
-    const cur = current.split('.').map(Number);
-    const req = required.split('.').map(Number);
-    for (let i = 0; i < req.length; i++) {
-        if ((cur[i] ?? 0) < req[i]) return true;
-        if ((cur[i] ?? 0) > req[i]) return false;
-    }
-    return false;
+  const cur = current.split('.').map(Number);
+  const req = required.split('.').map(Number);
+  for (let i = 0; i < req.length; i++) {
+    if ((cur[i] ?? 0) < req[i]) return true;
+    if ((cur[i] ?? 0) > req[i]) return false;
+  }
+  return false;
 };
 
 type ForceUpdateWrapperProps = { children: React.ReactNode };
 
-type ForceUpdateWrapperState = {
-    shouldBlock: boolean;
-    storeUrl: string | null;
-    loading: boolean;
-    refreshing: boolean;
+export const ForceUpdateWrapper: FC<ForceUpdateWrapperProps> = ({ children }) => {
+  const { theme, commonStyles, typography } = useTheme() as any;
+
+  // унифицируем доступ к стилям темы (подстрой под свою реализацию useTheme)
+  const ui = useMemo(() => {
+    return {
+      bg: theme?.background ?? '#fff',
+      primary: theme?.primary ?? '#6f2da8',
+      container: commonStyles?.container ?? { flex: 1, padding: 16 },
+      titleH2: typography?.titleH2 ?? { fontSize: 24, fontWeight: '700' },
+      body: typography?.body ?? { fontSize: 16 },
+    };
+  }, [theme, commonStyles, typography]);
+
+  const [shouldBlock, setShouldBlock] = useState(false);
+  const [storeUrl, setStoreUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const isMountedRef = useRef(true);
+
+  const anim = useRef(new Animated.Value(0)).current;
+  const loopRef = useRef<Animated.CompositeAnimation | null>(null);
+
+  const startAnimation = useCallback(() => {
+    if (loopRef.current) return;
+    anim.setValue(0);
+    loopRef.current = Animated.loop(
+      Animated.sequence([
+        Animated.timing(anim, { toValue: -10, duration: 500, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+        Animated.timing(anim, { toValue: 10, duration: 500, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+        Animated.timing(anim, { toValue: 0, duration: 500, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+      ])
+    );
+    loopRef.current.start();
+  }, [anim]);
+
+  const stopAnimation = useCallback(() => {
+    loopRef.current?.stop();
+    loopRef.current = null;
+  }, []);
+
+  const safeUpdate = useCallback(<T,>(updater: () => T) => {
+    if (!isMountedRef.current) return;
+    return updater();
+  }, []);
+
+  const checkVersion = useCallback(async () => {
+    try {
+      const resp = await axios.get<VersionResponse>(`${API_URL}auth/app-version`);
+      const { minVersion, iosStoreUrl, androidStoreUrl } = resp.data;
+      const outdated = compareVersions(appVersion, minVersion);
+
+      safeUpdate(() => {
+        if (outdated) {
+          setShouldBlock(true);
+          setStoreUrl(Platform.OS === 'ios' ? iosStoreUrl : androidStoreUrl);
+        } else {
+          setShouldBlock(false);
+          setStoreUrl(null);
+        }
+      });
+    } catch (e) {
+      console.error('Version check failed', e);
+      // В случае ошибки не блокируем пользователя
+      safeUpdate(() => {
+        setShouldBlock(false);
+        setStoreUrl(null);
+      });
+    }
+  }, [safeUpdate]);
+
+  const init = useCallback(async () => {
+    safeUpdate(() => setLoading(true));
+    await checkVersion();
+    safeUpdate(() => setLoading(false));
+  }, [checkVersion, safeUpdate]);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    init();
+    return () => {
+      isMountedRef.current = false;
+      stopAnimation();
+    };
+  }, [init, stopAnimation]);
+
+  useEffect(() => {
+    if (shouldBlock) startAnimation();
+    else stopAnimation();
+  }, [shouldBlock, startAnimation, stopAnimation]);
+
+  const onRefresh = useCallback(async () => {
+    safeUpdate(() => setRefreshing(true));
+    await checkVersion();
+    safeUpdate(() => setRefreshing(false));
+  }, [checkVersion, safeUpdate]);
+
+  const onPressUpdate = useCallback(() => {
+    if (storeUrl) Linking.openURL(storeUrl);
+  }, [storeUrl]);
+
+  if (loading) {
+    return (
+      <View style={styles.center}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
+  if (shouldBlock) {
+    return (
+      <ScrollView
+        contentContainerStyle={[ui.container, { backgroundColor: ui.bg, flexGrow: 1, justifyContent: 'center' }]}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
+        <Animated.View style={[styles.iconContainer, { transform: [{ translateY: anim }] }]}>
+          <MaterialCommunityIcons name="update" size={64} color={ui.primary} />
+        </Animated.View>
+
+        <Spacer size="xl" />
+        <Text style={[ui.titleH2, styles.title]}>Update Required</Text>
+
+        <Spacer size="sm" />
+        <Text style={[ui.body, styles.description]}>
+          A new version of the app is available. Please update to continue.
+        </Text>
+
+        <Spacer size="xl" />
+        <View style={styles.button}>
+          <Button title="Update" onPress={onPressUpdate} />
+        </View>
+      </ScrollView>
+    );
+  }
+
+  return <>{children}</>;
 };
 
-export class ForceUpdateWrapper extends Component<ForceUpdateWrapperProps, ForceUpdateWrapperState> {
-    static contextType = ThemeContext;
-    declare context: React.ContextType<typeof ThemeContext>;
-
-    state: ForceUpdateWrapperState = {
-        shouldBlock: false,
-        storeUrl: null,
-        loading: true,
-        refreshing: false,
-    };
-
-    private isMountedFlag = false;
-
-    private animation = new Animated.Value(0);
-
-    private animationLoop: Animated.CompositeAnimation | null = null;
-
-    private appStateSubscription: NativeEventSubscription | null = null;
-
-    componentDidMount() {
-        this.isMountedFlag = true;
-        this.init();
-        this.appStateSubscription = AppState.addEventListener('change', this.handleAppStateChange);
-    }
-
-    componentDidUpdate(_: ForceUpdateWrapperProps, prevState: ForceUpdateWrapperState) {
-        if (!prevState.shouldBlock && this.state.shouldBlock) {
-            this.startAnimation();
-        }
-
-        if (prevState.shouldBlock && !this.state.shouldBlock) {
-            this.stopAnimation();
-        }
-    }
-
-    componentWillUnmount() {
-        this.isMountedFlag = false;
-        this.stopAnimation();
-        this.appStateSubscription?.remove();
-        this.appStateSubscription = null;
-    }
-
-    private startAnimation() {
-        if (this.animationLoop) return;
-
-        this.animation.setValue(0);
-        this.animationLoop = Animated.loop(
-            Animated.sequence([
-                Animated.timing(this.animation, {
-                    toValue: -10,
-                    duration: 500,
-                    easing: Easing.inOut(Easing.ease),
-                    useNativeDriver: true,
-                }),
-                Animated.timing(this.animation, {
-                    toValue: 10,
-                    duration: 500,
-                    easing: Easing.inOut(Easing.ease),
-                    useNativeDriver: true,
-                }),
-                Animated.timing(this.animation, {
-                    toValue: 0,
-                    duration: 500,
-                    easing: Easing.inOut(Easing.ease),
-                    useNativeDriver: true,
-                }),
-            ])
-        );
-
-        this.animationLoop.start();
-    }
-
-    private stopAnimation() {
-        if (!this.animationLoop) return;
-        this.animationLoop.stop();
-        this.animationLoop = null;
-    }
-
-    private async init() {
-        this.safeSetState({ loading: true });
-        await this.checkVersion();
-        this.safeSetState({ loading: false });
-    }
-
-    private handleAppStateChange = (nextAppState: AppStateStatus) => {
-        if (nextAppState === 'active') {
-            this.checkVersion();
-        }
-    };
-
-    private async checkVersion() {
-        try {
-            const response = await axios.get<VersionResponse>(`${API_URL}auth/app-version`);
-            const { minVersion, iosStoreUrl, androidStoreUrl } = response.data;
-
-            const outdated = compareVersions(appVersion, minVersion);
-
-            if (outdated) {
-                this.safeSetState({
-                    shouldBlock: true,
-                    storeUrl: Platform.OS === 'ios' ? iosStoreUrl : androidStoreUrl,
-                });
-            } else {
-                this.safeSetState({ shouldBlock: false, storeUrl: null });
-            }
-        } catch (error) {
-            console.error('Version check failed', error);
-        }
-    }
-
-    private onRefresh = async () => {
-        this.safeSetState({ refreshing: true });
-        await this.checkVersion();
-        this.safeSetState({ refreshing: false });
-    };
-
-    private safeSetState(state: Partial<ForceUpdateWrapperState>) {
-        if (!this.isMountedFlag) return;
-        this.setState(state as Pick<ForceUpdateWrapperState, keyof ForceUpdateWrapperState>);
-    }
-
-    private onPressUpdate = () => {
-        const { storeUrl } = this.state;
-        if (storeUrl) {
-            Linking.openURL(storeUrl);
-        }
-    };
-
-    render() {
-        const { children } = this.props;
-        const { shouldBlock, loading, refreshing } = this.state;
-
-        if (loading) {
-            return (
-                <View style={styles.center}>
-                    <ActivityIndicator size="large" />
-                </View>
-            );
-        }
-
-        if (shouldBlock) {
-            const { commonStyles, typography, theme } = this.context;
-
-            return (
-                <ScrollView
-                    contentContainerStyle={[commonStyles.container, { backgroundColor: theme.background, flexGrow: 1, justifyContent: 'center' }]}
-                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={this.onRefresh} />}
-                >
-                    <Animated.View style={[styles.iconContainer, { transform: [{ translateY: this.animation }] }]}>
-                        <MaterialCommunityIcons name="update" size={64} color={theme.primary} />
-                    </Animated.View>
-                    <Spacer size="xl" />
-                    <Text style={[typography.titleH2, styles.title]}>Update Required</Text>
-                    <Spacer size="sm" />
-                    <Text style={[typography.body, styles.description]}>
-                        A new version of the app is available. Please update to continue.
-                    </Text>
-                    <Spacer size="xl" />
-                    <View style={styles.button}>
-                        <Button title="Update" onPress={this.onPressUpdate} />
-                    </View>
-                </ScrollView>
-            );
-        }
-
-        return <>{children}</>;
-    }
-}
-
-export default ForceUpdateWrapper;
-
 const styles = StyleSheet.create({
-    center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
-    button: { width: '70%' },
-    iconContainer: { alignItems: 'center' },
-    title: { textAlign: 'center' },
-    description: { textAlign: 'center', paddingHorizontal: 20 },
+  center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
+  button: { width: '70%' },
+  iconContainer: { alignItems: 'center' },
+  title: { textAlign: 'center' },
+  description: { textAlign: 'center', paddingHorizontal: 20 },
 });
