@@ -4,6 +4,7 @@ import { ChatStore } from './mobx/ChatStore';
 import { UiStore } from './mobx/UiStore';
 import { OnlineStore } from './mobx/OnlineStore';
 import { NotificationStore } from './mobx/NotificationStore';
+import { AiBotStore } from './mobx/AiBotStore';
 
 export class RootStore {
   readonly authStore: AuthStore;
@@ -12,6 +13,7 @@ export class RootStore {
   readonly uiStore: UiStore;
   readonly onlineStore: OnlineStore;
   readonly notificationStore: NotificationStore;
+  readonly aiBotStore: AiBotStore;
 
   constructor() {
     this.authStore = new AuthStore(this);
@@ -20,5 +22,6 @@ export class RootStore {
     this.uiStore = new UiStore(this);
     this.onlineStore = new OnlineStore(this);
     this.notificationStore = new NotificationStore(this);
+    this.aiBotStore = new AiBotStore(this);
   }
 }

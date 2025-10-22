@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "expoTemplate",
-    "slug": "expoTemplate",
+    "name": "AiPair",
+    "slug": "expoAiPair",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -10,12 +10,12 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#3D3D3D"
     },
     "ios": {
       "usesAppleSignIn": true,
       "supportsTablet": true,
-      "bundleIdentifier": "com.kapernikrs.expoTemplate",
+      "bundleIdentifier": "com.kapernikrs.aipair",
       "buildNumber": "30",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "We need access to your photo library so you can upload images to your profile and events.",
@@ -27,11 +27,12 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#3D3D3D"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.kapernikrs.expoTemplate"
+      "package": "com.kapernikrs.aipair",
+      "versionCode": 30
     },
     "notification": {
       "icon": "./assets/notification-icon.png",
