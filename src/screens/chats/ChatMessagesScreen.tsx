@@ -31,7 +31,7 @@ export const ChatMessagesScreen: FC = observer(() => {
   const { setColors } = useSafeAreaColors();
   const styles = getStyles({ theme, sizes, commonStyles });
 
-  const { goBack } = usePortalNavigation();
+  const { goBack, goToProfile } = usePortalNavigation();
 
   const {
     // refs
@@ -78,6 +78,12 @@ export const ChatMessagesScreen: FC = observer(() => {
       bottomColor: theme.white,
     });
   }, [theme, setColors]);
+
+  const companionId = useMemo(() => {
+    if (isGroupChat) return null;
+    const companion = users?.find((user) => user._id !== myId);
+    return companion?._id ?? null;
+  }, [isGroupChat, myId, users]);
 
   const headerActions = useMemo<HeaderActionItem[]>(
     () => [
@@ -151,7 +157,11 @@ export const ChatMessagesScreen: FC = observer(() => {
                 users={users}
                 isGroupChat={isGroupChat}
                 onBackPress={goBack}
-                onImgPress={() => { }}
+                onImgPress={() => {
+                  if (companionId) {
+                    goToProfile(companionId);
+                  }
+                }}
                 onActionPress={headerActions}
                 title={chatTitle}
                 imgUrl={chatImg}

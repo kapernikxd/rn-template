@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { ChatsScreen } from '../../screens/chats/ChatsScreen';
 import { ChatMessagesScreen } from '../../screens/chats/ChatMessagesScreen';
+import { UserProfileScreen } from '../../screens/chats/UserProfileScreen';
 import { withAuthGuard } from '../guards/withAuthGuard';
 import { ROUTES, type ChatsStackParamList } from '../types';
 
@@ -15,6 +16,13 @@ const GuardedChatsScreen = withAuthGuard(ChatsScreen, {
 });
 
 const GuardedChatMessagesScreen = withAuthGuard(ChatMessagesScreen, {
+  redirect: {
+    tab: ROUTES.ChatsTab,
+    params: { screen: ROUTES.Chats },
+  },
+});
+
+const GuardedUserProfileScreen = withAuthGuard(UserProfileScreen, {
   redirect: {
     tab: ROUTES.ChatsTab,
     params: { screen: ROUTES.Chats },
@@ -43,6 +51,13 @@ export const ChatsStack = () => (
       options={{
         title: 'Сообщения',
         headerBackTitle: 'Назад',
+      }}
+    />
+    <Stack.Screen
+      name={ROUTES.UserProfile}
+      component={GuardedUserProfileScreen}
+      options={{
+        title: 'Профиль пользователя',
       }}
     />
   </Stack.Navigator>

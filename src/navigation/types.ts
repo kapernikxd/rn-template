@@ -42,6 +42,7 @@ export const ROUTES = {
   // Chats stack
   Chats: 'Chats',
   ChatMessages: 'ChatMessages',
+  UserProfile: 'UserProfile',
 
   // Profile stack
   Profile: 'Profile',
@@ -78,6 +79,7 @@ export type DiscoverStackParamList = {
 export type ChatsStackParamList = {
   [ROUTES.Chats]: undefined;
   [ROUTES.ChatMessages]: { chatId: string };
+  [ROUTES.UserProfile]: { userId: string };
 };
 
 export type ProfileStackParamList = {
