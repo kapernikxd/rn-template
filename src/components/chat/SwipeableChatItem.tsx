@@ -1,13 +1,15 @@
-import React, { FC, ReactNode, useCallback } from 'react';
-import { Animated, Pressable, StyleSheet } from 'react-native';
-import { Swipeable } from 'react-native-gesture-handler';
+import React, { FC, ReactNode, useCallback, forwardRef, useImperativeHandle, useRef } from 'react';
+import { Pressable, StyleSheet } from 'react-native';
+import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import type { SwipeableProps } from 'react-native-gesture-handler';
+import Animated, { useAnimatedStyle, interpolate, Extrapolation, type SharedValue } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
 
-export type SwipeableActionRenderArgs = {
-  progress: Animated.AnimatedInterpolation<string | number>;
-  dragX: Animated.AnimatedInterpolation<string | number>;
+type SwipeableActionRenderArgs = {
+  progress: SharedValue<number>;
+  dragX: SharedValue<number>;
   onDelete: () => void;
+  close: () => void;
 };
 
 export interface SwipeableChatItemProps {
@@ -20,67 +22,111 @@ export interface SwipeableChatItemProps {
   iconSize?: number;
   deleteIcon?: ReactNode;
   swipeableProps?: Omit<SwipeableProps, 'renderRightActions'>;
+  autoCloseOnDelete?: boolean;
 }
 
-export const SwipeableChatItem: FC<SwipeableChatItemProps> = ({
-  children,
-  onDelete,
-  renderRightAction,
-  actionBackgroundColor = '#ff3b30',
-  actionWidth = 72,
-  iconColor = '#fff',
-  iconSize = 24,
-  deleteIcon,
-  swipeableProps,
-}) => {
-  const renderActions = useCallback(
-    (
-      progress: Animated.AnimatedInterpolation<string | number>,
-      dragX: Animated.AnimatedInterpolation<string | number>,
-    ) => {
-      if (renderRightAction) {
-        return renderRightAction({ progress, dragX, onDelete });
-      }
+export type SwipeableChatItemRef = { close: () => void } | null;
 
-      const scale = progress.interpolate({
-        inputRange: [0, 1],
-        outputRange: [0.85, 1],
-        extrapolate: 'clamp',
-      });
-
-      return (
-        <Animated.View style={[styles.actionContainer, { transform: [{ scale }] }]}>
-          <Pressable
-            onPress={onDelete}
-            style={[
-              styles.deleteButton,
-              { backgroundColor: actionBackgroundColor, width: actionWidth },
-            ]}
-            android_ripple={{ color: 'rgba(255,255,255,0.25)' }}
-            accessibilityRole="button"
-            accessibilityLabel="Delete chat"
-            testID="chat-item-delete-action"
-          >
-            {deleteIcon ?? (
-              <Ionicons name="trash-outline" size={iconSize} color={iconColor} />
-            )}
-          </Pressable>
-        </Animated.View>
-      );
-    },
-    [actionBackgroundColor, actionWidth, deleteIcon, iconColor, iconSize, onDelete, renderRightAction],
-  );
+const RightAction: FC<{
+  progress: SharedValue<number>;
+  onPress: () => void;
+  width: number;
+  backgroundColor: string;
+  icon?: ReactNode;
+}> = ({ progress, onPress, width, backgroundColor, icon }) => {
+  const animatedStyle = useAnimatedStyle(() => {
+    const scale = interpolate(progress.value, [0, 1], [0.85, 1], Extrapolation.CLAMP);
+    return { transform: [{ scale }] };
+  });
 
   return (
-    <Swipeable
-      {...swipeableProps}
-      overshootRight={swipeableProps?.overshootRight ?? false}
-      renderRightActions={renderActions}
-    >
-      {children}
-    </Swipeable>
+    <Animated.View style={[styles.actionContainer, animatedStyle]}>
+      <Pressable
+        onPress={onPress}
+        style={[styles.deleteButton, { width, backgroundColor }]}
+        android_ripple={{ color: 'rgba(255,255,255,0.25)' }}
+        accessibilityRole="button"
+        accessibilityLabel="Delete chat"
+        testID="chat-item-delete-action"
+      >
+        {icon}
+      </Pressable>
+    </Animated.View>
   );
 };
+
+export const SwipeableChatItem = forwardRef<SwipeableChatItemRef, SwipeableChatItemProps>(
+  (
+    {
+      children,
+      onDelete,
+      renderRightAction,
+      actionBackgroundColor = '#ff3b30',
+      actionWidth = 72,
+      iconColor = '#fff',
+      iconSize = 24,
+      deleteIcon,
+      swipeableProps,
+      autoCloseOnDelete = true,
+    },
+    ref
+  ) => {
+    const swipeRef = useRef<any>(null);
+
+    useImperativeHandle(ref, () => ({
+      close: () => swipeRef.current?.close(),
+    }));
+
+    const handleDelete = useCallback(() => {
+      onDelete();
+      if (autoCloseOnDelete) swipeRef.current?.close();
+    }, [onDelete, autoCloseOnDelete]);
+
+    const renderActions = useCallback(
+      (progress: SharedValue<number>, dragX: SharedValue<number>) => {
+        if (renderRightAction) {
+          return renderRightAction({
+            progress,
+            dragX,
+            onDelete: handleDelete,
+            close: () => swipeRef.current?.close(),
+          });
+        }
+
+        return (
+          <RightAction
+            progress={progress}
+            onPress={handleDelete}
+            width={actionWidth}
+            backgroundColor={actionBackgroundColor}
+            icon={deleteIcon ?? <Ionicons name="trash-outline" size={iconSize} color={iconColor} />}
+          />
+        );
+      },
+      [
+        actionBackgroundColor,
+        actionWidth,
+        deleteIcon,
+        iconColor,
+        iconSize,
+        handleDelete,
+        renderRightAction,
+      ]
+    );
+
+    return (
+      <Swipeable
+        ref={swipeRef}
+        {...swipeableProps}
+        overshootRight={swipeableProps?.overshootRight ?? false}
+        rightThreshold={swipeableProps?.rightThreshold ?? actionWidth / 2}
+        renderRightActions={renderActions}
+      >
+        {children}
+      </Swipeable>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   actionContainer: {
