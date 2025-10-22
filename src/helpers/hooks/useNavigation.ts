@@ -134,5 +134,9 @@ export const usePortalNavigation = () => {
     canGoBack: useCallback(() => navigation.canGoBack(), [navigation]),
 
     goToTermOfUse: useCallback(() => navigation.navigate(ROUTES.TermsOfUse), [navigation]),
+    goToAiBotProfile: useCallback(
+      (aiBotId: string) => navigation.navigate(ROUTES.AiAgent, { aiBotId }),
+      [navigation],
+    ),
   };
 };

@@ -5,6 +5,7 @@ import { useTheme } from 'rn-vs-lb/theme';
 import { useRootStore, useStoreData } from '../../../store/StoreProvider';
 import type { AiBotMainPageBot } from '../../../types';
 import { AiBotCard } from '../components/AiBotCard';
+import { usePortalNavigation } from '../../../helpers/hooks';
 
 const HORIZONTAL_PADDING = 24;
 const COLUMN_GAP = 16;
@@ -16,6 +17,7 @@ export const DashboardScreen = () => {
   const error = useStoreData(aiBotStore, (store) => store.mainPageBotsError);
   const { width } = useWindowDimensions();
   const { theme } = useTheme();
+  const { goToAiBotProfile } = usePortalNavigation();
 
   useEffect(() => {
     if (!bots.length && !isLoading) {
@@ -40,9 +42,20 @@ export const DashboardScreen = () => {
     [],
   );
 
-  const renderItem = useCallback(({ item }: { item: AiBotMainPageBot }) => (
-    <AiBotCard bot={item} style={{ width: cardWidth }} />
-  ), [cardWidth]);
+  const handleOpenBotProfile = useCallback((botId: string) => {
+    goToAiBotProfile(botId);
+  }, [goToAiBotProfile]);
+
+  const renderItem = useCallback(
+    ({ item }: { item: AiBotMainPageBot }) => (
+      <AiBotCard
+        bot={item}
+        style={{ width: cardWidth }}
+        onPress={() => handleOpenBotProfile(item.id)}
+      />
+    ),
+    [cardWidth, handleOpenBotProfile],
+  );
 
   const renderEmptyComponent = useCallback(() => (
     <View style={styles.emptyState}>
