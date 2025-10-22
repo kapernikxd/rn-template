@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { isAxiosError } from "axios";
 import type { AuthUserLike } from "../../types/auth";
 import {
   getRefreshToken,
@@ -97,23 +97,28 @@ $api.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return $api.request(originalRequest);
       } catch (e) {
-        if (tokenRefreshFailureHandler) {
-          await tokenRefreshFailureHandler(e);
-        } else {
-          await removeAccessToken();
-          await removeRefreshToken();
-          await removeLocalUserId();
+        const axiosStatus = isAxiosError(e) ? e.response?.status : undefined;
+        const isAuthError = !isAxiosError(e) || [400, 401, 403].includes(axiosStatus ?? 0);
+
+        if (isAuthError) {
+          if (tokenRefreshFailureHandler) {
+            await tokenRefreshFailureHandler(e);
+          } else {
+            await removeAccessToken();
+            await removeRefreshToken();
+            await removeLocalUserId();
+          }
         }
 
-        // delete $api.defaults.headers.common['Authorization'];
-
-        // ЛОГИРУЕМ ОШИБКУ ОБНОВЛЕНИЯ ТОКЕНА
         logToServer("error", "Ошибка обновления токена", {
-          message: e.message,
+          message: e instanceof Error ? e.message : String(e),
           originalRequestUrl: originalRequest?.url,
+          status: axiosStatus,
         });
 
-        console.log("НЕ АВТОРИЗОВАН");
+        if (isAuthError) {
+          console.log("НЕ АВТОРИЗОВАН");
+        }
       }
     }
 

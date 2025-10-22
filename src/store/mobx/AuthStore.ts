@@ -360,8 +360,10 @@ export class AuthStore {
 
     async refreshAccessToken() {
         let didRestoreSession = false;
+        let accessToken: string | null = null;
+        let storedUser: AuthUser | null = null;
         try {
-            const [accessToken, storedUser] = await Promise.all([
+            [accessToken, storedUser] = await Promise.all([
                 getAccessToken(),
                 getAuthUser(),
             ]);
@@ -387,7 +389,17 @@ export class AuthStore {
 
             didRestoreSession = true;
         } catch (e: any) {
-            await this.handleTokenRefreshFailure();
+            const isAxios = isAxiosError(e);
+            const axiosStatus = isAxios ? e.response?.status : undefined;
+            const shouldReset = !isAxios || [400, 401, 403].includes(axiosStatus ?? 0);
+
+            if (shouldReset) {
+                await this.handleTokenRefreshFailure();
+            } else if (storedUser && accessToken) {
+                await this.setAuthenticatedUser(storedUser, accessToken);
+                didRestoreSession = true;
+            }
+
             console.log(e);
             return false;
         } finally {
