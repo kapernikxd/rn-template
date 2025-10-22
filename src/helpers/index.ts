@@ -1,6 +1,5 @@
 export {
   default as $api,
-  API_URL,
   registerTokenRefreshHandler,
   registerTokenRefreshFailureHandler,
 } from "./http";
