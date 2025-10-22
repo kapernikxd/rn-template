@@ -6,6 +6,7 @@ import {
   type RootStackParamList,
   ROUTES,
 } from '../../navigation/types';
+import { useRootStore, useStoreData } from '../../store/StoreProvider';
 
 /**
  * Хук-обёртка для навигации.
@@ -13,6 +14,8 @@ import {
  */
 export const usePortalNavigation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const { authStore } = useRootStore();
+  const myUserId = useStoreData(authStore, (store) => store.user?.id ?? null);
 
   const goToMain = (
     tab: keyof MainTabParamList = ROUTES.DashboardTab,
@@ -30,6 +33,32 @@ export const usePortalNavigation = () => {
           },
         } as never,
       ],
+    });
+  };
+
+  const goToProfile = (userId: string) => {
+    if (!userId) return;
+
+    const currentMyId = myUserId ?? authStore.getMyId() ?? null;
+
+    if (currentMyId && userId === currentMyId) {
+      navigation.navigate(ROUTES.RootTabs, {
+        screen: ROUTES.ProfileTab,
+        params: {
+          screen: ROUTES.Profile,
+        },
+      });
+      return;
+    }
+
+    navigation.navigate(ROUTES.RootTabs, {
+      screen: ROUTES.ChatsTab,
+      params: {
+        screen: ROUTES.UserProfile,
+        params: {
+          userId,
+        },
+      },
     });
   };
 
@@ -74,9 +103,10 @@ export const usePortalNavigation = () => {
       }),
     goToMain,
 
-    goToProfile: (userId: string) => navigation.goBack(),
+    goToProfile,
 
     goBack: () => navigation.goBack(),
+    canGoBack: () => navigation.canGoBack(),
 
     goToTermOfUse: () => navigation.navigate(ROUTES.TermsOfUse),
   };

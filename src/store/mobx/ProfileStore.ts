@@ -107,6 +107,10 @@ export class ProfileStore {
    * @param id Идентификатор профиля
    */
   async fetchProfileById(id: string) {
+    runInAction(() => {
+      this.isLoadingProfile = true;
+    });
+    this.notify();
     try {
       const { data } = await this.profileService.getProfileById(id);
       runInAction(() => {
