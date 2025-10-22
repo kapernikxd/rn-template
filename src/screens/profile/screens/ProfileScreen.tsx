@@ -93,7 +93,7 @@ export const ProfileScreen = () => {
   const canGoBack = navigation.canGoBack();
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: theme.background }}>
       <ProfileCard
         name={displayName}
         imageUri={imageUri}

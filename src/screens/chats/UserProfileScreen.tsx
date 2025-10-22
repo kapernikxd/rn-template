@@ -90,7 +90,7 @@ export const UserProfileScreen = () => {
   }
 
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1, backgroundColor: theme.background }}>
       <ProfileCard
         name={displayName}
         imageUri={imageUri}
