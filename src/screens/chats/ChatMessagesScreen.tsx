@@ -11,9 +11,10 @@ import {
   ImageBackground,
   TouchableOpacity,
   Text,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LoadingScreen, InputMessage, PinnedMessagesBar, HeaderSwitcher } from 'rn-vs-lb';
+import { InputMessage, PinnedMessagesBar, HeaderSwitcher } from 'rn-vs-lb';
 import { useTheme, type ThemeType, type SizesType, type CommonStylesType } from 'rn-vs-lb/theme';
 import HeaderWithImg, { type HeaderActionItem } from '../../components/chat/HeaderWithImg';
 import { usePortalNavigation } from '../../helpers/hooks';
@@ -133,8 +134,6 @@ export const ChatMessagesScreen: FC = observer(() => {
     ]
   );
 
-  if (isLoading) return <LoadingScreen />;
-
   return (
     <View style={{ flex: 1, backgroundColor: theme.backgroundThird }}>
       <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
@@ -206,6 +205,12 @@ export const ChatMessagesScreen: FC = observer(() => {
               inverted
               onTouchStart={Keyboard.dismiss}
             />
+
+            {isLoading ? (
+              <View style={styles.loadingOverlay}>
+                <ActivityIndicator size="large" color={theme.primary} />
+              </View>
+            ) : null}
           </ImageBackground>
 
           {editMode && (
@@ -269,6 +274,13 @@ const getStyles = ({ theme, sizes, commonStyles }: { theme: ThemeType; sizes: Si
     container: { flex: 1, backgroundColor: 'transparent' },
     messagesListContent: { paddingTop: 8, paddingBottom: 12 },
     pinnedWrapper: { paddingVertical: 0, paddingHorizontal: 0, borderColor: theme.border, borderBottomWidth: 1 },
+    loadingOverlay: {
+      ...StyleSheet.absoluteFillObject,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: theme.backgroundThird,
+      zIndex: 1,
+    },
     replyBar: {
       ...commonStyles.backgroundLight,
       flexDirection: 'row',
