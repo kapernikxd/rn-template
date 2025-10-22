@@ -10,6 +10,9 @@ import {
     RefreshControl,
     Animated,
     Easing,
+    AppState,
+    AppStateStatus,
+    NativeEventSubscription,
 } from 'react-native';
 import axios from 'axios';
 import { Button, Spacer } from 'rn-vs-lb';
@@ -60,9 +63,12 @@ export class ForceUpdateWrapper extends Component<ForceUpdateWrapperProps, Force
 
     private animationLoop: Animated.CompositeAnimation | null = null;
 
+    private appStateSubscription: NativeEventSubscription | null = null;
+
     componentDidMount() {
         this.isMountedFlag = true;
         this.init();
+        this.appStateSubscription = AppState.addEventListener('change', this.handleAppStateChange);
     }
 
     componentDidUpdate(_: ForceUpdateWrapperProps, prevState: ForceUpdateWrapperState) {
@@ -78,6 +84,8 @@ export class ForceUpdateWrapper extends Component<ForceUpdateWrapperProps, Force
     componentWillUnmount() {
         this.isMountedFlag = false;
         this.stopAnimation();
+        this.appStateSubscription?.remove();
+        this.appStateSubscription = null;
     }
 
     private startAnimation() {
@@ -121,6 +129,12 @@ export class ForceUpdateWrapper extends Component<ForceUpdateWrapperProps, Force
         await this.checkVersion();
         this.safeSetState({ loading: false });
     }
+
+    private handleAppStateChange = (nextAppState: AppStateStatus) => {
+        if (nextAppState === 'active') {
+            this.checkVersion();
+        }
+    };
 
     private async checkVersion() {
         try {
@@ -200,6 +214,8 @@ export class ForceUpdateWrapper extends Component<ForceUpdateWrapperProps, Force
         return <>{children}</>;
     }
 }
+
+export default ForceUpdateWrapper;
 
 const styles = StyleSheet.create({
     center: { flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 },
