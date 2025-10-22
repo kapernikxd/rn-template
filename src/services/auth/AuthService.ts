@@ -1,7 +1,8 @@
 
 import axios, { AxiosResponse, isAxiosError } from "axios";
-import $api, { API_URL } from "../../helpers/http";
+import $api from "../../helpers/http";
 import { AuthRejection, AuthResponse, AuthResponseExtend, LoginParams, NewPasswordParams, ParamsVerificateEmail, RegistrationParams, ResetPasswordParams } from "../../types/auth";
+import { API_URL } from "../../constants/links";
 
 export default class AuthService {
   static async login({
