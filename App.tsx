@@ -7,17 +7,20 @@ import { Theme } from './src/constants/theme';
 import { Host } from 'react-native-portalize';
 import CustomSnackbar from './src/components/CustomSnackbar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ForceUpdateWrapper } from './src/components/layouts/ForceUpdateWrapper';
 
 export default function App() {
   return (
     <Host>
-      <GestureHandlerRootView>
+      <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
           <ThemeProvider theme={Theme}>
             <StatusBar style="auto" />
             <StoreProvider>
-              <AppNavigator />
-              <CustomSnackbar />
+              <ForceUpdateWrapper>
+                <AppNavigator />
+                <CustomSnackbar />
+              </ForceUpdateWrapper>
             </StoreProvider>
           </ThemeProvider>
         </SafeAreaProvider>
