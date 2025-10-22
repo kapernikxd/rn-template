@@ -1,28 +1,74 @@
-import { StyleSheet, Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useCallback } from 'react';
-import { Button } from 'rn-vs-lb';
+import { ActivityIndicator, FlatList, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { useCallback, useEffect, useMemo } from 'react';
+import { useTheme } from 'rn-vs-lb/theme';
 
-import type { DashboardStackParamList } from '../../../navigation/types';
+import { useRootStore, useStoreData } from '../../../store/StoreProvider';
+import type { AiBotMainPageBot } from '../../../types';
+import { AiBotCard } from '../components/AiBotCard';
 
-type NavigationProp = NativeStackNavigationProp<DashboardStackParamList, 'Dashboard'>;
+const HORIZONTAL_PADDING = 24;
+const COLUMN_GAP = 16;
 
 export const DashboardScreen = () => {
-  const navigation = useNavigation<NavigationProp>();
+  const { aiBotStore } = useRootStore();
+  const bots = useStoreData(aiBotStore, (store) => store.mainPageBots);
+  const isLoading = useStoreData(aiBotStore, (store) => store.isLoadingMainPageBots);
+  const error = useStoreData(aiBotStore, (store) => store.mainPageBotsError);
+  const { width } = useWindowDimensions();
+  const { theme } = useTheme();
 
-  const handleOpenDetails = useCallback(() => {
-    navigation.navigate('DashboardDetails');
-  }, [navigation]);
+  useEffect(() => {
+    if (!bots.length && !isLoading) {
+      void aiBotStore.fetchMainPageBots();
+    }
+  }, [aiBotStore, bots.length, isLoading]);
+
+  const cardWidth = useMemo(() => {
+    return (width - HORIZONTAL_PADDING * 2 - COLUMN_GAP) / 2;
+  }, [width]);
+
+  const renderHeader = useCallback(
+    () => (
+      <View style={styles.header}>
+        <Text style={styles.heading}>AI-компаньоны</Text>
+        <Text style={styles.subheading}>
+          Выберите бота, чтобы начать диалог или найти вдохновение. Команда ежедневно добавляет
+          новых героев и сценарии общения.
+        </Text>
+      </View>
+    ),
+    [],
+  );
+
+  const renderItem = useCallback(({ item }: { item: AiBotMainPageBot }) => (
+    <AiBotCard bot={item} style={{ width: cardWidth }} />
+  ), [cardWidth]);
+
+  const renderEmptyComponent = useCallback(() => (
+    <View style={styles.emptyState}>
+      {isLoading ? (
+        <ActivityIndicator color={theme.white} />
+      ) : (
+        <Text style={styles.emptyText}>
+          {error ?? 'AI-боты скоро появятся здесь. Попробуйте обновить позже.'}
+        </Text>
+      )}
+    </View>
+  ), [error, isLoading, theme.white]);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Главный экран</Text>
-      <Text style={styles.subtitle}>
-        Это базовый пример домашнего экрана. Здесь может быть лента, статистика или другие
-        ключевые данные вашего приложения.
-      </Text>
-      <Button onPress={handleOpenDetails} title='Открыть' />
+    <View style={[styles.container, { backgroundColor: theme.darkBackground }]}>
+      <FlatList
+        data={bots}
+        keyExtractor={(item) => item.id}
+        numColumns={2}
+        renderItem={renderItem}
+        contentContainerStyle={[styles.content, bots.length === 0 && styles.emptyContent]}
+        columnWrapperStyle={bots.length ? styles.columnWrapper : undefined}
+        ListHeaderComponent={renderHeader}
+        ListEmptyComponent={renderEmptyComponent}
+        showsVerticalScrollIndicator={false}
+      />
     </View>
   );
 };
@@ -30,32 +76,44 @@ export const DashboardScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  content: {
+    paddingHorizontal: HORIZONTAL_PADDING,
+    paddingBottom: 32,
+    paddingTop: 16,
+    gap: 20,
+  },
+  emptyContent: {
+    flexGrow: 1,
+  },
+  columnWrapper: {
+    gap: COLUMN_GAP,
+    marginBottom: 18,
+  },
+  header: {
+    gap: 8,
+    marginBottom: 8,
+  },
+  heading: {
+    fontSize: 26,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  subheading: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: 'rgba(255, 255, 255, 0.72)',
+  },
+  emptyState: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24,
-    backgroundColor: '#F5F7FA',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    marginBottom: 12,
-    color: '#1E1E1E',
-  },
-  subtitle: {
-    fontSize: 16,
-    textAlign: 'center',
-    color: '#4A4A4A',
-    marginBottom: 24,
-  },
-  button: {
-    paddingVertical: 12,
     paddingHorizontal: 24,
-    borderRadius: 12,
-    backgroundColor: '#1E40AF',
+    gap: 12,
   },
-  buttonText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-    fontSize: 16,
+  emptyText: {
+    fontSize: 14,
+    textAlign: 'center',
+    color: 'rgba(255, 255, 255, 0.65)',
   },
 });
