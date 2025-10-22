@@ -8,7 +8,7 @@ import { usePortalNavigation } from "../useNavigation";
 export type ActiveTab = "info" | "gallery";
 
 export function useAiAgentProfile(aiBotId?: string) {
-  const { goToProfile, goBack } = usePortalNavigation();
+  const { goBack } = usePortalNavigation();
   const { aiBotStore, authStore, chatStore } = useRootStore();
   const isMdUp = true;
 
@@ -51,7 +51,6 @@ export function useAiAgentProfile(aiBotId?: string) {
     if (!aiBot) return [];
     const creator = aiBot.createdBy;
     const creatorName = creator ? getUserFullName(creator) : "";
-    const creatorHref = creator?._id ? goToProfile(creator._id) : undefined;
     return [
       {
         title: "Creator Info",
@@ -59,7 +58,6 @@ export function useAiAgentProfile(aiBotId?: string) {
           {
             label: "Creator",
             value: creatorName,
-            href: creatorHref,
           },
           {
             label: "Created",
@@ -68,7 +66,7 @@ export function useAiAgentProfile(aiBotId?: string) {
         ],
       },
     ];
-  }, [aiBot, goToProfile]);
+  }, [aiBot]);
 
   const aiBotProfileId = aiBot?._id;
   const isFollowing = botDetails?.isFollowing ?? aiBot?.isFollowing ?? false;
