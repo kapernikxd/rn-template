@@ -8,6 +8,7 @@ import { ROUTES, type RootStackParamList } from './types';
 import { useRootStore, useStoreData } from '../store/StoreProvider';
 import { ScreenLoader, MainLayout } from '../components';
 import { TermsOfUseScreen } from '../screens/docs';
+import { AiAgentScreen } from '../screens/aibot';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -41,6 +42,13 @@ export const AppNavigator = () => {
         </RootStack.Screen>
         <RootStack.Screen name={ROUTES.Auth} component={AuthStack} />
         <RootStack.Screen name={ROUTES.TermsOfUse} component={TermsOfUseScreen} />
+        <RootStack.Screen name={ROUTES.AiAgent}>
+          {(props) => (
+            <MainLayout>
+              <AiAgentScreen {...props} />
+            </MainLayout>
+          )}
+        </RootStack.Screen>
       </RootStack.Navigator>
     </NavigationContainer>
   );
