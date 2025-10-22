@@ -85,7 +85,9 @@ export const ChatMessagesScreen: FC = observer(() => {
         label: 'Clear chat history',
         icon: 'trash-outline',
         colorIcon: theme.danger,
-        onPress: actions.clearChatHistory,
+        onPress: () => {
+          void actions.clearChatHistory();
+        },
       },
     ],
     [actions.clearChatHistory, theme.danger]
