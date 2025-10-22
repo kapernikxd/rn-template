@@ -428,6 +428,16 @@ export class ChatStore {
     }
   }
 
+  async deleteChat(chatId: string) {
+    try {
+      await this.chatService.deleteChat(chatId);
+      this.removeChat(chatId);
+    } catch (err) {
+      console.error("Ошибка при удалении чата:", err);
+      throw err;
+    }
+  }
+
   subscribeToChats() {
     if (!this.root.onlineStore.socket) return;
     console.log("📲 Подписываюсь на список чатов...");

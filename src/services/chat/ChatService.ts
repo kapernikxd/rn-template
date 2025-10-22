@@ -52,6 +52,10 @@ export default class ChatService {
     return $api.delete(`/messages/${chatId}/messages`);
   }
 
+  async deleteChat(chatId: string): Promise<AxiosResponse<{ success: boolean }>> {
+    return $api.delete(`/chat/${chatId}`);
+  }
+
   async sendMessage(
     message: string,
     chatId: string,

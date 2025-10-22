@@ -21,7 +21,7 @@ type UseChatsOptions = {
 };
 
 export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
-  const { chatStore, authStore, onlineStore } = useRootStore();
+  const { chatStore, authStore, onlineStore, uiStore } = useRootStore();
 
   const [chatIds, setChatIds] = useState<string[]>([]);
   const [activeTab, setActiveTabState] = useState<ChatTab>(ChatTab.Person);
@@ -76,11 +76,17 @@ export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
   }, [activeTab, searchQuery, loadChats]);
 
   const handleDeleteChat = useCallback(
-    (chatId: string) => {
-      chatStore.removeChat(chatId);
-      setChatIds(prev => prev.filter(id => id !== chatId));
+    async (chatId: string) => {
+      try {
+        await chatStore.deleteChat(chatId);
+        setChatIds(prev => prev.filter(id => id !== chatId));
+        uiStore.showSnackbar('Chat deleted', 'success');
+      } catch (error) {
+        console.error('Failed to delete chat', error);
+        uiStore.showSnackbar('Failed to delete chat', 'error');
+      }
     },
-    [chatStore],
+    [chatStore, uiStore],
   );
 
   // загрузка на смену таба/страницы
