@@ -57,7 +57,7 @@ export const usePortalNavigation = () => {
       }
 
       navigation.navigate(ROUTES.RootTabs, {
-        screen: ROUTES.ChatsTab,
+        screen: ROUTES.ProfileTab,
         params: {
           screen: ROUTES.UserProfile,
           params: {

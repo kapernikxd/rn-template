@@ -82,7 +82,6 @@ export type DiscoverStackParamList = {
 export type ChatsStackParamList = {
   [ROUTES.Chats]: undefined;
   [ROUTES.ChatMessages]: { chatId: string };
-  [ROUTES.UserProfile]: { userId: string };
 };
 
 export type ProfileStackParamList = {
@@ -93,6 +92,7 @@ export type ProfileStackParamList = {
   [ROUTES.ProfileChangePassword]: undefined;
   [ROUTES.ProfileSocialProfiles]: undefined;
   [ROUTES.ProfileNotificationSettings]: undefined;
+  [ROUTES.UserProfile]: { userId: string };
 };
 
 /**
