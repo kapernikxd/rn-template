@@ -23,8 +23,8 @@ export const createAiAgentStyles = ({
       paddingBottom: sizes.xl as number,
     },
     header: {
-      paddingHorizontal: sizes.lg as number,
-      paddingTop: (sizes.xl as number) + 12,
+      paddingHorizontal: sizes.xs as number,
+      // paddingTop: (sizes.xl as number) + 12,
       paddingBottom: sizes.lg as number,
       backgroundColor: isDark ? theme.backgroundSecond : theme.backgroundLight,
       borderBottomLeftRadius: 32,
@@ -139,8 +139,8 @@ export const createAiAgentStyles = ({
     },
     tabBar: {
       flexDirection: "row",
-      marginHorizontal: sizes.lg as number,
-      marginTop: sizes.lg as number,
+      marginHorizontal: sizes.xxs as number,
+      // marginTop: sizes.lg as number,
       backgroundColor: isDark ? "rgba(255,255,255,0.04)" : theme.backgroundSecond,
       borderRadius: 18,
       padding: 4,
@@ -169,7 +169,7 @@ export const createAiAgentStyles = ({
       color: theme.title,
     },
     sectionsWrapper: {
-      paddingHorizontal: sizes.lg as number,
+      paddingHorizontal: sizes.xs as number,
       paddingVertical: sizes.lg as number,
     },
     sectionCard: {

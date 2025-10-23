@@ -282,7 +282,7 @@ export const CreateBotTabScreen: React.FC = () => {
   const showError = validationError || creationError;
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    // <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Создайте AI-агента</Text>
@@ -421,6 +421,6 @@ export const CreateBotTabScreen: React.FC = () => {
           />
         </View>
       </ScrollView>
-    </SafeAreaView>
+    // </SafeAreaView>
   );
 };

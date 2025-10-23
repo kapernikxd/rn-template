@@ -27,6 +27,7 @@ import { categoryOptions } from "../../helpers/data/agent-create";
 import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";
 import { ROUTES, RootStackParamList } from "../../navigation/types";
 import type { AvatarFile } from "../../types/profile";
+import { usePortalNavigation } from "../../helpers/hooks";
 
 const FALLBACK_IMAGE_TYPE = "image/jpeg";
 
@@ -48,7 +49,8 @@ const toAvatarFile = (asset: {
 
 type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.AiAgentCreate>;
 
-export const AiAgentCreateScreen: React.FC<Props> = ({ navigation }) => {
+export const AiAgentCreateScreen: React.FC = () => {
+  const {goBack} = usePortalNavigation();
   const { theme, sizes, typography, isDark } = useTheme();
   const styles = useMemo(
     () => createStyles({ theme, sizes, typography, isDark }),
@@ -90,16 +92,16 @@ export const AiAgentCreateScreen: React.FC<Props> = ({ navigation }) => {
 
   const handleBack = useCallback(() => {
     if (completed) {
-      navigation.goBack();
+      goBack();
       return;
     }
 
     if (step === 0) {
-      navigation.goBack();
+      goBack();
     } else {
       goPrev();
     }
-  }, [completed, goPrev, navigation, step]);
+  }, [completed, goPrev, step]);
 
   const handlePickAvatar = useCallback(async () => {
     const result = await launchImageLibrary({
@@ -395,13 +397,13 @@ export const AiAgentCreateScreen: React.FC<Props> = ({ navigation }) => {
             setUsefulnessDraft("");
           }}
         />
-        <Button title="Готово" type="gray-outline" onPress={() => navigation.goBack()} />
+        <Button title="Готово" type="gray-outline" onPress={() => goBack()} />
       </View>
     </View>
   );
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    // <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
@@ -445,7 +447,7 @@ export const AiAgentCreateScreen: React.FC<Props> = ({ navigation }) => {
           </View>
         ) : null}
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    // </SafeAreaView>
   );
 };
 

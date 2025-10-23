@@ -14,6 +14,7 @@ import { useTheme } from 'rn-vs-lb/theme';
 import { useRootStore, useStoreData } from '../store/StoreProvider';
 import { Dot } from 'rn-vs-lb';
 import { CreateBotTabScreen } from '../screens/aibot/CreateBotTabScreen';
+import { AiAgentCreateScreen } from '../screens/aibot';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -26,7 +27,7 @@ type TabConfig = {
 
 const TABS: TabConfig[] = [
   { name: 'DashboardTab', label: 'Главная', icon: 'home', component: DashboardStack },
-  { name: 'CreateBotTab', label: 'AI-агенты', icon: 'zap', component: CreateBotTabScreen },
+  { name: 'CreateBotTab', label: 'AI-агенты', icon: 'zap', component: AiAgentCreateScreen },
   { name: 'ChatsTab', label: 'Чаты', icon: 'message-circle', component: ChatsStack },
   { name: 'ProfileTab', label: 'Профиль', icon: 'user', component: ProfileStack },
 ];

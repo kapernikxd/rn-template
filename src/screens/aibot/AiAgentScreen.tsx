@@ -18,6 +18,7 @@ import {
 } from "./components";
 import { createAiAgentStyles } from "./styles";
 
+
 type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.AiAgent>;
 
 const GALLERY_COLUMNS_SMALL = 2;
@@ -102,7 +103,7 @@ export const AiAgentScreen = ({ route }: Props) => {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    // <SafeAreaView style={styles.safeArea}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         bounces={false}
@@ -159,7 +160,7 @@ export const AiAgentScreen = ({ route }: Props) => {
           />
         )}
       </ScrollView>
-    </SafeAreaView>
+    // </SafeAreaView>
   );
 };
 
