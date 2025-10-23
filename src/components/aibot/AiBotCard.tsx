@@ -3,13 +3,24 @@ import { useMemo } from 'react';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from 'rn-vs-lb/theme';
 
-import type { AiBotMainPageBot } from '../../../types';
-import { BASE_URL } from '../../../constants/links';
+import type { AiBotDTO, AiBotMainPageBot, UserDTO } from '../../types';
+import { BASE_URL } from '../../constants/links';
 
-const PLACEHOLDER_IMAGE = require('../../../assets/noProfile.png');
+const PLACEHOLDER_IMAGE = require('../../assets/noProfile.png');
+
+export type AiBotCardEntity =
+  | AiBotMainPageBot
+  | (AiBotDTO & { details?: AiBotMainPageBot['details'] })
+  | (UserDTO & {
+      intro?: string;
+      usefulness?: string[];
+      categories?: string[];
+      photos?: string[];
+      details?: AiBotMainPageBot['details'];
+    });
 
 type AiBotCardProps = {
-  bot: AiBotMainPageBot;
+  bot: AiBotCardEntity;
   style?: StyleProp<ViewStyle>;
   onPress?: () => void;
 };
@@ -28,8 +39,33 @@ const getImageUri = (value?: string) => {
   return /^https?:\/\//i.test(value) ? value : `${BASE_URL}images/${value}`;
 };
 
-const resolveImageSource = (bot: AiBotMainPageBot) => {
-  const photo = getImageUri(bot.details?.photos?.[0]);
+type DetailsLike = AiBotMainPageBot['details'];
+
+const getDetails = (bot: AiBotCardEntity): DetailsLike | undefined => {
+  if ('details' in bot && bot.details) {
+    return bot.details;
+  }
+
+  const intro = 'intro' in bot ? bot.intro : undefined;
+  const usefulness = 'usefulness' in bot ? bot.usefulness : undefined;
+  const photos = 'photos' in bot ? bot.photos : undefined;
+  const categories = 'categories' in bot ? bot.categories : undefined;
+
+  if (!intro && !usefulness?.length && !photos?.length && !categories?.length) {
+    return undefined;
+  }
+
+  return {
+    intro,
+    usefulness,
+    photos,
+    categories,
+  };
+};
+
+const resolveImageSource = (bot: AiBotCardEntity) => {
+  const details = getDetails(bot);
+  const photo = getImageUri(details?.photos?.[0]);
   if (photo) {
     return { uri: photo };
   }
@@ -40,6 +76,53 @@ const resolveImageSource = (bot: AiBotMainPageBot) => {
   return PLACEHOLDER_IMAGE;
 };
 
+const getDescription = (bot: AiBotCardEntity) => {
+  const details = getDetails(bot);
+  if (details?.intro) {
+    return details.intro;
+  }
+  if ('intro' in bot && bot.intro) {
+    return bot.intro;
+  }
+  if ('userBio' in bot && bot.userBio) {
+    return bot.userBio;
+  }
+  if ('aiPrompt' in bot && bot.aiPrompt) {
+    return bot.aiPrompt;
+  }
+  return undefined;
+};
+
+const getProfession = (bot: AiBotCardEntity) => {
+  if (bot.profession) {
+    return bot.profession;
+  }
+  const details = getDetails(bot);
+  if (details?.usefulness?.length) {
+    return details.usefulness[0];
+  }
+  if ('usefulness' in bot && bot.usefulness?.length) {
+    return bot.usefulness[0];
+  }
+  if ('categories' in bot && bot.categories?.length) {
+    return bot.categories[0];
+  }
+  return undefined;
+};
+
+export const getAiBotIdentifier = (bot: AiBotCardEntity): string => {
+  if ('botId' in bot && bot.botId) {
+    return bot.botId;
+  }
+  if ('id' in bot && bot.id) {
+    return bot.id;
+  }
+  if ('_id' in bot && bot._id) {
+    return bot._id;
+  }
+  return '';
+};
+
 export const AiBotCard = ({ bot, style, onPress }: AiBotCardProps) => {
   const { theme } = useTheme();
   const fullName = useMemo(() => {
@@ -47,11 +130,11 @@ export const AiBotCard = ({ bot, style, onPress }: AiBotCardProps) => {
     return parts.length ? parts.join(' ') : 'AI Bot';
   }, [bot.lastname, bot.name]);
 
-  const description = bot.details?.intro ?? bot.userBio ?? '';
+  const description = useMemo(() => getDescription(bot), [bot]);
   const username = bot.username ? `@${bot.username}` : undefined;
   const followers = formatFollowers(bot.followers);
-  const profession = bot.profession ?? bot.details?.usefulness?.[0];
-  const imageSource = resolveImageSource(bot);
+  const profession = useMemo(() => getProfession(bot), [bot]);
+  const imageSource = useMemo(() => resolveImageSource(bot), [bot]);
 
   return (
     <Pressable
