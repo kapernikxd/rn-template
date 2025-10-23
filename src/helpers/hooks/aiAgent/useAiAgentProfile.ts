@@ -8,7 +8,7 @@ import { usePortalNavigation } from "../useNavigation";
 export type ActiveTab = "info" | "gallery";
 
 export function useAiAgentProfile(aiBotId?: string) {
-  const { goBack } = usePortalNavigation();
+  const { goBack, goToChatMessages } = usePortalNavigation();
   const { aiBotStore, authStore, chatStore } = useRootStore();
   const isMdUp = true;
 
@@ -98,17 +98,24 @@ export function useAiAgentProfile(aiBotId?: string) {
     setIsChatLoading(true);
     try {
       const response = await chatStore.messageById(aiBotProfileId);
-      const chatId = response?._id ?? response?.data?._id;
+      const chatData = response?.chat ?? response?.data?.chat;
+      const chatIdCandidate =
+        typeof chatData === "string"
+          ? chatData
+          : chatData && typeof chatData === "object"
+            ? chatData._id
+            : response?.data?._id ?? response?._id;
+      const chatId = typeof chatIdCandidate === "string" ? chatIdCandidate : undefined;
+
       if (chatId) {
-        const encodedId = encodeURIComponent(chatId);
-        // router.push(`${routes.adminChat}?chatId=${encodedId}`);
+        goToChatMessages({ chatId });
       }
     } catch (e) {
       console.error("Failed to start chat with AI agent:", e);
     } finally {
       setIsChatLoading(false);
     }
-  }, [aiBotProfileId, chatStore, isChatLoading]);
+  }, [aiBotProfileId, chatStore, goToChatMessages, isChatLoading]);
 
   const handleAiAgentDeleted = useCallback(() => {
     goBack()
