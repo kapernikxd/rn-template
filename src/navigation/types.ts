@@ -27,17 +27,13 @@ export const ROUTES = {
 
   // Tabs
   DashboardTab: 'DashboardTab',
-  DiscoverTab: 'DiscoverTab',
+  CreateBotTab: 'CreateBotTab',
   ChatsTab: 'ChatsTab',
   ProfileTab: 'ProfileTab',
 
   // Dashboard stack
   Dashboard: 'Dashboard',
   DashboardDetails: 'DashboardDetails',
-
-  // Discover stack
-  Discover: 'Discover',
-  DiscoverCollection: 'DiscoverCollection',
 
   // Chats stack
   Chats: 'Chats',
@@ -74,11 +70,6 @@ export type DashboardStackParamList = {
   [ROUTES.DashboardDetails]: undefined;
 };
 
-export type DiscoverStackParamList = {
-  [ROUTES.Discover]: undefined;
-  [ROUTES.DiscoverCollection]: { collectionId: string };
-};
-
 export type ChatsStackParamList = {
   [ROUTES.Chats]: undefined;
   [ROUTES.ChatMessages]: { chatId: string };
@@ -100,7 +91,7 @@ export type ProfileStackParamList = {
  */
 export type MainTabParamList = {
   [ROUTES.DashboardTab]: NavigatorScreenParams<DashboardStackParamList>;
-  [ROUTES.DiscoverTab]: NavigatorScreenParams<DiscoverStackParamList>;
+  [ROUTES.CreateBotTab]: undefined;
   [ROUTES.ChatsTab]: NavigatorScreenParams<ChatsStackParamList>;
   [ROUTES.ProfileTab]: NavigatorScreenParams<ProfileStackParamList>;
 };
@@ -146,7 +137,6 @@ export type RootNav = NativeStackNavigationProp<RootStackParamList>;
 
 // Навигация конкретного стэка:
 export type DashboardNav = NativeStackNavigationProp<DashboardStackParamList>;
-export type DiscoverNav = NativeStackNavigationProp<DiscoverStackParamList>;
 export type ChatsNav = NativeStackNavigationProp<ChatsStackParamList>;
 export type ProfileNav = NativeStackNavigationProp<ProfileStackParamList>;
 
@@ -156,20 +146,10 @@ export type DashboardScreenProps = CompositeScreenProps<
   BottomTabScreenProps<MainTabParamList, typeof ROUTES.DashboardTab>
 >;
 
-// Пример: пропсы экрана коллекции Discover
-export type DiscoverCollectionScreenProps = CompositeScreenProps<
-  NativeStackScreenProps<DiscoverStackParamList, typeof ROUTES.DiscoverCollection>,
-  BottomTabScreenProps<MainTabParamList, typeof ROUTES.DiscoverTab>
->;
-
 // Удобные хелперы для useRoute
 export type DashboardRoute = RouteProp<
   DashboardStackParamList,
   typeof ROUTES.Dashboard
->;
-export type DiscoverCollectionRoute = RouteProp<
-  DiscoverStackParamList,
-  typeof ROUTES.DiscoverCollection
 >;
 
 export type ChatMessagesRoute = RouteProp<

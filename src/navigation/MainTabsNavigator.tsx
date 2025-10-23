@@ -8,12 +8,12 @@ import { SafeAreaInsetsContext, useSafeAreaInsets } from 'react-native-safe-area
 
 import { ChatsStack } from './stacks/ChatsStack';
 import { DashboardStack } from './stacks/DashboardStack';
-import { DiscoverStack } from './stacks/DiscoverStack';
 import { ProfileStack } from './stacks/ProfileStack';
 import type { MainTabParamList } from './types';
 import { useTheme } from 'rn-vs-lb/theme';
 import { useRootStore, useStoreData } from '../store/StoreProvider';
 import { Dot } from 'rn-vs-lb';
+import { CreateBotTabScreen } from '../screens/aibot/CreateBotTabScreen';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -26,7 +26,7 @@ type TabConfig = {
 
 const TABS: TabConfig[] = [
   { name: 'DashboardTab', label: 'Главная', icon: 'home', component: DashboardStack },
-  { name: 'DiscoverTab', label: 'Обзор', icon: 'grid', component: DiscoverStack },
+  { name: 'CreateBotTab', label: 'AI-агенты', icon: 'zap', component: CreateBotTabScreen },
   { name: 'ChatsTab', label: 'Чаты', icon: 'message-circle', component: ChatsStack },
   { name: 'ProfileTab', label: 'Профиль', icon: 'user', component: ProfileStack },
 ];
