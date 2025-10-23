@@ -9,8 +9,7 @@ const Stack = createNativeStackNavigator<DashboardStackParamList>();
 export const DashboardStack = () => (
   <Stack.Navigator
     screenOptions={{
-      headerLargeTitle: true,
-      headerShadowVisible: false,
+      headerShown: false,
       contentStyle: { backgroundColor: '#F5F7FA' },
     }}
   >

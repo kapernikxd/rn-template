@@ -9,8 +9,7 @@ const Stack = createNativeStackNavigator<DiscoverStackParamList>();
 export const DiscoverStack = () => (
   <Stack.Navigator
     screenOptions={{
-      headerLargeTitle: true,
-      headerShadowVisible: false,
+      headerShown: false,
       contentStyle: { backgroundColor: '#F5F7FA' },
     }}
   >
