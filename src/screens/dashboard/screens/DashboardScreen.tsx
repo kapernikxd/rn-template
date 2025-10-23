@@ -4,7 +4,7 @@ import { useTheme } from 'rn-vs-lb/theme';
 
 import { useRootStore, useStoreData } from '../../../store/StoreProvider';
 import type { AiBotMainPageBot } from '../../../types';
-import { AiBotCard } from '../components/AiBotCard';
+import { AiBotCard } from '../../../components/aibot/AiBotCard';
 import { usePortalNavigation } from '../../../helpers/hooks';
 
 const HORIZONTAL_PADDING = 24;

@@ -46,6 +46,8 @@ export class AiBotStore {
 
   myBots: UserDTO[] = [];
   subscribedBots: UserDTO[] = [];
+  isLoadingMyBots = false;
+  isLoadingSubscribedBots = false;
   photosLoading = false;
   photosUpdating = false;
   isAiUserLoading = false;
@@ -346,28 +348,60 @@ export class AiBotStore {
   }
 
   async fetchMyAiBots() {
+    if (this.isLoadingMyBots) {
+      return;
+    }
+
+    this.isLoadingMyBots = true;
+    this.notify();
+
     try {
       const { data } = await this.aiBotDetailsService.getMyAiBots();
       runInAction(() => {
         this.myBots = data;
-        this.notify();
       });
+      this.notify();
     } catch (error) {
+      runInAction(() => {
+        this.myBots = [];
+      });
+      this.notify();
       this.root.uiStore.showSnackbar("Failed", "error");
       console.error("Failed to load my AI bots", error);
+    } finally {
+      runInAction(() => {
+        this.isLoadingMyBots = false;
+      });
+      this.notify();
     }
   }
 
   async fetchSubscribedAiBots() {
+    if (this.isLoadingSubscribedBots) {
+      return;
+    }
+
+    this.isLoadingSubscribedBots = true;
+    this.notify();
+
     try {
       const { data } = await this.aiBotDetailsService.getSubscribedAiBots();
       runInAction(() => {
         this.subscribedBots = data;
-        this.notify();
       });
+      this.notify();
     } catch (error) {
+      runInAction(() => {
+        this.subscribedBots = [];
+      });
+      this.notify();
       this.root.uiStore.showSnackbar("Failed", "error");
       console.error("Failed to load subscribed AI bots", error);
+    } finally {
+      runInAction(() => {
+        this.isLoadingSubscribedBots = false;
+      });
+      this.notify();
     }
   }
 
