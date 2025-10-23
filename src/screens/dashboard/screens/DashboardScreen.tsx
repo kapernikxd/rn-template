@@ -1,14 +1,24 @@
 import { ActivityIndicator, FlatList, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'rn-vs-lb/theme';
 
 import { useRootStore, useStoreData } from '../../../store/StoreProvider';
 import type { AiBotMainPageBot } from '../../../types';
 import { AiBotCard } from '../../../components/aibot/AiBotCard';
 import { usePortalNavigation } from '../../../helpers/hooks';
+import { TabBar } from '../../../components/aibot/TabBar';
+import { Spacer } from 'rn-vs-lb';
 
-const HORIZONTAL_PADDING = 24;
-const COLUMN_GAP = 16;
+const TABS = [
+  { key: 'explore', label: 'Explore' },
+  { key: 'featured', label: 'Featured' },
+  { key: 'new', label: 'New' },
+  { key: 'hot', label: '🔥 Hot' },
+  { key: 'top', label: 'Top' },
+];
+
+const HORIZONTAL_PADDING = 2;
+const COLUMN_GAP = 2;
 
 export const DashboardScreen = () => {
   const { aiBotStore } = useRootStore();
@@ -18,6 +28,8 @@ export const DashboardScreen = () => {
   const { width } = useWindowDimensions();
   const { theme } = useTheme();
   const { goToAiBotProfile } = usePortalNavigation();
+
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
     if (!bots.length && !isLoading) {
@@ -70,7 +82,22 @@ export const DashboardScreen = () => {
   ), [error, isLoading, theme.white]);
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.darkBackground }]}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <TabBar
+        tabs={TABS}
+        activeIndex={index}
+        onChange={setIndex}
+        // кастомизация под твой тёмный UI
+        activeColor="#000000"
+        inactiveColor="#000000"
+        indicatorColor="#000000"
+        indicatorHeight={2}
+        fontSize={16}
+        fontWeightActive="500"
+        fontWeightInactive="300"
+        gap={18}
+      />
+      <Spacer size='xs'/>
       <FlatList
         data={bots}
         keyExtractor={(item) => item.id}
@@ -78,7 +105,7 @@ export const DashboardScreen = () => {
         renderItem={renderItem}
         contentContainerStyle={[styles.content, bots.length === 0 && styles.emptyContent]}
         columnWrapperStyle={bots.length ? styles.columnWrapper : undefined}
-        ListHeaderComponent={renderHeader}
+        // ListHeaderComponent={renderHeader}
         ListEmptyComponent={renderEmptyComponent}
         showsVerticalScrollIndicator={false}
       />
@@ -94,14 +121,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: HORIZONTAL_PADDING,
     paddingBottom: 32,
     paddingTop: 16,
-    gap: 20,
+    gap: 2,
   },
   emptyContent: {
     flexGrow: 1,
   },
   columnWrapper: {
     gap: COLUMN_GAP,
-    marginBottom: 18,
+    marginBottom: 2,
   },
   header: {
     gap: 8,

@@ -17,15 +17,14 @@ export const DashboardStack = () => (
       name="Dashboard"
       component={DashboardScreen}
       options={{
-        title: 'Главная',
+        headerShown: false,
       }}
     />
     <Stack.Screen
       name="DashboardDetails"
       component={DashboardDetailsScreen}
       options={{
-        title: 'Подробности',
-        headerBackTitle: 'Назад',
+        headerShown: false,
       }}
     />
   </Stack.Navigator>
