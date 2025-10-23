@@ -2,6 +2,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { ProfileScreen } from '../../screens/profile/screens/ProfileScreen';
 import { ProfileSettingsScreen } from '../../screens/profile/screens/ProfileSettingsScreen';
+import { UserProfileScreen } from '../../screens/chats/UserProfileScreen';
 import {
   AccountSettingsScreen,
   ChangePasswordScreen,
@@ -63,6 +64,13 @@ const GuardedNotificationSettingsScreen = withAuthGuard(NotificationSettingsScre
   },
 });
 
+const GuardedUserProfileScreen = withAuthGuard(UserProfileScreen, {
+  redirect: {
+    tab: ROUTES.ProfileTab,
+    params: { screen: ROUTES.Profile },
+  },
+});
+
 export const ProfileStack = () => (
   <Stack.Navigator
     screenOptions={{
@@ -119,6 +127,14 @@ export const ProfileStack = () => (
       name={ROUTES.ProfileNotificationSettings}
       component={GuardedNotificationSettingsScreen}
       options={{
+        headerShown: false,
+      }}
+    />
+    <Stack.Screen
+      name={ROUTES.UserProfile}
+      component={GuardedUserProfileScreen}
+      options={{
+        title: 'Профиль пользователя',
         headerShown: false,
       }}
     />

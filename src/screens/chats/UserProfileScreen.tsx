@@ -10,12 +10,12 @@ import { getUserAvatar, getUserFullName } from '../../helpers/utils/user';
 import { formatLastSeen } from '../../helpers/utils/date';
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
-import { ROUTES, type ChatsStackParamList } from '../../navigation/types';
+import { ROUTES, type ProfileStackParamList } from '../../navigation/types';
 import type { ProfileDTO } from '../../types';
 import { AiBotListSection } from '../../components/aibot/AiBotListSection';
 import { getAiBotIdentifier, type AiBotCardEntity } from '../../components/aibot/AiBotCard';
 
-type UserProfileRoute = RouteProp<ChatsStackParamList, typeof ROUTES.UserProfile>;
+type UserProfileRoute = RouteProp<ProfileStackParamList, typeof ROUTES.UserProfile>;
 
 export const UserProfileScreen = () => {
   const route = useRoute<UserProfileRoute>();
