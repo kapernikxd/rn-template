@@ -74,7 +74,7 @@ const GuardedUserProfileScreen = withAuthGuard(UserProfileScreen, {
 export const ProfileStack = () => (
   <Stack.Navigator
     screenOptions={{
-      headerShadowVisible: false,
+      headerShown: false,
       contentStyle: { backgroundColor: '#F5F7FA' },
     }}
   >
