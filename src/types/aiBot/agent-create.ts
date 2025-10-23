@@ -1,3 +1,5 @@
+import type { AvatarFile } from "../profile";
+
 export type CreateAiAgentFormState = {
   firstName: string;
   lastName: string;
@@ -11,8 +13,8 @@ export type CreateAiAgentFormState = {
 
 export type GalleryItem = {
   id: string;
-  preview: string; // object URL
-  file: File;
+  preview: string; // object URL or local URI
+  file: File | AvatarFile;
 };
 
 export type StepDef = { title: string; description: string };

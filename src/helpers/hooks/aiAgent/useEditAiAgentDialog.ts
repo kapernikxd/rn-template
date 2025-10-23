@@ -7,6 +7,13 @@ import { useRootStore, useStoreData } from "../../../store/StoreProvider";
 import { AiBotDTO } from "../../../types";
 import { getUserAvatar } from "../../utils/user";
 import { AiBotUpdatePayload } from "../../../types/aiBot";
+import type { AvatarFile } from "../../../types/profile";
+
+const isAvatarFile = (file: AvatarFile | File): file is AvatarFile =>
+  typeof (file as AvatarFile)?.uri === "string";
+
+const canUseObjectUrl =
+  typeof URL !== "undefined" && typeof URL.createObjectURL === "function";
 
 
 export interface EditAiAgentFormState {
@@ -47,7 +54,7 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
   // local state
   const [formState, setFormState] = useState<EditAiAgentFormState>(INITIAL_FORM);
   const [usefulnessInput, setUsefulnessInput] = useState("");
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [avatarFile, setAvatarFile] = useState<(File | AvatarFile) | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const tempUrlRef = useRef<string | null>(null);
@@ -85,13 +92,34 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
   // cleanup temp url
   useEffect(() => {
     return () => {
-      if (tempUrlRef.current) URL.revokeObjectURL(tempUrlRef.current);
+      if (tempUrlRef.current && canUseObjectUrl) {
+        URL.revokeObjectURL(tempUrlRef.current);
+      }
     };
   }, []);
 
   // avatar
-  const handleAvatarSelect = useCallback((file: File) => {
-    if (tempUrlRef.current) URL.revokeObjectURL(tempUrlRef.current);
+  const handleAvatarSelect = useCallback((file: AvatarFile | File) => {
+    if (isAvatarFile(file)) {
+      if (tempUrlRef.current && canUseObjectUrl) {
+        URL.revokeObjectURL(tempUrlRef.current);
+        tempUrlRef.current = null;
+      }
+      setAvatarFile(file);
+      setAvatarPreview(file.uri);
+      return;
+    }
+
+    if (!canUseObjectUrl) {
+      console.warn("Object URLs are not supported in this environment.");
+      setAvatarFile(file);
+      setAvatarPreview(null);
+      return;
+    }
+
+    if (tempUrlRef.current) {
+      URL.revokeObjectURL(tempUrlRef.current);
+    }
     const url = URL.createObjectURL(file);
     tempUrlRef.current = url;
     setAvatarFile(file);
@@ -99,7 +127,7 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
   }, []);
 
   const handleAvatarRemove = useCallback(() => {
-    if (tempUrlRef.current) {
+    if (tempUrlRef.current && canUseObjectUrl) {
       URL.revokeObjectURL(tempUrlRef.current);
       tempUrlRef.current = null;
     }
@@ -145,21 +173,48 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
   const remainingGallerySlots = Math.max(0, maxGalleryItems - botPhotos.length);
   const canUploadPhotos = remainingGallerySlots > 0 && !photosUpdating;
 
-  const handleGalleryUpload: ChangeEventHandler<HTMLInputElement> = useCallback((event) => {
-    if (!aiAgent) return;
-    const files = Array.from(event.target.files ?? []);
-    if (!files.length) return;
+  const uploadGalleryFiles = useCallback(
+    async (files: (AvatarFile | File)[]) => {
+      if (!aiAgent || !files.length) {
+        return;
+      }
 
-    const remaining = Math.max(0, maxGalleryItems - botPhotos.length);
-    if (remaining === 0) return;
+      const remaining = Math.max(0, maxGalleryItems - botPhotos.length);
+      if (remaining === 0) {
+        return;
+      }
 
-    const allowed = files.slice(0, remaining);
-    const formData = new FormData();
-    allowed.forEach((file) => formData.append("photos", file, file.name));
+      const allowed = files.slice(0, remaining);
+      const formData = new FormData();
 
-    void aiBotStore.addBotPhotos(aiAgent._id, formData);
-    event.currentTarget.value = "";
-  }, [aiAgent, aiBotStore, botPhotos.length, maxGalleryItems]);
+      allowed.forEach((file) => {
+        if (isAvatarFile(file)) {
+          formData.append(
+            "photos",
+            {
+              uri: file.uri,
+              name: file.name,
+              type: file.type,
+            } as unknown as Blob,
+          );
+        } else {
+          formData.append("photos", file, file.name);
+        }
+      });
+
+      await aiBotStore.addBotPhotos(aiAgent._id, formData);
+    },
+    [aiAgent, aiBotStore, botPhotos.length, maxGalleryItems],
+  );
+
+  const handleGalleryUpload: ChangeEventHandler<HTMLInputElement> = useCallback(
+    (event) => {
+      const files = Array.from(event.target.files ?? []);
+      void uploadGalleryFiles(files);
+      event.currentTarget.value = "";
+    },
+    [uploadGalleryFiles],
+  );
 
   const handleRemovePhoto = useCallback((url: string) => {
     if (!aiAgent) return;
@@ -167,8 +222,7 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
   }, [aiAgent, aiBotStore]);
 
   // submit
-  const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(async (event) => {
-    event.preventDefault();
+  const submit = useCallback(async () => {
     if (!aiAgent) {
       onClose();
       return;
@@ -218,6 +272,14 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
     }
   }, [aiAgent, onClose, avatarFile, formState, botDetails, aiBotStore]);
 
+  const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
+    async (event) => {
+      event.preventDefault();
+      await submit();
+    },
+    [submit],
+  );
+
   // computed for view
   const charCounters = useMemo(
     () => ({
@@ -261,7 +323,9 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
     handleRemoveUsefulness,
     handleUsefulnessKeyDown,
     handleGalleryUpload,
+    uploadGalleryFiles,
     handleRemovePhoto,
     handleSubmit,
+    submit,
   } as const;
 }

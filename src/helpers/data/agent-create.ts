@@ -1,10 +1,22 @@
 import { StepDef } from "../../types/aiBot";
 
 export const steps: StepDef[] = [
-  { title: "Identity", description: "Avatar, name, and the first impression." },
-  { title: "Focus", description: "Choose categories and the value it delivers." },
-  { title: "Voice & Story", description: "Craft the agent prompt, description, and intro." },
-  { title: "Media Kit", description: "Upload supporting visuals to set the mood." },
+  {
+    title: "Персонализация",
+    description: "Аватар, имя и основная информация, формирующая первое впечатление.",
+  },
+  {
+    title: "Ценность",
+    description: "Категории и выгоды, которые получает пользователь от общения с агентом.",
+  },
+  {
+    title: "Голос",
+    description: "Промт, легенда и приветствие, задающие характер общения.",
+  },
+  {
+    title: "Медиа",
+    description: "Галерея изображений, помогающая визуализировать агента.",
+  },
 ];
 
 export const categoryOptions = [

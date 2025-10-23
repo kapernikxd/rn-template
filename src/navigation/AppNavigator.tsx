@@ -8,7 +8,7 @@ import { ROUTES, type RootStackParamList } from './types';
 import { useRootStore, useStoreData } from '../store/StoreProvider';
 import { ScreenLoader, MainLayout } from '../components';
 import { TermsOfUseScreen } from '../screens/docs';
-import { AiAgentScreen } from '../screens/aibot';
+import { AiAgentScreen, AiAgentCreateScreen, AiAgentEditScreen } from '../screens/aibot';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -46,6 +46,20 @@ export const AppNavigator = () => {
           {(props) => (
             <MainLayout>
               <AiAgentScreen {...props} />
+            </MainLayout>
+          )}
+        </RootStack.Screen>
+        <RootStack.Screen name={ROUTES.AiAgentCreate}>
+          {(props) => (
+            <MainLayout>
+              <AiAgentCreateScreen {...props} />
+            </MainLayout>
+          )}
+        </RootStack.Screen>
+        <RootStack.Screen name={ROUTES.AiAgentEdit}>
+          {(props) => (
+            <MainLayout>
+              <AiAgentEditScreen {...props} />
             </MainLayout>
           )}
         </RootStack.Screen>

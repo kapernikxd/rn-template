@@ -27,7 +27,7 @@ export class AiBotStore {
     categories: [],
     usefulness: [],
   };
-  avatar: File | null = null;
+  avatar: (File | AvatarFile) | null = null;
   avatarPreview: string | null = null;
   gallery: GalleryItem[] = [];
   completed = false;
@@ -73,6 +73,38 @@ export class AiBotStore {
     this.baseStore.notify();
   }
 
+  private isAvatarFile(file: File | AvatarFile): file is AvatarFile {
+    return typeof (file as AvatarFile)?.uri === 'string';
+  }
+
+  private resolvePreviewSource(file: File | AvatarFile) {
+    if (this.isAvatarFile(file)) {
+      return file.uri;
+    }
+
+    if (typeof URL !== 'undefined' && typeof URL.createObjectURL === 'function') {
+      return URL.createObjectURL(file);
+    }
+
+    return '';
+  }
+
+  private appendFileToFormData(formData: FormData, field: string, file: File | AvatarFile) {
+    if (this.isAvatarFile(file)) {
+      formData.append(
+        field,
+        {
+          uri: file.uri,
+          name: file.name,
+          type: file.type,
+        } as unknown as Blob,
+      );
+      return;
+    }
+
+    formData.append(field, file, file.name);
+  }
+
   get steps() {
     return steps;
   }
@@ -115,27 +147,27 @@ export class AiBotStore {
     this.avatarPreview = preview;
   }
 
-  setAvatar(file: File | null) {
+  setAvatar(file: (File | AvatarFile) | null) {
     if (!file) {
       this.avatar = null;
       this.replaceAvatarPreview(null);
       this.notify();
       return;
     }
-    const preview = URL.createObjectURL(file);
+    const preview = this.resolvePreviewSource(file) || null;
     this.avatar = file;
     this.replaceAvatarPreview(preview);
     this.notify();
   }
 
-  addGalleryItems(files: File[]) {
+  addGalleryItems(files: (File | AvatarFile)[]) {
     if (!files.length) return;
     const remaining = Math.max(0, this.maxGalleryItems - this.gallery.length);
     if (remaining === 0) return;
     const allowed = files.slice(0, remaining);
     const mapped = allowed.map((file, index) => ({
       id: `${file.name}-${Date.now()}-${index}`,
-      preview: URL.createObjectURL(file),
+      preview: this.resolvePreviewSource(file) || (this.isAvatarFile(file) ? file.uri : ''),
       file,
     }));
     this.gallery = [...this.gallery, ...mapped];
@@ -418,7 +450,7 @@ export class AiBotStore {
       formData.append('usefulness', JSON.stringify(this.form.usefulness));
     }
     if (this.avatar) {
-      formData.append('avatar', this.avatar);
+      this.appendFileToFormData(formData, 'avatar', this.avatar);
     }
     return formData;
   }
@@ -430,7 +462,7 @@ export class AiBotStore {
 
     const formData = new FormData();
     this.gallery.forEach((item) => {
-      formData.append('photos', item.file, item.file.name);
+      this.appendFileToFormData(formData, 'photos', item.file);
     });
     return formData;
   }

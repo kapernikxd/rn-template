@@ -60,6 +60,8 @@ export const ROUTES = {
   //docs
   TermsOfUse: 'TermsOfUse',
   AiAgent: 'AiAgent',
+  AiAgentCreate: 'AiAgentCreate',
+  AiAgentEdit: 'AiAgentEdit',
 } as const;
 export type RouteName = typeof ROUTES[keyof typeof ROUTES];
 
@@ -127,6 +129,8 @@ export type RootStackParamList = {
 
   [ROUTES.TermsOfUse]: undefined;
   [ROUTES.AiAgent]: { aiBotId: string };
+  [ROUTES.AiAgentCreate]: undefined;
+  [ROUTES.AiAgentEdit]: { aiBotId: string };
 };
 
 /**
