@@ -1,11 +1,15 @@
 // hooks/useCreateAiAgentPage.ts
 "use client";
 
-import { useEffect, useMemo, useCallback } from "react";
+import { useEffect, useCallback } from "react";
 import type { ChangeEvent } from "react";
 import { useRootStore, useStoreData } from "../../../store/StoreProvider";
 import { isLikelyImage, normalizeImageToJpeg } from "../../utils/image";
 import { usePortalNavigation } from "../useNavigation";
+import type { AvatarFile } from "../../../types/profile";
+
+const isAvatarFile = (file: AvatarFile | File): file is AvatarFile =>
+  typeof (file as AvatarFile)?.uri === "string";
 
 export function useCreateAiAgentPage() {
   const { aiBotStore } = useRootStore();
@@ -24,73 +28,94 @@ export function useCreateAiAgentPage() {
   const steps = aiBotStore.steps;
   const maxGalleryItems = aiBotStore.maxGalleryItems;
 
-  // i18n for steps
-  const translatedSteps = useMemo(() => {
-    const stepKeys = ["identity", "focus", "voice", "media"] as const;
-    return steps.map((currentStep, index) => {
-      const key = stepKeys[index] ?? `step${index}`;
-      return {
-        ...currentStep,
-        title: currentStep.title,
-        description: currentStep.description,
-      };
-    });
-  }, [steps]);
-
   // dispose on unmount
   useEffect(() => () => aiBotStore.dispose(), [aiBotStore]);
 
   // handlers
-  const handleAvatarChange = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0] ?? null;
-    if (!file) {
-      aiBotStore.setAvatar(null);
-      return;
-    }
-    if (!isLikelyImage(file)) {
-      console.warn("Selected file is not a supported image format.");
-      event.currentTarget.value = "";
-      return;
-    }
-    try {
-      const normalized = await normalizeImageToJpeg(file);
-      aiBotStore.setAvatar(normalized);
-    } catch (error) {
-      console.error("Failed to process avatar image", error);
-    } finally {
-      event.currentTarget.value = "";
-    }
-  }, [aiBotStore]);
+  const setAvatarFile = useCallback(
+    async (file: AvatarFile | File | null) => {
+      if (!file) {
+        aiBotStore.setAvatar(null);
+        return;
+      }
 
-  const handleGalleryChange = useCallback(async (event: ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files ?? []);
-    if (!files.length) {
+      if (isAvatarFile(file)) {
+        aiBotStore.setAvatar(file);
+        return;
+      }
+
+      if (!isLikelyImage(file)) {
+        console.warn("Selected file is not a supported image format.");
+        return;
+      }
+
+      try {
+        const normalized = await normalizeImageToJpeg(file);
+        aiBotStore.setAvatar(normalized);
+      } catch (error) {
+        console.error("Failed to process avatar image", error);
+      }
+    },
+    [aiBotStore],
+  );
+
+  const addGalleryFiles = useCallback(
+    async (files: (AvatarFile | File)[]) => {
+      if (!files.length) {
+        return;
+      }
+
+      const remaining = Math.max(0, maxGalleryItems - gallery.length);
+      if (remaining === 0) {
+        return;
+      }
+
+      const allowed = files.slice(0, remaining);
+      const processed: (AvatarFile | File)[] = [];
+
+      for (const file of allowed) {
+        if (isAvatarFile(file)) {
+          processed.push(file);
+          continue;
+        }
+
+        if (!isLikelyImage(file)) {
+          console.warn("Skipped non-image file in gallery upload:", file.name);
+          continue;
+        }
+
+        try {
+          const normalized = await normalizeImageToJpeg(file);
+          processed.push(normalized);
+        } catch (error) {
+          console.error("Failed to process gallery image", error);
+        }
+      }
+
+      if (processed.length) {
+        aiBotStore.addGalleryItems(processed);
+      }
+    },
+    [aiBotStore, gallery.length, maxGalleryItems],
+  );
+
+  const handleAvatarChange = useCallback(
+    async (event: ChangeEvent<HTMLInputElement>) => {
+      const file = event.target.files?.[0] ?? null;
+      await setAvatarFile(file);
       event.currentTarget.value = "";
-      return;
-    }
-    const remaining = Math.max(0, maxGalleryItems - gallery.length);
-    if (remaining === 0) {
+    },
+    [setAvatarFile],
+  );
+
+  const handleGalleryChange = useCallback(
+    async (event: ChangeEvent<HTMLInputElement>) => {
+      const files = Array.from(event.target.files ?? []);
+      await addGalleryFiles(files);
       event.currentTarget.value = "";
-      return;
-    }
-    const allowed = files.slice(0, remaining).filter((file) => {
-      if (isLikelyImage(file)) return true;
-      console.warn("Skipped non-image file in gallery upload:", file.name);
-      return false;
-    });
-    if (!allowed.length) {
-      event.currentTarget.value = "";
-      return;
-    }
-    try {
-      const normalized = await Promise.all(allowed.map((f) => normalizeImageToJpeg(f)));
-      aiBotStore.addGalleryItems(normalized);
-    } catch (error) {
-      console.error("Failed to process gallery images", error);
-    } finally {
-      event.currentTarget.value = "";
-    }
-  }, [aiBotStore, gallery.length, maxGalleryItems]);
+    },
+    [addGalleryFiles],
+  );
 
   const removeGalleryItem = useCallback((id: string) => {
     aiBotStore.removeGalleryItem(id);
@@ -119,11 +144,12 @@ export function useCreateAiAgentPage() {
   return {
     // data
     step, form, avatarPreview, gallery, completed, currentStepComplete, isSubmitting,
-    creationError, createdBot, steps: translatedSteps, maxGalleryItems,
+    creationError, createdBot, steps, maxGalleryItems,
     getAiProfile: goToAiBotProfile,
 
     // handlers
     handleAvatarChange, handleGalleryChange, removeGalleryItem,
     resetFlow, handleChange, goNext, goPrev,
+    setAvatarFile, addGalleryFiles,
   } as const;
 }
