@@ -8,6 +8,7 @@ import { ROUTES, RootStackParamList } from "../../navigation/types";
 import { useAiAgentProfile } from "../../helpers/hooks/aiAgent/useAiAgentProfile";
 import { getUserAvatar, getUserFullName } from "../../helpers/utils/user";
 import { ScreenLoader } from "../../components";
+import { GuestAiChatModal } from "../../components/aibot/GuestAiChatModal";
 import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";
 import { useRootStore } from "../../store/StoreProvider";
 import { usePortalNavigation } from "../../helpers/hooks";
@@ -44,6 +45,7 @@ export const AiAgentScreen = ({ route }: Props) => {
     handleToggleFollow,
     handleStartChat,
     canEdit,
+    isAuthenticated,
   } = useAiAgentProfile(aiBotId);
   const { goToAiBotEdit } = usePortalNavigation();
 
@@ -53,6 +55,7 @@ export const AiAgentScreen = ({ route }: Props) => {
   const { profileStore } = useRootStore();
 
   const [isReportVisible, setIsReportVisible] = useState(false);
+  const [isGuestChatVisible, setIsGuestChatVisible] = useState(false);
 
   useEffect(() => {
     setColors({
@@ -104,8 +107,20 @@ export const AiAgentScreen = ({ route }: Props) => {
     }
   }, [aiBotId, canEdit, goToAiBotEdit]);
 
+  const handleStartChatPress = useCallback(() => {
+    if (isAuthenticated) {
+      handleStartChat();
+      return;
+    }
+
+    if (aiBotId) {
+      setIsGuestChatVisible(true);
+    }
+  }, [aiBotId, handleStartChat, isAuthenticated]);
+
   const handleOpenReport = useCallback(() => setIsReportVisible(true), []);
   const handleCloseReport = useCallback(() => setIsReportVisible(false), []);
+  const handleCloseGuestChat = useCallback(() => setIsGuestChatVisible(false), []);
   const handleReportSubmit = useCallback(
     async (reason: string, details: string) => {
       if (!aiBotId) return;
@@ -172,7 +187,7 @@ export const AiAgentScreen = ({ route }: Props) => {
             onToggleFollow={handleToggleFollow}
             isFollowUpdating={isFollowUpdating}
             disableFollowAction={disableFollowAction}
-            onStartChat={handleStartChat}
+            onStartChat={handleStartChatPress}
             isChatLoading={isChatLoading}
             aiBotId={aiBotId}
             isFollowing={isFollowing}
@@ -209,6 +224,14 @@ export const AiAgentScreen = ({ route }: Props) => {
         onSubmit={handleReportSubmit}
         type="user"
       />
+      {aiBotId ? (
+        <GuestAiChatModal
+          visible={isGuestChatVisible}
+          onClose={handleCloseGuestChat}
+          botId={aiBotId}
+          botName={displayName}
+        />
+      ) : null}
     </>
   );
 };
