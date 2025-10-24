@@ -138,5 +138,9 @@ export const usePortalNavigation = () => {
       (aiBotId: string) => navigation.navigate(ROUTES.AiAgent, { aiBotId }),
       [navigation],
     ),
+    goToAiBotEdit: useCallback(
+      (aiBotId: string) => navigation.navigate(ROUTES.AiAgentEdit, { aiBotId }),
+      [navigation],
+    ),
   };
 };
