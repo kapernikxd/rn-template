@@ -4,13 +4,13 @@ import {
   Animated,
   LayoutChangeEvent,
   Pressable,
-  ScrollView,
   StyleProp,
   StyleSheet,
   Text,
   View,
   ViewStyle,
 } from 'react-native';
+import type { ScrollView } from 'react-native';
 
 export type TabItem = {
   key: string;
@@ -65,6 +65,7 @@ export const TabBar: React.FC<TabBarProps> = memo((props) => {
 
   const scrollRef = useRef<ScrollView>(null);
   const [rootWidth, setRootWidth] = useState(0);
+  const scrollX = useRef(new Animated.Value(0)).current;
 
   // измерения вкладок
   const [measures, setMeasures] = useState<Record<string, MeasuredTab>>({});
@@ -129,12 +130,14 @@ export const TabBar: React.FC<TabBarProps> = memo((props) => {
 
   const contentGapStyle = useMemo(() => ({ columnGap: gap }), [gap]);
 
+  const translateX = useMemo(() => Animated.subtract(centerX, scrollX), [centerX, scrollX]);
+
   return (
     <View
       style={[styles.root, style]}
       onLayout={(e) => setRootWidth(e.nativeEvent.layout.width)}
     >
-      <ScrollView
+      <Animated.ScrollView
         ref={scrollRef}
         horizontal
         showsHorizontalScrollIndicator={false}
@@ -142,6 +145,10 @@ export const TabBar: React.FC<TabBarProps> = memo((props) => {
         keyboardShouldPersistTaps="handled"
         // important: чтобы Pressable не обрезался тенями
         overScrollMode="never"
+        onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
+          useNativeDriver: true,
+        })}
+        scrollEventThrottle={16}
       >
         {tabs.map((t, i) => {
           const isActive = i === activeIndex;
@@ -174,7 +181,7 @@ export const TabBar: React.FC<TabBarProps> = memo((props) => {
             </Pressable>
           );
         })}
-      </ScrollView>
+      </Animated.ScrollView>
 
       {/* Индикатор: width анимируем через scaleX (native-driver) */}
       <Animated.View
@@ -187,7 +194,7 @@ export const TabBar: React.FC<TabBarProps> = memo((props) => {
             // базовая «единичка», далее растягиваем scaleX до нужной ширины
             width: 1,
             transform: [
-              { translateX: centerX }, // сдвиг центра
+              { translateX }, // сдвиг центра
               { scaleX },              // ширина
             ],
           },
