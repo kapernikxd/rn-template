@@ -9,6 +9,7 @@ import { useAiAgentProfile } from "../../helpers/hooks/aiAgent/useAiAgentProfile
 import { getUserAvatar, getUserFullName } from "../../helpers/utils/user";
 import { ScreenLoader } from "../../components";
 import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";
+import { usePortalNavigation } from "../../helpers/hooks";
 import {
   AiAgentGallery,
   AiAgentHeader,
@@ -40,7 +41,9 @@ export const AiAgentScreen = ({ route }: Props) => {
     onBack,
     handleToggleFollow,
     handleStartChat,
+    canEdit,
   } = useAiAgentProfile(aiBotId);
+  const { goToAiBotEdit } = usePortalNavigation();
 
   const { theme, sizes, typography, isDark } = useTheme();
   const { width } = useWindowDimensions();
@@ -92,8 +95,19 @@ export const AiAgentScreen = ({ route }: Props) => {
   }, [aiBot, displayName, profession]);
 
   const handleMore = useCallback(() => {
+    if (canEdit && aiBotId) {
+      Alert.alert("Действия", undefined, [
+        {
+          text: "Редактировать агента",
+          onPress: () => goToAiBotEdit(aiBotId),
+        },
+        { text: "Отмена", style: "cancel" },
+      ]);
+      return;
+    }
+
     Alert.alert("Скоро", "Дополнительные действия появятся позже.");
-  }, []);
+  }, [aiBotId, canEdit, goToAiBotEdit]);
 
   const followButtonTitle = isFollowing ? "Отписаться" : "Подписаться";
 
