@@ -122,7 +122,7 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
     }
 
     if (remaining !== undefined && remaining <= 0) {
-      setError('Daily limit reached. Please try again later.');
+      setError('Достигнут дневной лимит. Пожалуйста, попробуйте позже.');
       return;
     }
 
@@ -146,7 +146,7 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
       await handleResponse(data, nextHistory);
     } catch (sendError) {
       console.error('Failed to send guest AI message', sendError);
-      setError('Failed to send message. Please try again.');
+      setError('Не удалось отправить сообщение. Попробуйте ещё раз.');
       const revertedHistory = messages;
       setMessages(revertedHistory);
       await persistHistory(revertedHistory);
@@ -245,12 +245,12 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
         <View style={styles.modalContainer}>
           <View style={styles.header}>
             <View>
-              <Text style={typography.titleH6}>{botName || 'AI bot'}</Text>
-              {limit !== undefined && remaining !== undefined && (
-                <Text style={styles.limitText}>
-                  Remaining messages: {remaining} / {limit}
-                </Text>
-              )}
+                <Text style={typography.titleH6}>{botName || 'AI-бот'}</Text>
+                {limit !== undefined && remaining !== undefined && (
+                  <Text style={styles.limitText}>
+                    Осталось сообщений: {remaining} / {limit}
+                  </Text>
+                )}
             </View>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <Ionicons name="close" size={sizes.md} color={theme.text} />
@@ -271,7 +271,7 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
           <View style={styles.inputRow}>
             <TextInput
               style={styles.input}
-              placeholder="Ask something..."
+              placeholder="Спросите что-нибудь..."
               placeholderTextColor={theme.greyText}
               value={inputValue}
               onChangeText={setInputValue}

@@ -32,14 +32,14 @@ export const TermsCheckbox: React.FC<Props> = ({
           {accepted && <Text style={styles.checkmark}>✓</Text>}
         </TouchableOpacity>
         <Text style={typography.body}>
-          I agree to the{' '}
+          Я принимаю{' '}
           <Text style={[styles.link, { color }]} onPress={goToTermOfUse}>
-            Terms of Use
+            Условия использования
           </Text>
         </Text>
       </View>
       {showError && (
-        <Text style={formStyles.errorText}>You must accept the Terms of Use to continue</Text>
+        <Text style={formStyles.errorText}>Чтобы продолжить, необходимо принять Условия использования</Text>
       )}
     </View>
   );

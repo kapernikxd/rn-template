@@ -72,14 +72,14 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
     label: string;
     icon: React.ReactNode;
   }[] = [
-      { key: 'likes', label: 'Likes', icon: <FontAwesome color={theme.text} name="heart-o" size={18} /> },
-      { key: 'followers', label: 'Followers', icon: <Ionicons color={theme.text} name="person-add-outline" size={18} /> },
-      { key: 'groupMessages', label: 'Group Messages', icon: <FontAwesome color={theme.text} name="comments-o" size={18} /> },
-      { key: 'participants', label: 'Participants', icon: <Ionicons color={theme.text} name="add-outline" size={18} /> },
-      { key: 'newPost', label: 'Created/Updated Post', icon: <FontAwesome color={theme.text} name="calendar-o" size={18} /> },
-      { key: 'invites', label: 'Post Invites', icon: <FontAwesome color={theme.text} name="calendar-plus-o" size={18} /> },
-      { key: 'pollAnswers', label: 'Poll Answers', icon: <Ionicons color={theme.text} name="bar-chart-outline" size={18} /> },
-      { key: 'pollInvites', label: 'Poll Invites', icon: <Ionicons color={theme.text} name="stats-chart-outline" size={18} /> },
+      { key: 'likes', label: 'Лайки', icon: <FontAwesome color={theme.text} name="heart-o" size={18} /> },
+      { key: 'followers', label: 'Подписчики', icon: <Ionicons color={theme.text} name="person-add-outline" size={18} /> },
+      { key: 'groupMessages', label: 'Групповые сообщения', icon: <FontAwesome color={theme.text} name="comments-o" size={18} /> },
+      { key: 'participants', label: 'Участники', icon: <Ionicons color={theme.text} name="add-outline" size={18} /> },
+      { key: 'newPost', label: 'Создан/обновлён пост', icon: <FontAwesome color={theme.text} name="calendar-o" size={18} /> },
+      { key: 'invites', label: 'Приглашения к посту', icon: <FontAwesome color={theme.text} name="calendar-plus-o" size={18} /> },
+      { key: 'pollAnswers', label: 'Ответы на опрос', icon: <Ionicons color={theme.text} name="bar-chart-outline" size={18} /> },
+      { key: 'pollInvites', label: 'Приглашения в опрос', icon: <Ionicons color={theme.text} name="stats-chart-outline" size={18} /> },
     ];
 
   return (
@@ -88,13 +88,13 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <FormProvider {...methods}>
-        <HeaderDefault title="Notification Settings" onBackPress={onBackPress} />
+        <HeaderDefault title="Настройки уведомлений" onBackPress={onBackPress} />
 
         <ScrollView style={{ flex: 1 }}>
           <CardContainer
             style={styles.card}
             styleTitleContainer={styles.cardTitleContainer}
-            subTitle="Update your push rules"
+            subTitle="Настройте правила push-уведомлений"
           >
             <View style={styles.cardContent}>
               <View>
@@ -105,7 +105,7 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
                     </View>
                     <View style={{ marginLeft: 8 }}>
                       <Spacer size="xs" />
-                      <Text style={[typography.titleH6Regular, { color: theme.text }]}>Push Notifications</Text>
+                      <Text style={[typography.titleH6Regular, { color: theme.text }]}>Push-уведомления</Text>
                     </View>
                   </View>
                   <Switch
@@ -155,9 +155,9 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
         </ScrollView>
 
         <View style={styles.footer}>
-          <Button title="Update" onPress={onSubmit} loading={isSubmitting} />
+          <Button title="Обновить" onPress={onSubmit} loading={isSubmitting} />
           <Spacer size="xs" />
-          <Button title="Reset" type="gray-outline" onPress={onReset} />
+          <Button title="Сбросить" type="gray-outline" onPress={onReset} />
         </View>
       </FormProvider>
     </KeyboardAvoidingView>

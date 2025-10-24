@@ -42,7 +42,7 @@ export const ProfileSettingsScreen: FC = () => {
 
     const handleDeleteAccount = useCallback(async () => {
         await profileStore.deleteAccount();
-        uiStore.showSnackbar("Your request has been sent. Your account will be deleted within 24 hours.", "success");
+        uiStore.showSnackbar("Ваш запрос отправлен. Аккаунт будет удалён в течение 24 часов.", "success");
     }, [profileStore, uiStore]);
 
     const navigateTo = useCallback(
@@ -52,24 +52,24 @@ export const ProfileSettingsScreen: FC = () => {
 
     const SETTING_LIST = useMemo(
         () => [
-            { icon: 'user-o', label: 'Edit Profile', action: navigateTo(ROUTES.ProfileEdit) },
-            { icon: 'gear', label: 'Account Settings', action: navigateTo(ROUTES.ProfileAccountSettings) },
-            { icon: 'key', label: 'Change Password', action: navigateTo(ROUTES.ProfileChangePassword) },
-            { icon: 'group', label: 'Social Profiles', action: navigateTo(ROUTES.ProfileSocialProfiles) },
-            { icon: 'bell', label: 'Notifications', action: navigateTo(ROUTES.ProfileNotificationSettings) },
+            { icon: 'user-o', label: 'Редактировать профиль', action: navigateTo(ROUTES.ProfileEdit) },
+            { icon: 'gear', label: 'Настройки аккаунта', action: navigateTo(ROUTES.ProfileAccountSettings) },
+            { icon: 'key', label: 'Смена пароля', action: navigateTo(ROUTES.ProfileChangePassword) },
+            { icon: 'group', label: 'Социальные профили', action: navigateTo(ROUTES.ProfileSocialProfiles) },
+            { icon: 'bell', label: 'Уведомления', action: navigateTo(ROUTES.ProfileNotificationSettings) },
         ],
         [navigateTo],
     );
 
     const COPY_LINK = useMemo(
         () => [
-            { icon: 'copy', label: 'Copy link', action: () => handleShareUserLink(myId) },
+            { icon: 'copy', label: 'Скопировать ссылку', action: () => handleShareUserLink(myId) },
         ],
         [handleShareUserLink, myId],
     );
 
     const LOGOUT = useMemo(
-        () => ({ icon: 'sign-out', label: 'Logout', action: () => handleLogOut() }),
+        () => ({ icon: 'sign-out', label: 'Выйти', action: () => handleLogOut() }),
         [handleLogOut],
     );
 
@@ -88,17 +88,17 @@ export const ProfileSettingsScreen: FC = () => {
 
     return (
         <View style={styles.content}>
-            <HeaderDefault title={'Settings'} onBackPress={goBack} />
+            <HeaderDefault title={'Настройки'} onBackPress={goBack} />
             <View style={styles.body}>
                 <View style={styles.list}>
                     <CardContainer style={styles.card}>
-                        <View><Text style={styles.title}>Update Account</Text></View>
+                        <View><Text style={styles.title}>Управление аккаунтом</Text></View>
                         {SETTING_LIST.map((item, index) => (
                             <ListItem big iconColor={theme.text} key={index} {...item} hideBottomLine />
                         ))}
                     </CardContainer>
                     <CardContainer style={styles.card}>
-                        <View><Text style={styles.title}>Theme</Text></View>
+                        <View><Text style={styles.title}>Тема</Text></View>
                         <ThemeSwitcher />
                     </CardContainer>
                     <CardContainer style={styles.card}>
@@ -120,7 +120,7 @@ export const ProfileSettingsScreen: FC = () => {
                         <DeleteAccountButton deleteAccount={handleDeleteAccount} />
                     </CardContainer>
                     <View style={styles.version}>
-                        <Text style={typography.body}>Ver {appVersion}</Text>
+                        <Text style={typography.body}>Версия {appVersion}</Text>
                     </View>
                 </View>
             </View>

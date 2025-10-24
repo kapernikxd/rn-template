@@ -1,1 +1,1 @@
-export const LARGE_FILE_ERROR = "Image is too large (more than 40MB). Please choose a smaller file.";
+export const LARGE_FILE_ERROR = "Изображение слишком большое (более 40 МБ). Пожалуйста, выберите файл меньшего размера.";

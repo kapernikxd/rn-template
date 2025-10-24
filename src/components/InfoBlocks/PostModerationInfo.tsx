@@ -15,37 +15,37 @@ export const PostModerationInfo: React.FC<PostModerationInfoProps> = ({ currentS
 
   return (
     <View>
-      <Text style={typography.titleH5}>What does each status mean?</Text>
+      <Text style={typography.titleH5}>Что означает каждый статус?</Text>
       <Spacer size="xs" />
 
       <View>
-        <Text style={typography.titleH6}>• PENDING</Text>
+        <Text style={typography.titleH6}>• PENDING (на рассмотрении)</Text>
         <Text style={typography.body}>
-          The post is awaiting review by a moderator. It is not yet visible to other users (except the author).
+          Публикация ожидает проверки модератором. Она пока не видна другим пользователям (кроме автора).
         </Text>
       </View>
       <Spacer size="xs" />
 
       <View>
-        <Text style={typography.titleH6}>• APPROVED</Text>
+        <Text style={typography.titleH6}>• APPROVED (одобрено)</Text>
         <Text style={typography.body}>
-          The post has been reviewed and approved by a moderator. It is publicly visible to users.
+          Публикация прошла проверку модератора и одобрена. Она доступна всем пользователям.
         </Text>
       </View>
       <Spacer size="xs" />
 
       <View>
-        <Text style={typography.titleH6}>• REJECTED</Text>
+        <Text style={typography.titleH6}>• REJECTED (отклонено)</Text>
         <Text style={typography.body}>
-          The post has been reviewed and was rejected due to violating rules, containing inappropriate content, or not meeting quality standards.
+          Публикация проверена и отклонена из-за нарушения правил, неподобающего содержания или несоответствия стандартам качества.
         </Text>
       </View>
 
       {currentStatus && (
         <>
           <Spacer size="sm" />
-          <Text style={typography.titleH6}>Your current status - <Text style={{color: currentStatus === 'REJECTED' ? theme.danger : currentStatus === 'PENDING' ? theme.warning : theme.success}}>{currentStatus}</Text></Text>
-          {reason && <Text style={[typography.body, {textDecorationLine: "underline"}]}>{reason === 'image' ? 'One of the photos violates the guidelines. Please upload a different image.' : 'The event description violates the guidelines. Please update the text.'}</Text>}
+          <Text style={typography.titleH6}>Ваш текущий статус — <Text style={{color: currentStatus === 'REJECTED' ? theme.danger : currentStatus === 'PENDING' ? theme.warning : theme.success}}>{currentStatus}</Text></Text>
+          {reason && <Text style={[typography.body, {textDecorationLine: "underline"}]}>{reason === 'image' ? 'Одно из изображений нарушает правила. Пожалуйста, загрузите другое.' : 'Описание события нарушает правила. Пожалуйста, обновите текст.'}</Text>}
         </>
       )}
     </View>

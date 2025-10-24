@@ -18,8 +18,8 @@ const currencyOptions = [
 ];
 
 const rangeOptions = [
-  { label: 'from', value: 'FROM' },
-  { label: 'up to', value: 'UPTO' },
+  { label: 'от', value: 'FROM' },
+  { label: 'до', value: 'UPTO' },
 ];
 
 const PriceField: React.FC<PriceFieldProps> = ({ control }) => {
@@ -30,7 +30,7 @@ const PriceField: React.FC<PriceFieldProps> = ({ control }) => {
   return (
     <>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Text style={formStyles.label}>Price / Donation</Text>
+        <Text style={formStyles.label}>Стоимость / Пожертвование</Text>
         <Controller
           control={control}
           name="priceEnabled"
@@ -48,7 +48,7 @@ const PriceField: React.FC<PriceFieldProps> = ({ control }) => {
         <>
           <Spacer />
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Text style={formStyles.label}>Donation</Text>
+            <Text style={formStyles.label}>Пожертвование</Text>
             <Controller
               control={control}
               name="price.donation"
@@ -67,26 +67,26 @@ const PriceField: React.FC<PriceFieldProps> = ({ control }) => {
               <Spacer />
               <TextInput
                 name="price.amount"
-                label="Amount"
+                label="Сумма"
                 placeholder="0"
                 keyboardType="number-pad"
                 control={control}
-                rules={{ required: 'Required' }}
+                rules={{ required: 'Обязательное поле' }}
               />
               <Spacer />
               <Select
                 name="price.currency"
-                label="Currency"
-                placeholder="Currency"
+                label="Валюта"
+                placeholder="Выберите валюту"
                 options={currencyOptions}
                 control={control}
-                rules={{ required: 'Required' }}
+                rules={{ required: 'Обязательное поле' }}
               />
               <Spacer />
               <Select
                 name="price.range"
-                label="Range"
-                placeholder="Currency"
+                label="Диапазон"
+                placeholder="Диапазон"
                 options={rangeOptions}
                 control={control}
               />

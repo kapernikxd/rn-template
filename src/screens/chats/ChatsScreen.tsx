@@ -87,7 +87,7 @@ export const ChatsScreen: FC = observer(() => {
           })
         }
         variant="group"
-        chatName={item?.title ?? 'Group'}
+        chatName={item?.title ?? 'Группа'}
         createdAt={getSmartTime(item?.latestMessage?.createdAt)}
         lastMessage={item?.latestMessage?.content}
         imgUrl={item?.avatarUrl ?? ''}
@@ -109,7 +109,7 @@ export const ChatsScreen: FC = observer(() => {
           })
         }
         variant="bot"
-        chatName={item?.title ?? 'Bot'}
+        chatName={item?.title ?? 'Бот'}
         createdAt={getSmartTime(item?.latestMessage?.createdAt)}
         lastMessage={item?.latestMessage?.content}
       />
@@ -128,7 +128,7 @@ export const ChatsScreen: FC = observer(() => {
       <View style={styles.searchContainer}>
         <SearchInput
           iconType="search"
-          placeholder="Search..."
+          placeholder="Поиск..."
           value={searchQuery}
           onChangeText={setSearchQuery}
         />

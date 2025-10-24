@@ -47,7 +47,7 @@ const Otp: FC = () => {
 
         if (fullOtp.length !== 9) {
             methods.setError(`${INPUT_CODE_NAME}`, {
-                message: 'Please enter a valid 9-character code!',
+                message: 'Введите корректный код из 9 символов!',
             });
             return;
         }
@@ -90,11 +90,11 @@ const Otp: FC = () => {
                                         <Logo width={210} height={95} isDark={isDark}/>
                                     </TouchableOpacity>
                                 </View>
-                                <Text style={typography.titleH2Regular}>Enter Code</Text>
+                                <Text style={typography.titleH2Regular}>Введите код</Text>
                                 <Spacer size='xxs'/>
-                                <Text style={[typography.bodyXs, globalStyleSheet.formDescription]}>Enter the 9-digit code sent to your email</Text>
+                                <Text style={[typography.bodyXs, globalStyleSheet.formDescription]}>Введите 9-значный код, отправленный на вашу почту</Text>
                             </View>
-                            <View style={[globalStyleSheet.loginarea, { backgroundColor: theme.card }]}>
+                            <View style={[globalStyleSheet.loginarea, { backgroundColor: theme.card }]}> 
 
                                 <View style={{ alignItems: 'center', marginBottom: 20 }}>
                                     <OtpInput
@@ -103,25 +103,25 @@ const Otp: FC = () => {
                                         sectionLength={3}
                                         methods={methods}
                                         rules={{
-                                            required: 'Please fill this part',
+                                            required: 'Заполните это поле',
                                         }}
                                     />
                                 </View>
 
                                 <View style={{ marginTop: 10 }}>
-                                    <Button title="Next"
+                                    <Button title="Далее"
                                         onPress={handleSubmit}
                                     />
                                 </View>
 
                                 <View style={{ flex: 1 }}></View>
                                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 15 }}>
-                                    <Text style={typography.body}>Already have an account
+                                    <Text style={typography.body}>Уже есть аккаунт
                                     </Text>
                                     <TouchableOpacity
                                         onPress={goToLogin}
                                     >
-                                        <Text style={[typography.textLink, { textDecorationLine: 'underline', marginLeft: 5 }]}>Sign In</Text>
+                                        <Text style={[typography.textLink, { textDecorationLine: 'underline', marginLeft: 5 }]}>Войти</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
