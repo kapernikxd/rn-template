@@ -1,7 +1,9 @@
 import React, { useEffect, type ReactNode } from 'react';
+import { View, StyleSheet } from 'react-native';
 import { useTheme } from 'rn-vs-lb/theme';
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { SafeAreaColorProvider } from '../../store/SafeAreaColorProvider';
+import { MAIN_HORIZONTAL_PADDING } from '../../constants/layout';
 
 export type MainLayoutProps = {
   children: ReactNode;
@@ -26,7 +28,16 @@ export const MainLayout = ({ children }: MainLayoutProps) => {
 
   return (
     <SafeAreaColorProvider defaultContentColor={theme.background}>
-      {children}
+      <View style={[styles.container, { backgroundColor: theme.background }]}>
+        {children}
+      </View>
     </SafeAreaColorProvider>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: MAIN_HORIZONTAL_PADDING,
+  },
+});
