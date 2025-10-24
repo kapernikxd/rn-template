@@ -13,7 +13,6 @@ import type { MainTabParamList } from './types';
 import { useTheme } from 'rn-vs-lb/theme';
 import { useRootStore, useStoreData } from '../store/StoreProvider';
 import { Dot } from 'rn-vs-lb';
-import { CreateBotTabScreen } from '../screens/aibot/CreateBotTabScreen';
 import { AiAgentCreateScreen } from '../screens/aibot';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -41,7 +40,7 @@ const ICON_SIZE = 44;
 const ICON_RADIUS = ICON_SIZE / 2;
 
 const MainTabBar = ({ state, descriptors, navigation, showLabels = true, bottomInset }: MainTabBarProps) => {
-  const { theme } = useTheme();
+  const { theme, isDark } = useTheme();
   const { onlineStore } = useRootStore();
   const hasUserNewMessage = useStoreData(onlineStore, (store) => store.hasUnreadPrivate);
   const { buildHref } = useLinkBuilder();
@@ -70,7 +69,7 @@ const MainTabBar = ({ state, descriptors, navigation, showLabels = true, bottomI
         if (!tab) return null;
 
         const isFocused = state.index === index;
-        const iconColor = isFocused ? theme.white : theme.black;
+        const iconColor = isFocused ? isDark ? theme.black : theme.white : theme.black;
 
         const onPress = () => {
           const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });

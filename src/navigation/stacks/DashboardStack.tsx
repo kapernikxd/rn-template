@@ -1,7 +1,6 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { DashboardScreen } from '../../screens/dashboard/screens/DashboardScreen';
-import { DashboardDetailsScreen } from '../../screens/dashboard/screens/DashboardDetailsScreen';
+import { DashboardScreen } from '../../screens/dashboard/DashboardScreen';
 import type { DashboardStackParamList } from '../types';
 
 const Stack = createNativeStackNavigator<DashboardStackParamList>();
@@ -16,13 +15,6 @@ export const DashboardStack = () => (
     <Stack.Screen
       name="Dashboard"
       component={DashboardScreen}
-      options={{
-        headerShown: false,
-      }}
-    />
-    <Stack.Screen
-      name="DashboardDetails"
-      component={DashboardDetailsScreen}
       options={{
         headerShown: false,
       }}

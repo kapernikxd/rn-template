@@ -12,7 +12,6 @@ import {
   ViewStyle,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Feather } from '@expo/vector-icons';
 import { useTheme } from 'rn-vs-lb/theme';
 
 import type { AiBotDTO, AiBotMainPageBot, UserDTO } from '../../types';
@@ -81,8 +80,6 @@ const getDescription = (b: AiBotCardEntity) =>
 export const AiBotCard = ({ bot, style, onPress }: AiBotCardProps) => {
   const { theme } = useTheme();
   const [loading, setLoading] = useState(true);
-
-  console.log("bot!!!", bot)
 
   const fullName = useMemo(() => {
     const name = ('name' in bot && bot.name) || undefined;

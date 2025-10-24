@@ -6,13 +6,13 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { launchImageLibrary } from "react-native-image-picker";
-import { Ionicons } from "@expo/vector-icons";
-import { Button } from "rn-vs-lb";
+import { FontAwesome6, Ionicons } from "@expo/vector-icons";
+import { Button, Spacer } from "rn-vs-lb";
 import {
   SizesType,
   ThemeType,
@@ -20,7 +20,7 @@ import {
   useTheme,
 } from "rn-vs-lb/theme";
 
-import { StepProgress, FormTextField } from "./components";
+import { StepProgress, FormTextField, AiAgentHeader } from "./components";
 import { useRootStore, useStoreData } from "../../store/StoreProvider";
 import { useEditAiAgentDialog } from "../../helpers/hooks/aiAgent/useEditAiAgentDialog";
 import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";
@@ -91,7 +91,6 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
     setColors({
       topColor: theme.background,
       bottomColor: theme.background,
-      contentColor: theme.background,
     });
   }, [setColors, theme.background]);
 
@@ -244,7 +243,7 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
           onSubmitEditing={handleAddUsefulness}
           returnKeyType="done"
         />
-        <Button title="Добавить" onPress={handleAddUsefulness} disabled={!usefulnessInput.trim()} />
+        <Button leftIcon={<FontAwesome6 name="add" color={theme.white} size={24} />} onPress={handleAddUsefulness} disabled={!usefulnessInput.trim()} />
       </View>
       <View style={styles.usefulnessList}>
         {formState.usefulness.map((item) => (
@@ -341,19 +340,26 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.flex, { backgroundColor: theme.background }]}
+      style={[styles.flex]}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={styles.header}>
-        <BackButton onPress={handleBack} iconColor={theme.text} style={styles.headerBackButton} />
-        <Text style={styles.headerTitle}>Редактирование AI-агента</Text>
+        <AiAgentHeader
+          theme={theme}
+          title="Редактирование AI-агента"
+          onBack={handleBack}
+        />
+        <Spacer />
       </View>
+
       <ScrollView
         style={styles.flex}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        <StepProgress steps={steps} activeStep={Math.min(activeStep, steps.length - 1)} />
+        <View style={styles.stepContainer}>
+          <StepProgress steps={steps} activeStep={Math.min(activeStep, steps.length - 1)} />
+        </View>
         {renderStepContent()}
       </ScrollView>
 
@@ -386,25 +392,23 @@ const createStyles = ({
       flex: 1,
       backgroundColor: theme.background,
     },
+    header: {
+      paddingHorizontal: sizes.xs as number,
+      paddingBottom: sizes.lg as number,
+    },
     flex: {
       flex: 1,
-    },
-    header: {
-      flexDirection: "row",
-      alignItems: "center",
-      paddingHorizontal: sizes.xs as number,
-      paddingVertical: sizes.md as number,
-    },
-    headerBackButton: {
-      marginRight: sizes.md as number,
     },
     headerTitle: {
       ...typography.titleH4,
       color: theme.text,
     },
     scrollContent: {
-      paddingHorizontal: sizes.lg as number,
+      paddingHorizontal: sizes.xs as number,
       paddingBottom: (sizes.xl as number) * 2,
+    },
+    stepContainer: {
+      paddingHorizontal: sizes.xs as number,
     },
     card: {
       backgroundColor: isDark ? theme.card : theme.white,
@@ -419,7 +423,7 @@ const createStyles = ({
     },
     sectionTitle: {
       ...typography.titleH4,
-      color: theme.text,
+      // color: theme.text,
       marginBottom: sizes.sm as number,
     },
     sectionDescription: {

@@ -13,7 +13,6 @@ import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
 import { type AiBotCardEntity } from '../../../components/aibot/AiBotCard';
 import { getAiBotIdentifier } from '../../../helpers/utils/agent-create';
 import { AiBotPlaceCardList } from '../../../components/aibot/AiBotPlaceCardList';
-import { BackButton } from '../../../components/buttons';
 
 // NB: этот экран обёрнут withAuthGuard в ProfileStack, поэтому доступен только авторизованным пользователям.
 type NavigationProp = NativeStackNavigationProp<
@@ -177,11 +176,6 @@ export const ProfileScreen = () => {
       ref={scrollViewRef}
       contentContainerStyle={[styles.scrollContent, { backgroundColor: theme.background }]}
     >
-      {canGoBack ? (
-        <View style={styles.backButtonWrapper}>
-          <BackButton onPress={handleGoBack} iconColor={theme.title} />
-        </View>
-      ) : null}
       <ProfileCard
         name={displayName}
         imageUri={imageUri}

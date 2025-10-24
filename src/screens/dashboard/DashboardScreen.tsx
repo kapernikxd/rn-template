@@ -2,18 +2,20 @@ import { ActivityIndicator, FlatList, StyleSheet, Text, View, useWindowDimension
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'rn-vs-lb/theme';
 
-import { useRootStore, useStoreData } from '../../../store/StoreProvider';
-import type { AiBotMainPageBot } from '../../../types';
-import { AiBotCard } from '../../../components/aibot/AiBotCard';
-import { usePortalNavigation } from '../../../helpers/hooks';
-import { TabBar } from '../../../components/aibot/TabBar';
+import { useRootStore, useStoreData } from '../../store/StoreProvider';
+import type { AiBotMainPageBot } from '../../types';
+import { AiBotCard } from '../../components/aibot/AiBotCard';
+import { usePortalNavigation } from '../../helpers/hooks';
+import { TabBar } from '../../components/aibot/TabBar';
 import { Spacer } from 'rn-vs-lb';
-import { MAIN_HORIZONTAL_PADDING } from '../../../constants/layout';
+import { MAIN_HORIZONTAL_PADDING } from '../../constants/layout';
+import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 
 const COLUMN_GAP = 2;
 
 export const DashboardScreen = () => {
   const { aiBotStore } = useRootStore();
+  const { setColors } = useSafeAreaColors();
   const bots = useStoreData(aiBotStore, (store) => store.mainPageBots);
   const isLoading = useStoreData(aiBotStore, (store) => store.isLoadingMainPageBots);
   const error = useStoreData(aiBotStore, (store) => store.mainPageBotsError);
@@ -22,6 +24,13 @@ export const DashboardScreen = () => {
   const { goToAiBotProfile } = usePortalNavigation();
 
   const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    setColors({
+      topColor: theme.background,
+      bottomColor: theme.white,
+    });
+  }, [theme, setColors]);
 
   const categories = useMemo(() => {
     const uniqueCategories = new Set<string>();
@@ -121,16 +130,16 @@ export const DashboardScreen = () => {
         activeIndex={index}
         onChange={setIndex}
         // кастомизация под твой тёмный UI
-        activeColor="#000000"
-        inactiveColor="#000000"
-        indicatorColor="#000000"
+        activeColor={theme.black}
+        inactiveColor={theme.black}
+        indicatorColor={theme.black}
         indicatorHeight={2}
         fontSize={16}
         fontWeightActive="500"
         fontWeightInactive="300"
         gap={18}
       />
-      <Spacer size='xs'/>
+      <Spacer size='xs' />
       <FlatList
         data={filteredBots}
         keyExtractor={(item) => item.id}

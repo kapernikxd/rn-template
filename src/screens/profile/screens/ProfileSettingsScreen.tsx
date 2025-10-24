@@ -149,6 +149,7 @@ const getStyles = ({ sizes, globalStyleSheet, theme }: { theme: ThemeType, sizes
         marginVertical: 4,
         borderRadius: 16,
         borderBottomWidth: 0,
+        backgroundColor: theme.card,
     },
     title: {
         marginLeft: sizes.xxs,

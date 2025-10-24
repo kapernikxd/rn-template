@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { ScrollView, Share, View, useWindowDimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useTheme } from "rn-vs-lb/theme";
-import { ReportModal } from "rn-vs-lb";
+import { ReportModal, Spacer } from "rn-vs-lb";
 
 import { ROUTES, RootStackParamList } from "../../navigation/types";
 import { useAiAgentProfile } from "../../helpers/hooks/aiAgent/useAiAgentProfile";
@@ -58,7 +58,6 @@ export const AiAgentScreen = ({ route }: Props) => {
     setColors({
       topColor: theme.background,
       bottomColor: theme.background,
-      contentColor: theme.background,
     });
   }, [setColors, theme.background]);
 
@@ -154,12 +153,13 @@ export const AiAgentScreen = ({ route }: Props) => {
       >
         <View style={styles.header}>
           <AiAgentHeader
-            styles={styles}
             theme={theme}
             onBack={onBack}
             onShare={handleShare}
             items={menuItems}
           />
+          <Spacer />
+
           <AiAgentHeroCard
             styles={styles}
             theme={theme}

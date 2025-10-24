@@ -1,62 +1,62 @@
 export const THEME_COLORS = {
-    primary: "#7E3FF2",
-    primaryHover: "#9B71F5",
-    primaryLight: "#C3A6FF",
+    primary: "#9E5FD3", // "#9E5FD3",
+    primaryHover: "#b085d6",
+    primaryLight: "#7BAEFF",
     success: "#0ecb81",
     danger: "#ff4a5c",
     info: "#627EEA",
     warning: "#ffb02c",
-    white: "#FFFFFF",
-    black: "#000000",
+    white: "#fff",
+    black: "#000",
     red: "#D93025",
-    dark: "#120E1C",
-    light: "#EDE7FF",
+    dark: "#2f2f2f",
+    light: "#E6E6E6",
 
     // light
-    title: "#140F21",
-    text: "#2A2341",
-    description: "rgba(57, 48, 78, 0.78)",
-    background: "#F7F5FF",
-    backgroundSecond: "#EFE9FF",
-    backgroundThird: "#E7E1FA",
-    background4: "#E0DAF5",
-    backgroundLight: "#FBF9FF",
-    backgroundSemiTransparent: "rgba(255, 255, 255, 0.4)",
-    card: "#FFFFFF",
-    border: "rgba(20, 15, 33, 0.08)",
-    input: "#F0E8FF",
-    placeholder: "rgba(68, 57, 94, 0.5)",
-    backgroundBtn: "#F0E8FF",
-    backgroundDate: "#EBE3FF",
-    backgroundChatMessageRight: "rgba(126, 63, 242, 0.12)",
-    backgroundChatMessageLeft: "rgba(231, 225, 250, 0.9)",
+    title: "#000",
+    text: "#000",
+    description: "rgba(122, 122, 122, 1)",
+    background: "#f5f5f5", //"#edeef0", // "#EFF3FA",
+    backgroundSecond: "#F4F4F6",
+    backgroundThird: "#f2f2f2",
+    background4: "#f0f0f0",
+    backgroundLight: "#f9f9f9",
+    backgroundSemiTransparent: "rgba(255, 255, 255, 0.3)",
+    card: "#fff",
+    border: "rgba(0, 0, 0, 0.10)",
+    input: "#EFF3FA",
+    placeholder: "rgba(71,90,119,.5)",
+    backgroundBtn: "#f5f5f5",
+    backgroundDate: "#f3f1f7",
+    backgroundChatMessageRight: "rgba(226, 245, 255, 0.8)",
+    backgroundChatMessageLeft: "rgba(251, 249, 255, 0.8)",
 
     // dark
-    darkTitle: "#FFFFFF",
-    darkText: "rgba(226, 222, 243, 0.72)",
-    darkBackground: "#0F0B1D",
-    darkBackgroundLight: "#141126",
-    darkBackgroundSecond: "#191630",
-    darkBackgroundThird: "#1F1C39",
-    darkBackground4: "#252045",
-    darkBackgroundSemiTransparent: "rgba(15, 11, 29, 0.65)",
-    darkCard: "#1D1733",
-    darkBorder: "rgba(255, 255, 255, 0.08)",
-    darkInput: "rgba(255, 255, 255, 0.08)",
-    darkPlaceholder: "rgba(200, 196, 226, 0.6)",
-    darkBackgroundBtn: "#221B3A",
-    darkBackgroundDate: "#2B2450",
-    darkBackgroundChatMessageRight: "rgba(126, 63, 242, 0.24)",
-    darkBackgroundChatMessageLeft: "rgba(40, 34, 64, 0.8)",
+    darkTitle: "#fff",
+    darkText: "rgba(255,255,255,.6)",
+    darkBackground: "#070C1F",
+    darkBackgroundLight: "#1e1e1e", // Очень тёмный серый (инверсия #f9f9f9)
+    darkBackgroundSecond: "#0b0b0bff", // Чуть светлее #1e1e1e (инверсия #F4F4F6)
+    darkBackgroundThird: "#2a2a2a", // Средне-тёмный фон (инверсия #f2f2f2)
+    darkBackground4: "#303030", // Чуть светлее #2a2a2a (инверсия #f0f0f0)
+    darkBackgroundSemiTransparent: "rgba(10, 10, 10, 0.3)",
+    darkCard: "#1f1f1f",
+    darkBorder: "rgba(255,255,255,0.12)", // Светлая граница с низким контрастом
+    darkInput: "rgba(255,255,255,.1)",
+    darkPlaceholder: "rgba(255,255,255,.5)",
+    darkBackgroundBtn: "#3a3a3a", // Темно-серый для кнопок (инверсия #f5f5f5)
+    darkBackgroundDate: "#343434", // Чуть светлее кнопок, подходит для выделения дат
+    darkBackgroundChatMessageRight: "rgba(50, 65, 80, 0.8)", // Тёмно-синий с прозрачностью
+    darkBackgroundChatMessageLeft: "rgba(60, 60, 60, 0.8)", // Тёмно-серый с прозрачностью
 
     //text
-    greyText: "#645C75",
-    greyBtnText: "#3A324E",
-    dotColor: "rgba(20, 15, 33, 0.5)",
+    greyText: "#888",
+    greyBtnText: "#333",
+    dotColor: "rgba(255, 255, 255, 0.5)",
 
-    darkGreyText: "#A59FBE",
-    darkGreyBtnText: "#D0C9EA",
-    darkDotColor: "rgba(212, 205, 238, 0.5)",
+    darkGreyText: "#b0b0b0", // Светло-серый текст, хорошо читается на тёмном фоне (инверсия #888)
+    darkGreyBtnText: "#d4d4d4", // Светло-серый, достаточно контрастный для кнопок (инверсия #333)
+    darkDotColor: "rgba(200, 200, 200, 0.5)", // Мягкий светло-серый для точек, хорошо заметный на тёмном фоне
 };
 
 

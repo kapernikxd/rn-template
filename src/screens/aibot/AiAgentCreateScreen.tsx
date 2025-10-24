@@ -9,11 +9,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { launchImageLibrary } from "react-native-image-picker";
 import { FontAwesome6, Ionicons, Octicons } from "@expo/vector-icons";
-import { Button } from "rn-vs-lb";
+import { Button, Spacer } from "rn-vs-lb";
 import {
   SizesType,
   ThemeType,
@@ -21,7 +20,7 @@ import {
   useTheme,
 } from "rn-vs-lb/theme";
 
-import { StepProgress, FormTextField } from "./components";
+import { StepProgress, FormTextField, AiAgentHeader } from "./components";
 import { useCreateAiAgentPage } from "../../helpers/hooks/aiAgent/useCreateAiAgentPage";
 import { categoryOptions } from "../../helpers/data/agent-create";
 import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";
@@ -86,8 +85,7 @@ export const AiAgentCreateScreen: React.FC = () => {
   useEffect(() => {
     setColors({
       topColor: theme.background,
-      bottomColor: theme.background,
-      contentColor: theme.background,
+      bottomColor: theme.white
     });
   }, [setColors, theme.background]);
 
@@ -406,30 +404,31 @@ export const AiAgentCreateScreen: React.FC = () => {
   );
 
   return (
-    // <SafeAreaView style={styles.safeArea}>
     <KeyboardAvoidingView
       style={styles.flex}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={styles.header}>
-        <BackButton
-          onPress={handleCancel}
-          iconColor={theme.text}
-          style={styles.headerBackButton}
-          accessibilityLabel="Назад"
+        <AiAgentHeader
+          theme={theme}
+          title="Создание AI-агента"
+          onBack={handleCancel}
         />
-        <Text style={styles.headerTitle}>Создание AI-агента</Text>
+        <Spacer />
       </View>
+      
       <ScrollView
         style={styles.flex}
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
-        <StepProgress
-          steps={steps}
-          activeStep={Math.min(step, steps.length - 1)}
-          onStepPress={handleStepPress}
-        />
+        <View style={styles.stepContainer}>
+          <StepProgress
+            steps={steps}
+            activeStep={Math.min(step, steps.length - 1)}
+            onStepPress={handleStepPress}
+          />
+        </View>
         {creationError && !completed ? (
           <View style={styles.errorBanner}>
             <Ionicons name="alert-circle" size={20} color={theme.danger} />
@@ -454,7 +453,6 @@ export const AiAgentCreateScreen: React.FC = () => {
         </View>
       ) : null}
     </KeyboardAvoidingView>
-    // </SafeAreaView>
   );
 };
 
@@ -470,18 +468,13 @@ const createStyles = ({
   isDark: boolean;
 }) =>
   StyleSheet.create({
-    safeArea: {
-      flex: 1,
-      backgroundColor: theme.background,
-    },
     flex: {
       flex: 1,
+      backgroundColor: theme.background
     },
     header: {
-      flexDirection: "row",
-      alignItems: "center",
-      paddingHorizontal: sizes.lg as number,
-      paddingVertical: sizes.md as number,
+      paddingHorizontal: sizes.xs as number,
+      paddingBottom: sizes.lg as number,
     },
     headerBackButton: {
       marginRight: sizes.md as number,
@@ -491,8 +484,11 @@ const createStyles = ({
       color: theme.text,
     },
     scrollContent: {
-      paddingHorizontal: sizes.lg as number,
+      paddingHorizontal: sizes.xs as number,
       paddingBottom: (sizes.xl as number) * 2,
+    },
+    stepContainer: {
+      paddingHorizontal: sizes.xs as number,  
     },
     card: {
       backgroundColor: isDark ? theme.card : theme.white,
@@ -515,7 +511,7 @@ const createStyles = ({
     },
     sectionTitle: {
       ...typography.titleH4,
-      color: theme.text,
+      // color: theme.text,
       marginBottom: sizes.sm as number,
     },
     sectionDescription: {

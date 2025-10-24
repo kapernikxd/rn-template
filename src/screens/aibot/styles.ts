@@ -25,11 +25,7 @@ export const createAiAgentStyles = ({
     },
     header: {
       paddingHorizontal: sizes.xs as number,
-      // paddingTop: (sizes.xl as number) + 12,
       paddingBottom: sizes.lg as number,
-      backgroundColor: isDark ? theme.backgroundSecond : theme.backgroundLight,
-      borderBottomLeftRadius: 32,
-      borderBottomRightRadius: 32,
     },
     headerActions: {
       flexDirection: "row",
@@ -54,21 +50,23 @@ export const createAiAgentStyles = ({
     },
     heroCard: {
       borderRadius: 28,
-      padding: sizes.lg as number,
-      backgroundColor: isDark ? theme.card : theme.white,
-      shadowColor: "#000",
-      shadowOpacity: isDark ? 0.25 : 0.1,
-      shadowRadius: 16,
+      padding: sizes.xs as number,
+      backgroundColor: isDark ? theme.background : theme.card,
+      // shadowColor: "#000",
+      // shadowOpacity: isDark ? 0.25 : 0.1,
+      // shadowRadius: 16,
       shadowOffset: { width: 0, height: 8 },
       elevation: 6,
+      borderWidth: 1,
+      borderColor: theme.border,
     },
     heroTopRow: {
       flexDirection: "row",
       alignItems: "center",
     },
     avatar: {
-      width: 84,
-      height: 84,
+      width: 94,
+      height: 94,
       borderRadius: 26,
       marginRight: sizes.md as number,
     },
@@ -80,10 +78,10 @@ export const createAiAgentStyles = ({
       alignItems: "center",
       alignSelf: "flex-start",
       borderRadius: 999,
-      backgroundColor: isDark ? "rgba(158,95,211,0.18)" : "rgba(111,45,168,0.12)",
-      paddingHorizontal: sizes.sm as number,
+      // backgroundColor: isDark ? "rgba(158,95,211,0.18)" : "rgba(111,45,168,0.12)",
+      // paddingHorizontal: sizes.sm as number,
       paddingVertical: 6,
-      marginBottom: sizes.xs as number,
+      // marginBottom: sizes.xs as number,
     },
     badgeText: {
       marginLeft: 6,
@@ -127,16 +125,14 @@ export const createAiAgentStyles = ({
       color: theme.title,
     },
     buttonsRow: {
-      flexDirection: "row",
-      marginTop: sizes.lg as number,
+      display: "flex",
+      gap: 8,
+      flexDirection: "column"
     },
     buttonWrapper: {
       flex: 1,
-      marginRight: sizes.sm as number,
     },
     buttonWrapperLast: {
-      marginRight: 0,
-      marginLeft: sizes.sm as number,
     },
     tabBar: {
       flexDirection: "row",
@@ -238,7 +234,7 @@ export const createAiAgentStyles = ({
       marginLeft: sizes.sm as number,
     },
     galleryWrapper: {
-      paddingHorizontal: sizes.lg as number,
+      paddingHorizontal: sizes.md as number,
       paddingVertical: sizes.xl as number,
     },
     galleryGrid: {
