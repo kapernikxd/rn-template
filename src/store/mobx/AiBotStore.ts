@@ -534,7 +534,12 @@ export class AiBotStore {
       const message = this.resolveErrorMessage(error);
 
       runInAction(() => {
-        this.creationError = message;
+        if(message.toLowerCase().includes("header missing")) {
+          this.creationError = 'Пожалуйста авторизуйтесь!';
+        }
+        else {
+          this.creationError = message;
+        }
       });
       this.notify();
 
