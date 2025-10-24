@@ -94,7 +94,7 @@ export function useAiAgentProfile(aiBotId?: string) {
   }, [aiBotStore, aiBotProfileId, disableFollowAction]);
 
   const handleStartChat = useCallback(async () => {
-    if (!aiBotProfileId || isChatLoading) return;
+    if (!aiBotProfileId || isChatLoading || !isAuthenticated) return;
     setIsChatLoading(true);
     try {
       const response = await chatStore.messageById(aiBotProfileId);
@@ -115,7 +115,7 @@ export function useAiAgentProfile(aiBotId?: string) {
     } finally {
       setIsChatLoading(false);
     }
-  }, [aiBotProfileId, chatStore, goToChatMessages, isChatLoading]);
+  }, [aiBotProfileId, chatStore, goToChatMessages, isAuthenticated, isChatLoading]);
 
   const handleAiAgentDeleted = useCallback(() => {
     goBack()
@@ -136,6 +136,8 @@ export function useAiAgentProfile(aiBotId?: string) {
     highlights, aiBotProfileId,
     // env
     isMdUp,
+    // auth
+    isAuthenticated,
     // handlers
     onBack: goBack, handleToggleFollow, handleStartChat, handleAiAgentDeleted,
   } as const;
