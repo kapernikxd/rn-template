@@ -272,7 +272,7 @@ export const AiAgentCreateScreen: React.FC = () => {
           onSubmitEditing={handleAddUsefulness}
           returnKeyType="done"
         />
-        <Button leftIcon={<FontAwesome6 name="add" color={theme.white} size={24}/>} onPress={handleAddUsefulness} disabled={!usefulnessDraft.trim()} />
+        <Button leftIcon={<FontAwesome6 name="add" color={theme.white} size={24} />} onPress={handleAddUsefulness} disabled={!usefulnessDraft.trim()} />
       </View>
       <View style={styles.usefulnessList}>
         {form.usefulness.map((item) => (
@@ -406,47 +406,47 @@ export const AiAgentCreateScreen: React.FC = () => {
 
   return (
     // <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView
+    <KeyboardAvoidingView
+      style={styles.flex}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Создание AI-агента</Text>
+      </View>
+      <ScrollView
         style={styles.flex}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
       >
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Создание AI-агента</Text>
-        </View>
-        <ScrollView
-          style={styles.flex}
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-        >
-          <StepProgress
-            steps={steps}
-            activeStep={Math.min(step, steps.length - 1)}
-            onStepPress={handleStepPress}
-          />
-          {creationError && !completed ? (
-            <View style={styles.errorBanner}>
-              <Ionicons name="alert-circle" size={20} color={theme.danger} />
-              <Text style={styles.errorText}>{creationError}</Text>
-            </View>
-          ) : null}
-
-          {completed ? renderCompleted() : renderStepContent()}
-        </ScrollView>
-
-        {!completed ? (
-          <View style={[styles.footer, step > 0 && styles.footerSingleAction]}>
-            {step === 0 ? (
-              <Button title="Отмена" type="gray-outline" onPress={handleCancel} disabled={isSubmitting} />
-            ) : null}
-            <Button
-              title={step === steps.length - 1 ? "Создать" : "Далее"}
-              onPress={handleSubmitStep}
-              loading={isSubmitting}
-              disabled={!currentStepComplete || isSubmitting}
-            />
+        <StepProgress
+          steps={steps}
+          activeStep={Math.min(step, steps.length - 1)}
+          onStepPress={handleStepPress}
+        />
+        {creationError && !completed ? (
+          <View style={styles.errorBanner}>
+            <Ionicons name="alert-circle" size={20} color={theme.danger} />
+            <Text style={styles.errorText}>{creationError}</Text>
           </View>
         ) : null}
-      </KeyboardAvoidingView>
+
+        {completed ? renderCompleted() : renderStepContent()}
+      </ScrollView>
+
+      {!completed ? (
+        <View style={[styles.footer, step > 0 && styles.footerSingleAction]}>
+          <Button
+            title={step === steps.length - 1 ? "Создать" : "Далее"}
+            onPress={handleSubmitStep}
+            loading={isSubmitting}
+            disabled={!currentStepComplete || isSubmitting}
+          />
+          {step === 0 ? (
+            <Button title="Отмена" type="gray-outline" onPress={handleCancel} disabled={isSubmitting} />
+          ) : null}
+        </View>
+      ) : null}
+    </KeyboardAvoidingView>
     // </SafeAreaView>
   );
 };
@@ -652,7 +652,7 @@ const createStyles = ({
       color: theme.greyText,
     },
     footer: {
-      flexDirection: "row",
+      flexDirection: "column",
       justifyContent: "space-between",
       alignItems: "center",
       paddingHorizontal: sizes.lg as number,

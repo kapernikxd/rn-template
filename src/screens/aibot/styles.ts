@@ -21,6 +21,7 @@ export const createAiAgentStyles = ({
     },
     scrollContent: {
       paddingBottom: sizes.xl as number,
+      backgroundColor: theme.background,
     },
     header: {
       paddingHorizontal: sizes.xs as number,

@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import { Alert, ScrollView, Share, View, useWindowDimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "rn-vs-lb/theme";
 
 import { ROUTES, RootStackParamList } from "../../navigation/types";
@@ -95,19 +94,10 @@ export const AiAgentScreen = ({ route }: Props) => {
     }
   }, [aiBot, displayName, profession]);
 
-  const handleMore = useCallback(() => {
+  const handleEdit = useCallback(() => {
     if (canEdit && aiBotId) {
-      Alert.alert("Действия", undefined, [
-        {
-          text: "Редактировать агента",
-          onPress: () => goToAiBotEdit(aiBotId),
-        },
-        { text: "Отмена", style: "cancel" },
-      ]);
-      return;
+      goToAiBotEdit(aiBotId)
     }
-
-    Alert.alert("Скоро", "Дополнительные действия появятся позже.");
   }, [aiBotId, canEdit, goToAiBotEdit]);
 
   const followButtonTitle = isFollowing ? "Отписаться" : "Подписаться";
@@ -116,8 +106,22 @@ export const AiAgentScreen = ({ route }: Props) => {
     return <ScreenLoader />;
   }
 
+  const ITEMS = aiBotId && [
+        canEdit && {
+          label: 'Редактировать',
+          icon: 'create-outline',
+          colorIcon: theme.black,
+          onPress: handleEdit,
+        },
+        {
+          label: 'Report user',
+          icon: 'megaphone-outline',
+          colorIcon: '#E63946',
+          onPress: () => console.log('report'),
+        },
+      ]
+
   return (
-    // <SafeAreaView style={styles.safeArea}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         bounces={false}
@@ -129,7 +133,7 @@ export const AiAgentScreen = ({ route }: Props) => {
             theme={theme}
             onBack={onBack}
             onShare={handleShare}
-            onMore={handleMore}
+            items={ITEMS}
           />
           <AiAgentHeroCard
             styles={styles}
@@ -174,7 +178,6 @@ export const AiAgentScreen = ({ route }: Props) => {
           />
         )}
       </ScrollView>
-    // </SafeAreaView>
   );
 };
 

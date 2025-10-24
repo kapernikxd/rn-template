@@ -2,6 +2,7 @@ import React, { memo } from "react";
 import { TouchableOpacity, View } from "react-native";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { ThemeType } from "rn-vs-lb/theme";
+import { ThreeDotsMenu } from "rn-vs-lb";
 
 import { AiAgentStyles } from "../styles";
 
@@ -10,11 +11,11 @@ type AiAgentHeaderProps = {
   theme: ThemeType;
   onBack: () => void;
   onShare: () => void;
-  onMore: () => void;
-};
+  items: any;
+}
 
 export const AiAgentHeader = memo(
-  ({ styles, theme, onBack, onShare, onMore }: AiAgentHeaderProps) => (
+  ({ styles, theme, onBack, onShare, items }: AiAgentHeaderProps) => (
     <View style={styles.headerActions}>
       <TouchableOpacity
         style={styles.iconButton}
@@ -31,13 +32,7 @@ export const AiAgentHeader = memo(
         >
           <Feather name="share-2" size={20} color={theme.title} />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.iconButton, styles.iconButtonSecondary]}
-          onPress={onMore}
-          accessibilityRole="button"
-        >
-          <Feather name="more-horizontal" size={20} color={theme.title} />
-        </TouchableOpacity>
+        <ThreeDotsMenu positionLeft={210} positionTop={10} iconColor={theme.black} style={[styles.iconButton, styles.iconButtonSecondary]} items={items}/>
       </View>
     </View>
   ),

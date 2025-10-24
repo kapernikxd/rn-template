@@ -340,37 +340,35 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <KeyboardAvoidingView
+    <KeyboardAvoidingView
+      style={[styles.flex, { backgroundColor: theme.background }]}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+          <Ionicons name="chevron-back" size={22} color={theme.text} />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Редактирование AI-агента</Text>
+      </View>
+      <ScrollView
         style={styles.flex}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
       >
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-            <Ionicons name="chevron-back" size={22} color={theme.text} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Редактирование AI-агента</Text>
-        </View>
-        <ScrollView
-          style={styles.flex}
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-        >
-          <StepProgress steps={steps} activeStep={Math.min(activeStep, steps.length - 1)} />
-          {renderStepContent()}
-        </ScrollView>
+        <StepProgress steps={steps} activeStep={Math.min(activeStep, steps.length - 1)} />
+        {renderStepContent()}
+      </ScrollView>
 
-        <View style={styles.footer}>
-          <Button title={activeStep === 0 ? "Отмена" : "Назад"} type="gray-outline" onPress={handleBack} disabled={isSubmitting} />
-          <Button
-            title={activeStep === steps.length - 1 ? "Сохранить" : "Далее"}
-            onPress={handleNext}
-            loading={isSubmitting}
-            disabled={isSubmitting}
-          />
-        </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+      <View style={styles.footer}>
+        <Button
+          title={activeStep === steps.length - 1 ? "Сохранить" : "Далее"}
+          onPress={handleNext}
+          loading={isSubmitting}
+          disabled={isSubmitting}
+        />
+        <Button title={activeStep === 0 ? "Отмена" : "Назад"} type="gray-outline" onPress={handleBack} disabled={isSubmitting} />
+      </View>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -396,7 +394,7 @@ const createStyles = ({
     header: {
       flexDirection: "row",
       alignItems: "center",
-      paddingHorizontal: sizes.lg as number,
+      paddingHorizontal: sizes.xs as number,
       paddingVertical: sizes.md as number,
     },
     backButton: {
@@ -575,7 +573,7 @@ const createStyles = ({
       color: theme.greyText,
     },
     footer: {
-      flexDirection: "row",
+      flexDirection: "column",
       justifyContent: "space-between",
       paddingHorizontal: sizes.lg as number,
       paddingVertical: sizes.md as number,
