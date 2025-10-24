@@ -6,7 +6,6 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -29,6 +28,7 @@ import { ROUTES, RootStackParamList } from "../../navigation/types";
 import { ScreenLoader } from "../../components";
 import type { AvatarFile } from "../../types/profile";
 import { categoryOptions } from "../../helpers/data/agent-create";
+import { BackButton } from "../../components/buttons";
 
 const FALLBACK_IMAGE_TYPE = "image/jpeg";
 
@@ -345,9 +345,7 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-          <Ionicons name="chevron-back" size={22} color={theme.text} />
-        </TouchableOpacity>
+        <BackButton onPress={handleBack} iconColor={theme.text} style={styles.headerBackButton} />
         <Text style={styles.headerTitle}>Редактирование AI-агента</Text>
       </View>
       <ScrollView
@@ -397,13 +395,7 @@ const createStyles = ({
       paddingHorizontal: sizes.xs as number,
       paddingVertical: sizes.md as number,
     },
-    backButton: {
-      width: 40,
-      height: 40,
-      borderRadius: 16,
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)",
+    headerBackButton: {
       marginRight: sizes.md as number,
     },
     headerTitle: {
