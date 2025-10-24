@@ -105,12 +105,6 @@ export const AiAgentScreen = ({ route }: Props) => {
     }
   }, [aiBotId, canEdit, goToAiBotEdit]);
 
-  const followButtonTitle = isFollowing ? "Отписаться" : "Подписаться";
-
-  if (isLoading && !aiBot) {
-    return <ScreenLoader />;
-  }
-
   const handleOpenReport = useCallback(() => setIsReportVisible(true), []);
   const handleCloseReport = useCallback(() => setIsReportVisible(false), []);
   const handleReportSubmit = useCallback(
@@ -144,6 +138,12 @@ export const AiAgentScreen = ({ route }: Props) => {
     });
     return items;
   }, [aiBotId, canEdit, handleEdit, handleOpenReport, theme.black]);
+
+  const followButtonTitle = isFollowing ? "Отписаться" : "Подписаться";
+
+  if (isLoading && !aiBot) {
+    return <ScreenLoader />;
+  }
 
   return (
     <>
