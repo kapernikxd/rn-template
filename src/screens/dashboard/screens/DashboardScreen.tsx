@@ -9,14 +9,6 @@ import { usePortalNavigation } from '../../../helpers/hooks';
 import { TabBar } from '../../../components/aibot/TabBar';
 import { Spacer } from 'rn-vs-lb';
 
-const TABS = [
-  { key: 'explore', label: 'Explore' },
-  { key: 'featured', label: 'Featured' },
-  { key: 'new', label: 'New' },
-  { key: 'hot', label: '🔥 Hot' },
-  { key: 'top', label: 'Top' },
-];
-
 const HORIZONTAL_PADDING = 2;
 const COLUMN_GAP = 2;
 
@@ -30,6 +22,47 @@ export const DashboardScreen = () => {
   const { goToAiBotProfile } = usePortalNavigation();
 
   const [index, setIndex] = useState(0);
+
+  const categories = useMemo(() => {
+    const uniqueCategories = new Set<string>();
+
+    bots.forEach((bot) => {
+      bot.details?.categories?.forEach((category) => {
+        const normalizedCategory = category?.trim();
+        if (normalizedCategory) {
+          uniqueCategories.add(normalizedCategory);
+        }
+      });
+    });
+
+    return Array.from(uniqueCategories);
+  }, [bots]);
+
+  const tabs = useMemo(
+    () => [
+      { key: 'all', label: 'Все' },
+      ...categories.map((category) => ({ key: category, label: category })),
+    ],
+    [categories],
+  );
+
+  useEffect(() => {
+    if (index >= tabs.length) {
+      setIndex(0);
+    }
+  }, [index, tabs.length]);
+
+  const activeTab = tabs[index] ?? tabs[0];
+
+  const filteredBots = useMemo(() => {
+    if (!activeTab || activeTab.key === 'all') {
+      return bots;
+    }
+
+    return bots.filter((bot) =>
+      bot.details?.categories?.some((category) => category?.trim() === activeTab.key),
+    );
+  }, [activeTab, bots]);
 
   useEffect(() => {
     if (!bots.length && !isLoading) {
@@ -84,7 +117,7 @@ export const DashboardScreen = () => {
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <TabBar
-        tabs={TABS}
+        tabs={tabs}
         activeIndex={index}
         onChange={setIndex}
         // кастомизация под твой тёмный UI
@@ -99,7 +132,7 @@ export const DashboardScreen = () => {
       />
       <Spacer size='xs'/>
       <FlatList
-        data={bots}
+        data={filteredBots}
         keyExtractor={(item) => item.id}
         numColumns={2}
         renderItem={renderItem}
