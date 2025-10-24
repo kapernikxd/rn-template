@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { LayoutChangeEvent, ScrollView, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { LayoutChangeEvent, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { ProfileCard } from 'rn-vs-lb';
+import { ProfileCard, TabBar, type TabItem } from 'rn-vs-lb';
 import { useTheme } from 'rn-vs-lb/theme';
 
 import { usePortalNavigation } from '../../../helpers/hooks';
@@ -11,9 +10,9 @@ import { getUserAvatar, getUserFullName } from '../../../helpers/utils/user';
 import { useRootStore, useStoreData } from '../../../store/StoreProvider';
 import { ROUTES, type ProfileStackParamList } from '../../../navigation/types';
 import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
-import { AiBotListSection } from '../../../components/aibot/AiBotListSection';
 import { type AiBotCardEntity } from '../../../components/aibot/AiBotCard';
 import { getAiBotIdentifier } from '../../../helpers/utils/agent-create';
+import { AiBotPlaceCardList } from '../../../components/aibot/AiBotPlaceCardList';
 
 // NB: этот экран обёрнут withAuthGuard в ProfileStack, поэтому доступен только авторизованным пользователям.
 type NavigationProp = NativeStackNavigationProp<
@@ -23,7 +22,7 @@ type NavigationProp = NativeStackNavigationProp<
 
 export const ProfileScreen = () => {
   const navigation = useNavigation<NavigationProp>();
-  const { theme, isDark } = useTheme();
+  const { theme, isDark, typography } = useTheme();
   const { setColors } = useSafeAreaColors();
   const { goToMain, goToAiBotProfile } = usePortalNavigation();
 
@@ -46,11 +45,18 @@ export const ProfileScreen = () => {
     (store) => (profileId ? store.getIsUserOnline(profileId) : false),
   );
 
+  const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const tabs = useMemo<TabItem[]>(
+    () => [
+      { key: 'my-bots', label: 'Мои', icon: 'person' },
+      { key: 'subscribed-bots', label: 'Подписки', icon: 'subscriptions' },
+    ],
+    [],
+  );
+
   const scrollViewRef = useRef<ScrollView | null>(null);
-  const myBotsOffsetRef = useRef(0);
-  const subscribedBotsOffsetRef = useRef(0);
-  const myBotsMeasuredRef = useRef(false);
-  const subscribedBotsMeasuredRef = useRef(false);
+  const botsSectionOffsetRef = useRef(0);
+  const botsSectionMeasuredRef = useRef(false);
 
   useEffect(() => {
     setColors({
@@ -117,27 +123,26 @@ export const ProfileScreen = () => {
     uiStore.showSnackbar('This feature will be available soon.', 'info');
   }, [uiStore]);
 
-  const scrollToOffset = useCallback((offset: number, measured: boolean) => {
-    const targetOffset = measured ? Math.max(0, offset - 16) : 0;
+  const scrollToBotsSection = useCallback(() => {
+    const targetOffset = botsSectionMeasuredRef.current
+      ? Math.max(0, botsSectionOffsetRef.current - 16)
+      : 0;
     scrollViewRef.current?.scrollTo({ y: targetOffset, animated: true });
   }, []);
 
   const handleOpenMyBotsSection = useCallback(() => {
-    scrollToOffset(myBotsOffsetRef.current, myBotsMeasuredRef.current);
-  }, [scrollToOffset]);
+    setActiveTabIndex(0);
+    scrollToBotsSection();
+  }, [scrollToBotsSection]);
 
   const handleOpenSubscriptionsSection = useCallback(() => {
-    scrollToOffset(subscribedBotsOffsetRef.current, subscribedBotsMeasuredRef.current);
-  }, [scrollToOffset]);
+    setActiveTabIndex(1);
+    scrollToBotsSection();
+  }, [scrollToBotsSection]);
 
-  const handleMyBotsLayout = useCallback((event: LayoutChangeEvent) => {
-    myBotsOffsetRef.current = event.nativeEvent.layout.y;
-    myBotsMeasuredRef.current = true;
-  }, []);
-
-  const handleSubscribedBotsLayout = useCallback((event: LayoutChangeEvent) => {
-    subscribedBotsOffsetRef.current = event.nativeEvent.layout.y;
-    subscribedBotsMeasuredRef.current = true;
+  const handleBotsSectionLayout = useCallback((event: LayoutChangeEvent) => {
+    botsSectionOffsetRef.current = event.nativeEvent.layout.y;
+    botsSectionMeasuredRef.current = true;
   }, []);
 
   const handleOpenBotProfile = useCallback((bot: AiBotCardEntity) => {
@@ -148,6 +153,21 @@ export const ProfileScreen = () => {
     }
     goToAiBotProfile(botId);
   }, [goToAiBotProfile, uiStore]);
+
+  const handleTabChange = useCallback((index: number) => {
+    setActiveTabIndex(index);
+  }, []);
+
+  const currentBots = useMemo(
+    () => (activeTabIndex === 0 ? myBots : subscribedBots),
+    [activeTabIndex, myBots, subscribedBots],
+  );
+
+  const isCurrentLoading = activeTabIndex === 0 ? isLoadingMyBots : isLoadingSubscribedBots;
+  const currentEmptyText =
+    activeTabIndex === 0
+      ? 'Вы еще не создали AI-ботов. Попробуйте создать первого героя!'
+      : 'Вы пока не подписались ни на одного AI-бота.';
 
   const canGoBack = navigation.canGoBack();
 
@@ -173,25 +193,15 @@ export const ProfileScreen = () => {
         onLearnMorePress={handleFeatureSoon}
         hasNotifications={hasNotifications}
       />
-      <View style={styles.sectionsWrapper}>
-        <View onLayout={handleMyBotsLayout}>
-          <AiBotListSection
-            title="Мои AI-боты"
-            bots={myBots}
-            isLoading={isLoadingMyBots}
-            emptyText="Вы еще не создали AI-ботов. Попробуйте создать первого героя!"
-            onBotPress={handleOpenBotProfile}
-          />
-        </View>
-        <View onLayout={handleSubscribedBotsLayout}>
-          <AiBotListSection
-            title="AI-боты, на которых я подписан"
-            bots={subscribedBots}
-            isLoading={isLoadingSubscribedBots}
-            emptyText="Вы пока не подписались ни на одного AI-бота."
-            onBotPress={handleOpenBotProfile}
-          />
-        </View>
+      <View style={styles.sectionsWrapper} onLayout={handleBotsSectionLayout}>
+        <Text style={[typography.titleH6, styles.sectionTitle, { color: theme.title }]}>AI-боты</Text>
+        <TabBar tabs={tabs} activeTabIndex={activeTabIndex} onChangeTab={handleTabChange} style={styles.tabBar} />
+        <AiBotPlaceCardList
+          bots={currentBots}
+          isLoading={isCurrentLoading}
+          emptyText={currentEmptyText}
+          onBotPress={handleOpenBotProfile}
+        />
       </View>
     </ScrollView>
   );
@@ -205,6 +215,12 @@ const styles = StyleSheet.create({
   sectionsWrapper: {
     paddingHorizontal: 24,
     paddingVertical: 24,
-    gap: 24,
+    gap: 16,
+  },
+  sectionTitle: {
+    marginBottom: 4,
+  },
+  tabBar: {
+    alignSelf: 'stretch',
   },
 });
