@@ -1,3 +1,4 @@
+import { AiBotCardEntity } from "../../components/aibot/AiBotCard";
 import { GalleryItem } from "../../types/aiBot";
 
 const canUseObjectUrl =
@@ -23,3 +24,16 @@ export function revokeGallery(items: GalleryItem[]) {
     }
   });
 }
+
+export const getAiBotIdentifier = (bot: AiBotCardEntity): string => {
+  if ('botId' in bot && bot.botId) {
+    return bot.botId;
+  }
+  if ('id' in bot && bot.id) {
+    return bot.id;
+  }
+  if ('_id' in bot && bot._id) {
+    return bot._id;
+  }
+  return '';
+};

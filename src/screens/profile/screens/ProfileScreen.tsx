@@ -12,7 +12,8 @@ import { useRootStore, useStoreData } from '../../../store/StoreProvider';
 import { ROUTES, type ProfileStackParamList } from '../../../navigation/types';
 import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
 import { AiBotListSection } from '../../../components/aibot/AiBotListSection';
-import { getAiBotIdentifier, type AiBotCardEntity } from '../../../components/aibot/AiBotCard';
+import { type AiBotCardEntity } from '../../../components/aibot/AiBotCard';
+import { getAiBotIdentifier } from '../../../helpers/utils/agent-create';
 
 // NB: этот экран обёрнут withAuthGuard в ProfileStack, поэтому доступен только авторизованным пользователям.
 type NavigationProp = NativeStackNavigationProp<

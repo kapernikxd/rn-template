@@ -70,7 +70,7 @@ const MainTabBar = ({ state, descriptors, navigation, showLabels = true, bottomI
         if (!tab) return null;
 
         const isFocused = state.index === index;
-        const iconColor = isFocused ? theme.primaryLight : '#9CA3AF';
+        const iconColor = isFocused ? theme.white : theme.black;
 
         const onPress = () => {
           const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
@@ -105,7 +105,7 @@ const MainTabBar = ({ state, descriptors, navigation, showLabels = true, bottomI
               testID={descriptors[route.key].options.tabBarButtonTestID}
               style={[
                 styles.circlePressable,
-                isFocused && { backgroundColor: theme.primaryLight + '22' }, // активный круглый фон
+                isFocused && { backgroundColor: theme.backgroundSemiTransparent }, // активный круглый фон
               ]}
             >
               <Feather name={tab.icon} size={20} color={iconColor} />

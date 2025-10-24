@@ -13,7 +13,8 @@ import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 import { ROUTES, type ProfileStackParamList } from '../../navigation/types';
 import type { ProfileDTO } from '../../types';
 import { AiBotListSection } from '../../components/aibot/AiBotListSection';
-import { getAiBotIdentifier, type AiBotCardEntity } from '../../components/aibot/AiBotCard';
+import { type AiBotCardEntity } from '../../components/aibot/AiBotCard';
+import { getAiBotIdentifier } from '../../helpers/utils/agent-create';
 
 type UserProfileRoute = RouteProp<ProfileStackParamList, typeof ROUTES.UserProfile>;
 

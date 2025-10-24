@@ -52,7 +52,7 @@ export const AppNavigator = () => {
         <RootStack.Screen name={ROUTES.AiAgentCreate}>
           {(props) => (
             <MainLayout>
-              <AiAgentCreateScreen {...props} />
+              <AiAgentCreateScreen />
             </MainLayout>
           )}
         </RootStack.Screen>

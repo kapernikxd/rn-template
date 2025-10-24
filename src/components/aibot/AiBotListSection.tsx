@@ -2,7 +2,8 @@ import { memo, useMemo } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useTheme } from 'rn-vs-lb/theme';
 
-import { AiBotCard, type AiBotCardEntity, getAiBotIdentifier } from './AiBotCard';
+import { AiBotCard, type AiBotCardEntity } from './AiBotCard';
+import { getAiBotIdentifier } from '../../helpers/utils/agent-create';
 
 type AiBotListSectionProps = {
   title: string;
