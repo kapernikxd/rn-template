@@ -1,13 +1,14 @@
 import React, { useMemo } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { ThemeType, TypographytType, SizesType, useTheme } from "rn-vs-lb/theme";
 
 interface StepProgressProps {
   steps: { title: string; description?: string }[];
   activeStep: number;
+  onStepPress?: (index: number) => void;
 }
 
-export const StepProgress: React.FC<StepProgressProps> = ({ steps, activeStep }) => {
+export const StepProgress: React.FC<StepProgressProps> = ({ steps, activeStep, onStepPress }) => {
   const { theme, typography, sizes } = useTheme();
 
   const styles = useMemo(
@@ -23,8 +24,15 @@ export const StepProgress: React.FC<StepProgressProps> = ({ steps, activeStep })
         {steps.map((step, index) => {
           const isActive = index === activeStep;
           const isCompleted = index < activeStep;
+          const isPressable = typeof onStepPress === "function" && index < activeStep;
           return (
-            <View key={step.title ?? index} style={styles.stepItem}>
+            <TouchableOpacity
+              key={step.title ?? index}
+              style={[styles.stepItem, isPressable && styles.stepItemPressable]}
+              activeOpacity={0.7}
+              onPress={isPressable ? () => onStepPress(index) : undefined}
+              disabled={!isPressable}
+            >
               <View style={styles.stepHeader}>
                 <View
                   style={[
@@ -56,7 +64,7 @@ export const StepProgress: React.FC<StepProgressProps> = ({ steps, activeStep })
               >
                 {step.title}
               </Text>
-            </View>
+            </TouchableOpacity>
           );
         })}
       </View>
@@ -88,6 +96,9 @@ const createStyles = ({
     stepItem: {
       flex: 1,
       marginRight: sizes.sm as number,
+    },
+    stepItemPressable: {
+      opacity: 0.9,
     },
     stepHeader: {
       flexDirection: "row",

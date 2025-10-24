@@ -50,7 +50,7 @@ const toAvatarFile = (asset: {
 type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.AiAgentCreate>;
 
 export const AiAgentCreateScreen: React.FC = () => {
-  const {goBack} = usePortalNavigation();
+  const { goBack } = usePortalNavigation();
   const { theme, sizes, typography, isDark } = useTheme();
   const styles = useMemo(
     () => createStyles({ theme, sizes, typography, isDark }),
@@ -77,7 +77,7 @@ export const AiAgentCreateScreen: React.FC = () => {
     resetFlow,
     handleChange,
     goNext,
-    goPrev,
+    goToStep,
   } = useCreateAiAgentPage();
 
   const [usefulnessDraft, setUsefulnessDraft] = useState("");
@@ -90,18 +90,20 @@ export const AiAgentCreateScreen: React.FC = () => {
     });
   }, [setColors, theme.background]);
 
-  const handleBack = useCallback(() => {
-    if (completed) {
-      goBack();
-      return;
-    }
+  const handleCancel = useCallback(() => {
+    goBack();
+  }, [goBack]);
 
-    if (step === 0) {
-      goBack();
-    } else {
-      goPrev();
-    }
-  }, [completed, goPrev, step]);
+  const handleStepPress = useCallback(
+    (targetStep: number) => {
+      if (completed) {
+        return;
+      }
+
+      goToStep(targetStep);
+    },
+    [completed, goToStep],
+  );
 
   const handlePickAvatar = useCallback(async () => {
     const result = await launchImageLibrary({
@@ -409,9 +411,6 @@ export const AiAgentCreateScreen: React.FC = () => {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
-            <Ionicons name="chevron-back" size={22} color={theme.text} />
-          </TouchableOpacity>
           <Text style={styles.headerTitle}>Создание AI-агента</Text>
         </View>
         <ScrollView
@@ -419,7 +418,11 @@ export const AiAgentCreateScreen: React.FC = () => {
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
-          <StepProgress steps={steps} activeStep={Math.min(step, steps.length - 1)} />
+          <StepProgress
+            steps={steps}
+            activeStep={Math.min(step, steps.length - 1)}
+            onStepPress={handleStepPress}
+          />
           {creationError && !completed ? (
             <View style={styles.errorBanner}>
               <Ionicons name="alert-circle" size={20} color={theme.danger} />
@@ -431,13 +434,10 @@ export const AiAgentCreateScreen: React.FC = () => {
         </ScrollView>
 
         {!completed ? (
-          <View style={styles.footer}>
-            <Button
-              title={step === 0 ? "Отмена" : "Назад"}
-              type="gray-outline"
-              onPress={handleBack}
-              disabled={isSubmitting}
-            />
+          <View style={[styles.footer, step > 0 && styles.footerSingleAction]}>
+            {step === 0 ? (
+              <Button title="Отмена" type="gray-outline" onPress={handleCancel} disabled={isSubmitting} />
+            ) : null}
             <Button
               title={step === steps.length - 1 ? "Создать" : "Далее"}
               onPress={handleSubmitStep}
@@ -475,15 +475,6 @@ const createStyles = ({
       alignItems: "center",
       paddingHorizontal: sizes.lg as number,
       paddingVertical: sizes.md as number,
-    },
-    backButton: {
-      width: 40,
-      height: 40,
-      borderRadius: 16,
-      alignItems: "center",
-      justifyContent: "center",
-      backgroundColor: isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)",
-      marginRight: sizes.md as number,
     },
     headerTitle: {
       ...typography.titleH4,
@@ -662,12 +653,16 @@ const createStyles = ({
     footer: {
       flexDirection: "row",
       justifyContent: "space-between",
+      alignItems: "center",
       paddingHorizontal: sizes.lg as number,
       paddingVertical: sizes.md as number,
       gap: sizes.md as number,
       backgroundColor: theme.background,
       borderTopWidth: StyleSheet.hairlineWidth,
       borderColor: theme.border,
+    },
+    footerSingleAction: {
+      justifyContent: "flex-end",
     },
     errorBanner: {
       flexDirection: "row",
