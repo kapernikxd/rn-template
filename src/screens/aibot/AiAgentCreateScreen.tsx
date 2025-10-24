@@ -28,6 +28,7 @@ import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";
 import { ROUTES, RootStackParamList } from "../../navigation/types";
 import type { AvatarFile } from "../../types/profile";
 import { usePortalNavigation } from "../../helpers/hooks";
+import { BackButton } from "../../components/buttons";
 
 const FALLBACK_IMAGE_TYPE = "image/jpeg";
 
@@ -411,6 +412,12 @@ export const AiAgentCreateScreen: React.FC = () => {
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <View style={styles.header}>
+        <BackButton
+          onPress={handleCancel}
+          iconColor={theme.text}
+          style={styles.headerBackButton}
+          accessibilityLabel="Назад"
+        />
         <Text style={styles.headerTitle}>Создание AI-агента</Text>
       </View>
       <ScrollView
@@ -475,6 +482,9 @@ const createStyles = ({
       alignItems: "center",
       paddingHorizontal: sizes.lg as number,
       paddingVertical: sizes.md as number,
+    },
+    headerBackButton: {
+      marginRight: sizes.md as number,
     },
     headerTitle: {
       ...typography.titleH4,

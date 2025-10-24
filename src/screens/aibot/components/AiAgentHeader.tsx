@@ -1,10 +1,10 @@
 import React, { memo } from "react";
-import { TouchableOpacity, View } from "react-native";
-import { Ionicons, Feather } from "@expo/vector-icons";
+import { View } from "react-native";
 import { ThemeType } from "rn-vs-lb/theme";
 import { ThreeDotsMenu } from "rn-vs-lb";
 
 import { AiAgentStyles } from "../styles";
+import { BackButton, ShareIconButton } from "../../../components/buttons";
 
 type AiAgentHeaderProps = {
   styles: AiAgentStyles;
@@ -17,22 +17,20 @@ type AiAgentHeaderProps = {
 export const AiAgentHeader = memo(
   ({ styles, theme, onBack, onShare, items }: AiAgentHeaderProps) => (
     <View style={styles.headerActions}>
-      <TouchableOpacity
-        style={styles.iconButton}
-        onPress={onBack}
-        accessibilityRole="button"
-      >
-        <Ionicons name="chevron-back" size={22} color={theme.title} />
-      </TouchableOpacity>
+      <BackButton onPress={onBack} style={styles.iconButton} iconColor={theme.title} />
       <View style={styles.headerRightActions}>
-        <TouchableOpacity
-          style={[styles.iconButton, styles.iconButtonSecondary]}
+        <ShareIconButton
           onPress={onShare}
-          accessibilityRole="button"
-        >
-          <Feather name="share-2" size={20} color={theme.title} />
-        </TouchableOpacity>
-        <ThreeDotsMenu positionLeft={210} positionTop={10} iconColor={theme.black} style={[styles.iconButton, styles.iconButtonSecondary]} items={items}/>
+          style={[styles.iconButton, styles.iconButtonSecondary]}
+          iconColor={theme.title}
+        />
+        <ThreeDotsMenu
+          positionLeft={210}
+          positionTop={10}
+          iconColor={theme.black}
+          style={[styles.iconButton, styles.iconButtonSecondary]}
+          items={items}
+        />
       </View>
     </View>
   ),
