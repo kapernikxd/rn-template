@@ -8,8 +8,8 @@ import { AiBotCard } from '../../../components/aibot/AiBotCard';
 import { usePortalNavigation } from '../../../helpers/hooks';
 import { TabBar } from '../../../components/aibot/TabBar';
 import { Spacer } from 'rn-vs-lb';
+import { MAIN_HORIZONTAL_PADDING } from '../../../constants/layout';
 
-const HORIZONTAL_PADDING = 2;
 const COLUMN_GAP = 2;
 
 export const DashboardScreen = () => {
@@ -71,7 +71,7 @@ export const DashboardScreen = () => {
   }, [aiBotStore, bots.length, isLoading]);
 
   const cardWidth = useMemo(() => {
-    return (width - HORIZONTAL_PADDING * 2 - COLUMN_GAP) / 2;
+    return (width - MAIN_HORIZONTAL_PADDING * 2 - COLUMN_GAP) / 2;
   }, [width]);
 
   const renderHeader = useCallback(
@@ -151,7 +151,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: HORIZONTAL_PADDING,
     paddingBottom: 32,
     paddingTop: 16,
     gap: 2,
