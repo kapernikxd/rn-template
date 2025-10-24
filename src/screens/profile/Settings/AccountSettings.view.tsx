@@ -51,27 +51,27 @@ export const AccountSettingsView: FC<AccountSettingsViewProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <FormProvider {...methods}>
-        <HeaderDefault title="Account Setting" onBackPress={onBackPress} />
+        <HeaderDefault title="Настройки аккаунта" onBackPress={onBackPress} />
 
         <ScrollView style={{ flex: 1 }}>
           <CardContainer
             style={styles.card}
             styleTitleContainer={styles.cardTitleContainer}
-            subTitle="Update your username and manage your account"
+            subTitle="Обновите имя пользователя и управляйте аккаунтом"
           >
             <View style={styles.cardContent}>
               <TextInput
                 name="username"
-                label="Username"
-                placeholder="Enter username"
+                label="Имя пользователя"
+                placeholder="Введите имя пользователя"
                 control={methods.control}
                 keyboardType="default"
               />
               <Spacer />
               <TextInput
                 name="email"
-                label="Email"
-                placeholder="Enter your email"
+                label="Электронная почта"
+                placeholder="Введите электронную почту"
                 control={methods.control}
                 keyboardType="default"
                 editable={false}
@@ -81,9 +81,9 @@ export const AccountSettingsView: FC<AccountSettingsViewProps> = ({
         </ScrollView>
 
         <View style={styles.footer}>
-          <Button title="Update" onPress={onSubmit} loading={isSubmitting} />
+          <Button title="Обновить" onPress={onSubmit} loading={isSubmitting} />
           <Spacer size="xs" />
-          <Button title="Reset" type="gray-outline" onPress={onReset} />
+          <Button title="Сбросить" type="gray-outline" onPress={onReset} />
         </View>
       </FormProvider>
     </KeyboardAvoidingView>

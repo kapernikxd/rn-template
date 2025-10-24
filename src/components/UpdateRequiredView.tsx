@@ -39,16 +39,16 @@ export const UpdateRequiredView = memo(({ anim, refreshing, onRefresh, onPressUp
       </Animated.View>
 
       <Spacer size="xl" />
-      <Text style={[ui.titleH2, styles.title]}>Update Required</Text>
+      <Text style={[ui.titleH2, styles.title]}>Требуется обновление</Text>
 
       <Spacer size="sm" />
       <Text style={[ui.body, styles.description]}>
-        A new version of the app is available. Please update to continue.
+        Доступна новая версия приложения. Пожалуйста, обновитесь, чтобы продолжить работу.
       </Text>
 
       <Spacer size="xl" />
       <View style={styles.button}>
-        <Button title="Update" onPress={onPressUpdate} />
+        <Button title="Обновить" onPress={onPressUpdate} />
       </View>
     </ScrollView>
   );

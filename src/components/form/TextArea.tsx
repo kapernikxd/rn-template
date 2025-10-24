@@ -21,7 +21,7 @@ const TextArea: React.FC<TextAreaProps> = ({
     name,
     control,
     label,
-    placeholder = 'Enter text...',
+    placeholder = 'Введите текст...',
     numberOfLines = 4,
     style,
     containerStyle,

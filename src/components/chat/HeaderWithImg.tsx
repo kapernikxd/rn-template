@@ -37,7 +37,7 @@ const HeaderWithImg: React.FC<HeaderProps> = observer(({ imgUrl, title, onImgPre
   const getStatus = (isOnline: boolean) => {
     return (
       <View style={globalStyleSheet.flexRowCenter}>
-        <Text style={[typography.body, { fontStyle: 'italic' }]}>{isOnline ? "Online" : "Offline"}</Text>
+        <Text style={[typography.body, { fontStyle: 'italic' }]}>{isOnline ? "В сети" : "Не в сети"}</Text>
         <View style={[styles.status, isOnline ? styles.online : styles.offline]}></View>
       </View>
     )
@@ -62,13 +62,13 @@ const HeaderWithImg: React.FC<HeaderProps> = observer(({ imgUrl, title, onImgPre
               </Text>
 
               {!isGroupChat
-                ? <Text style={{ fontStyle: 'italic', color: theme.text }}>{isTyping ? "typing..." : getStatus(isUserOnline())}</Text>
+                ? <Text style={{ fontStyle: 'italic', color: theme.text }}>{isTyping ? "печатает..." : getStatus(isUserOnline())}</Text>
                 : typingSomeUser ?
                   <Text
                     numberOfLines={1}
                     ellipsizeMode="tail"
                     style={{ fontStyle: 'italic', color: theme.text, }}
-                  >{typingSomeUser.userName}: typing...</Text> : null
+                  >{typingSomeUser.userName}: печатает...</Text> : null
               }
 
             </View>

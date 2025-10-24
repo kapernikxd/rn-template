@@ -50,49 +50,49 @@ const Register: FC = () => {
                                         <Logo width={210} height={95} isDark={isDark} />
                                     </TouchableOpacity>
                                 </View>
-                                <Text style={typography.titleH2Regular}>Create an Account</Text>
+                                <Text style={typography.titleH2Regular}>Создать аккаунт</Text>
                                 <Spacer size='xxs'/>
-                                <Text style={[typography.bodyXs, globalStyleSheet.formDescription]}>Please enter your credentials to access your account and detail</Text>
+                                <Text style={[typography.bodyXs, globalStyleSheet.formDescription]}>Введите свои данные, чтобы получить доступ к аккаунту и возможностям</Text>
                             </View>
                             <View style={[globalStyleSheet.loginarea, { backgroundColor: theme.card }]}>
                                 <VSTextInput
                                     name='name'
-                                    label='First Name'
-                                    placeholder='First Name'
+                                    label='Имя'
+                                    placeholder='Имя'
                                     control={methods.control}
                                     keyboardType='default'
                                     iconType='person-outline'
                                     rules={{
-                                        required: 'Name is required!',
+                                        required: 'Введите имя!',
                                     }}
                                 />
                                 <Spacer />
 
                                 <VSTextInput
                                     name='lastname'
-                                    label='Last name'
-                                    placeholder='Last Name'
+                                    label='Фамилия'
+                                    placeholder='Фамилия'
                                     control={methods.control}
                                     keyboardType='default'
                                     iconType='person-outline'
                                     rules={{
-                                        required: 'Last Name is required!',
+                                        required: 'Введите фамилию!',
                                     }}
                                 />
                                 <Spacer />
 
                                 <VSTextInput
                                     name='email'
-                                    label='Email'
-                                    placeholder='Enter your email'
+                                    label='Электронная почта'
+                                    placeholder='Введите электронную почту'
                                     control={methods.control}
                                     keyboardType='email-address'
                                     iconType='alternate-email'
                                     rules={{
-                                        required: 'Email is required!',
+                                        required: 'Введите электронную почту!',
                                         pattern: {
                                             value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                                            message: 'Invalid email address!',
+                                            message: 'Неверный адрес электронной почты!',
                                         }
                                     }}
                                 />
@@ -100,16 +100,16 @@ const Register: FC = () => {
 
                                 <VSTextInput
                                     name='password'
-                                    label='Password'
-                                    placeholder='Enter password'
+                                    label='Пароль'
+                                    placeholder='Введите пароль'
                                     iconType='lock'
                                     secureTextEntry={true}
                                     control={methods.control}
                                     rules={{
-                                        required: 'Password is required!',
+                                        required: 'Введите пароль!',
                                         minLength: {
                                             value: 6,
-                                            message: 'Password must be at least 6 characters!',
+                                            message: 'Пароль должен содержать не менее 6 символов!',
                                         }
                                     }
                                     } />
@@ -117,37 +117,37 @@ const Register: FC = () => {
 
                                 <VSTextInput
                                     name='rePassword'
-                                    label='Confirm Password'
-                                    placeholder='Confirm password'
+                                    label='Подтвердите пароль'
+                                    placeholder='Повторите пароль'
                                     iconType='lock'
                                     secureTextEntry={true}
                                     control={methods.control}
                                     rules={{
-                                        required: 'Confirm Password is required!',
+                                        required: 'Подтвердите пароль!',
                                         minLength: {
                                             value: 6,
-                                            message: 'Password must be at least 6 characters!',
+                                            message: 'Пароль должен содержать не менее 6 символов!',
                                         },
                                         validate: (value: string) =>
-                                            value === methods.getValues('password') || 'Passwords do not match!',
+                                            value === methods.getValues('password') || 'Пароли не совпадают!',
                                     }}
                                 />
 
                                 <Spacer size='lg' />
 
                                 <View style={{ marginTop: 10 }}>
-                                    <Button title="Register"
+                                    <Button title="Зарегистрироваться"
                                         onPress={handleSubmit}
                                     />
                                 </View>
-                                
+
                                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-                                    <Text style={typography.body}>Already have an account
+                                    <Text style={typography.body}>Уже есть аккаунт
                                     </Text>
                                     <TouchableOpacity
                                         onPress={goToLogin}
                                     >
-                                        <Text style={[typography.textLink, {textDecorationLine: 'underline', marginLeft: 5 }]}>Sign In</Text>
+                                        <Text style={[typography.textLink, {textDecorationLine: 'underline', marginLeft: 5 }]}>Войти</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>

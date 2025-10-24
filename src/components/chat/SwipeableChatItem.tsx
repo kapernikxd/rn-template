@@ -46,7 +46,7 @@ const RightAction: FC<{
         style={[styles.deleteButton, { width, backgroundColor }]}
         android_ripple={{ color: 'rgba(255,255,255,0.25)' }}
         accessibilityRole="button"
-        accessibilityLabel="Delete chat"
+        accessibilityLabel="Удалить чат"
         testID="chat-item-delete-action"
       >
         {icon}

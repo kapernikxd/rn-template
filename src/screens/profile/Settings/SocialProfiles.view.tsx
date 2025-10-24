@@ -56,13 +56,13 @@ export const SocialProfilesView: FC<SocialProfilesViewProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <FormProvider {...methods}>
-        <HeaderDefault title="Social Profiles" onBackPress={onBackPress} />
+        <HeaderDefault title="Социальные профили" onBackPress={onBackPress} />
 
         <ScrollView style={{ flex: 1 }}>
           <CardContainer
             style={styles.card}
             styleTitleContainer={styles.cardTitleContainer}
-            subTitle="Add elsewhere links to your profile"
+            subTitle="Добавьте ссылки на свои профили"
           >
             <View style={styles.cardContent}>
               <TextInput
@@ -76,7 +76,7 @@ export const SocialProfilesView: FC<SocialProfilesViewProps> = ({
                     style={iconStyle}
                   />
                 }
-                placeholder="Enter username"
+                placeholder="Введите имя пользователя"
                 control={methods.control}
                 keyboardType="default"
               />
@@ -92,7 +92,7 @@ export const SocialProfilesView: FC<SocialProfilesViewProps> = ({
                     style={iconStyle}
                   />
                 }
-                placeholder="Enter username"
+                placeholder="Введите имя пользователя"
                 control={methods.control}
                 keyboardType="default"
               />
@@ -108,7 +108,7 @@ export const SocialProfilesView: FC<SocialProfilesViewProps> = ({
                     style={iconStyle}
                   />
                 }
-                placeholder="Enter username"
+                placeholder="Введите имя пользователя"
                 control={methods.control}
                 keyboardType="default"
               />
@@ -124,7 +124,7 @@ export const SocialProfilesView: FC<SocialProfilesViewProps> = ({
                     style={iconStyle}
                   />
                 }
-                placeholder="Enter username"
+                placeholder="Введите имя пользователя"
                 control={methods.control}
                 keyboardType="default"
               />
@@ -134,9 +134,9 @@ export const SocialProfilesView: FC<SocialProfilesViewProps> = ({
         </ScrollView>
 
         <View style={styles.footer}>
-          <Button title="Update" onPress={onSubmit} loading={isSubmitting} />
+          <Button title="Обновить" onPress={onSubmit} loading={isSubmitting} />
           <Spacer size="xs" />
-          <Button title="Reset" type="gray-outline" onPress={onReset} />
+          <Button title="Сбросить" type="gray-outline" onPress={onReset} />
         </View>
       </FormProvider>
     </KeyboardAvoidingView>

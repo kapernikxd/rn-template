@@ -56,23 +56,23 @@ const ChangePassword: FC = () => {
                                         <Logo width={210} height={95} isDark={isDark}/>
                                     </TouchableOpacity>
                                 </View>
-                                <Text style={typography.titleH2Regular}>Change Password</Text>
+                                <Text style={typography.titleH2Regular}>Смена пароля</Text>
                                 <Spacer size='xxs'/>
-                                <Text style={[typography.bodyXs, globalStyleSheet.formDescription]}>Please enter your credentials to access your account and detail</Text>
+                                <Text style={[typography.bodyXs, globalStyleSheet.formDescription]}>Введите новый пароль для доступа к аккаунту</Text>
                             </View>
                             <View style={[globalStyleSheet.loginarea, { backgroundColor: theme.card }]}>
                                 <VSTextInput
                                     name='password'
-                                    label='Password'
-                                    placeholder='Enter password'
+                                    label='Пароль'
+                                    placeholder='Введите пароль'
                                     iconType='lock'
                                     secureTextEntry={true}
                                     control={methods.control}
                                     rules={{
-                                        required: 'Password is required!',
+                                        required: 'Введите пароль!',
                                         minLength: {
                                             value: 6,
-                                            message: 'Password must be at least 6 characters!',
+                                            message: 'Пароль должен содержать не менее 6 символов!',
                                         }
                                     }
                                     } />
@@ -80,19 +80,19 @@ const ChangePassword: FC = () => {
 
                                 <VSTextInput
                                     name='rePassword'
-                                    label='Confirm Password'
-                                    placeholder='Confirm password'
+                                    label='Подтвердите пароль'
+                                    placeholder='Повторите пароль'
                                     iconType='lock'
                                     secureTextEntry={true}
                                     control={methods.control}
                                     rules={{
-                                        required: 'Confirm Password is required!',
+                                        required: 'Подтвердите пароль!',
                                         minLength: {
                                             value: 6,
-                                            message: 'Password must be at least 6 characters!',
+                                            message: 'Пароль должен содержать не менее 6 символов!',
                                         },
                                         validate: (value: string) =>
-                                            value === methods.getValues('password') || 'Passwords do not match!',
+                                            value === methods.getValues('password') || 'Пароли не совпадают!',
                                     }}
                                 />
 
@@ -100,19 +100,19 @@ const ChangePassword: FC = () => {
 
                                 <View style={{}}>
                                     <Button
-                                        title="Submit"
+                                        title="Подтвердить"
                                         onPress={handleSubmit}
                                     />
                                 </View>
 
                                 <View style={{ flex: 1 }}></View>
                                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 15 }}>
-                                    <Text style={typography.body}>Already have an account
+                                    <Text style={typography.body}>Уже есть аккаунт
                                     </Text>
                                     <TouchableOpacity
                                         onPress={goToLogin}
                                     >
-                                        <Text style={[typography.textLink, { textDecorationLine: 'underline', marginLeft: 5 }]}>Sign In</Text>
+                                        <Text style={[typography.textLink, { textDecorationLine: 'underline', marginLeft: 5 }]}>Войти</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>

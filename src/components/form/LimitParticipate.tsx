@@ -41,11 +41,11 @@ const LimitParticipate: React.FC<LimitParticipateProps> = ({ control, label, nam
           <Spacer />
           <TextInput
             name="maxParticipants"
-            label="Maximum participants"
+            label="Максимальное количество участников"
             placeholder="0"
             keyboardType="number-pad"
             control={control}
-            rules={{ required: 'Required' }}
+            rules={{ required: 'Обязательное поле' }}
           />
         </>
       )}

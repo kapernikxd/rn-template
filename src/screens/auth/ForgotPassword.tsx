@@ -48,23 +48,23 @@ const Forgot: FC = () => {
                                         <Logo width={210} height={95} isDark={isDark}/>
                                     </TouchableOpacity>
                                 </View>
-                                <Text style={typography.titleH2Regular}>Forgot Password</Text>
+                                <Text style={typography.titleH2Regular}>Восстановление пароля</Text>
                                 <Spacer size='xxs'/>
-                                <Text style={[typography.bodyXs, globalStyleSheet.formDescription]}>Please enter your credentials to access your account and detail</Text>
+                                <Text style={[typography.bodyXs, globalStyleSheet.formDescription]}>Введите электронную почту, чтобы получить доступ к восстановлению</Text>
                             </View>
                             <View style={[globalStyleSheet.loginarea, { backgroundColor: theme.card }]}>
                                 <TextInput
                                     name='email'
-                                    label='Email'
-                                    placeholder='Enter your email'
+                                    label='Электронная почта'
+                                    placeholder='Введите электронную почту'
                                     control={methods.control}
                                     keyboardType='email-address'
                                     iconType='alternate-email'
                                     rules={{
-                                        required: 'Email is required!',
+                                        required: 'Введите электронную почту!',
                                         pattern: {
                                             value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                                            message: 'Invalid email address!',
+                                            message: 'Неверный адрес электронной почты!',
                                         }
                                     }}
                                 />
@@ -72,18 +72,18 @@ const Forgot: FC = () => {
 
                                 <View style={{ marginTop: 10 }}>
                                     <Button
-                                        title="Next"
+                                        title="Далее"
                                         onPress={handleSubmit}
                                     />
                                 </View>
 
                                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 15 }}>
-                                    <Text style={typography.body}>Already have an account
+                                    <Text style={typography.body}>Уже есть аккаунт
                                     </Text>
                                     <TouchableOpacity
                                         onPress={goToLogin}
                                     >
-                                        <Text style={[typography.textLink, { textDecorationLine: 'underline', marginLeft: 5 }]}>Sign In</Text>
+                                        <Text style={[typography.textLink, { textDecorationLine: 'underline', marginLeft: 5 }]}>Войти</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>

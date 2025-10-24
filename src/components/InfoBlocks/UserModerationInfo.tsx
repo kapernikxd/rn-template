@@ -15,29 +15,29 @@ export const UserModerationInfo: React.FC<UserModerationInfoProps> = ({ currentS
 
   return (
     <View>
-      <Text style={typography.titleH5}>What does each profile status mean?</Text>
+      <Text style={typography.titleH5}>Что означают статусы профиля?</Text>
       <Spacer size="xs" />
 
       <View>
-        <Text style={typography.titleH6}>• PENDING</Text>
+        <Text style={typography.titleH6}>• PENDING (на рассмотрении)</Text>
         <Text style={typography.body}>
-          Your profile is under review. You can access the app, but you cannot post content, create events, or interact with other users until your profile is approved.
+          Ваш профиль проходит модерацию. Вы можете пользоваться приложением, но не сможете публиковать контент, создавать события или взаимодействовать с другими пользователями, пока профиль не будет одобрен.
         </Text>
       </View>
       <Spacer size="xs" />
 
       <View>
-        <Text style={typography.titleH6}>• APPROVED</Text>
+        <Text style={typography.titleH6}>• APPROVED (одобрен)</Text>
         <Text style={typography.body}>
-          Your profile has been approved. You have full access to all features: posting, chatting, creating or joining events.
+          Ваш профиль одобрен. У вас есть полный доступ ко всем функциям: публикациям, чатам, созданию и участию в событиях.
         </Text>
       </View>
       <Spacer size="xs" />
 
       <View>
-        <Text style={typography.titleH6}>• REJECTED</Text>
+        <Text style={typography.titleH6}>• REJECTED (отклонён)</Text>
         <Text style={typography.body}>
-          Your profile was rejected due to violations of community guidelines or insufficient or inappropriate information. You may need to edit your profile and resubmit it for review.
+          Ваш профиль отклонён из-за нарушения правил сообщества или недостаточной/неподходящей информации. Возможно, потребуется внести правки и отправить профиль на повторную модерацию.
         </Text>
       </View>
 
@@ -45,7 +45,7 @@ export const UserModerationInfo: React.FC<UserModerationInfoProps> = ({ currentS
         <>
           <Spacer size="sm" />
           <Text style={typography.titleH6}>
-            Your current status -{' '}
+            Ваш текущий статус —{' '}
             <Text
               style={{
                 color:
@@ -59,7 +59,7 @@ export const UserModerationInfo: React.FC<UserModerationInfoProps> = ({ currentS
               {currentStatus}
             </Text>
           </Text>
-          {reason && <Text style={[typography.body, {textDecorationLine: "underline"}]}>{reason === 'image' ? 'The photo violates the guidelines. Please upload a different image.' : 'Your profile information violates the guidelines. Please update your profile to meet the community standards.'}</Text>}
+          {reason && <Text style={[typography.body, {textDecorationLine: "underline"}]}>{reason === 'image' ? 'Фото нарушает правила. Пожалуйста, загрузите другое изображение.' : 'Информация в профиле нарушает правила. Обновите данные, чтобы соответствовать стандартам сообщества.'}</Text>}
         </>
       )}
     </View>

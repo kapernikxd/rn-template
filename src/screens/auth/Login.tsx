@@ -86,14 +86,14 @@ const Login: FC = observer(() => {
 
       const idToken = userInfo.data ? userInfo.data.idToken : "";
 
-      if (!idToken) throw new Error('No idToken from Google');
+      if (!idToken) throw new Error('Нет idToken от Google');
 
       const response = await authStore.loginByGoogle(idToken, expoPushToken); // отправка idToken на бэкенд
       if (!response.user.isActivated) goToOtp(response.user.email, { redirect: redirectTo })
       else navigateToMain();
 
     } catch (error) {
-      console.error('Google Sign-In error:', error);
+      console.error('Ошибка входа через Google:', error);
     }
     finally {
       setloadingGoogle(false);
@@ -119,13 +119,13 @@ const Login: FC = observer(() => {
 
       const identityToken = credential.identityToken;
 
-      if (!identityToken) throw new Error('No identityToken from Apple');
+      if (!identityToken) throw new Error('Нет identityToken от Apple');
 
       await authStore.loginByApple(identityToken, expoPushToken);
       navigateToMain();
 
     } catch (error) {
-      console.error('Apple Sign-In error:', error);
+      console.error('Ошибка входа через Apple:', error);
     } finally {
       setloadingApple(false);
     }
@@ -168,23 +168,23 @@ const Login: FC = observer(() => {
                       <Logo width={205} height={55} isDark={isDark} />
                     </TouchableOpacity>
                   </View>
-                  <Text style={typography.titleH2Regular}>Login Account</Text>
+                  <Text style={typography.titleH2Regular}>Вход в аккаунт</Text>
                   <Spacer size='xxs' />
-                  <Text style={[typography.bodyXs, globalStyleSheet.formDescription]}>Please enter your credentials to access your account and detail</Text>
+                  <Text style={[typography.bodyXs, globalStyleSheet.formDescription]}>Введите свои учётные данные, чтобы получить доступ к аккаунту и информации</Text>
                 </View>
                 <View style={[globalStyleSheet.loginarea, { backgroundColor: theme.card }]}>
                   <TextInput
                     name='email'
-                    label='Email'
-                    placeholder='Enter your email'
+                    label='Электронная почта'
+                    placeholder='Введите электронную почту'
                     control={methods.control}
                     keyboardType='email-address'
                     iconType='alternate-email'
                     rules={{
-                      required: 'Email is required!',
+                      required: 'Введите электронную почту!',
                       pattern: {
                         value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                        message: 'Invalid email address!',
+                        message: 'Неверный адрес электронной почты!',
                       }
                     }}
                   />
@@ -192,16 +192,16 @@ const Login: FC = observer(() => {
 
                   <TextInput
                     name='password'
-                    label='Password'
-                    placeholder='Enter password'
+                    label='Пароль'
+                    placeholder='Введите пароль'
                     iconType='lock'
                     secureTextEntry={true}
                     control={methods.control}
                     rules={{
-                      required: 'Password is required!',
+                      required: 'Введите пароль!',
                       minLength: {
                         value: 6,
-                        message: 'Password must be at least 6 characters!',
+                        message: 'Пароль должен содержать не менее 6 символов!',
                       }
                     }
                     } />
@@ -219,20 +219,20 @@ const Login: FC = observer(() => {
                     <TouchableOpacity
                       onPress={goToForgotPassword}
                     >
-                      <Text style={globalStyleSheet.btnlink}>Forgot Password?</Text>
+                      <Text style={globalStyleSheet.btnlink}>Забыли пароль?</Text>
                     </TouchableOpacity>
                   </View>
 
                   <Button
                     loading={loading}
-                    title="Login"
+                    title="Войти"
                     onPress={handleSubmit}
                   />
 
                   <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 0, flex: 1 }}>
                     <View style={{ flex: 1, width: 0, backgroundColor: theme.border, height: 1 }}></View>
                     <View>
-                      <Text style={[typography.body, { paddingHorizontal: 10, paddingVertical: Platform.OS === 'ios' ? 30 : 20 }]}>or login with</Text>
+                      <Text style={[typography.body, { paddingHorizontal: 10, paddingVertical: Platform.OS === 'ios' ? 30 : 20 }]}>или войдите с помощью</Text>
                     </View>
                     <View style={{ flex: 1, width: 0, backgroundColor: theme.border, height: 1 }}></View>
                   </View>
@@ -255,17 +255,17 @@ const Login: FC = observer(() => {
                             style={{ position: 'absolute', left: 25, width: 20, height: 20 }}
                             source={IMAGES.google}
                           />
-                          <Text style={typography.titleH6}>Login with Google</Text></>
+                          <Text style={typography.titleH6}>Войти через Google</Text></>
                       }
                     </TouchableOpacity>
 
                     <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-                      <Text style={typography.body}>Don't have an account?
+                      <Text style={typography.body}>Нет аккаунта?
                       </Text>
                       <TouchableOpacity
                         onPress={goToRegister}
                       >
-                        <Text style={[typography.textLink, { textDecorationLine: 'underline', marginLeft: 5 }]}>Sign Up</Text>
+                        <Text style={[typography.textLink, { textDecorationLine: 'underline', marginLeft: 5 }]}>Зарегистрироваться</Text>
                       </TouchableOpacity>
                     </View>
 

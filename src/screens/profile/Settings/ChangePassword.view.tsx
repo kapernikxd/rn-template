@@ -52,26 +52,26 @@ export const ChangePasswordView: FC<ChangePasswordViewProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <FormProvider {...methods}>
-        <HeaderDefault title="Change Password" onBackPress={onBackPress} />
+        <HeaderDefault title="Смена пароля" onBackPress={onBackPress} />
 
         <ScrollView style={{ flex: 1 }}>
           <CardContainer
             style={styles.card}
             styleTitleContainer={styles.cardTitleContainer}
-            subTitle="Change your account password"
+            subTitle="Измените пароль аккаунта"
           >
             <View style={styles.cardContent}>
               <TextInput
                 name="oldPassword"
-                label="Old Password"
-                placeholder="Enter password"
+                label="Текущий пароль"
+                placeholder="Введите пароль"
                 secureTextEntry
                 control={methods.control}
                 rules={{
-                  required: 'Password is required!',
+                  required: 'Введите пароль!',
                   minLength: {
                     value: 6,
-                    message: 'Password must be at least 6 characters!',
+                    message: 'Пароль должен содержать не менее 6 символов!',
                   },
                 }}
               />
@@ -79,15 +79,15 @@ export const ChangePasswordView: FC<ChangePasswordViewProps> = ({
 
               <TextInput
                 name="password"
-                label="New Password"
-                placeholder="Enter new password"
+                label="Новый пароль"
+                placeholder="Введите новый пароль"
                 secureTextEntry
                 control={methods.control}
                 rules={{
-                  required: 'Password is required!',
+                  required: 'Введите пароль!',
                   minLength: {
                     value: 6,
-                    message: 'Password must be at least 6 characters!',
+                    message: 'Пароль должен содержать не менее 6 символов!',
                   },
                 }}
               />
@@ -95,18 +95,18 @@ export const ChangePasswordView: FC<ChangePasswordViewProps> = ({
 
               <TextInput
                 name="rePassword"
-                label="Confirm Password"
-                placeholder="Confirm new password"
+                label="Подтверждение пароля"
+                placeholder="Повторите новый пароль"
                 secureTextEntry
                 control={methods.control}
                 rules={{
-                  required: 'Confirm Password is required!',
+                  required: 'Подтвердите пароль!',
                   minLength: {
                     value: 6,
-                    message: 'Password must be at least 6 characters!',
+                    message: 'Пароль должен содержать не менее 6 символов!',
                   },
                   validate: (value: string) =>
-                    value === methods.getValues('password') || 'Passwords do not match!',
+                    value === methods.getValues('password') || 'Пароли не совпадают!',
                 }}
               />
             </View>
@@ -114,9 +114,9 @@ export const ChangePasswordView: FC<ChangePasswordViewProps> = ({
         </ScrollView>
 
         <View style={styles.footer}>
-          <Button title="Update" onPress={onSubmit} loading={isSubmitting} />
+          <Button title="Обновить" onPress={onSubmit} loading={isSubmitting} />
           <Spacer size="xs" />
-          <Button title="Reset" type="gray-outline" onPress={onReset} />
+          <Button title="Сбросить" type="gray-outline" onPress={onReset} />
         </View>
       </FormProvider>
     </KeyboardAvoidingView>

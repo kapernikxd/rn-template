@@ -11,69 +11,69 @@ const TermsOfUseScreen = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <HeaderDefault title='Terms of Use' onBackPress={goBack} />
+      <HeaderDefault title='Условия использования' onBackPress={goBack} />
       <ScrollView contentContainerStyle={styles.container}>
-        <Section title={`Welcome to ${SITE_NAME}!`}>
+        <Section title={`Добро пожаловать в ${SITE_NAME}!`}>
           <Text style={styles.paragraph}>
-            These Terms of Use ("Terms") govern your access to and use of the {SITE_NAME} mobile application and the website<Text> </Text>
-            <Text style={styles.link} onPress={() => openLink(DOMAIN)}>{DOMAIN}</Text> (collectively, the "Service").
+            Настоящие Условия использования («Условия») регулируют доступ и использование мобильного приложения {SITE_NAME}, а также сайта<Text> </Text>
+            <Text style={styles.link} onPress={() => openLink(DOMAIN)}>{DOMAIN}</Text> (совместно — «Сервис»).
           </Text>
-          <Text style={styles.paragraph}>By accessing or using our Service, you agree to be bound by these Terms.</Text>
-          <Text style={styles.paragraph}>If you do not agree with these Terms, you may not access or use the Service.</Text>
+          <Text style={styles.paragraph}>Получая доступ к Сервису или используя его, вы подтверждаете своё согласие с этими Условиями.</Text>
+          <Text style={styles.paragraph}>Если вы не согласны с Условиями, пожалуйста, не используйте Сервис.</Text>
         </Section>
 
-        <Section title="1. Use of the Service">
-          <Bullet text="Use the Service only in compliance with applicable laws." />
-          <Bullet text="Do not use the Service for illegal or unauthorized purposes." />
-          <Bullet text="Do not harass, abuse, or harm other users." />
-          <Bullet text="Do not disrupt the security or integrity of the Service." />
+        <Section title="1. Использование Сервиса">
+          <Bullet text="Используйте Сервис только в соответствии с применимым законодательством." />
+          <Bullet text="Не используйте Сервис для противоправных или несанкционированных целей." />
+          <Bullet text="Не преследуйте, не оскорбляйте и не причиняйте вред другим пользователям." />
+          <Bullet text="Не нарушайте безопасность или целостность Сервиса." />
         </Section>
 
-        <Section title="2. User Content">
+        <Section title="2. Пользовательский контент">
           <Text style={styles.paragraph}>
-            By submitting content, you grant {SITE_NAME} a non-exclusive, worldwide, royalty-free license to use, store, display, and distribute your content.
+            Предоставляя контент, вы даёте {SITE_NAME} неисключительную, действующую по всему миру и бесплатную лицензию на использование, хранение, отображение и распространение вашего контента.
           </Text>
-          <Text style={styles.paragraph}>You are responsible for the content you create and share.</Text>
+          <Text style={styles.paragraph}>Вы несёте ответственность за контент, который создаёте и распространяете.</Text>
         </Section>
 
-        <Section title="3. Account Registration and Security">
-          <Text style={styles.paragraph}>You are responsible for maintaining the confidentiality of your account and for all activities that occur under your account.</Text>
+        <Section title="3. Регистрация и безопасность аккаунта">
+          <Text style={styles.paragraph}>Вы несёте ответственность за сохранение конфиденциальности учётных данных и за все действия, совершённые в рамках вашего аккаунта.</Text>
         </Section>
 
-        <Section title="4. Privacy">
+        <Section title="4. Конфиденциальность">
           <Text style={styles.paragraph}>
-            Our collection and use of personal data are governed by our
-            <Text style={styles.link} onPress={() => openLink(`${DOMAIN}/privacy-policy`)}> Privacy Policy</Text>.
-          </Text>
-        </Section>
-
-        <Section title="5. Intellectual Property">
-          <Text style={styles.paragraph}>All rights in the Service (excluding user content) belong to {SITE_NAME} and its licensors.</Text>
-        </Section>
-
-        <Section title="6. Termination">
-          <Text style={styles.paragraph}>We may suspend or terminate your access to the Service at any time for any reason.</Text>
-        </Section>
-
-        <Section title="7. Changes to the Terms">
-          <Text style={styles.paragraph}>We may update these Terms at any time. Continued use of the Service after changes become effective constitutes acceptance of the new Terms.</Text>
-        </Section>
-
-        <Section title="8. Reporting and Moderation">
-          <Text style={styles.paragraph}>
-            {SITE_NAME} has zero tolerance for objectionable content, including but not limited to hate speech, harassment, pornography, or any illegal activity.
-          </Text>
-          <Text style={styles.paragraph}>
-            Users can report inappropriate content directly in the app. We review all reports within 24 hours and take appropriate actions, such as removing the content or blocking the user responsible.
-          </Text>
-          <Text style={styles.paragraph}>
-            By using {SITE_NAME}, you agree to behave respectfully and follow these guidelines at all times.
+            Сбор и использование персональных данных регулируются нашей
+            <Text style={styles.link} onPress={() => openLink(`${DOMAIN}/privacy-policy`)}> Политикой конфиденциальности</Text>.
           </Text>
         </Section>
 
-        <Section title="9. Contact Us">
+        <Section title="5. Интеллектуальная собственность">
+          <Text style={styles.paragraph}>Все права на Сервис (за исключением пользовательского контента) принадлежат {SITE_NAME} и его лицензиарам.</Text>
+        </Section>
+
+        <Section title="6. Прекращение доступа">
+          <Text style={styles.paragraph}>Мы можем приостановить или прекратить ваш доступ к Сервису в любое время и по любой причине.</Text>
+        </Section>
+
+        <Section title="7. Изменения Условий">
+          <Text style={styles.paragraph}>Мы можем обновлять эти Условия в любое время. Продолжение использования Сервиса после вступления изменений в силу означает принятие новых Условий.</Text>
+        </Section>
+
+        <Section title="8. Жалобы и модерация">
           <Text style={styles.paragraph}>
-            If you have any questions about these Terms, please contact us at{' '}
+            В {SITE_NAME} действует нулевая терпимость к недопустимому контенту, включая, помимо прочего, язык вражды, домогательства, порнографию и любую незаконную деятельность.
+          </Text>
+          <Text style={styles.paragraph}>
+            Пользователи могут пожаловаться на неподходящий контент прямо в приложении. Мы рассматриваем все жалобы в течение 24 часов и принимаем соответствующие меры, включая удаление контента или блокировку ответственного пользователя.
+          </Text>
+          <Text style={styles.paragraph}>
+            Используя {SITE_NAME}, вы соглашаетесь вести себя уважительно и соблюдать эти правила.
+          </Text>
+        </Section>
+
+        <Section title="9. Связь с нами">
+          <Text style={styles.paragraph}>
+            Если у вас есть вопросы по поводу этих Условий, свяжитесь с нами по адресу{' '}
             <Text style={styles.link} onPress={() => Linking.openURL(`mailto:${EMAIL}`)}>{EMAIL}</Text>.
           </Text>
         </Section>

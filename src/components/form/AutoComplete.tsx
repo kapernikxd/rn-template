@@ -33,7 +33,7 @@ function useDebounce<T extends (...args: any[]) => void>(fn: T, delay = 500) {
 }
 
 const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
-    placeholder = "Search for a city...",
+    placeholder = "Найдите город...",
     onSelect,
     defaultValue = "",
     error,
@@ -81,7 +81,7 @@ const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
                 setVisible(false);
             }
         } catch (e) {
-            console.error("City search error:", e);
+            console.error("Ошибка поиска города:", e);
             setCities([]);
             setVisible(false);
         }

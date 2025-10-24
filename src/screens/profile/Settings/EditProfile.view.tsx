@@ -71,7 +71,7 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <FormProvider {...methods}>
-        <HeaderDefault title="Edit Profile" onBackPress={onBackPress} />
+        <HeaderDefault title="Редактирование профиля" onBackPress={onBackPress} />
         <IOScrollView
           style={{ flex: 1 }}
           refreshControl={
@@ -86,7 +86,7 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
           <CardContainer
             style={styles.card}
             styleTitleContainer={styles.cardTitleContainer}
-            subTitle="Set Up Your Personal Information"
+            subTitle="Заполните личную информацию"
           >
             <View>
               <ProfilePhotoUpload
@@ -102,32 +102,32 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
             <View style={styles.cardContent}>
               <TextInput
                 name="name"
-                label="First Name"
-                placeholder="First Name"
+                label="Имя"
+                placeholder="Имя"
                 control={methods.control}
                 keyboardType="default"
                 rules={{
-                  required: 'First Name is required!',
+                  required: 'Введите имя!',
                 }}
               />
               <Spacer />
 
               <TextInput
                 name="lastname"
-                label="Last name"
-                placeholder="Last Name"
+                label="Фамилия"
+                placeholder="Фамилия"
                 control={methods.control}
                 keyboardType="default"
                 rules={{
-                  required: 'Last Name is required!',
+                  required: 'Введите фамилию!',
                 }}
               />
               <Spacer />
 
               <TextInput
                 name="profession"
-                label="Profession"
-                placeholder="Your proffession"
+                label="Профессия"
+                placeholder="Ваша профессия"
                 control={methods.control}
                 keyboardType="default"
               />
@@ -135,8 +135,8 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
 
               <TextInput
                 name="phone"
-                label="Phone Number"
-                placeholder="Enter your phone number "
+                label="Номер телефона"
+                placeholder="Введите номер телефона"
                 control={methods.control}
                 keyboardType="numeric"
               />
@@ -144,16 +144,16 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
 
               <TextArea
                 name="userBio"
-                label="User Bio"
-                placeholder="Short information about you"
+                label="О себе"
+                placeholder="Краткая информация о вас"
                 control={methods.control}
               />
             </View>
 
             <View style={styles.footer}>
-              <Button title="Update" onPress={onSubmit} loading={isSubmitting} />
+              <Button title="Обновить" onPress={onSubmit} loading={isSubmitting} />
               <Spacer size="xs" />
-              <Button title="Reset" type="gray-outline" onPress={onReset} />
+              <Button title="Сбросить" type="gray-outline" onPress={onReset} />
             </View>
           </CardContainer>
         </IOScrollView>
