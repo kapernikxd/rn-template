@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import { LoadingScreen, ProfileCard } from 'rn-vs-lb';
@@ -12,15 +12,15 @@ import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 import { ROUTES, type ProfileStackParamList } from '../../navigation/types';
 import type { ProfileDTO } from '../../types';
-import { AiBotListSection } from '../../components/aibot/AiBotListSection';
 import { type AiBotCardEntity } from '../../components/aibot/AiBotCard';
 import { getAiBotIdentifier } from '../../helpers/utils/agent-create';
+import { AiBotPlaceCardList } from '../../components/aibot/AiBotPlaceCardList';
 
 type UserProfileRoute = RouteProp<ProfileStackParamList, typeof ROUTES.UserProfile>;
 
 export const UserProfileScreen = () => {
   const route = useRoute<UserProfileRoute>();
-  const { theme } = useTheme();
+  const { theme, typography } = useTheme();
   const { setColors } = useSafeAreaColors();
   const { goToProfile, goBack, canGoBack, goToAiBotProfile } = usePortalNavigation();
 
@@ -125,8 +125,8 @@ export const UserProfileScreen = () => {
         isFollowing={currentProfile?.isFollowing}
       />
       <View style={styles.sectionsWrapper}>
-        <AiBotListSection
-          title="AI-боты пользователя"
+        <Text style={[typography.titleH6, styles.sectionTitle, { color: theme.title }]}>AI-боты пользователя</Text>
+        <AiBotPlaceCardList
           bots={userBots}
           isLoading={isBotsLoading}
           emptyText="У пользователя пока нет созданных AI-ботов."
@@ -146,5 +146,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 24,
     paddingBottom: 32,
+  },
+  sectionTitle: {
+    marginBottom: 16,
   },
 });
