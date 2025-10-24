@@ -375,6 +375,17 @@ export class ProfileStore {
     }
   }
 
+  async reportUser(data: { reason?: string; details?: string; targetId: string }) {
+    try {
+      await this.profileService.reportUser(data);
+      this.root.uiStore.showSnackbar("Report sended", "success");
+      return true;
+    } catch (error) {
+      console.error("Failed to report user", error);
+      throw error;
+    }
+  }
+
   async reportAiBot(data: { reason?: string; details?: string; targetId: string }) {
     try {
       await this.profileService.reportAiBot(data);

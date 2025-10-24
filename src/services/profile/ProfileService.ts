@@ -124,6 +124,10 @@ export class ProfileService {
     return $api.get(`/profile/${id}/following`, { params });
   }
 
+  public async reportUser(data: { reason?: string; details?: string; targetId: string }): Promise<AxiosResponse<boolean>> {
+    return $api.post(`/reports`, { targetType: 'user', ...data });
+  }
+
   public async blockUser(data: { reason?: string; details?: string; targetId: string }): Promise<AxiosResponse<boolean>> {
     return $api.post(`/reports`, { targetType: 'user', ...data });
   }

@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
-import { LoadingScreen, ProfileCard } from 'rn-vs-lb';
+import { LoadingScreen, ProfileCard, ReportModal } from 'rn-vs-lb';
 import { useTheme } from 'rn-vs-lb/theme';
 
 import { usePortalNavigation } from '../../helpers/hooks';
@@ -35,6 +35,8 @@ export const UserProfileScreen = () => {
   const isOnline = useStoreData(onlineStore, (store) => (userId ? store.getIsUserOnline(userId) : false));
   const userBots = useStoreData(aiBotStore, (store) => store.userAiBots);
   const isBotsLoading = useStoreData(aiBotStore, (store) => store.isAiUserLoading);
+
+  const [isReportVisible, setIsReportVisible] = useState(false);
 
   useEffect(() => {
     setColors({
@@ -88,6 +90,26 @@ export const UserProfileScreen = () => {
     void profileStore.followProfile(userId);
   }, [profileStore, userId]);
 
+  const handleOpenReport = useCallback(() => {
+    setIsReportVisible(true);
+  }, []);
+
+  const handleCloseReport = useCallback(() => {
+    setIsReportVisible(false);
+  }, []);
+
+  const handleReportSubmit = useCallback(
+    async (reason: string, details: string) => {
+      if (!userId) return;
+      try {
+        await profileStore.reportUser({ targetId: userId, reason, details });
+      } catch (error) {
+        console.error('Failed to submit user report', error);
+      }
+    },
+    [profileStore, userId],
+  );
+
   const handleGoBack = useCallback(() => {
     if (canGoBack()) {
       goBack();
@@ -108,32 +130,41 @@ export const UserProfileScreen = () => {
   }
 
   return (
-    <ScrollView
-      contentContainerStyle={[styles.scrollContent, { backgroundColor: theme.background }]}
-    >
-      <ProfileCard
-        name={displayName}
-        imageUri={imageUri}
-        isAuth={isAuthenticated}
-        isMe={false}
-        isOnline={isOnline}
-        lastSeenText={lastSeenText}
-        onBack={canGoBack() ? handleGoBack : undefined}
-        onLearnMorePress={handleFeatureSoon}
-        onMessage={handleFeatureSoon}
-        onFollowToggle={handleFollowToggle}
-        isFollowing={currentProfile?.isFollowing}
-      />
-      <View style={styles.sectionsWrapper}>
-        <Text style={[typography.titleH6, styles.sectionTitle, { color: theme.title }]}>AI-боты пользователя</Text>
-        <AiBotPlaceCardList
-          bots={userBots}
-          isLoading={isBotsLoading}
-          emptyText="У пользователя пока нет созданных AI-ботов."
-          onBotPress={handleOpenBotProfile}
+    <>
+      <ScrollView
+        contentContainerStyle={[styles.scrollContent, { backgroundColor: theme.background }]}
+      >
+        <ProfileCard
+          name={displayName}
+          imageUri={imageUri}
+          isAuth={isAuthenticated}
+          isMe={false}
+          isOnline={isOnline}
+          lastSeenText={lastSeenText}
+          onBack={canGoBack() ? handleGoBack : undefined}
+          onLearnMorePress={handleFeatureSoon}
+          onMessage={handleFeatureSoon}
+          onFollowToggle={handleFollowToggle}
+          isFollowing={currentProfile?.isFollowing}
+          onOpenUserSheet={handleOpenReport}
         />
-      </View>
-    </ScrollView>
+        <View style={styles.sectionsWrapper}>
+          <Text style={[typography.titleH6, styles.sectionTitle, { color: theme.title }]}>AI-боты пользователя</Text>
+          <AiBotPlaceCardList
+            bots={userBots}
+            isLoading={isBotsLoading}
+            emptyText="У пользователя пока нет созданных AI-ботов."
+            onBotPress={handleOpenBotProfile}
+          />
+        </View>
+      </ScrollView>
+      <ReportModal
+        visible={isReportVisible}
+        onClose={handleCloseReport}
+        onSubmit={handleReportSubmit}
+        type="user"
+      />
+    </>
   );
 };
 
