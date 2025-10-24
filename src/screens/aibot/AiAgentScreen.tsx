@@ -1,13 +1,15 @@
-import React, { useCallback, useEffect, useMemo } from "react";
-import { Alert, ScrollView, Share, View, useWindowDimensions } from "react-native";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { ScrollView, Share, View, useWindowDimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useTheme } from "rn-vs-lb/theme";
+import { ReportModal } from "rn-vs-lb";
 
 import { ROUTES, RootStackParamList } from "../../navigation/types";
 import { useAiAgentProfile } from "../../helpers/hooks/aiAgent/useAiAgentProfile";
 import { getUserAvatar, getUserFullName } from "../../helpers/utils/user";
 import { ScreenLoader } from "../../components";
 import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";
+import { useRootStore } from "../../store/StoreProvider";
 import { usePortalNavigation } from "../../helpers/hooks";
 import {
   AiAgentGallery,
@@ -48,6 +50,9 @@ export const AiAgentScreen = ({ route }: Props) => {
   const { theme, sizes, typography, isDark } = useTheme();
   const { width } = useWindowDimensions();
   const { setColors } = useSafeAreaColors();
+  const { profileStore } = useRootStore();
+
+  const [isReportVisible, setIsReportVisible] = useState(false);
 
   useEffect(() => {
     setColors({
@@ -106,22 +111,42 @@ export const AiAgentScreen = ({ route }: Props) => {
     return <ScreenLoader />;
   }
 
-  const ITEMS = aiBotId && [
-        canEdit && {
-          label: 'Редактировать',
-          icon: 'create-outline',
-          colorIcon: theme.black,
-          onPress: handleEdit,
-        },
-        {
-          label: 'Report user',
-          icon: 'megaphone-outline',
-          colorIcon: '#E63946',
-          onPress: () => console.log('report'),
-        },
-      ]
+  const handleOpenReport = useCallback(() => setIsReportVisible(true), []);
+  const handleCloseReport = useCallback(() => setIsReportVisible(false), []);
+  const handleReportSubmit = useCallback(
+    async (reason: string, details: string) => {
+      if (!aiBotId) return;
+      try {
+        await profileStore.reportAiBot({ targetId: aiBotId, reason, details });
+      } catch (error) {
+        console.error("Failed to submit AI agent report", error);
+      }
+    },
+    [aiBotId, profileStore],
+  );
+
+  const menuItems = useMemo(() => {
+    if (!aiBotId) return [];
+    const items: Array<{ label: string; icon: string; colorIcon: string; onPress: () => void }> = [];
+    if (canEdit) {
+      items.push({
+        label: 'Редактировать',
+        icon: 'create-outline',
+        colorIcon: theme.black,
+        onPress: handleEdit,
+      });
+    }
+    items.push({
+      label: 'Report user',
+      icon: 'megaphone-outline',
+      colorIcon: '#E63946',
+      onPress: handleOpenReport,
+    });
+    return items;
+  }, [aiBotId, canEdit, handleEdit, handleOpenReport, theme.black]);
 
   return (
+    <>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         bounces={false}
@@ -133,7 +158,7 @@ export const AiAgentScreen = ({ route }: Props) => {
             theme={theme}
             onBack={onBack}
             onShare={handleShare}
-            items={ITEMS}
+            items={menuItems}
           />
           <AiAgentHeroCard
             styles={styles}
@@ -178,6 +203,13 @@ export const AiAgentScreen = ({ route }: Props) => {
           />
         )}
       </ScrollView>
+      <ReportModal
+        visible={isReportVisible}
+        onClose={handleCloseReport}
+        onSubmit={handleReportSubmit}
+        type="user"
+      />
+    </>
   );
 };
 
