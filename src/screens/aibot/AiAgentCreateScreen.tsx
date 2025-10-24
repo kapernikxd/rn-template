@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { launchImageLibrary } from "react-native-image-picker";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome6, Ionicons, Octicons } from "@expo/vector-icons";
 import { Button } from "rn-vs-lb";
 import {
   SizesType,
@@ -272,7 +272,7 @@ export const AiAgentCreateScreen: React.FC = () => {
           onSubmitEditing={handleAddUsefulness}
           returnKeyType="done"
         />
-        <Button title="Добавить" onPress={handleAddUsefulness} disabled={!usefulnessDraft.trim()} />
+        <Button leftIcon={<FontAwesome6 name="add" color={theme.white} size={24}/>} onPress={handleAddUsefulness} disabled={!usefulnessDraft.trim()} />
       </View>
       <View style={styles.usefulnessList}>
         {form.usefulness.map((item) => (
@@ -292,7 +292,7 @@ export const AiAgentCreateScreen: React.FC = () => {
 
   const renderVoiceStep = () => (
     <View style={styles.card}>
-      <Text style={styles.sectionTitle}>Голос и история</Text>
+      <Text style={styles.sectionTitle}>Характер</Text>
       <Text style={styles.sectionDescription}>
         Опишите характер, легенду и стартовое сообщение агента.
       </Text>
@@ -516,7 +516,7 @@ const createStyles = ({
     subSectionTitle: {
       ...typography.bodySm,
       color: theme.text,
-      marginBottom: sizes.sm as number,
+      marginBottom: 12,
       fontWeight: '600',
     },
     avatarRow: {
@@ -584,6 +584,7 @@ const createStyles = ({
       alignItems: "flex-end",
       gap: sizes.sm as number,
       marginBottom: sizes.md as number,
+      marginTop: -24,
     },
     usefulnessField: {
       flex: 1,

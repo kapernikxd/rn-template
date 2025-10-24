@@ -14,8 +14,8 @@ export const THEME_COLORS = {
 
     // light
     title: "#000",
-    text: "#475A77",
-    description: "#666",
+    text: "#000",
+    description: "rgba(122, 122, 122, 1)",
     background: "#f5f5f5", //"#edeef0", // "#EFF3FA",
     backgroundSecond: "#F4F4F6",
     backgroundThird: "#f2f2f2",

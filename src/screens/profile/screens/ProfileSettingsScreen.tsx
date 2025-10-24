@@ -94,7 +94,7 @@ export const ProfileSettingsScreen: FC = () => {
                     <CardContainer style={styles.card}>
                         <View><Text style={styles.title}>Update Account</Text></View>
                         {SETTING_LIST.map((item, index) => (
-                            <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine />
+                            <ListItem big iconColor={theme.text} key={index} {...item} hideBottomLine />
                         ))}
                     </CardContainer>
                     <CardContainer style={styles.card}>

@@ -184,17 +184,16 @@ export const ProfileScreen = () => {
         isOnline={isOnline}
         onBack={canGoBack ? handleGoBack : undefined}
         onOpenSettings={handleOpenSettings}
-        onOpenActivity={handleOpenChats}
-        onOpenSpecialist={handleFeatureSoon}
-        onOpenCreatePoll={handleFeatureSoon}
-        onOpenCreateEvent={handleFeatureSoon}
-        onOpenAiBots={handleOpenMyBotsSection}
-        onOpenBots={handleOpenSubscriptionsSection}
-        onLearnMorePress={handleFeatureSoon}
+        onOpenActivity={undefined}
+        onOpenSpecialist={undefined}
+        onOpenCreatePoll={undefined}
+        onOpenCreateEvent={undefined}
+        onOpenAiBots={undefined}
+        onOpenBots={undefined}
+        onLearnMorePress={undefined}
         hasNotifications={hasNotifications}
       />
       <View style={styles.sectionsWrapper} onLayout={handleBotsSectionLayout}>
-        <Text style={[typography.titleH6, styles.sectionTitle, { color: theme.title }]}>AI-боты</Text>
         <TabBar tabs={tabs} activeTabIndex={activeTabIndex} onChangeTab={handleTabChange} style={styles.tabBar} />
         <AiBotPlaceCardList
           bots={currentBots}
@@ -213,9 +212,9 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   sectionsWrapper: {
-    paddingHorizontal: 24,
-    paddingVertical: 24,
-    gap: 16,
+    // paddingHorizontal: 24,
+    // paddingVertical: 24,
+    // gap: 16,
   },
   sectionTitle: {
     marginBottom: 4,

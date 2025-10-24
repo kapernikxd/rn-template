@@ -105,7 +105,7 @@ const MainTabBar = ({ state, descriptors, navigation, showLabels = true, bottomI
               testID={descriptors[route.key].options.tabBarButtonTestID}
               style={[
                 styles.circlePressable,
-                isFocused && { backgroundColor: theme.backgroundSemiTransparent }, // активный круглый фон
+                isFocused && { backgroundColor: "#212020" }, // активный круглый фон
               ]}
             >
               <Feather name={tab.icon} size={20} color={iconColor} />
