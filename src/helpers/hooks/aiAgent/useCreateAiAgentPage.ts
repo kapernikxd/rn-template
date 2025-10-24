@@ -141,6 +141,21 @@ export function useCreateAiAgentPage() {
     aiBotStore.goPrev();
   }, [aiBotStore]);
 
+  const goToStep = useCallback(
+    (targetStep: number) => {
+      if (targetStep < 0 || targetStep >= steps.length) {
+        return;
+      }
+
+      if (targetStep > step) {
+        return;
+      }
+
+      aiBotStore.setStep(targetStep);
+    },
+    [aiBotStore, step, steps.length],
+  );
+
   return {
     // data
     step, form, avatarPreview, gallery, completed, currentStepComplete, isSubmitting,
@@ -149,7 +164,7 @@ export function useCreateAiAgentPage() {
 
     // handlers
     handleAvatarChange, handleGalleryChange, removeGalleryItem,
-    resetFlow, handleChange, goNext, goPrev,
+    resetFlow, handleChange, goNext, goPrev, goToStep,
     setAvatarFile, addGalleryFiles,
   } as const;
 }
