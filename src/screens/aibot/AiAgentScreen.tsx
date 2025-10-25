@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { ScrollView, Share, View, useWindowDimensions } from "react-native";
+import { Alert, ScrollView, Share, View, useWindowDimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useTheme } from "rn-vs-lb/theme";
 import { ReportModal, Spacer } from "rn-vs-lb";
@@ -46,16 +46,18 @@ export const AiAgentScreen = ({ route }: Props) => {
     handleStartChat,
     canEdit,
     isAuthenticated,
+    handleAiAgentDeleted: handleAiAgentDeletedBase,
   } = useAiAgentProfile(aiBotId);
   const { goToAiBotEdit } = usePortalNavigation();
 
   const { theme, sizes, typography, isDark } = useTheme();
   const { width } = useWindowDimensions();
   const { setColors } = useSafeAreaColors();
-  const { profileStore } = useRootStore();
+  const { profileStore, aiBotStore } = useRootStore();
 
   const [isReportVisible, setIsReportVisible] = useState(false);
   const [isGuestChatVisible, setIsGuestChatVisible] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     setColors({
@@ -107,6 +109,48 @@ export const AiAgentScreen = ({ route }: Props) => {
     }
   }, [aiBotId, canEdit, goToAiBotEdit]);
 
+  const handleDeleteBot = useCallback(async () => {
+    if (!aiBotId || isDeleting) {
+      return;
+    }
+    setIsDeleting(true);
+    let isDeleted = false;
+    try {
+      await aiBotStore.deleteBot(aiBotId);
+      isDeleted = true;
+    } catch (error) {
+      console.error("Failed to delete AI agent", error);
+    } finally {
+      setIsDeleting(false);
+    }
+
+    if (isDeleted) {
+      handleAiAgentDeletedBase();
+    }
+  }, [aiBotId, aiBotStore, handleAiAgentDeletedBase, isDeleting]);
+
+  const handleDeletePress = useCallback(() => {
+    if (!aiBotId || isDeleting) {
+      return;
+    }
+
+    Alert.alert(
+      "Удалить AI-бота",
+      "Вы уверены, что хотите удалить этого AI-бота? Это действие нельзя отменить.",
+      [
+        { text: "Отмена", style: "cancel" },
+        {
+          text: "Удалить",
+          style: "destructive",
+          onPress: () => {
+            void handleDeleteBot();
+          },
+        },
+      ],
+      { cancelable: true },
+    );
+  }, [aiBotId, handleDeleteBot, isDeleting]);
+
   const handleStartChatPress = useCallback(() => {
     if (isAuthenticated) {
       handleStartChat();
@@ -143,6 +187,12 @@ export const AiAgentScreen = ({ route }: Props) => {
         colorIcon: theme.black,
         onPress: handleEdit,
       });
+      items.push({
+        label: 'Удалить',
+        icon: 'trash-outline',
+        colorIcon: '#E63946',
+        onPress: handleDeletePress,
+      });
     }
     items.push({
       label: 'Report user',
@@ -151,7 +201,7 @@ export const AiAgentScreen = ({ route }: Props) => {
       onPress: handleOpenReport,
     });
     return items;
-  }, [aiBotId, canEdit, handleEdit, handleOpenReport, theme.black]);
+  }, [aiBotId, canEdit, handleDeletePress, handleEdit, handleOpenReport, theme.black]);
 
   const followButtonTitle = isFollowing ? "Отписаться" : "Подписаться";
 
