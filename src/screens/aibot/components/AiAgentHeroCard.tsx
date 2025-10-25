@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { Image, ScrollView, Text, View } from "react-native";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Button, Spacer } from "rn-vs-lb";
 import { ThemeType } from "rn-vs-lb/theme";
@@ -21,6 +21,7 @@ type AiAgentHeroCardProps = {
   isChatLoading: boolean;
   aiBotId?: string;
   isFollowing: boolean;
+  onAvatarPress?: () => void;
 };
 
 export const AiAgentHeroCard = memo(
@@ -39,10 +40,17 @@ export const AiAgentHeroCard = memo(
     isChatLoading,
     aiBotId,
     isFollowing,
+    onAvatarPress,
   }: AiAgentHeroCardProps) => (
     <View style={styles.heroCard}>
       <View style={styles.heroTopRow}>
-        <Image source={{ uri: avatarUri }} style={styles.avatar} />
+        <TouchableOpacity
+          onPress={onAvatarPress}
+          activeOpacity={0.8}
+          disabled={!onAvatarPress}
+        >
+          <Image source={{ uri: avatarUri }} style={styles.avatar} />
+        </TouchableOpacity>
         <View style={styles.heroInfo}>
           <View style={styles.badge}>
             <Ionicons name="shield-checkmark-outline" size={16} color={theme.primary} />
