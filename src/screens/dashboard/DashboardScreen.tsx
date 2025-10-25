@@ -10,6 +10,7 @@ import { TabBar } from '../../components/aibot/TabBar';
 import { Spacer } from 'rn-vs-lb';
 import { MAIN_HORIZONTAL_PADDING } from '../../constants/layout';
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
+import { capitalizeFirstLetter } from '../../helpers/utils/common';
 
 const COLUMN_GAP = 2;
 
@@ -50,7 +51,10 @@ export const DashboardScreen = () => {
   const tabs = useMemo(
     () => [
       { key: 'all', label: 'Все' },
-      ...categories.map((category) => ({ key: category, label: category })),
+      ...categories.map((category) => ({
+        key: category,
+        label: capitalizeFirstLetter(category),
+      })),
     ],
     [categories],
   );
