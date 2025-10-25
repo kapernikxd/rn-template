@@ -97,9 +97,6 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
   useEffect(() => {
     void aiBotStore.fetchAiBotById(aiBotId);
     void aiBotStore.fetchBotDetails(aiBotId);
-    return () => {
-      aiBotStore.clearSelectedAiBot();
-    };
   }, [aiBotId, aiBotStore]);
 
   const handleBack = useCallback(() => {
