@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Alert, ScrollView, Share, View, useWindowDimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useTheme } from "rn-vs-lb/theme";
-import { ReportModal, Spacer } from "rn-vs-lb";
+import { ModalProfilePhoto, ReportModal, Spacer } from "rn-vs-lb";
 
 import { ROUTES, RootStackParamList } from "../../navigation/types";
 import { useAiAgentProfile } from "../../helpers/hooks/aiAgent/useAiAgentProfile";
@@ -59,6 +59,7 @@ export const AiAgentScreen = ({ route }: Props) => {
   const [isReportVisible, setIsReportVisible] = useState(false);
   const [isGuestChatVisible, setIsGuestChatVisible] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isAvatarPreviewVisible, setIsAvatarPreviewVisible] = useState(false);
 
   useEffect(() => {
     setColors({
@@ -72,7 +73,7 @@ export const AiAgentScreen = ({ route }: Props) => {
     [theme, sizes, typography, isDark],
   );
 
-  const avatarUri = useMemo(() => getUserAvatar((aiBot as any) ?? {}), [aiBot]);
+  const avatarUri = useMemo(() => getUserAvatar((aiBot as any) ?? {}) ?? "", [aiBot]);
   const displayName = useMemo(() => getUserFullName((aiBot as any) ?? {}), [aiBot]);
   const profession = aiBot?.profession ?? "";
   const intro = botDetails?.intro ?? aiBot?.intro ?? aiBot?.userBio ?? "";
@@ -116,6 +117,23 @@ export const AiAgentScreen = ({ route }: Props) => {
       goToAiBotEdit(aiBotId)
     }
   }, [aiBotId, canEdit, goToAiBotEdit]);
+
+  const handleOpenAvatarPreview = useCallback(() => {
+    if (avatarUri) {
+      setIsAvatarPreviewVisible(true);
+    }
+  }, [avatarUri]);
+
+  const handleCloseAvatarPreview = useCallback(() => {
+    setIsAvatarPreviewVisible(false);
+  }, []);
+  const noop = useCallback(() => {}, []);
+
+  useEffect(() => {
+    if (!avatarUri && isAvatarPreviewVisible) {
+      setIsAvatarPreviewVisible(false);
+    }
+  }, [avatarUri, isAvatarPreviewVisible]);
 
   const handleDeleteBot = useCallback(async () => {
     if (!aiBotId || isDeleting) {
@@ -248,6 +266,7 @@ export const AiAgentScreen = ({ route }: Props) => {
             isChatLoading={isChatLoading}
             aiBotId={aiBotId}
             isFollowing={isFollowing}
+            onAvatarPress={avatarUri ? handleOpenAvatarPreview : undefined}
           />
         </View>
 
@@ -287,6 +306,15 @@ export const AiAgentScreen = ({ route }: Props) => {
           onClose={handleCloseGuestChat}
           botId={aiBotId}
           botName={displayName}
+        />
+      ) : null}
+      {avatarUri ? (
+        <ModalProfilePhoto
+          previewVisible={isAvatarPreviewVisible}
+          handleClosePreview={handleCloseAvatarPreview}
+          photoUri={avatarUri}
+          isMe={false}
+          goToEditProfileSetting={noop}
         />
       ) : null}
     </>
