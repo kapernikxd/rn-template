@@ -44,7 +44,8 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
   botName,
 }) => {
   const { theme, typography, sizes } = useTheme();
-  const styles = useMemo(() => getStyles(theme), [theme]);
+  const isAndroid = Platform.OS === 'android';
+  const styles = useMemo(() => getStyles(theme, isAndroid), [theme, isAndroid]);
 
   const listRef = useRef<FlatList<ChatMessage>>(null);
 
@@ -296,7 +297,7 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
   );
 };
 
-const getStyles = (theme: ThemeType) => StyleSheet.create({
+const getStyles = (theme: ThemeType, isAndroid: boolean) => StyleSheet.create({
   centered: {
     flex: 1,
     backgroundColor: theme.backgroundSemiTransparent,
@@ -308,7 +309,7 @@ const getStyles = (theme: ThemeType) => StyleSheet.create({
     borderTopRightRadius: 16,
     paddingHorizontal: 16,
     paddingTop: 16,
-    paddingBottom: 24,
+    paddingBottom: 24 + (isAndroid ? 25 : 0),
     maxHeight: '85%',
   },
   header: {
