@@ -7,6 +7,7 @@ import { ReportModal, Spacer } from "rn-vs-lb";
 import { ROUTES, RootStackParamList } from "../../navigation/types";
 import { useAiAgentProfile } from "../../helpers/hooks/aiAgent/useAiAgentProfile";
 import { getUserAvatar, getUserFullName } from "../../helpers/utils/user";
+import { getSmartTime } from "../../helpers/utils/date";
 import { ScreenLoader } from "../../components";
 import { GuestAiChatModal } from "../../components/aibot/GuestAiChatModal";
 import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";
@@ -79,6 +80,13 @@ export const AiAgentScreen = ({ route }: Props) => {
   const usefulness = botDetails?.usefulness ?? aiBot?.usefulness ?? [];
   const creator = botDetails?.createdBy ?? aiBot?.createdBy;
   const createdAt = aiBot?.createdAt;
+  const formattedCreatedAt = useMemo(() => {
+    if (!createdAt) {
+      return "—";
+    }
+
+    return getSmartTime(createdAt) ?? "—";
+  }, [createdAt]);
   const creatorName = useMemo(
     () => (creator ? getUserFullName(creator as any) : "—"),
     [creator],
@@ -256,7 +264,7 @@ export const AiAgentScreen = ({ route }: Props) => {
             intro={intro}
             usefulness={usefulness}
             creatorName={creatorName}
-            createdAt={createdAt ?? "—"}
+            createdAt={formattedCreatedAt}
           />
         ) : (
           <AiAgentGallery
