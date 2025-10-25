@@ -11,6 +11,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   Text,
+  Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LoadingScreen, InputMessage, PinnedMessagesBar, HeaderSwitcher } from 'rn-vs-lb';
@@ -23,6 +24,7 @@ import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 import { useChatMessages } from '../../helpers/hooks/Chats/useChatMessages';
 import MessageItemWithPreview from '../../components/chat/MessageItemWithPreview';
 import { HeaderEdit } from '../../components/chat/HeaderEdit';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const chatBackground = require('../../assets/chat-background.png');
 
@@ -30,6 +32,8 @@ export const ChatMessagesScreen: FC = observer(() => {
   const { theme, sizes, commonStyles, globalStyleSheet, typography } = useTheme();
   const { setColors } = useSafeAreaColors();
   const styles = getStyles({ theme, sizes, commonStyles });
+  const insets = useSafeAreaInsets();
+  const bottomPadding = Math.max(insets.bottom, typeof sizes.xs === 'number' ? sizes.xs : 0);
 
   const { goBack, goToProfile } = usePortalNavigation();
 
@@ -137,7 +141,11 @@ export const ChatMessagesScreen: FC = observer(() => {
 
   return (
     <View style={{ flex: 1, backgroundColor: theme.backgroundThird }}>
-      <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={bottomPadding}
+        style={{ flex: 1 }}
+      >
         <View style={styles.container}>
           <HeaderSwitcher
             isFirst={editMode}
@@ -221,7 +229,7 @@ export const ChatMessagesScreen: FC = observer(() => {
             </View>
           )}
 
-          <View>
+          <View style={[styles.inputWrapper, { paddingBottom: bottomPadding }]}>
             <InputMessage
               value={inputMessage}
               onChange={setInputMessage}
@@ -282,5 +290,8 @@ const getStyles = ({ theme, sizes, commonStyles }: { theme: ThemeType; sizes: Si
       bottom: 0,
       width: '100%',
       zIndex: 20,
+    },
+    inputWrapper: {
+      backgroundColor: 'transparent',
     },
   });
