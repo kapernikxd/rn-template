@@ -12,7 +12,7 @@ export const DOMAIN = "https://AiPair.pro"
 export const API_URL = `${BASE_URL}api/`;
 
 
-export const EMAIL = "AiPairPro@yandex.ru";
+export const EMAIL = "AiPairPro@yandex.com";
 
 export const SITE_NAME = "AiPair";
 

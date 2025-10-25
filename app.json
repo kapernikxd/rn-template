@@ -50,6 +50,11 @@
       ],
       "expo-apple-authentication",
       "expo-notifications"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "08a4b737-a378-4629-8a11-a5c2bcd62c3f"
+      }
+    }
   }
 }
