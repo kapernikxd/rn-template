@@ -231,7 +231,6 @@ export const AiAgentScreen = ({ route }: Props) => {
             avatarUri={avatarUri}
             displayName={displayName}
             profession={profession}
-            intro={intro}
             categories={categories}
             followButtonTitle={followButtonTitle}
             onToggleFollow={handleToggleFollow}

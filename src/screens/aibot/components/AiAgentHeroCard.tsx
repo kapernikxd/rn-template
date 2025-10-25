@@ -12,7 +12,6 @@ type AiAgentHeroCardProps = {
   avatarUri: string;
   displayName: string;
   profession: string;
-  intro: string;
   categories: string[];
   followButtonTitle: string;
   onToggleFollow: () => void;
@@ -24,8 +23,6 @@ type AiAgentHeroCardProps = {
   isFollowing: boolean;
 };
 
-const MAX_DESCRIPTION_LINES = 4;
-
 export const AiAgentHeroCard = memo(
   ({
     styles,
@@ -33,7 +30,6 @@ export const AiAgentHeroCard = memo(
     avatarUri,
     displayName,
     profession,
-    intro,
     categories,
     followButtonTitle,
     onToggleFollow,
@@ -62,12 +58,6 @@ export const AiAgentHeroCard = memo(
           )}
         </View>
       </View>
-
-      {!!intro && (
-        <Text style={styles.description} numberOfLines={MAX_DESCRIPTION_LINES} ellipsizeMode="tail">
-          {intro}
-        </Text>
-      )}
 
       {!!categories.length && (
         <ScrollView
