@@ -18,6 +18,7 @@ import { Logo } from '../../components';
 
 import { IMAGES } from '../../constants/theme';
 import { ROUTES, type AuthStackParamList } from '../../navigation/types';
+import { GOOGLE_SIGN_IN_CLIENT_ID } from '../../constants/links';
 
 
 const Login: FC = observer(() => {
@@ -140,8 +141,8 @@ const Login: FC = observer(() => {
 
   useEffect(() => {
     GoogleSignin.configure({
-      webClientId: '728122372039-p3a7ldhulc7t8c4c5vj0m17t61a1luu8.apps.googleusercontent.com', // из Google Cloud Console
-      iosClientId: '728122372039-a6jj9godm62p3o7vov8f7q5psjfppiu7.apps.googleusercontent.com',
+      webClientId: GOOGLE_SIGN_IN_CLIENT_ID,
+      iosClientId: GOOGLE_SIGN_IN_CLIENT_ID,
       offlineAccess: true,
     });
   }, []);
