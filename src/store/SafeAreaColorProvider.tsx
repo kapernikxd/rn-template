@@ -46,11 +46,13 @@ export const SafeAreaColorProvider = ({
   return (
     <SafeAreaColorContext.Provider value={{ colors, setColors }}>
       <SafeAreaView
+        edges={['top', 'left', 'right']}
         style={{ flex: 1, backgroundColor: colors.contentColor }}
       >
         {/* Верхняя safe-area зона */}
         {insets.top > 0 && (
           <View
+            pointerEvents="none"
             style={{
               position: 'absolute',
               top: 0,
@@ -65,6 +67,7 @@ export const SafeAreaColorProvider = ({
         {/* Нижняя safe-area зона */}
         {insets.bottom > 0 && (
           <View
+            pointerEvents="none"
             style={{
               position: 'absolute',
               bottom: 0,
