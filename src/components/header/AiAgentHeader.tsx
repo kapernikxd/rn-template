@@ -100,6 +100,7 @@ const getStyles = (theme: ThemeType, isDark: boolean) =>
       flexDirection: 'row',
       alignItems: 'center',
       paddingHorizontal: 8,
+      marginTop: 12,
     },
     sideSlotLeft: {
       flexShrink: 0,

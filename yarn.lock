@@ -5388,10 +5388,10 @@ rimraf@^3.0.2:
   dependencies:
     glob "^7.1.3"
 
-rn-vs-lb@^1.0.57:
-  version "1.0.57"
-  resolved "https://registry.yarnpkg.com/rn-vs-lb/-/rn-vs-lb-1.0.57.tgz#9b651cc946412b089051e2d764fced9cbae5a3ea"
-  integrity sha512-w4FlPIKEJE0icrX3xYsBsgnL4vZ3zn+BEVvyl2fdYnxedj6EcomOKYZf8io+CQ8ouBTVK1mdOkgxQhqRDOMsZw==
+rn-vs-lb@1.0.64:
+  version "1.0.64"
+  resolved "https://registry.yarnpkg.com/rn-vs-lb/-/rn-vs-lb-1.0.64.tgz#7ec81256678fbb5fb3f775fb9240fda777dc4e33"
+  integrity sha512-n8xaG566FWtcTheIrsu0OwM43k7ME7p55IH6LPqd1aML4+sGs2xpO39irlwyyxflv/9UpfENe021uema8KpTIg==
   dependencies:
     "@gorhom/bottom-sheet" "^5.2.6"
     "@react-native-async-storage/async-storage" "2.2.0"

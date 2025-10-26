@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { FormProvider, useForm } from 'react-hook-form';
 import { useRootStore } from '../../store/StoreProvider';
 import { TextInput } from '../../components/form';
-import { Logo } from '../../components';
+import { LogoAiPair }from '../../components';
 import { usePortalNavigation } from '../../helpers/hooks';
 import { useTheme } from 'rn-vs-lb/theme';
 import { Button, Spacer } from 'rn-vs-lb';
@@ -45,7 +45,7 @@ const Forgot: FC = () => {
                                     }}
                                 >
                                     <TouchableOpacity onPress={() => goToMain()} style={{ marginLeft: 18 }}>
-                                        <Logo width={210} height={95} isDark={isDark}/>
+                                        <LogoAiPair isDark={isDark}/>
                                     </TouchableOpacity>
                                 </View>
                                 <Text style={typography.titleH2Regular}>Восстановление пароля</Text>

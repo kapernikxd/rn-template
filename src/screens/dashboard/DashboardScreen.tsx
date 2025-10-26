@@ -1,13 +1,12 @@
 import { ActivityIndicator, FlatList, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'rn-vs-lb/theme';
+import { Spacer, TabBarAi } from 'rn-vs-lb';
 
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import type { AiBotMainPageBot } from '../../types';
 import { AiBotCard } from '../../components/aibot/AiBotCard';
 import { usePortalNavigation } from '../../helpers/hooks';
-import { TabBar } from '../../components/aibot/TabBar';
-import { Spacer } from 'rn-vs-lb';
 import { MAIN_HORIZONTAL_PADDING } from '../../constants/layout';
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 import { capitalizeFirstLetter } from '../../helpers/utils/common';
@@ -129,7 +128,7 @@ export const DashboardScreen = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <TabBar
+      <TabBarAi
         tabs={tabs}
         activeIndex={index}
         onChange={setIndex}

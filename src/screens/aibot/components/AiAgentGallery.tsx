@@ -1,10 +1,7 @@
-import React, { memo } from "react";
-import { ActivityIndicator, Image, Text, View } from "react-native";
-
-import { AiAgentStyles } from "../styles";
+import React, { memo, useCallback, useState } from "react";
+import { AiAgentGalleryView } from "rn-vs-lb";
 
 type AiAgentGalleryProps = {
-  styles: AiAgentStyles;
   isLoading: boolean;
   photos: string[];
   galleryColumns: number;
@@ -12,46 +9,32 @@ type AiAgentGalleryProps = {
 };
 
 export const AiAgentGallery = memo(
-  ({ styles, isLoading, photos, galleryColumns, galleryItemSize }: AiAgentGalleryProps) => {
-    if (isLoading) {
-      return (
-        <View style={styles.galleryWrapper}>
-          <ActivityIndicator />
-        </View>
-      );
-    }
+  ({ isLoading, photos, galleryColumns, galleryItemSize }: AiAgentGalleryProps) => {
+    const [visible, setVisible] = useState(false);
+    const [index, setIndex] = useState(0);
 
-    if (!photos.length) {
-      return (
-        <View style={styles.galleryWrapper}>
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyText}>Создатель еще не добавил фото.</Text>
-          </View>
-        </View>
-      );
-    }
+    const onOpenAt = useCallback((i: number) => {
+      setIndex(i);
+      setVisible(true);
+    }, []);
+
+    const onClose = useCallback(() => setVisible(false), []);
 
     return (
-      <View style={styles.galleryWrapper}>
-        <View style={styles.galleryGrid}>
-          {photos.map((photo, index) => {
-            const isLastInRow = (index + 1) % galleryColumns === 0;
-            return (
-              <Image
-                key={`${photo}-${index}`}
-                source={{ uri: photo }}
-                style={[
-                  styles.galleryImage,
-                  isLastInRow && styles.galleryImageLast,
-                  { width: galleryItemSize, height: galleryItemSize },
-                ]}
-              />
-            );
-          })}
-        </View>
-      </View>
+      <AiAgentGalleryView
+        isLoading={isLoading}
+        photos={photos}
+        galleryColumns={galleryColumns}
+        galleryItemSize={galleryItemSize}
+        visible={visible}
+        initialIndex={index}
+        onOpenAt={onOpenAt}
+        onClose={onClose}
+        emptyTest="Создатель еще не добавил фото."
+      />
     );
-  },
+  }
 );
 
 AiAgentGallery.displayName = "AiAgentGallery";
+export default AiAgentGallery;

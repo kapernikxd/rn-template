@@ -14,7 +14,7 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { LoginParams } from '../../types/auth';
-import { Logo } from '../../components';
+import { LogoAiPair }from '../../components';
 
 import { IMAGES } from '../../constants/theme';
 import { ROUTES, type AuthStackParamList } from '../../navigation/types';
@@ -166,7 +166,7 @@ const Login: FC = observer(() => {
                     }}
                   >
                     <TouchableOpacity onPress={() => goToMain()} style={{ marginTop: Platform.OS === 'ios' ? '10%' : '20%', marginLeft: 18 }}>
-                      <Logo width={205} height={55} isDark={isDark} />
+                      <LogoAiPair isDark={isDark} />
                     </TouchableOpacity>
                   </View>
                   <Text style={typography.titleH2Regular}>Вход в аккаунт</Text>

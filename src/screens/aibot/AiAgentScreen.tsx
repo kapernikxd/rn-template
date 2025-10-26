@@ -286,7 +286,6 @@ export const AiAgentScreen = ({ route }: Props) => {
           />
         ) : (
           <AiAgentGallery
-            styles={styles}
             isLoading={botDetailsLoading}
             photos={botPhotos}
             galleryColumns={galleryColumns}

@@ -7,7 +7,7 @@ import { useRootStore } from '../../store/StoreProvider';
 import { OtpInput } from '../../components/form';
 import { usePortalNavigation } from '../../helpers/hooks';
 import { useTheme } from 'rn-vs-lb/theme';
-import { Logo } from '../../components';
+import { LogoAiPair }from '../../components';
 import { ROUTES, type AuthStackParamList } from '../../navigation/types';
 import { Button, Spacer } from 'rn-vs-lb';
 
@@ -87,7 +87,7 @@ const Otp: FC = () => {
                                     }}
                                 >
                                     <TouchableOpacity onPress={() => goToMain()} style={{ marginTop: '35%', marginLeft: 18 }}>
-                                        <Logo width={210} height={95} isDark={isDark}/>
+                                        <LogoAiPair isDark={isDark}/>
                                     </TouchableOpacity>
                                 </View>
                                 <Text style={typography.titleH2Regular}>Введите код</Text>

@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#3D3D3D"
+      "backgroundColor": "#FFFFFF"
     },
     "ios": {
       "usesAppleSignIn": true,
@@ -27,16 +27,17 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#3D3D3D"
+        "backgroundColor": "#FFFFFF"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
+      "googleServicesFile": "./android/app/google-services.json",
       "package": "com.kapernikrs.aipair",
       "versionCode": 30
     },
     "notification": {
       "icon": "./assets/notification-icon.png",
-      "color": "#6f2da8"
+      "color": "#FFFFFF"
     },
     "web": {
       "favicon": "./assets/favicon.png"

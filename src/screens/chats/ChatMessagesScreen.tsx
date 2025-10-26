@@ -263,6 +263,7 @@ export const ChatMessagesScreen: FC = observer(() => {
               onMaxImagesExceeded={(max) => {/* показывай snackbar из хука при желании */ }}
               onTyping={handleTypingStart}
               onStopTyping={handleTypingStop}
+              enableImageAttachment={false}
             />
           </View>
         </View>

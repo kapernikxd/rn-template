@@ -8,7 +8,7 @@ import { TextInput as VSTextInput } from '../../components/form';
 import { useRootStore } from '../../store/StoreProvider';
 import { useTheme } from 'rn-vs-lb/theme';
 import { Spacer, Button } from 'rn-vs-lb';
-import { Logo } from '../../components';
+import { LogoAiPair } from '../../components';
 import { ROUTES, type AuthStackParamList } from '../../navigation/types';
 
 type AuthScreenNavigationProp = RouteProp<AuthStackParamList, typeof ROUTES.ChangePassword>;
@@ -53,7 +53,7 @@ const ChangePassword: FC = () => {
                                     }}
                                 >
                                     <TouchableOpacity onPress={() => goToMain()} style={{ marginTop: '35%', marginLeft: 18 }}>
-                                        <Logo width={210} height={95} isDark={isDark}/>
+                                        <LogoAiPair isDark={isDark}/>
                                     </TouchableOpacity>
                                 </View>
                                 <Text style={typography.titleH2Regular}>Смена пароля</Text>

@@ -12,7 +12,7 @@ import {
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { launchImageLibrary } from "react-native-image-picker";
 import { FontAwesome6, Ionicons } from "@expo/vector-icons";
-import { Button, Spacer } from "rn-vs-lb";
+import { Button, Spacer, StepProgress } from "rn-vs-lb";
 import {
   SizesType,
   ThemeType,
@@ -20,7 +20,7 @@ import {
   useTheme,
 } from "rn-vs-lb/theme";
 
-import { StepProgress, FormTextField, AiAgentHeader } from "./components";
+import { FormTextField, AiAgentHeader } from "./components";
 import { useRootStore, useStoreData } from "../../store/StoreProvider";
 import { useEditAiAgentDialog } from "../../helpers/hooks/aiAgent/useEditAiAgentDialog";
 import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";

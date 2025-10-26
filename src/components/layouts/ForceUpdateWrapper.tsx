@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import { API_URL, appVersion } from '../../constants/links';
-import { UpdateRequiredView } from '../../components/UpdateRequiredView';
+import { UpdateRequiredView } from 'rn-vs-lb';
 
 type VersionResponse = {
   minVersion: string;
@@ -49,8 +49,8 @@ export const ForceUpdateWrapper: FC<Props> = ({ children }) => {
     loopRef.current = Animated.loop(
       Animated.sequence([
         Animated.timing(anim, { toValue: -10, duration: 500, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
-        Animated.timing(anim, { toValue: 10,  duration: 500, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
-        Animated.timing(anim, { toValue: 0,   duration: 500, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+        Animated.timing(anim, { toValue: 10, duration: 500, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+        Animated.timing(anim, { toValue: 0, duration: 500, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
       ])
     );
     loopRef.current.start();
@@ -133,9 +133,11 @@ export const ForceUpdateWrapper: FC<Props> = ({ children }) => {
         refreshing={refreshing}
         onRefresh={onRefresh}
         onPressUpdate={onPressUpdate}
+        title="Требуется обновление"
+        description="Доступна новая версия приложения. Пожалуйста, обновитесь, чтобы продолжить работу."
       />
     );
-    }
+  }
 
   return <>{children}</>;
 };

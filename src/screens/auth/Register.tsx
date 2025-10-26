@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { TextInput as VSTextInput } from '../../components/form';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useRootStore } from '../../store/StoreProvider';
-import { Logo } from '../../components';
+import { LogoAiPair }from '../../components';
 import { usePortalNavigation, usePushNotifications } from '../../helpers/hooks';
 import { useTheme } from 'rn-vs-lb/theme';
 import { RegistrationParams } from '../../types/auth';
@@ -47,7 +47,7 @@ const Register: FC = () => {
                                     }}
                                 >
                                     <TouchableOpacity onPress={() => goToMain()} style={{ marginTop: '5%', marginLeft: 18 }}>
-                                        <Logo width={210} height={95} isDark={isDark} />
+                                        <LogoAiPair isDark={isDark} />
                                     </TouchableOpacity>
                                 </View>
                                 <Text style={typography.titleH2Regular}>Создать аккаунт</Text>
