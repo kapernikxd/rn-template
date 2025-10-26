@@ -21,6 +21,7 @@
         "NSPhotoLibraryUsageDescription": "Нам нужен доступ к вашей фотопленке, чтобы вы могли загружать изображения в профиль и события.",
         "NSCameraUsageDescription": "Нам нужен доступ к камере, чтобы вы могли делать фотографии прямо в приложении.",
         "NSLocationWhenInUseUsageDescription": "Нам нужен доступ к вашей геолокации, чтобы показывать события рядом с вами.",
+        "NSUserTrackingUsageDescription": "We use your device identifier to deliver more relevant ads.",
         "ITSAppUsesNonExemptEncryption": false
       }
     },
@@ -52,7 +53,8 @@
       [
         "react-native-google-mobile-ads",
         {
-          "androidAppId": "ca-app-pub-8636022279548301~0000000000"
+          "android_app_id": "ca-app-pub-8636022279548301~3339084593",
+          "ios_app_id": "ca-app-pub-8636022279548301~4752416229"
         }
       ],
       "expo-apple-authentication",

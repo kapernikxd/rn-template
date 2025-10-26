@@ -8,6 +8,7 @@ import mobileAds, {
 } from 'react-native-google-mobile-ads';
 
 const ANDROID_BANNER_AD_UNIT_ID = 'ca-app-pub-8636022279548301/8567360540';
+const IOS_BANNER_AD_UNIT_ID = 'ca-app-pub-8636022279548301/4752416229';
 
 const isMobilePlatform = Platform.OS === 'ios' || Platform.OS === 'android';
 
@@ -28,15 +29,13 @@ export const BottomAdBanner = () => {
   }, []);
 
   const bannerAdUnitId = useMemo(() => {
-    if (__DEV__) {
-      return TestIds.BANNER;
-    }
+    if (__DEV__) return TestIds.BANNER;
 
-    if (Platform.OS === 'android') {
-      return ANDROID_BANNER_AD_UNIT_ID;
-    }
-
-    return undefined;
+    return Platform.select({
+      ios: IOS_BANNER_AD_UNIT_ID,
+      android: ANDROID_BANNER_AD_UNIT_ID,
+      default: undefined,
+    });
   }, []);
 
   if (!isMobilePlatform || !bannerAdUnitId) {
