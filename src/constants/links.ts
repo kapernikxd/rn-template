@@ -19,4 +19,4 @@ export const SITE_NAME = "AiPair";
 
 export const appVersion = Constants.expoConfig?.version || '1.0.0';
 
-export const GOOGLE_SIGN_IN_CLIENT_ID = '456854793341-84m49fc93a72cq148bftkgthn03tijdt.apps.googleusercontent.com' // из Google Cloud Console fingerPrint
+export const GOOGLE_SIGN_IN_CLIENT_ID = '456854793341-f96jb6ks2q6pm18q9b5tmj869j4rb5mg.apps.googleusercontent.com' // из Google Cloud Console web
