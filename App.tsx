@@ -8,6 +8,8 @@ import { Host } from 'react-native-portalize';
 import CustomSnackbar from './src/components/CustomSnackbar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ForceUpdateWrapper } from './src/components/layouts/ForceUpdateWrapper';
+import { View, StyleSheet } from 'react-native';
+import { BottomAdBanner } from './src/components/ads/BottomAdBanner';
 
 export default function App() {
   return (
@@ -18,7 +20,12 @@ export default function App() {
             <StatusBar style="auto" />
             <StoreProvider>
               <ForceUpdateWrapper>
-                <AppNavigator />
+                <View style={styles.appContainer}>
+                  <View style={styles.navigatorContainer}>
+                    <AppNavigator />
+                  </View>
+                  <BottomAdBanner />
+                </View>
                 <CustomSnackbar />
               </ForceUpdateWrapper>
             </StoreProvider>
@@ -28,3 +35,13 @@ export default function App() {
     </Host>
   );
 }
+
+const styles = StyleSheet.create({
+  appContainer: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  navigatorContainer: {
+    flex: 1,
+  },
+});
