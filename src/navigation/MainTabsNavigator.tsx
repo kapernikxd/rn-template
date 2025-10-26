@@ -33,13 +33,12 @@ const TABS: TabConfig[] = [
 
 type MainTabBarProps = BottomTabBarProps & {
   showLabels?: boolean;
-  bottomInset: number;
 };
 
 const ICON_SIZE = 44;
 const ICON_RADIUS = ICON_SIZE / 2;
 
-const MainTabBar = ({ state, descriptors, navigation, showLabels = true, bottomInset }: MainTabBarProps) => {
+const MainTabBar = ({ state, descriptors, navigation, showLabels = true }: MainTabBarProps) => {
   const { theme, isDark } = useTheme();
   const { onlineStore } = useRootStore();
   const hasUserNewMessage = useStoreData(onlineStore, (store) => store.hasUnreadPrivate);
@@ -60,7 +59,7 @@ const MainTabBar = ({ state, descriptors, navigation, showLabels = true, bottomI
         {
           backgroundColor: theme.white,
           borderTopColor: theme.border,
-          paddingBottom: 10,
+          paddingBottom: 0,
         },
       ]}
     >
@@ -145,7 +144,7 @@ export const MainTabsNavigator = ({ showLabels = true }: MainTabsNavigatorProps)
     <SafeAreaInsetsContext.Provider value={{ ...insets, bottom: 0 }}>
       <Tab.Navigator
         screenOptions={tabBarScreenOptions}
-        tabBar={(props) => <MainTabBar {...props} showLabels={showLabels} bottomInset={insets.bottom} />}
+        tabBar={(props) => <MainTabBar {...props} showLabels={showLabels} />}
       >
         {TABS.map((tab) => (
           <Tab.Screen key={tab.name} name={tab.name} component={tab.component} options={{ title: tab.label }} />
