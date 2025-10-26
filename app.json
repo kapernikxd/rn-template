@@ -53,8 +53,8 @@
       [
         "react-native-google-mobile-ads",
         {
-          "android_app_id": "ca-app-pub-8636022279548301~3339084593",
-          "ios_app_id": "ca-app-pub-8636022279548301~4752416229"
+          "androidAppId": "ca-app-pub-8636022279548301~3339084593",
+          "iosAppId": "ca-app-pub-8636022279548301~4752416229"
         }
       ],
       "expo-apple-authentication",
