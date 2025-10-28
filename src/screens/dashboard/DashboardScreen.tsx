@@ -1,4 +1,4 @@
-import { ActivityIndicator, FlatList, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'rn-vs-lb/theme';
 import { Spacer, TabBarAi } from 'rn-vs-lb';
@@ -24,6 +24,7 @@ export const DashboardScreen = () => {
   const { goToAiBotProfile } = usePortalNavigation();
 
   const [index, setIndex] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     setColors({
@@ -114,6 +115,19 @@ export const DashboardScreen = () => {
     [cardWidth, handleOpenBotProfile],
   );
 
+  const handleRefresh = useCallback(async () => {
+    if (isLoading || isRefreshing) {
+      return;
+    }
+
+    setIsRefreshing(true);
+    try {
+      await aiBotStore.fetchMainPageBots();
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [aiBotStore, isLoading, isRefreshing]);
+
   const renderEmptyComponent = useCallback(() => (
     <View style={styles.emptyState}>
       {isLoading ? (
@@ -153,6 +167,14 @@ export const DashboardScreen = () => {
         // ListHeaderComponent={renderHeader}
         ListEmptyComponent={renderEmptyComponent}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={handleRefresh}
+            tintColor={theme.white}
+            colors={[theme.white]}
+          />
+        }
       />
     </View>
   );

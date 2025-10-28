@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, ScrollView, Share, View, useWindowDimensions } from "react-native";
+import { Alert, RefreshControl, ScrollView, Share, View, useWindowDimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useTheme } from "rn-vs-lb/theme";
 import { ModalProfilePhoto, ReportModal, Spacer } from "rn-vs-lb";
@@ -60,6 +60,7 @@ export const AiAgentScreen = ({ route }: Props) => {
   const [isGuestChatVisible, setIsGuestChatVisible] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isAvatarPreviewVisible, setIsAvatarPreviewVisible] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     setColors({
@@ -231,6 +232,22 @@ export const AiAgentScreen = ({ route }: Props) => {
 
   const followButtonTitle = isFollowing ? "Отписаться" : "Подписаться";
 
+  const handleRefresh = useCallback(async () => {
+    if (!aiBotId || isLoading || isRefreshing) {
+      return;
+    }
+
+    setIsRefreshing(true);
+    try {
+      await Promise.all([
+        aiBotStore.fetchAiBotById(aiBotId),
+        aiBotStore.fetchBotDetails(aiBotId),
+      ]);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [aiBotId, aiBotStore, isLoading, isRefreshing]);
+
   if (isLoading && !aiBot) {
     return <ScreenLoader />;
   }
@@ -239,8 +256,16 @@ export const AiAgentScreen = ({ route }: Props) => {
     <>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
-        bounces={false}
         showsVerticalScrollIndicator={false}
+        alwaysBounceVertical
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={handleRefresh}
+            tintColor={theme.white}
+            colors={[theme.white]}
+          />
+        }
       >
         <View style={styles.header}>
           <AiAgentHeader
