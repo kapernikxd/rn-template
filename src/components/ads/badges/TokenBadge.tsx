@@ -13,7 +13,7 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme, ThemeType } from "rn-vs-lb/theme";
 
-import { useRewardedAdTokens } from "../../helpers/hooks/useRewardedAdTokens";
+import { useRewardedAdTokens } from "../../../helpers/hooks/useRewardedAdTokens";
 
 const formatTokens = (value: number) =>
   Number.isFinite(value) ? value.toLocaleString("ru-RU") : String(value);
@@ -181,11 +181,13 @@ const getStyles = (theme: ThemeType) =>
       fontSize: 13,
       textTransform: "uppercase",
       letterSpacing: 0.6,
+      textAlign: "center",
     },
     menuValue: {
       fontSize: 28,
       fontWeight: "700",
       marginTop: 6,
+      textAlign: "center",
     },
     menuButton: {
       flexDirection: "row",

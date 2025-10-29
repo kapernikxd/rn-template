@@ -16,7 +16,7 @@ import { useRootStore } from '../../../store/StoreProvider';
 import { useActions, usePortalNavigation } from '../../../helpers/hooks';
 import { ProfileNav, ROUTES } from '../../../navigation/types';
 import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
-import { RewardedAdSettingsCard } from '../components/RewardedAdSettingsCard';
+import { RewardedAdSettingsCard } from '../../../components/ads/components/RewardedAdSettingsCard';
 
 type SettingsRoute =
     | typeof ROUTES.ProfileEdit
