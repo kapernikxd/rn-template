@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import { LoadingScreen, ProfileCard, ReportModal } from 'rn-vs-lb';
@@ -37,6 +37,7 @@ export const UserProfileScreen = () => {
   const isBotsLoading = useStoreData(aiBotStore, (store) => store.isAiUserLoading);
 
   const [isReportVisible, setIsReportVisible] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     setColors({
@@ -125,7 +126,25 @@ export const UserProfileScreen = () => {
     goToAiBotProfile(botId);
   }, [goToAiBotProfile, uiStore]);
 
-  if (isLoadingProfile) {
+  const handleRefresh = useCallback(async () => {
+    if (!userId || isRefreshing) {
+      return;
+    }
+
+    setIsRefreshing(true);
+    try {
+      await Promise.all([
+        profileStore.fetchProfileById(userId),
+        aiBotStore.fetchAiBotsByUserId(userId),
+      ]);
+    } catch (error) {
+      console.error('Failed to refresh user profile', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [aiBotStore, isRefreshing, profileStore, userId]);
+
+  if (isLoadingProfile && !currentProfile) {
     return <LoadingScreen />;
   }
 
@@ -133,6 +152,14 @@ export const UserProfileScreen = () => {
     <>
       <ScrollView
         contentContainerStyle={[styles.scrollContent, { backgroundColor: theme.background }]}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={handleRefresh}
+            tintColor={theme.black}
+            colors={[theme.black]}
+          />
+        }
       >
         <ProfileCard
           name={displayName}
