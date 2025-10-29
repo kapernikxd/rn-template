@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect } from 'react';
+import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { ViewStyle } from 'react-native';
 
 import { CardContainer, ListItem } from 'rn-vs-lb';
@@ -6,6 +6,13 @@ import { useTheme } from 'rn-vs-lb/theme';
 import { TestIds, useRewardedAd } from 'react-native-google-mobile-ads';
 
 import { useRootStore } from '../../../store/StoreProvider';
+import {
+    DEFAULT_TOKEN_BALANCE,
+    addTokens as addTokensToStorage,
+    getTokenBalance,
+} from '../../../helpers/tokenStorage';
+
+const TOKEN_REWARD_AMOUNT = 10;
 
 const REWARDED_AD_UNIT_ID = __DEV__
     ? TestIds.REWARDED
@@ -18,7 +25,9 @@ type RewardedAdSettingsCardProps = {
 export const RewardedAdSettingsCard: FC<RewardedAdSettingsCardProps> = ({ style }) => {
     const { theme } = useTheme();
     const { uiStore } = useRootStore();
-    const { isLoaded, isClosed, isEarnedReward, reward, load, show, error } = useRewardedAd(REWARDED_AD_UNIT_ID, {
+    const [tokenBalance, setTokenBalance] = useState<number>(DEFAULT_TOKEN_BALANCE);
+    const isMountedRef = useRef(false);
+    const { isLoaded, isClosed, isEarnedReward, load, show, error } = useRewardedAd(REWARDED_AD_UNIT_ID, {
         requestNonPersonalizedAdsOnly: true,
     });
 
@@ -32,10 +41,32 @@ export const RewardedAdSettingsCard: FC<RewardedAdSettingsCardProps> = ({ style 
     }, [isLoaded, load, show, uiStore]);
 
     useEffect(() => {
+        isMountedRef.current = true;
+        return () => {
+            isMountedRef.current = false;
+        };
+    }, []);
+
+    useEffect(() => {
+        const loadBalance = async () => {
+            try {
+                const storedBalance = await getTokenBalance();
+                if (isMountedRef.current) {
+                    setTokenBalance(storedBalance);
+                }
+            } catch (storageError) {
+                if (isMountedRef.current) {
+                    uiStore.showSnackbar('Не удалось получить баланс токенов.', 'error');
+                }
+            }
+        };
+
+        void loadBalance();
+
         if (!isLoaded) {
             load();
         }
-    }, [isLoaded, load]);
+    }, [isLoaded, load, uiStore]);
 
     useEffect(() => {
         if (isClosed && !isLoaded) {
@@ -45,12 +76,25 @@ export const RewardedAdSettingsCard: FC<RewardedAdSettingsCardProps> = ({ style 
 
     useEffect(() => {
         if (isEarnedReward) {
-            const rewardMessage = reward?.amount
-                ? `Награда получена! +${reward.amount} ${reward.type ?? ''}`.trim()
-                : 'Награда получена! Спасибо за просмотр рекламы.';
-            uiStore.showSnackbar(rewardMessage, 'success');
+            const updateBalance = async () => {
+                try {
+                    const updatedBalance = await addTokensToStorage(TOKEN_REWARD_AMOUNT);
+                    if (isMountedRef.current) {
+                        setTokenBalance(updatedBalance);
+                    }
+
+                    const rewardMessage = `Награда получена! +${TOKEN_REWARD_AMOUNT} токенов.`;
+                    uiStore.showSnackbar(rewardMessage, 'success');
+                } catch (storageError) {
+                    if (isMountedRef.current) {
+                        uiStore.showSnackbar('Не удалось обновить баланс токенов.', 'error');
+                    }
+                }
+            };
+
+            void updateBalance();
         }
-    }, [isEarnedReward, reward, uiStore]);
+    }, [isEarnedReward, uiStore]);
 
     useEffect(() => {
         if (error) {
@@ -62,12 +106,19 @@ export const RewardedAdSettingsCard: FC<RewardedAdSettingsCardProps> = ({ style 
         <CardContainer style={style}>
             <ListItem
                 iconColor={theme.text}
+                icon="coins"
+                label="Мои токены"
+                subLabel={`${tokenBalance} токенов`}
+                hideArrow
+            />
+            <ListItem
+                iconColor={theme.text}
                 icon="gift"
                 label="Получить награду"
                 subLabel={isLoaded ? 'Реклама готова к показу' : 'Реклама загружается...'}
                 action={handleShowRewardedAd}
-                hideBottomLine
                 hideArrow
+                hideBottomLine
             />
         </CardContainer>
     );
