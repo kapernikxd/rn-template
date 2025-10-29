@@ -106,10 +106,11 @@ export const RewardedAdSettingsCard: FC<RewardedAdSettingsCardProps> = ({ style 
         <CardContainer style={style}>
             <ListItem
                 iconColor={theme.text}
-                icon="coins"
+                icon="diamond"
                 label="Мои токены"
                 subLabel={`${tokenBalance} токенов`}
                 hideArrow
+                action={()=> undefined}
             />
             <ListItem
                 iconColor={theme.text}
