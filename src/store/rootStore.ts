@@ -14,7 +14,6 @@ export class RootStore {
   readonly onlineStore: OnlineStore;
   readonly notificationStore: NotificationStore;
   readonly aiBotStore: AiBotStore;
-
   constructor() {
     this.authStore = new AuthStore(this);
     this.profileStore = new ProfileStore(this);
