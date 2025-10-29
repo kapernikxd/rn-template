@@ -1,6 +1,8 @@
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme, type SizesType } from 'rn-vs-lb/theme';
+
+import { useRewardedAdTokens } from '../../helpers/hooks/useRewardedAdTokens';
 
 interface ChatLimitLockedNoticeProps {
   message?: string;
@@ -20,7 +22,12 @@ const ChatLimitLockedNotice: FC<ChatLimitLockedNoticeProps> = ({
   isUnlocking,
 }) => {
   const { theme, typography, sizes } = useTheme();
+  const { isAdLoaded, showRewardedAd } = useRewardedAdTokens();
   const styles = getStyles(sizes);
+  const adStatusText = useMemo(
+    () => (isAdLoaded ? 'Реклама готова к показу' : 'Реклама загружается...'),
+    [isAdLoaded],
+  );
 
   return (
     <View style={[styles.container, { borderColor: theme.border, backgroundColor: theme.card }]}> 
@@ -44,6 +51,14 @@ const ChatLimitLockedNotice: FC<ChatLimitLockedNoticeProps> = ({
           ? 'Баланс токенов недоступен'
           : `Доступно токенов: ${tokenBalance}`}
       </Text>
+      <TouchableOpacity
+        style={[styles.secondaryButton, { borderColor: theme.primary }]}
+        onPress={showRewardedAd}
+        activeOpacity={0.85}
+      >
+        <Text style={[typography.body, { color: theme.primary }]}>Посмотреть рекламу</Text>
+        <Text style={[typography.bodySm, { color: theme.text }]}>{adStatusText}</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -61,6 +76,14 @@ const getStyles = (sizes: SizesType) =>
       borderRadius: sizes.radius_sm ?? 10,
       paddingVertical: typeof sizes.xs === 'number' ? sizes.xs : 8,
       alignItems: 'center',
+    },
+    secondaryButton: {
+      borderWidth: 1,
+      borderRadius: sizes.radius_sm ?? 10,
+      paddingVertical: typeof sizes.xs === 'number' ? sizes.xs : 8,
+      alignItems: 'center',
+      paddingHorizontal: typeof sizes.sm === 'number' ? sizes.sm : 12,
+      gap: typeof sizes.xs === 'number' ? sizes.xs / 2 : 4,
     },
   });
 
