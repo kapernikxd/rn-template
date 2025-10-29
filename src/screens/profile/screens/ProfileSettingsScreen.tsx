@@ -9,6 +9,7 @@ import {
     TelegramFeedbackLink,
     ListItem,
     ThemeSwitcher,
+    Spacer,
 } from 'rn-vs-lb';
 import { useTheme, ThemeType, SizesType, GlobalStyleSheetType } from 'rn-vs-lb/theme';
 import { appVersion, TELEGRAM_URL } from '../../../constants/links';
@@ -53,9 +54,9 @@ export const ProfileSettingsScreen: FC = () => {
     const SETTING_LIST = useMemo(
         () => [
             { icon: 'user-o', label: 'Редактировать профиль', action: navigateTo(ROUTES.ProfileEdit) },
-            { icon: 'gear', label: 'Настройки аккаунта', action: navigateTo(ROUTES.ProfileAccountSettings) },
+            // { icon: 'gear', label: 'Настройки аккаунта', action: navigateTo(ROUTES.ProfileAccountSettings) },
             { icon: 'key', label: 'Смена пароля', action: navigateTo(ROUTES.ProfileChangePassword) },
-            { icon: 'group', label: 'Социальные профили', action: navigateTo(ROUTES.ProfileSocialProfiles) },
+            // { icon: 'group', label: 'Социальные профили', action: navigateTo(ROUTES.ProfileSocialProfiles) },
             { icon: 'bell', label: 'Уведомления', action: navigateTo(ROUTES.ProfileNotificationSettings) },
         ],
         [navigateTo],
@@ -113,6 +114,8 @@ export const ProfileSettingsScreen: FC = () => {
                         </CardContainer>
                     </View>
                 </View>
+                <Spacer size='xl'/>
+                <Spacer size='xl'/>
                 <View>
                     <CardContainer style={styles.card}>
                         <TelegramFeedbackLink link={TELEGRAM_URL} />
