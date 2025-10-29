@@ -28,6 +28,7 @@ const DEFAULT_CONFIG: ChatMessageLimitConfig = {
   cooldownMs: 90 * 60 * 1000,
   tokenCost: 20,
   storageKeyPrefix: 'chat.limit',
+  scope: 'global',
 };
 
 export function useChatMessageLimit(
