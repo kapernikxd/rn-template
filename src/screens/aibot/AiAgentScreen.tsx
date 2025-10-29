@@ -19,6 +19,7 @@ import {
   AiAgentHeroCard,
   AiAgentInfoSection,
   AiAgentTabBar,
+  TokenBadge,
 } from "./components";
 import { createAiAgentStyles } from "./styles";
 
@@ -273,6 +274,7 @@ export const AiAgentScreen = ({ route }: Props) => {
             onBack={onBack}
             onShare={handleShare}
             items={menuItems}
+            renderRight={<TokenBadge />}
           />
           <Spacer />
 
