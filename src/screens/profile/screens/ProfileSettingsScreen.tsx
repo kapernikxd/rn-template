@@ -2,7 +2,6 @@ import { FC, useCallback, useEffect, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import {
     CardContainer,
     DeleteAccountButton,
@@ -17,6 +16,7 @@ import { useRootStore } from '../../../store/StoreProvider';
 import { useActions, usePortalNavigation } from '../../../helpers/hooks';
 import { ProfileNav, ROUTES } from '../../../navigation/types';
 import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
+import { RewardedAdSettingsCard } from '../components/RewardedAdSettingsCard';
 
 type SettingsRoute =
     | typeof ROUTES.ProfileEdit
@@ -26,7 +26,7 @@ type SettingsRoute =
     | typeof ROUTES.ProfileNotificationSettings;
 
 export const ProfileSettingsScreen: FC = () => {
-    const { globalStyleSheet, theme, sizes, typography, isDark } = useTheme();
+    const { globalStyleSheet, theme, sizes, typography } = useTheme();
     const { setColors } = useSafeAreaColors();
     const styles = getStyles({ globalStyleSheet, theme, sizes });
 
@@ -84,7 +84,7 @@ export const ProfileSettingsScreen: FC = () => {
             topColor: theme.white,
             bottomColor: theme.white,
         });
-      }, [theme, setColors]);
+    }, [theme, setColors]);
 
     return (
         <View style={styles.content}>
@@ -101,6 +101,7 @@ export const ProfileSettingsScreen: FC = () => {
                         <View><Text style={styles.title}>Тема</Text></View>
                         <ThemeSwitcher />
                     </CardContainer>
+                    <RewardedAdSettingsCard style={styles.card} />
                     <CardContainer style={styles.card}>
                         {COPY_LINK.map((item, index) => (
                             <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine hideArrow />
