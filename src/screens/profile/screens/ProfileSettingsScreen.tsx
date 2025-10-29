@@ -1,5 +1,5 @@
 import { FC, useCallback, useEffect, useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 import {
@@ -89,7 +89,7 @@ export const ProfileSettingsScreen: FC = () => {
     return (
         <View style={styles.content}>
             <HeaderDefault title={'Настройки'} onBackPress={goBack} />
-            <View style={styles.body}>
+            <ScrollView contentContainerStyle={styles.body}>
                 <View style={styles.list}>
                     <CardContainer style={styles.card}>
                         <View><Text style={styles.title}>Управление аккаунтом</Text></View>
@@ -124,7 +124,7 @@ export const ProfileSettingsScreen: FC = () => {
                         <Text style={typography.body}>Версия {appVersion}</Text>
                     </View>
                 </View>
-            </View>
+            </ScrollView>
         </View>
     );
 }
@@ -139,7 +139,7 @@ const getStyles = ({ sizes, globalStyleSheet, theme }: { theme: ThemeType, sizes
         height: '100%'
     },
     body: {
-        flex: 1,
+        flexGrow: 1,
         justifyContent: 'space-between',
     },
     list: {
