@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { LayoutChangeEvent, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { LayoutChangeEvent, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProfileCard, TabBar, type TabItem } from 'rn-vs-lb';
@@ -46,6 +46,7 @@ export const ProfileScreen = () => {
   );
 
   const [activeTabIndex, setActiveTabIndex] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const tabs = useMemo<TabItem[]>(
     () => [
       { key: 'my-bots', label: 'Мои', icon: 'person' },
@@ -171,10 +172,44 @@ export const ProfileScreen = () => {
 
   const canGoBack = navigation.canGoBack();
 
+  const handleRefresh = useCallback(async () => {
+    if (!isAuthenticated || isRefreshing) {
+      return;
+    }
+
+    setIsRefreshing(true);
+    try {
+      await Promise.all([
+        profileStore.fetchMyProfile(),
+        notificationStore.fetchLastNotifications(),
+        aiBotStore.fetchMyAiBots(),
+        aiBotStore.fetchSubscribedAiBots(),
+      ]);
+    } catch (error) {
+      console.error('Failed to refresh profile data', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [
+    aiBotStore,
+    isAuthenticated,
+    isRefreshing,
+    notificationStore,
+    profileStore,
+  ]);
+
   return (
     <ScrollView
       ref={scrollViewRef}
       contentContainerStyle={[styles.scrollContent, { backgroundColor: theme.background }]}
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefreshing}
+          onRefresh={handleRefresh}
+          tintColor={theme.black}
+          colors={[theme.black]}
+        />
+      }
     >
       <ProfileCard
         name={displayName}
