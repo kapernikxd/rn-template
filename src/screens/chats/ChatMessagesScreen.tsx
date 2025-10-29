@@ -36,14 +36,9 @@ import { useRootStore } from '../../store/StoreProvider';
 import { useChatMessageLimitController } from '../../helpers/aiChat/useChatMessageLimit';
 import type { ChatsStackParamList } from '../../navigation';
 import ChatLimitLockedNotice from '../../components/chat/ChatLimitLockedNotice';
+import { CHAT_LIMIT_CONFIG } from '../../constants';
 
 const chatBackground = require('../../assets/chat-background.png');
-
-const CHAT_LIMIT_CONFIG = {
-  messageLimit: 25,
-  cooldownMs: 90 * 60 * 1000,
-  tokenCost: 20,
-};
 
 export const ChatMessagesScreen: FC = observer(() => {
   const { theme, sizes, commonStyles, globalStyleSheet, typography } = useTheme();
