@@ -102,6 +102,7 @@ export const ChatMessagesScreen: FC = observer(() => {
     tokenBalance,
     isUnlocking,
     isLocked,
+    refreshTokenBalance,
   } = useChatMessageLimitController<ImageAsset[] | undefined>({
     chatId,
     onSubmit: handleSubmitFromInput,
@@ -307,6 +308,7 @@ export const ChatMessagesScreen: FC = observer(() => {
                   tokenBalance={tokenBalance}
                   onUnlock={handleUnlock}
                   isUnlocking={isUnlocking}
+                  onTokenBalanceRefresh={refreshTokenBalance}
                 />
               </View>
             ) : null}

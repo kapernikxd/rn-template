@@ -20,7 +20,14 @@ type UseRewardedAdTokensResult = {
   showRewardedAd: () => void;
 };
 
-export const useRewardedAdTokens = (): UseRewardedAdTokensResult => {
+type UseRewardedAdTokensOptions = {
+  onRewardEarned?: (balance: number) => void;
+};
+
+export const useRewardedAdTokens = (
+  options: UseRewardedAdTokensOptions = {},
+): UseRewardedAdTokensResult => {
+  const { onRewardEarned } = options;
   const { uiStore } = useRootStore();
   const [balance, setBalance] = useState<number>(DEFAULT_TOKEN_BALANCE);
   const isMountedRef = useRef(false);
@@ -80,6 +87,7 @@ export const useRewardedAdTokens = (): UseRewardedAdTokensResult => {
         try {
           const updatedBalance = await addTokens(TOKEN_REWARD_AMOUNT);
           updateBalance(updatedBalance);
+          onRewardEarned?.(updatedBalance);
 
           const rewardMessage = `Награда получена! +${TOKEN_REWARD_AMOUNT} токенов.`;
           uiStore.showSnackbar(rewardMessage, "success");
@@ -92,7 +100,7 @@ export const useRewardedAdTokens = (): UseRewardedAdTokensResult => {
 
       void applyReward();
     }
-  }, [isEarnedReward, uiStore, updateBalance]);
+  }, [isEarnedReward, onRewardEarned, uiStore, updateBalance]);
 
   useEffect(() => {
     if (error) {
