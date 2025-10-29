@@ -11,16 +11,12 @@ import {
     ThemeSwitcher,
 } from 'rn-vs-lb';
 import { useTheme, ThemeType, SizesType, GlobalStyleSheetType } from 'rn-vs-lb/theme';
-import { useRewardedAd, TestIds } from 'react-native-google-mobile-ads';
 import { appVersion, TELEGRAM_URL } from '../../../constants/links';
 import { useRootStore } from '../../../store/StoreProvider';
 import { useActions, usePortalNavigation } from '../../../helpers/hooks';
 import { ProfileNav, ROUTES } from '../../../navigation/types';
 import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
-
-const REWARDED_AD_UNIT_ID = __DEV__
-    ? TestIds.REWARDED
-    : 'ca-app-pub-8636022279548301/8567360540';
+import { RewardedAdSettingsCard } from '../components/RewardedAdSettingsCard';
 
 type SettingsRoute =
     | typeof ROUTES.ProfileEdit
@@ -38,9 +34,6 @@ export const ProfileSettingsScreen: FC = () => {
     const { goBack, goToLogin } = usePortalNavigation();
     const { handleShareUserLink, myId } = useActions();
     const navigation = useNavigation<ProfileNav>();
-    const { isLoaded, isClosed, isEarnedReward, reward, load, show, error } = useRewardedAd(REWARDED_AD_UNIT_ID, {
-        requestNonPersonalizedAdsOnly: true,
-    });
 
     const handleLogOut = useCallback(async () => {
         await authStore.logout();
@@ -51,15 +44,6 @@ export const ProfileSettingsScreen: FC = () => {
         await profileStore.deleteAccount();
         uiStore.showSnackbar("Ваш запрос отправлен. Аккаунт будет удалён в течение 24 часов.", "success");
     }, [profileStore, uiStore]);
-
-    const handleShowRewardedAd = useCallback(() => {
-        if (isLoaded) {
-            show();
-        } else {
-            uiStore.showSnackbar('Реклама загружается, попробуйте чуть позже.', 'info');
-            load();
-        }
-    }, [isLoaded, load, show, uiStore]);
 
     const navigateTo = useCallback(
         (screen: SettingsRoute) => () => navigation.navigate(screen),
@@ -102,33 +86,6 @@ export const ProfileSettingsScreen: FC = () => {
         });
     }, [theme, setColors]);
 
-    useEffect(() => {
-        if (!isLoaded) {
-            load();
-        }
-    }, [isLoaded, load]);
-
-    useEffect(() => {
-        if (isClosed && !isLoaded) {
-            load();
-        }
-    }, [isClosed, isLoaded, load]);
-
-    useEffect(() => {
-        if (isEarnedReward) {
-            const rewardMessage = reward?.amount
-                ? `Награда получена! +${reward.amount} ${reward.type ?? ''}`.trim()
-                : 'Награда получена! Спасибо за просмотр рекламы.';
-            uiStore.showSnackbar(rewardMessage, 'success');
-        }
-    }, [isEarnedReward, reward, uiStore]);
-
-    useEffect(() => {
-        if (error) {
-            uiStore.showSnackbar('Не удалось загрузить рекламу. Попробуйте позже.', 'error');
-        }
-    }, [error, uiStore]);
-
     return (
         <View style={styles.content}>
             <HeaderDefault title={'Настройки'} onBackPress={goBack} />
@@ -144,17 +101,7 @@ export const ProfileSettingsScreen: FC = () => {
                         <View><Text style={styles.title}>Тема</Text></View>
                         <ThemeSwitcher />
                     </CardContainer>
-                    <CardContainer style={styles.card}>
-                        <ListItem
-                            iconColor={theme.text}
-                            icon="gift"
-                            label="Получить награду"
-                            subLabel={isLoaded ? 'Реклама готова к показу' : 'Реклама загружается...'}
-                            action={handleShowRewardedAd}
-                            hideBottomLine
-                            hideArrow
-                        />
-                    </CardContainer>
+                    <RewardedAdSettingsCard style={styles.card} />
                     <CardContainer style={styles.card}>
                         {COPY_LINK.map((item, index) => (
                             <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine hideArrow />
