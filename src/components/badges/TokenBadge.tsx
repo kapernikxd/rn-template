@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useMemo, useState } from "react";
 import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme, ThemeType } from "rn-vs-lb/theme";
 
 import { DEFAULT_TOKEN_BALANCE, getTokenBalance } from "../../helpers/tokenStorage";
@@ -22,7 +22,7 @@ type TokenBadgeProps = {
 export const TokenBadge = memo(
   ({
     balance,
-    label = "Токены",
+    label,
     style,
     labelStyle,
     valueStyle,
@@ -71,16 +71,16 @@ export const TokenBadge = memo(
         accessibilityRole="text"
         accessibilityLabel={`${label}: ${formattedBalance}`}
       >
-        <Ionicons
-          name="sparkles-outline"
+        <MaterialIcons
+          name="diamond"
           size={iconSize}
           color={iconColor ?? theme.primary}
           style={styles.icon}
         />
         <View>
-          <Text style={[styles.label, labelStyle]} numberOfLines={1}>
+          {label && <Text style={[styles.label, labelStyle]} numberOfLines={1}>
             {label}
-          </Text>
+          </Text>}
           <Text style={[styles.value, { color: theme.title }, valueStyle]} numberOfLines={1}>
             {formattedBalance}
           </Text>
@@ -98,12 +98,12 @@ const getStyles = (theme: ThemeType) =>
       flexDirection: "row",
       alignItems: "center",
       paddingHorizontal: 12,
-      paddingVertical: 6,
+      paddingVertical: 12,
       borderRadius: 16,
       backgroundColor: theme.card,
     },
     icon: {
-      marginRight: 8,
+      marginRight: 6,
     },
     label: {
       color: theme.text,
@@ -113,6 +113,6 @@ const getStyles = (theme: ThemeType) =>
     },
     value: {
       fontSize: 16,
-      fontWeight: "700",
+      fontWeight: "600",
     },
   });

@@ -274,7 +274,7 @@ export const AiAgentScreen = ({ route }: Props) => {
             onBack={onBack}
             onShare={handleShare}
             items={menuItems}
-            renderRight={<TokenBadge />}
+            renderRight={<TokenBadge iconSize={22}/>}
           />
           <Spacer />
 
