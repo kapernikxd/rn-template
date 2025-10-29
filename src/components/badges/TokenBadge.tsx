@@ -1,9 +1,19 @@
-import React, { memo, useEffect, useMemo, useState } from "react";
-import { StyleProp, StyleSheet, Text, TextStyle, View, ViewStyle } from "react-native";
+import React, { memo, useCallback, useMemo, useState } from "react";
+import {
+  Modal,
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme, ThemeType } from "rn-vs-lb/theme";
 
-import { DEFAULT_TOKEN_BALANCE, getTokenBalance } from "../../helpers/tokenStorage";
+import { useRewardedAdTokens } from "../../helpers/hooks/useRewardedAdTokens";
 
 const formatTokens = (value: number) =>
   Number.isFinite(value) ? value.toLocaleString("ru-RU") : String(value);
@@ -31,32 +41,8 @@ export const TokenBadge = memo(
   }: TokenBadgeProps) => {
     const { theme } = useTheme();
     const styles = getStyles(theme);
-
-    const [storedBalance, setStoredBalance] = useState(DEFAULT_TOKEN_BALANCE);
-
-    const shouldLoadFromStorage = typeof balance !== "number";
-
-    useEffect(() => {
-      if (!shouldLoadFromStorage) {
-        return;
-      }
-
-      let isMounted = true;
-
-      getTokenBalance()
-        .then((value) => {
-          if (isMounted) {
-            setStoredBalance(value);
-          }
-        })
-        .catch((error) => {
-          console.warn("Failed to load token balance", error);
-        });
-
-      return () => {
-        isMounted = false;
-      };
-    }, [shouldLoadFromStorage]);
+    const { balance: storedBalance, isAdLoaded, showRewardedAd } = useRewardedAdTokens();
+    const [isMenuVisible, setIsMenuVisible] = useState(false);
 
     const currentBalance = useMemo(
       () => (typeof balance === "number" ? balance : storedBalance),
@@ -65,27 +51,88 @@ export const TokenBadge = memo(
 
     const formattedBalance = useMemo(() => formatTokens(currentBalance), [currentBalance]);
 
+    const accessibilityLabelText = label
+      ? `${label}: ${formattedBalance}`
+      : `Баланс токенов: ${formattedBalance}`;
+
+    const menuStatusText = isAdLoaded
+      ? "Реклама готова к показу"
+      : "Реклама загружается...";
+
+    const openMenu = useCallback(() => {
+      setIsMenuVisible(true);
+    }, []);
+
+    const closeMenu = useCallback(() => {
+      setIsMenuVisible(false);
+    }, []);
+
+    const handleWatchAd = useCallback(() => {
+      closeMenu();
+      showRewardedAd();
+    }, [closeMenu, showRewardedAd]);
+
     return (
-      <View
-        style={[styles.container, style]}
-        accessibilityRole="text"
-        accessibilityLabel={`${label}: ${formattedBalance}`}
-      >
-        <MaterialIcons
-          name="diamond"
-          size={iconSize}
-          color={iconColor ?? theme.primary}
-          style={styles.icon}
-        />
-        <View>
-          {label && <Text style={[styles.label, labelStyle]} numberOfLines={1}>
-            {label}
-          </Text>}
-          <Text style={[styles.value, { color: theme.title }, valueStyle]} numberOfLines={1}>
-            {formattedBalance}
-          </Text>
-        </View>
-      </View>
+      <>
+        <TouchableOpacity
+          style={[styles.container, style]}
+          accessibilityRole="button"
+          accessibilityLabel={accessibilityLabelText}
+          activeOpacity={0.8}
+          onPress={openMenu}
+        >
+          <MaterialIcons
+            name="diamond"
+            size={iconSize}
+            color={iconColor ?? theme.primary}
+            style={styles.icon}
+          />
+          <View>
+            {label && (
+              <Text style={[styles.label, labelStyle]} numberOfLines={1}>
+                {label}
+              </Text>
+            )}
+            <Text style={[styles.value, { color: theme.title }, valueStyle]} numberOfLines={1}>
+              {formattedBalance}
+            </Text>
+          </View>
+        </TouchableOpacity>
+
+        <Modal transparent visible={isMenuVisible} animationType="fade" onRequestClose={closeMenu}>
+          <Pressable style={styles.menuBackdrop} onPress={closeMenu}>
+            <Pressable
+              style={styles.menuContainer}
+              onPress={(event) => event.stopPropagation()}
+              accessibilityLabel="Меню токенов"
+            >
+              <Text style={[styles.menuTitle, { color: theme.text }]}>Баланс токенов</Text>
+              <Text style={[styles.menuValue, { color: theme.title }]}>{formattedBalance}</Text>
+
+              <TouchableOpacity
+                style={[styles.menuButton, !isAdLoaded && styles.menuButtonDisabled]}
+                activeOpacity={0.85}
+                onPress={handleWatchAd}
+              >
+                <MaterialIcons
+                  name="ondemand-video"
+                  size={20}
+                  color={theme.primary}
+                  style={styles.menuButtonIcon}
+                />
+                <View style={styles.menuButtonTextWrapper}>
+                  <Text style={[styles.menuButtonText, { color: theme.title }]}>
+                    Посмотреть рекламу
+                  </Text>
+                  <Text style={[styles.menuButtonSubtext, { color: theme.text }]}>
+                    {menuStatusText}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </Pressable>
+          </Pressable>
+        </Modal>
+      </>
     );
   },
 );
@@ -114,5 +161,56 @@ const getStyles = (theme: ThemeType) =>
     value: {
       fontSize: 16,
       fontWeight: "600",
+    },
+    menuBackdrop: {
+      flex: 1,
+      backgroundColor: "rgba(0, 0, 0, 0.35)",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: 24,
+    },
+    menuContainer: {
+      width: "100%",
+      maxWidth: 320,
+      borderRadius: 20,
+      backgroundColor: theme.white,
+      paddingHorizontal: 24,
+      paddingVertical: 20,
+    },
+    menuTitle: {
+      fontSize: 13,
+      textTransform: "uppercase",
+      letterSpacing: 0.6,
+    },
+    menuValue: {
+      fontSize: 28,
+      fontWeight: "700",
+      marginTop: 6,
+    },
+    menuButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      paddingVertical: 14,
+      paddingHorizontal: 16,
+      borderRadius: 16,
+      backgroundColor: theme.card,
+      marginTop: 20,
+    },
+    menuButtonDisabled: {
+      opacity: 0.7,
+    },
+    menuButtonIcon: {
+      marginRight: 12,
+    },
+    menuButtonTextWrapper: {
+      flex: 1,
+    },
+    menuButtonText: {
+      fontSize: 16,
+      fontWeight: "600",
+    },
+    menuButtonSubtext: {
+      marginTop: 2,
+      fontSize: 12,
     },
   });
