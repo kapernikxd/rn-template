@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useCallback, useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme, type SizesType } from 'rn-vs-lb/theme';
 
@@ -11,6 +11,7 @@ interface ChatLimitLockedNoticeProps {
   tokenBalance: number | null;
   onUnlock: () => void;
   isUnlocking: boolean;
+  onTokenBalanceRefresh?: () => Promise<unknown> | void;
 }
 
 const ChatLimitLockedNotice: FC<ChatLimitLockedNoticeProps> = ({
@@ -20,14 +21,30 @@ const ChatLimitLockedNotice: FC<ChatLimitLockedNoticeProps> = ({
   tokenBalance,
   onUnlock,
   isUnlocking,
+  onTokenBalanceRefresh,
 }) => {
   const { theme, typography, sizes } = useTheme();
-  const { isAdLoaded, showRewardedAd } = useRewardedAdTokens();
+  const handleRewardEarned = useCallback(
+    (_updatedBalance: number) => {
+      void onTokenBalanceRefresh?.();
+    },
+    [onTokenBalanceRefresh],
+  );
+  const { balance: rewardedBalance, isAdLoaded, showRewardedAd } = useRewardedAdTokens({
+    onRewardEarned: handleRewardEarned,
+  });
   const styles = getStyles(sizes);
   const adStatusText = useMemo(
     () => (isAdLoaded ? 'Реклама готова к показу' : 'Реклама загружается...'),
     [isAdLoaded],
   );
+  const effectiveTokenBalance = useMemo(() => {
+    if (tokenBalance === null) {
+      return rewardedBalance;
+    }
+
+    return Math.max(tokenBalance, rewardedBalance);
+  }, [rewardedBalance, tokenBalance]);
 
   return (
     <View style={[styles.container, { borderColor: theme.border, backgroundColor: theme.card }]}> 
@@ -46,10 +63,10 @@ const ChatLimitLockedNotice: FC<ChatLimitLockedNoticeProps> = ({
           {isUnlocking ? 'Проверяем...' : `Продолжить за ${tokenCost} токенов`}
         </Text>
       </TouchableOpacity>
-      <Text style={[typography.bodySm, { color: theme.greyText }]}>
-        {tokenBalance === null
+      <Text style={[typography.bodySm, { color: theme.greyText }]}>    
+        {Number.isNaN(effectiveTokenBalance)
           ? 'Баланс токенов недоступен'
-          : `Доступно токенов: ${tokenBalance}`}
+          : `Доступно токенов: ${effectiveTokenBalance}`}
       </Text>
       <TouchableOpacity
         style={[styles.secondaryButton, { borderColor: theme.primary }]}
