@@ -1,16 +1,19 @@
-import React, { FC, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  ActionSheetIOS,
+  Modal,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useTheme, type SizesType } from 'rn-vs-lb/theme';
-
 import { useRewardedAdTokens } from '../../helpers/hooks/useRewardedAdTokens';
 
-interface ChatLimitLockedNoticeProps {
+type Props = {
   message?: string;
   countdownText: string | null;
   tokenCost: number;
@@ -18,9 +21,9 @@ interface ChatLimitLockedNoticeProps {
   onUnlock: () => void;
   isUnlocking: boolean;
   onTokenBalanceRefresh?: () => Promise<unknown> | void;
-}
+};
 
-const ChatLimitLockedNotice: FC<ChatLimitLockedNoticeProps> = ({
+const ChatLimitLockedNotice = ({
   message = 'Лимит сообщений исчерпан',
   countdownText,
   tokenCost,
@@ -28,256 +31,317 @@ const ChatLimitLockedNotice: FC<ChatLimitLockedNoticeProps> = ({
   onUnlock,
   isUnlocking,
   onTokenBalanceRefresh,
-}) => {
+}: Props) => {
   const { theme, typography, sizes } = useTheme();
-
   const styles = useMemo(() => getStyles(sizes, theme), [sizes, theme]);
 
   const handleRewardEarned = useCallback(
-    (_updatedBalance: number) => {
-      void onTokenBalanceRefresh?.();
-    },
+    (_: number) => void onTokenBalanceRefresh?.(),
     [onTokenBalanceRefresh],
   );
 
   const { balance: rewardedBalance, isAdLoaded, showRewardedAd } =
     useRewardedAdTokens({ onRewardEarned: handleRewardEarned });
 
-  const adStatusText = useMemo(
-    () => (isAdLoaded ? 'Реклама готова к показу' : 'Реклама загружается…'),
-    [isAdLoaded],
-  );
-
   const effectiveTokenBalance = useMemo(() => {
     if (tokenBalance === null) return rewardedBalance;
     return Math.max(tokenBalance, rewardedBalance);
-  }, [rewardedBalance, tokenBalance]);
+  }, [tokenBalance, rewardedBalance]);
 
   const hasBalance = !Number.isNaN(effectiveTokenBalance);
-  const enoughForUnlock = hasBalance && effectiveTokenBalance >= tokenCost;
+
+  // --- Меню: iOS — ActionSheet, Android/Web — Modal ---
+  const [menuVisible, setMenuVisible] = useState(false);
+  const closeMenu = useCallback(() => setMenuVisible(false), []);
+  const openMenu = useCallback(() => {
+    if (Platform.OS === 'ios') {
+      const options = [
+        'Посмотреть рекламу' + (isAdLoaded ? '' : ' (недоступно)'),
+        'Обновить баланс',
+        'Что такое токены?',
+        'Отмена',
+      ];
+      const cancelButtonIndex = 3;
+      ActionSheetIOS.showActionSheetWithOptions(
+        { options, cancelButtonIndex, userInterfaceStyle: 'automatic' },
+        (idx) => {
+          if (idx === 0 && isAdLoaded) showRewardedAd();
+          else if (idx === 1) void onTokenBalanceRefresh?.();
+          else if (idx === 2) {
+            // роут на FAQ/модалку — на твой вкус
+          }
+        },
+      );
+    } else {
+      setMenuVisible(true);
+    }
+  }, [isAdLoaded, onTokenBalanceRefresh, showRewardedAd]);
+
+  const onWatchAd = useCallback(() => {
+    if (isAdLoaded) {
+      closeMenu();
+      showRewardedAd();
+    }
+  }, [isAdLoaded, showRewardedAd, closeMenu]);
+
+  const onRefreshBalance = useCallback(() => {
+    closeMenu();
+    void onTokenBalanceRefresh?.();
+  }, [onTokenBalanceRefresh, closeMenu]);
 
   return (
-    <View
-      style={[
-        styles.container,
-        { borderColor: theme.border, backgroundColor: theme.card },
-      ]}
-    >
-      {/* Header */}
-      <View style={styles.headerRow}>
-        <Text style={[styles.lockEmoji]} accessibilityRole="image" accessibilityLabel="Locked">
-          🔒
-        </Text>
-        <View style={styles.headerText}>
-          <Text style={[typography.titleH6, { color: theme.title }]}>
+    <>
+      <View style={[styles.card, { borderColor: theme.border, backgroundColor: theme.card }]}>
+        {/* верх */}
+        <View style={styles.topRow}>
+          <Text style={styles.lock} accessibilityRole="image" accessibilityLabel="Locked">🔒</Text>
+          <Text style={[typography.bodySm, styles.title, { color: theme.title }]} numberOfLines={1}>
             {message}
           </Text>
-          <Text style={[typography.bodySm, { color: theme.text }]}>
-            {countdownText
-              ? `Подождите ${countdownText} или используйте токены.`
-              : 'Подождите окончания таймера или используйте токены.'}
-          </Text>
+          <Pressable onPress={openMenu} hitSlop={8} style={styles.dotsBtn} accessibilityRole="button">
+            <Ionicons name="ellipsis-horizontal" size={18} color={theme.text} />
+          </Pressable>
+        </View>
+
+        {/* подзаголовок */}
+        <Text style={[typography.caption, { color: theme.text }]} numberOfLines={1}>
+          {countdownText ? `Подождите ${countdownText} или используйте токены` : 'Подождите таймер или используйте токены'}
+        </Text>
+
+        {/* метрики */}
+        <View style={styles.metricsRow}>
+          <Pill text={`Стоимость: ${tokenCost}`} borderColor={theme.primary} bgColor={theme.primary + '14'} textColor={theme.primary} />
+          <Pill
+            text={hasBalance ? `Баланс: ${effectiveTokenBalance}` : 'Баланс недоступен'}
+            borderColor={theme.border}
+            bgColor={theme.grey + '10'}
+            textColor={theme.text}
+          />
+        </View>
+
+        {/* кнопки */}
+        <View style={styles.actionsRow}>
+          <Pressable
+            onPress={onUnlock}
+            disabled={isUnlocking}
+            style={({ pressed }) => [
+              styles.primaryBtn,
+              { backgroundColor: theme.primary, opacity: isUnlocking ? 0.7 : pressed ? 0.9 : 1 },
+            ]}
+            accessibilityRole="button"
+          >
+            {isUnlocking ? (
+              <View style={styles.btnContent}>
+                <ActivityIndicator size="small" color={theme.white} />
+                <Text style={[typography.caption, styles.primaryText]}>Проверяем…</Text>
+              </View>
+            ) : (
+              <Text style={[typography.caption, styles.primaryText]} numberOfLines={1}>
+                Разблокировать за {tokenCost}
+              </Text>
+            )}
+          </Pressable>
+
+          <Pressable
+            onPress={openMenu}
+            style={({ pressed }) => [
+              styles.ghostBtn,
+              { borderColor: theme.primary, opacity: pressed ? 0.9 : 1 },
+            ]}
+            accessibilityRole="button"
+          >
+            <Ionicons name="flash-outline" size={14} color={theme.primary} />
+            <Text style={[typography.caption, { color: theme.primary }]} numberOfLines={1}>
+              Ещё
+            </Text>
+          </Pressable>
         </View>
       </View>
 
-      {/* Divider */}
-      <View style={[styles.divider, { backgroundColor: theme.border }]} />
-
-      {/* Cost / Balance */}
-      <View style={styles.rowsGap}>
-        <View style={styles.rowBetween}>
-          <Text style={[typography.body, { color: theme.text }]}>Стоимость разблокировки</Text>
-          <View
-            style={[
-              styles.pill,
-              { backgroundColor: theme.primary + '22', borderColor: theme.primary },
-            ]}
-          >
-            <Text style={[typography.bodySm, { color: theme.primary }]}>
-              {tokenCost} токенов
-            </Text>
-          </View>
+      {/* ANDROID/WEB MENU (Modal) */}
+      <Modal
+        visible={menuVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={closeMenu}
+      >
+        <Pressable style={modalStyles.backdrop} onPress={closeMenu} />
+        <View style={[modalStyles.sheet, { backgroundColor: theme.card }]}>
+          <SheetItem
+            icon={<Ionicons name="play-circle-outline" size={18} color={isAdLoaded ? '#16a34a' : theme.greyText} />}
+            title="Посмотреть рекламу"
+            subtitle={isAdLoaded ? 'Готово к показу' : 'Загружается…'}
+            disabled={!isAdLoaded}
+            onPress={onWatchAd}
+            typography={typography}
+            theme={theme}
+          />
+          <SheetItem
+            icon={<Ionicons name="refresh-outline" size={18} color={theme.text} />}
+            title="Обновить баланс"
+            subtitle="Запросить актуальные токены"
+            onPress={onRefreshBalance}
+            typography={typography}
+            theme={theme}
+          />
+          <SheetItem
+            icon={<Ionicons name="help-circle-outline" size={18} color={theme.text} />}
+            title="Что такое токены?"
+            subtitle="Как они работают и где получить"
+            onPress={closeMenu}
+            typography={typography}
+            theme={theme}
+          />
+          <View style={{ height: 6 }} />
         </View>
-
-        <View style={styles.rowBetween}>
-          <Text style={[typography.body, { color: theme.text }]}>Ваш баланс</Text>
-          <View
-            style={[
-              styles.pill,
-              {
-                backgroundColor: hasBalance
-                  ? enoughForUnlock
-                    ? '#16a34a22' /* зелёный мягкий */
-                    : '#ef444422' /* красный мягкий */
-                  : theme.grey + '22',
-                borderColor: hasBalance
-                  ? enoughForUnlock
-                    ? '#16a34a'
-                    : '#ef4444'
-                  : theme.border,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                typography.bodySm,
-                {
-                  color: hasBalance
-                    ? enoughForUnlock
-                      ? '#16a34a'
-                      : '#ef4444'
-                    : theme.greyText,
-                },
-              ]}
-            >
-              {hasBalance ? `Токенов: ${effectiveTokenBalance}` : 'Недоступно'}
-            </Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Actions */}
-      <View style={styles.actionsGap}>
-        <Pressable
-          onPress={onUnlock}
-          disabled={isUnlocking}
-          accessibilityRole="button"
-          style={({ pressed }) => [
-            styles.primaryBtn,
-            {
-              backgroundColor: theme.primary,
-              opacity: isUnlocking ? 0.7 : pressed ? 0.85 : 1,
-              shadowColor: theme.primary,
-            },
-          ]}
-        >
-          {isUnlocking ? (
-            <View style={styles.btnContent}>
-              <ActivityIndicator size="small" color={theme.white} />
-              <Text style={[typography.body, styles.primaryBtnText]}>Проверяем…</Text>
-            </View>
-          ) : (
-            <Text style={[typography.body, styles.primaryBtnText]}>
-              Продолжить за {tokenCost} токенов
-            </Text>
-          )}
-        </Pressable>
-
-        <Pressable
-          onPress={showRewardedAd}
-          accessibilityRole="button"
-          style={({ pressed }) => [
-            styles.secondaryBtn,
-            {
-              borderColor: theme.primary,
-              backgroundColor: theme.card,
-              opacity: pressed ? 0.9 : 1,
-            },
-          ]}
-        >
-          <Text style={[typography.body, { color: theme.primary }]}>
-            Посмотреть рекламу
-          </Text>
-          <Text
-            style={[
-              typography.bodySm,
-              { color: isAdLoaded ? '#16a34a' : theme.text },
-            ]}
-          >
-            {adStatusText}
-          </Text>
-        </Pressable>
-      </View>
-    </View>
+      </Modal>
+    </>
   );
 };
 
+const Pill = ({
+  text,
+  borderColor,
+  bgColor,
+  textColor,
+}: {
+  text: string;
+  borderColor: string;
+  bgColor: string;
+  textColor: string;
+}) => (
+  <View style={[pillStyles.base, { borderColor, backgroundColor: bgColor }]}>
+    <Text style={[pillStyles.text, { color: textColor }]} numberOfLines={1}>
+      {text}
+    </Text>
+  </View>
+);
+
+const SheetItem = ({
+  icon,
+  title,
+  subtitle,
+  onPress,
+  disabled,
+  typography,
+  theme,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  subtitle?: string;
+  onPress?: () => void;
+  disabled?: boolean;
+  typography: any;
+  theme: any;
+}) => (
+  <Pressable
+    onPress={onPress}
+    disabled={disabled}
+    style={({ pressed }) => [
+      menuItemStyles.row,
+      { opacity: disabled ? 0.45 : pressed ? 0.9 : 1 },
+    ]}
+  >
+    <View style={menuItemStyles.icon}>{icon}</View>
+    <View style={menuItemStyles.texts}>
+      <Text style={[typography.body, { color: theme.title }]} numberOfLines={1}>
+        {title}
+      </Text>
+      {subtitle ? (
+        <Text style={[typography.caption, { color: theme.text }]} numberOfLines={1}>
+          {subtitle}
+        </Text>
+      ) : null}
+    </View>
+  </Pressable>
+);
+
 const getStyles = (sizes: SizesType, theme: any) =>
   StyleSheet.create({
-    container: {
+    card: {
       borderWidth: 1,
-      borderRadius: sizes.radius ?? 12,
-      paddingVertical: typeof sizes.sm === 'number' ? sizes.sm : 12,
-      paddingHorizontal: typeof sizes.sm === 'number' ? sizes.sm : 12,
-      gap: typeof sizes.sm === 'number' ? sizes.sm : 12,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 8 },
-      shadowOpacity: 0.08,
-      shadowRadius: 16,
-      elevation: 2,
+      borderRadius: sizes.radius_sm ?? 10,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      gap: 6,
     },
-
-    headerRow: {
+    topRow: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: typeof sizes.xs === 'number' ? sizes.xs : 8,
+      gap: 6,
     },
-    lockEmoji: {
-      fontSize: 22,
-      lineHeight: 22,
-    },
-    headerText: {
-      flex: 1,
-      gap: 2,
-    },
+    lock: { fontSize: 16, lineHeight: 16 },
+    title: { flex: 1 },
+    dotsBtn: { width: 28, height: 28, alignItems: 'center', justifyContent: 'center' },
 
-    divider: {
-      height: StyleSheet.hairlineWidth,
-      alignSelf: 'stretch',
-      opacity: 0.7,
-    },
+    metricsRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
 
-    rowsGap: {
-      gap: typeof sizes.xs === 'number' ? sizes.xs : 8,
-    },
-    rowBetween: {
+    actionsRow: {
       flexDirection: 'row',
+      gap: 6,
       alignItems: 'center',
       justifyContent: 'space-between',
-      gap: 8,
-    },
-    pill: {
-      paddingHorizontal: 10,
-      paddingVertical: 4,
-      borderRadius: 999,
-      borderWidth: 1,
-      minWidth: 80,
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-
-    actionsGap: {
-      gap: typeof sizes.xs === 'number' ? sizes.xs : 8,
     },
     primaryBtn: {
-      borderRadius: sizes.radius_sm ?? 10,
-      paddingVertical: typeof sizes.xs === 'number' ? sizes.xs : 8,
+      flex: 1,
+      height: 34,
+      borderRadius: 8,
       alignItems: 'center',
       justifyContent: 'center',
-      // лёгкая тень для кнопки
-      shadowOffset: { width: 0, height: 6 },
-      shadowOpacity: 0.15,
-      shadowRadius: 10,
-      elevation: 1,
     },
-    primaryBtnText: {
-      color: theme?.white,
-    },
-    btnContent: {
+    primaryText: { color: theme?.white },
+    btnContent: { flexDirection: 'row', gap: 6, alignItems: 'center' },
+
+    ghostBtn: {
+      height: 34,
+      paddingHorizontal: 10,
+      borderRadius: 8,
+      borderWidth: 1,
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 8,
-    },
-
-    secondaryBtn: {
-      borderWidth: 1,
-      borderRadius: sizes.radius_sm ?? 10,
-      paddingVertical: typeof sizes.xs === 'number' ? sizes.xs : 8,
-      paddingHorizontal: typeof sizes.sm === 'number' ? sizes.sm : 12,
-      alignItems: 'center',
-      justifyContent: 'center',
-      gap: typeof sizes.xs === 'number' ? sizes.xs / 2 : 4,
+      gap: 6,
     },
   });
+
+const pillStyles = StyleSheet.create({
+  base: {
+    paddingHorizontal: 8,
+    height: 22,
+    borderRadius: 999,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: { fontSize: 11, lineHeight: 14 },
+});
+
+const modalStyles = StyleSheet.create({
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: '#00000055',
+  },
+  sheet: {
+    position: 'absolute',
+    left: 10,
+    right: 10,
+    bottom: 10,
+    borderRadius: 12,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
+  },
+});
+
+const menuItemStyles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 6,
+    borderRadius: 10,
+  },
+  icon: { width: 22, alignItems: 'center' },
+  texts: { flex: 1, gap: 2 },
+});
 
 export default ChatLimitLockedNotice;
