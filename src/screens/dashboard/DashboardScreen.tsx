@@ -171,8 +171,8 @@ export const DashboardScreen = () => {
           <RefreshControl
             refreshing={isRefreshing}
             onRefresh={handleRefresh}
-            tintColor={theme.white}
-            colors={[theme.white]}
+            tintColor={theme.black}
+            colors={[theme.black]}
           />
         }
       />

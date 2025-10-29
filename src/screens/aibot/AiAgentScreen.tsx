@@ -262,8 +262,8 @@ export const AiAgentScreen = ({ route }: Props) => {
           <RefreshControl
             refreshing={isRefreshing}
             onRefresh={handleRefresh}
-            tintColor={theme.white}
-            colors={[theme.white]}
+            tintColor={theme.black}
+            colors={[theme.black]}
           />
         }
       >
