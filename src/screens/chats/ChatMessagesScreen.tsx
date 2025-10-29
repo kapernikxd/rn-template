@@ -14,7 +14,14 @@ import {
   Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { LoadingScreen, InputMessage, PinnedMessagesBar, HeaderSwitcher } from 'rn-vs-lb';
+import {
+  LoadingScreen,
+  InputMessage,
+  PinnedMessagesBar,
+  HeaderSwitcher,
+  type ImageAsset,
+} from 'rn-vs-lb';
+import { useRoute, type RouteProp } from '@react-navigation/native';
 import { useTheme, type ThemeType, type SizesType, type CommonStylesType } from 'rn-vs-lb/theme';
 import HeaderWithImg, { type HeaderActionItem } from '../../components/chat/HeaderWithImg';
 import { usePortalNavigation } from '../../helpers/hooks';
@@ -25,8 +32,18 @@ import { useChatMessages } from '../../helpers/hooks/Chats/useChatMessages';
 import MessageItemWithPreview from '../../components/chat/MessageItemWithPreview';
 import { HeaderEdit } from '../../components/chat/HeaderEdit';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useRootStore } from '../../store/StoreProvider';
+import { useChatMessageLimitController } from '../../helpers/aiChat/useChatMessageLimit';
+import type { ChatsStackParamList } from '../../navigation';
+import ChatLimitLockedNotice from '../../components/chat/ChatLimitLockedNotice';
 
 const chatBackground = require('../../assets/chat-background.png');
+
+const CHAT_LIMIT_CONFIG = {
+  messageLimit: 25,
+  cooldownMs: 90 * 60 * 1000,
+  tokenCost: 20,
+};
 
 export const ChatMessagesScreen: FC = observer(() => {
   const { theme, sizes, commonStyles, globalStyleSheet, typography } = useTheme();
@@ -34,6 +51,11 @@ export const ChatMessagesScreen: FC = observer(() => {
   const styles = getStyles({ theme, sizes, commonStyles });
   const insets = useSafeAreaInsets();
   const bottomPadding = Math.max(insets.bottom, typeof sizes.xs === 'number' ? sizes.xs : 0);
+
+  const route = useRoute<RouteProp<ChatsStackParamList, 'ChatMessages'>>();
+  const chatId = route.params.chatId;
+
+  const { uiStore } = useRootStore();
 
   const { goBack, goToProfile } = usePortalNavigation();
 
@@ -75,6 +97,23 @@ export const ChatMessagesScreen: FC = observer(() => {
     handleShareImage,
     actions,
   } = useChatMessages();
+
+  const isEditingMessage = selectedMessage?.actionType === 'edit';
+
+  const {
+    handleSubmit,
+    handleUnlock,
+    countdownText,
+    tokenBalance,
+    isUnlocking,
+    isLocked,
+  } = useChatMessageLimitController<ImageAsset[] | undefined>({
+    chatId,
+    onSubmit: handleSubmitFromInput,
+    isEditingMessage,
+    showSnackbar: (message, type) => uiStore.showSnackbar(message, type),
+    config: CHAT_LIMIT_CONFIG,
+  });
 
   useEffect(() => {
     setColors({
@@ -233,7 +272,7 @@ export const ChatMessagesScreen: FC = observer(() => {
             <InputMessage
               value={inputMessage}
               onChange={setInputMessage}
-              onSubmit={handleSubmitFromInput}
+              onSubmit={handleSubmit}
               replyToMessage={
                 selectedMessage?.actionType === 'reply'
                   ? selectedMessage?.content
@@ -265,6 +304,17 @@ export const ChatMessagesScreen: FC = observer(() => {
               onStopTyping={handleTypingStop}
               enableImageAttachment={false}
             />
+            {isLocked ? (
+              <View style={styles.limitLockContainer}>
+                <ChatLimitLockedNotice
+                  countdownText={countdownText}
+                  tokenCost={CHAT_LIMIT_CONFIG.tokenCost}
+                  tokenBalance={tokenBalance}
+                  onUnlock={handleUnlock}
+                  isUnlocking={isUnlocking}
+                />
+              </View>
+            ) : null}
           </View>
         </View>
       </KeyboardAvoidingView>
@@ -294,5 +344,10 @@ const getStyles = ({ theme, sizes, commonStyles }: { theme: ThemeType; sizes: Si
     },
     inputWrapper: {
       backgroundColor: 'transparent',
+      position: 'relative',
+    },
+    limitLockContainer: {
+      marginTop: sizes.sm,
+      marginHorizontal: sizes.sm,
     },
   });
