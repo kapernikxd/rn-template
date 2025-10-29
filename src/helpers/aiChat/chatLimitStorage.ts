@@ -5,6 +5,7 @@ export interface ChatMessageLimitConfig {
   cooldownMs: number;
   tokenCost: number;
   storageKeyPrefix?: string;
+  scope?: 'chat' | 'global';
 }
 
 export interface ChatLimitSnapshot {
@@ -51,7 +52,14 @@ const normalizeState = (
 export const buildChatLimitStorageKey = (
   chatId: string,
   config: ChatMessageLimitConfig,
-) => `${config.storageKeyPrefix ?? DEFAULT_STORAGE_PREFIX}:${chatId}`;
+) => {
+  const prefix = config.storageKeyPrefix ?? DEFAULT_STORAGE_PREFIX;
+  if (config.scope === 'global') {
+    return `${prefix}:global`;
+  }
+
+  return `${prefix}:${chatId}`;
+};
 
 export const loadChatLimitState = async (
   storageKey: string,
