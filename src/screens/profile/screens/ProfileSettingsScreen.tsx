@@ -1,8 +1,7 @@
 import { FC, useCallback, useEffect, useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import {
     CardContainer,
     DeleteAccountButton,
@@ -10,6 +9,7 @@ import {
     TelegramFeedbackLink,
     ListItem,
     ThemeSwitcher,
+    Spacer,
 } from 'rn-vs-lb';
 import { useTheme, ThemeType, SizesType, GlobalStyleSheetType } from 'rn-vs-lb/theme';
 import { appVersion, TELEGRAM_URL } from '../../../constants/links';
@@ -17,6 +17,7 @@ import { useRootStore } from '../../../store/StoreProvider';
 import { useActions, usePortalNavigation } from '../../../helpers/hooks';
 import { ProfileNav, ROUTES } from '../../../navigation/types';
 import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
+import { RewardedAdSettingsCard } from '../../../components/ads/components/RewardedAdSettingsCard';
 
 type SettingsRoute =
     | typeof ROUTES.ProfileEdit
@@ -26,7 +27,7 @@ type SettingsRoute =
     | typeof ROUTES.ProfileNotificationSettings;
 
 export const ProfileSettingsScreen: FC = () => {
-    const { globalStyleSheet, theme, sizes, typography, isDark } = useTheme();
+    const { globalStyleSheet, theme, sizes, typography } = useTheme();
     const { setColors } = useSafeAreaColors();
     const styles = getStyles({ globalStyleSheet, theme, sizes });
 
@@ -53,9 +54,9 @@ export const ProfileSettingsScreen: FC = () => {
     const SETTING_LIST = useMemo(
         () => [
             { icon: 'user-o', label: 'Редактировать профиль', action: navigateTo(ROUTES.ProfileEdit) },
-            { icon: 'gear', label: 'Настройки аккаунта', action: navigateTo(ROUTES.ProfileAccountSettings) },
+            // { icon: 'gear', label: 'Настройки аккаунта', action: navigateTo(ROUTES.ProfileAccountSettings) },
             { icon: 'key', label: 'Смена пароля', action: navigateTo(ROUTES.ProfileChangePassword) },
-            { icon: 'group', label: 'Социальные профили', action: navigateTo(ROUTES.ProfileSocialProfiles) },
+            // { icon: 'group', label: 'Социальные профили', action: navigateTo(ROUTES.ProfileSocialProfiles) },
             { icon: 'bell', label: 'Уведомления', action: navigateTo(ROUTES.ProfileNotificationSettings) },
         ],
         [navigateTo],
@@ -84,12 +85,12 @@ export const ProfileSettingsScreen: FC = () => {
             topColor: theme.white,
             bottomColor: theme.white,
         });
-      }, [theme, setColors]);
+    }, [theme, setColors]);
 
     return (
         <View style={styles.content}>
             <HeaderDefault title={'Настройки'} onBackPress={goBack} />
-            <View style={styles.body}>
+            <ScrollView contentContainerStyle={styles.body}>
                 <View style={styles.list}>
                     <CardContainer style={styles.card}>
                         <View><Text style={styles.title}>Управление аккаунтом</Text></View>
@@ -101,6 +102,7 @@ export const ProfileSettingsScreen: FC = () => {
                         <View><Text style={styles.title}>Тема</Text></View>
                         <ThemeSwitcher />
                     </CardContainer>
+                    <RewardedAdSettingsCard style={styles.card} />
                     <CardContainer style={styles.card}>
                         {COPY_LINK.map((item, index) => (
                             <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine hideArrow />
@@ -112,6 +114,8 @@ export const ProfileSettingsScreen: FC = () => {
                         </CardContainer>
                     </View>
                 </View>
+                <Spacer size='xl'/>
+                <Spacer size='xl'/>
                 <View>
                     <CardContainer style={styles.card}>
                         <TelegramFeedbackLink link={TELEGRAM_URL} />
@@ -123,7 +127,7 @@ export const ProfileSettingsScreen: FC = () => {
                         <Text style={typography.body}>Версия {appVersion}</Text>
                     </View>
                 </View>
-            </View>
+            </ScrollView>
         </View>
     );
 }
@@ -138,7 +142,7 @@ const getStyles = ({ sizes, globalStyleSheet, theme }: { theme: ThemeType, sizes
         height: '100%'
     },
     body: {
-        flex: 1,
+        flexGrow: 1,
         justifyContent: 'space-between',
     },
     list: {

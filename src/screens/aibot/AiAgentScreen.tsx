@@ -8,7 +8,7 @@ import { ROUTES, RootStackParamList } from "../../navigation/types";
 import { useAiAgentProfile } from "../../helpers/hooks/aiAgent/useAiAgentProfile";
 import { getUserAvatar, getUserFullName } from "../../helpers/utils/user";
 import { getSmartTime } from "../../helpers/utils/date";
-import { ScreenLoader } from "../../components";
+import { ScreenLoader, TokenBadge } from "../../components";
 import { GuestAiChatModal } from "../../components/aibot/GuestAiChatModal";
 import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";
 import { useRootStore } from "../../store/StoreProvider";
@@ -273,6 +273,7 @@ export const AiAgentScreen = ({ route }: Props) => {
             onBack={onBack}
             onShare={handleShare}
             items={menuItems}
+            renderRight={<TokenBadge iconSize={22}/>}
           />
           <Spacer />
 
