@@ -2,7 +2,7 @@
   "expo": {
     "name": "AiPair",
     "slug": "expoAiPair",
-    "version": "1.0.1",
+    "version": "1.4.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -16,11 +16,11 @@
       "usesAppleSignIn": true,
       "supportsTablet": true,
       "bundleIdentifier": "com.kapernikrs.aipair",
-      "buildNumber": "31",
+      "buildNumber": "34",
       "infoPlist": {
-        "NSPhotoLibraryUsageDescription": "Нам нужен доступ к вашей фотопленке, чтобы вы могли загружать изображения в профиль и события.",
-        "NSCameraUsageDescription": "Нам нужен доступ к камере, чтобы вы могли делать фотографии прямо в приложении.",
-        "NSLocationWhenInUseUsageDescription": "Нам нужен доступ к вашей геолокации, чтобы показывать события рядом с вами.",
+        "NSPhotoLibraryUsageDescription": "We need access to your photo library so you can upload images to your profile and events.",
+        "NSCameraUsageDescription": "We need access to your camera so you can take photos directly in the app.",
+        "NSLocationWhenInUseUsageDescription": "We need access to your location to show events near you.",
         "NSUserTrackingUsageDescription": "We use your device identifier to deliver more relevant ads.",
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -34,7 +34,7 @@
       "predictiveBackGestureEnabled": false,
       "googleServicesFile": "./android/app/google-services.json",
       "package": "com.kapernikrs.aipair",
-      "versionCode": 31
+      "versionCode": 34
     },
     "notification": {
       "icon": "./assets/notification-icon.png",
