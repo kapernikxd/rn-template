@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { TestIds, useRewardedAd } from "react-native-google-mobile-ads";
 
 import { ensureTrackingTransparencyPermission } from '../../services/privacy/trackingTransparency';
@@ -8,12 +8,12 @@ import {
   addTokens,
   getTokenBalance,
 } from "../tokenStorage";
-
-const TOKEN_REWARD_AMOUNT = 10;
+import { ANDROID_AD_UNIT_ID_REWARD, IOS_AD_UNIT_ID_REWARD, TOKEN_REWARD_AMOUNT } from "../../constants/links";
+import { Platform } from "react-native";
 
 const REWARDED_AD_UNIT_ID = __DEV__
   ? TestIds.REWARDED
-  : "ca-app-pub-8636022279548301/8567360540";
+  : Platform.OS == "ios" ? IOS_AD_UNIT_ID_REWARD : ANDROID_AD_UNIT_ID_REWARD;
 
 type UseRewardedAdTokensResult = {
   balance: number;

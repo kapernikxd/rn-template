@@ -14,7 +14,7 @@ interface Slide {
 const slides: Slide[] = [
   {
     uri: ONBOARDING_PHOTO_1,
-    title: "✨ Добро пожаловать в AI Pair",
+    title: "✨ Добро пожаловать",
     description:
       "Ваш личный AI-партнёр для разговоров, идей и поддержки.",
   },
@@ -310,7 +310,8 @@ const getStyles = ({
 
     // Пагинация
     pagination: {
-      bottom: height * 0.46, // под иллюстрацией
+      bottom: 0
+      // bottom: height * 0.46, // под иллюстрацией
     },
     dot: {
       width: 8,
@@ -330,12 +331,13 @@ const getStyles = ({
 
 
     footer: {
+      marginTop: 12,
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
       backgroundColor: theme?.card || "#fff",
       borderRadius: 16,
-      paddingVertical: 14,
+      paddingVertical: 8,
       paddingHorizontal: 24,
       shadowColor: "#000",
       shadowOpacity: 0.06,

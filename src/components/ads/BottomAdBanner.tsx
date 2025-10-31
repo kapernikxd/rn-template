@@ -8,9 +8,7 @@ import mobileAds, {
 } from 'react-native-google-mobile-ads';
 
 import { ensureTrackingTransparencyPermission } from '../../services/privacy/trackingTransparency';
-
-const ANDROID_BANNER_AD_UNIT_ID = 'ca-app-pub-8636022279548301/8567360540';
-const IOS_BANNER_AD_UNIT_ID = 'ca-app-pub-8636022279548301/4752416229';
+import { ANDROID_AD_UNIT_ID_BANNER, IOS_AD_UNIT_ID_BANNER } from '../../constants/links';
 
 const isMobilePlatform = Platform.OS === 'ios' || Platform.OS === 'android';
 
@@ -57,8 +55,8 @@ export const BottomAdBanner = () => {
     if (__DEV__) return TestIds.BANNER;
 
     return Platform.select({
-      ios: IOS_BANNER_AD_UNIT_ID,
-      android: ANDROID_BANNER_AD_UNIT_ID,
+      ios: IOS_AD_UNIT_ID_BANNER,
+      android: ANDROID_AD_UNIT_ID_BANNER,
       default: undefined,
     });
   }, []);

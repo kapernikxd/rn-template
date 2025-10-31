@@ -3213,6 +3213,11 @@ expo-status-bar@~3.0.8:
   dependencies:
     react-native-is-edge-to-edge "^1.2.1"
 
+expo-tracking-transparency@^6.0.7:
+  version "6.0.7"
+  resolved "https://registry.yarnpkg.com/expo-tracking-transparency/-/expo-tracking-transparency-6.0.7.tgz#77167563b79feacdb88d43a33a0c298e56ebc0b8"
+  integrity sha512-GOMgrVYVWLuC70F/BnH3lNfRiiiO7RWAXEIEz1gIEHZ4ki5aOzcBIe2QmqEqOuVafrZnhTUwcfFWMZ1IYCGL7Q==
+
 expo@^54.0.10, expo@~54.0.13:
   version "54.0.13"
   resolved "https://registry.yarnpkg.com/expo/-/expo-54.0.13.tgz#e81897f3517487e4423d21eff7507d9d0c40e2f2"
