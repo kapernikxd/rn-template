@@ -10,6 +10,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ForceUpdateWrapper } from './src/components/layouts/ForceUpdateWrapper';
 import { View, StyleSheet } from 'react-native';
 import { BottomAdBanner } from './src/components/ads/BottomAdBanner';
+import { ADS_ENABLED } from './src/constants/links';
 
 export default function App() {
   return (
@@ -24,7 +25,7 @@ export default function App() {
                   <View style={styles.navigatorContainer}>
                     <AppNavigator />
                   </View>
-                  <BottomAdBanner />
+                  {ADS_ENABLED ? <BottomAdBanner /> : null}
                 </View>
                 <CustomSnackbar />
               </ForceUpdateWrapper>
