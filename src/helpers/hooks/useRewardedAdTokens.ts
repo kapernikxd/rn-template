@@ -1,15 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { InteractionManager, Platform } from "react-native";
 import { TestIds, useRewardedAd } from "react-native-google-mobile-ads";
 
-import { ensureTrackingTransparencyPermission } from '../../services/privacy/trackingTransparency';
+import { ensureTrackingTransparencyPermission } from "../../services/privacy/trackingTransparency";
 import { useRootStore } from "../../store/StoreProvider";
 import {
   DEFAULT_TOKEN_BALANCE,
   addTokens,
   getTokenBalance,
 } from "../tokenStorage";
-import { ANDROID_AD_UNIT_ID_REWARD, IOS_AD_UNIT_ID_REWARD, TOKEN_REWARD_AMOUNT } from "../../constants/links";
-import { Platform } from "react-native";
+import {
+  ANDROID_AD_UNIT_ID_REWARD,
+  IOS_AD_UNIT_ID_REWARD,
+  TOKEN_REWARD_AMOUNT,
+} from "../../constants/links";
 
 const REWARDED_AD_UNIT_ID = __DEV__
   ? TestIds.REWARDED
@@ -32,6 +36,7 @@ export const useRewardedAdTokens = (
   const { uiStore } = useRootStore();
   const [balance, setBalance] = useState<number>(DEFAULT_TOKEN_BALANCE);
   const isMountedRef = useRef(false);
+  const pendingShowTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { isLoaded, isClosed, isEarnedReward, load, show, error } = useRewardedAd(
     REWARDED_AD_UNIT_ID,
@@ -54,6 +59,10 @@ export const useRewardedAdTokens = (
 
     return () => {
       isMountedRef.current = false;
+      if (pendingShowTimeoutRef.current) {
+        clearTimeout(pendingShowTimeoutRef.current);
+        pendingShowTimeoutRef.current = null;
+      }
     };
   }, []);
 
@@ -120,12 +129,29 @@ export const useRewardedAdTokens = (
   }, [error, uiStore]);
 
   const handleShowRewardedAd = useCallback(() => {
-    if (isLoaded) {
-      show();
-    } else {
+    if (!isLoaded) {
       uiStore.showSnackbar("Реклама загружается, попробуйте чуть позже.", "info");
       load();
+      return;
     }
+
+    if (pendingShowTimeoutRef.current) {
+      return;
+    }
+
+    const delay = Platform.OS === "ios" ? 250 : 0;
+
+    pendingShowTimeoutRef.current = setTimeout(() => {
+      InteractionManager.runAfterInteractions(() => {
+        pendingShowTimeoutRef.current = null;
+
+        if (isLoaded) {
+          show();
+        } else {
+          load();
+        }
+      });
+    }, delay);
   }, [isLoaded, load, show, uiStore]);
 
   return {
