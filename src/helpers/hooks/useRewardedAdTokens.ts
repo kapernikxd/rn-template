@@ -1,15 +1,19 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { InteractionManager, Platform } from "react-native";
 import { TestIds, useRewardedAd } from "react-native-google-mobile-ads";
 
-import { ensureTrackingTransparencyPermission } from '../../services/privacy/trackingTransparency';
+import { ensureTrackingTransparencyPermission } from "../../services/privacy/trackingTransparency";
 import { useRootStore } from "../../store/StoreProvider";
 import {
   DEFAULT_TOKEN_BALANCE,
   addTokens,
   getTokenBalance,
 } from "../tokenStorage";
-import { ANDROID_AD_UNIT_ID_REWARD, IOS_AD_UNIT_ID_REWARD, TOKEN_REWARD_AMOUNT } from "../../constants/links";
-import { Platform } from "react-native";
+import {
+  ANDROID_AD_UNIT_ID_REWARD,
+  IOS_AD_UNIT_ID_REWARD,
+  TOKEN_REWARD_AMOUNT,
+} from "../../constants/links";
 
 const REWARDED_AD_UNIT_ID = __DEV__
   ? TestIds.REWARDED
@@ -32,6 +36,8 @@ export const useRewardedAdTokens = (
   const { uiStore } = useRootStore();
   const [balance, setBalance] = useState<number>(DEFAULT_TOKEN_BALANCE);
   const isMountedRef = useRef(false);
+  const pendingShowTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingShowIntentRef = useRef(false);
 
   const { isLoaded, isClosed, isEarnedReward, load, show, error } = useRewardedAd(
     REWARDED_AD_UNIT_ID,
@@ -49,13 +55,21 @@ export const useRewardedAdTokens = (
     [],
   );
 
+  const cancelPendingShow = useCallback(() => {
+    if (pendingShowTimeoutRef.current) {
+      clearTimeout(pendingShowTimeoutRef.current);
+      pendingShowTimeoutRef.current = null;
+    }
+  }, []);
+
   useEffect(() => {
     isMountedRef.current = true;
 
     return () => {
       isMountedRef.current = false;
+      cancelPendingShow();
     };
-  }, []);
+  }, [cancelPendingShow]);
 
   useEffect(() => {
     const loadBalanceAndAd = async () => {
@@ -119,14 +133,61 @@ export const useRewardedAdTokens = (
     }
   }, [error, uiStore]);
 
+  const handleFailedShow = useCallback(() => {
+    pendingShowIntentRef.current = true;
+    uiStore.showSnackbar("Не удалось показать рекламу. Попробуйте позже.", "error");
+    load();
+  }, [load, uiStore]);
+
+  const scheduleShow = useCallback(() => {
+    if (pendingShowTimeoutRef.current) {
+      return;
+    }
+
+    const delay = Platform.OS === "ios" ? 250 : 0;
+
+    pendingShowTimeoutRef.current = setTimeout(() => {
+      InteractionManager.runAfterInteractions(() => {
+        pendingShowTimeoutRef.current = null;
+
+        if (!pendingShowIntentRef.current) {
+          return;
+        }
+
+        pendingShowIntentRef.current = false;
+
+        try {
+          const maybePromise = show();
+
+          if (maybePromise && typeof (maybePromise as Promise<unknown>).catch === "function") {
+            (maybePromise as Promise<void>).catch(() => {
+              handleFailedShow();
+            });
+          }
+        } catch (showError) {
+          handleFailedShow();
+        }
+      });
+    }, delay);
+  }, [handleFailedShow, show]);
+
   const handleShowRewardedAd = useCallback(() => {
-    if (isLoaded) {
-      show();
-    } else {
+    pendingShowIntentRef.current = true;
+
+    if (!isLoaded) {
       uiStore.showSnackbar("Реклама загружается, попробуйте чуть позже.", "info");
       load();
+      return;
     }
-  }, [isLoaded, load, show, uiStore]);
+
+    scheduleShow();
+  }, [isLoaded, load, scheduleShow, uiStore]);
+
+  useEffect(() => {
+    if (isLoaded && pendingShowIntentRef.current) {
+      scheduleShow();
+    }
+  }, [isLoaded, scheduleShow]);
 
   return {
     balance,
