@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   ActionSheetIOS,
-  InteractionManager,
   Modal,
   Platform,
   Pressable,
@@ -53,7 +52,6 @@ const ChatLimitLockedNotice = ({
 
   // --- Меню: iOS — ActionSheet, Android/Web — Modal ---
   const [menuVisible, setMenuVisible] = useState(false);
-  const [shouldShowRewardedAd, setShouldShowRewardedAd] = useState(false);
   const closeMenu = useCallback(() => setMenuVisible(false), []);
   const openMenu = useCallback(() => {
     if (Platform.OS === 'ios') {
@@ -67,7 +65,7 @@ const ChatLimitLockedNotice = ({
       ActionSheetIOS.showActionSheetWithOptions(
         { options, cancelButtonIndex, userInterfaceStyle: 'automatic' },
         (idx) => {
-          if (idx === 0 && isAdLoaded) setShouldShowRewardedAd(true);
+          if (idx === 0 && isAdLoaded) showRewardedAd();
           else if (idx === 1) void onTokenBalanceRefresh?.();
           else if (idx === 2) {
             // роут на FAQ/модалку — на твой вкус
@@ -77,22 +75,7 @@ const ChatLimitLockedNotice = ({
     } else {
       setMenuVisible(true);
     }
-  }, [isAdLoaded, onTokenBalanceRefresh]);
-
-  useEffect(() => {
-    if (!shouldShowRewardedAd) return;
-
-    const timeout = setTimeout(() => {
-      InteractionManager.runAfterInteractions(() => {
-        showRewardedAd();
-        setShouldShowRewardedAd(false);
-      });
-    }, 250);
-
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [shouldShowRewardedAd, showRewardedAd]);
+  }, [isAdLoaded, onTokenBalanceRefresh, showRewardedAd]);
 
   const onWatchAd = useCallback(() => {
     if (isAdLoaded) {
