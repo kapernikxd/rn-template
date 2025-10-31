@@ -7,6 +7,8 @@ import mobileAds, {
   RequestConfiguration,
 } from 'react-native-google-mobile-ads';
 
+import { ensureTrackingTransparencyPermission } from '../../services/privacy/trackingTransparency';
+
 const ANDROID_BANNER_AD_UNIT_ID = 'ca-app-pub-8636022279548301/8567360540';
 const IOS_BANNER_AD_UNIT_ID = 'ca-app-pub-8636022279548301/4752416229';
 
@@ -18,14 +20,37 @@ export const BottomAdBanner = () => {
       return;
     }
 
-    const requestConfiguration: RequestConfiguration = {
-      tagForChildDirectedTreatment: false,
+    let isMounted = true;
+
+    const initializeAds = async () => {
+      try {
+        await ensureTrackingTransparencyPermission();
+
+        if (!isMounted) {
+          return;
+        }
+
+        const requestConfiguration: RequestConfiguration = {
+          tagForChildDirectedTreatment: false,
+        };
+
+        await mobileAds().setRequestConfiguration(requestConfiguration);
+
+        if (!isMounted) {
+          return;
+        }
+
+        await mobileAds().initialize();
+      } catch {
+        // Silently ignore initialization errors to avoid crashing the UI.
+      }
     };
 
-    mobileAds()
-      .setRequestConfiguration(requestConfiguration)
-      .then(() => mobileAds().initialize())
-      .catch(() => undefined);
+    void initializeAds();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const bannerAdUnitId = useMemo(() => {

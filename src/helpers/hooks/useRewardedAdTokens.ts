@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { TestIds, useRewardedAd } from "react-native-google-mobile-ads";
 
+import { ensureTrackingTransparencyPermission } from '../../services/privacy/trackingTransparency';
 import { useRootStore } from "../../store/StoreProvider";
 import {
   DEFAULT_TOKEN_BALANCE,
@@ -57,7 +58,7 @@ export const useRewardedAdTokens = (
   }, []);
 
   useEffect(() => {
-    const loadBalance = async () => {
+    const loadBalanceAndAd = async () => {
       try {
         const storedBalance = await getTokenBalance();
         updateBalance(storedBalance);
@@ -66,13 +67,23 @@ export const useRewardedAdTokens = (
           uiStore.showSnackbar("Не удалось получить баланс токенов.", "error");
         }
       }
+
+      try {
+        await ensureTrackingTransparencyPermission();
+      } catch {
+        // Ignore tracking transparency errors and continue loading the ad.
+      }
+
+      if (!isMountedRef.current) {
+        return;
+      }
+
+      if (!isLoaded) {
+        load();
+      }
     };
 
-    void loadBalance();
-
-    if (!isLoaded) {
-      load();
-    }
+    void loadBalanceAndAd();
   }, [isLoaded, load, uiStore, updateBalance]);
 
   useEffect(() => {
