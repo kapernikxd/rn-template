@@ -37,6 +37,7 @@ export const useRewardedAdTokens = (
   const [balance, setBalance] = useState<number>(DEFAULT_TOKEN_BALANCE);
   const isMountedRef = useRef(false);
   const pendingShowTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingShowIntentRef = useRef(false);
 
   const { isLoaded, isClosed, isEarnedReward, load, show, error } = useRewardedAd(
     REWARDED_AD_UNIT_ID,
@@ -54,17 +55,21 @@ export const useRewardedAdTokens = (
     [],
   );
 
+  const cancelPendingShow = useCallback(() => {
+    if (pendingShowTimeoutRef.current) {
+      clearTimeout(pendingShowTimeoutRef.current);
+      pendingShowTimeoutRef.current = null;
+    }
+  }, []);
+
   useEffect(() => {
     isMountedRef.current = true;
 
     return () => {
       isMountedRef.current = false;
-      if (pendingShowTimeoutRef.current) {
-        clearTimeout(pendingShowTimeoutRef.current);
-        pendingShowTimeoutRef.current = null;
-      }
+      cancelPendingShow();
     };
-  }, []);
+  }, [cancelPendingShow]);
 
   useEffect(() => {
     const loadBalanceAndAd = async () => {
@@ -128,13 +133,13 @@ export const useRewardedAdTokens = (
     }
   }, [error, uiStore]);
 
-  const handleShowRewardedAd = useCallback(() => {
-    if (!isLoaded) {
-      uiStore.showSnackbar("Реклама загружается, попробуйте чуть позже.", "info");
-      load();
-      return;
-    }
+  const handleFailedShow = useCallback(() => {
+    pendingShowIntentRef.current = true;
+    uiStore.showSnackbar("Не удалось показать рекламу. Попробуйте позже.", "error");
+    load();
+  }, [load, uiStore]);
 
+  const scheduleShow = useCallback(() => {
     if (pendingShowTimeoutRef.current) {
       return;
     }
@@ -145,14 +150,44 @@ export const useRewardedAdTokens = (
       InteractionManager.runAfterInteractions(() => {
         pendingShowTimeoutRef.current = null;
 
-        if (isLoaded) {
-          show();
-        } else {
-          load();
+        if (!pendingShowIntentRef.current) {
+          return;
+        }
+
+        pendingShowIntentRef.current = false;
+
+        try {
+          const maybePromise = show();
+
+          if (maybePromise && typeof (maybePromise as Promise<unknown>).catch === "function") {
+            (maybePromise as Promise<void>).catch(() => {
+              handleFailedShow();
+            });
+          }
+        } catch (showError) {
+          handleFailedShow();
         }
       });
     }, delay);
-  }, [isLoaded, load, show, uiStore]);
+  }, [handleFailedShow, show]);
+
+  const handleShowRewardedAd = useCallback(() => {
+    pendingShowIntentRef.current = true;
+
+    if (!isLoaded) {
+      uiStore.showSnackbar("Реклама загружается, попробуйте чуть позже.", "info");
+      load();
+      return;
+    }
+
+    scheduleShow();
+  }, [isLoaded, load, scheduleShow, uiStore]);
+
+  useEffect(() => {
+    if (isLoaded && pendingShowIntentRef.current) {
+      scheduleShow();
+    }
+  }, [isLoaded, scheduleShow]);
 
   return {
     balance,
