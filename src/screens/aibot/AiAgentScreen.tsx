@@ -13,6 +13,7 @@ import { GuestAiChatModal } from "../../components/aibot/GuestAiChatModal";
 import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";
 import { useRootStore } from "../../store/StoreProvider";
 import { usePortalNavigation } from "../../helpers/hooks";
+import { ADS_ENABLED } from "../../constants/links";
 import {
   AiAgentGallery,
   AiAgentHeader,
@@ -273,7 +274,7 @@ export const AiAgentScreen = ({ route }: Props) => {
             onBack={onBack}
             onShare={handleShare}
             items={menuItems}
-            renderRight={<TokenBadge iconSize={22}/>}
+            renderRight={ADS_ENABLED ? <TokenBadge iconSize={22} /> : null}
           />
           <Spacer />
 

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getTokenBalance, subtractTokens } from '../../helpers/tokenStorage';
 import { SnackbarType } from '../../types/ui';
 import { formatDuration } from '../utils/time';
+import { ADS_ENABLED } from '../../constants/links';
 import {
   buildChatLimitStorageKey,
   loadChatLimitState,
@@ -31,6 +32,43 @@ const DEFAULT_CONFIG: ChatMessageLimitConfig = {
   scope: 'global',
 };
 
+const UNLIMITED_MESSAGE_COUNT = Number.MAX_SAFE_INTEGER;
+
+function useAdsDisabledChatMessageLimit(config: ChatMessageLimitConfig) {
+  const ensureCanSend = useCallback(async (): Promise<LimitCheckResult> => ({
+    ok: true,
+    remaining: UNLIMITED_MESSAGE_COUNT,
+  }), []);
+
+  const registerSuccessfulSend = useCallback(async () => undefined, []);
+
+  const unlockWithTokens = useCallback(async (): Promise<UnlockResult> => ({
+    ok: true,
+    balance: UNLIMITED_MESSAGE_COUNT,
+  }), []);
+
+  const refreshTokenBalance = useCallback(async () => UNLIMITED_MESSAGE_COUNT, []);
+
+  const resetLimits = useCallback(async () => undefined, []);
+
+  return {
+    config,
+    remainingMessages: UNLIMITED_MESSAGE_COUNT,
+    cooldownEndsAt: null,
+    cooldownMsLeft: 0,
+    tokenBalance: UNLIMITED_MESSAGE_COUNT,
+    isUnlocking: false,
+    isCooldownActive: false,
+    isLocked: false,
+    isInitialized: true,
+    ensureCanSend,
+    registerSuccessfulSend,
+    unlockWithTokens,
+    refreshTokenBalance,
+    resetLimits,
+  };
+}
+
 export function useChatMessageLimit(
   chatId: string,
   partialConfig?: Partial<ChatMessageLimitConfig>,
@@ -44,6 +82,10 @@ export function useChatMessageLimit(
     () => buildChatLimitStorageKey(chatId, config),
     [chatId, config],
   );
+
+  if (!ADS_ENABLED) {
+    return useAdsDisabledChatMessageLimit(config);
+  }
 
   const [state, setState] = useState<ChatLimitPersistedState>({
     remaining: config.messageLimit,

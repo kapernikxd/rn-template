@@ -12,7 +12,7 @@ import {
     Spacer,
 } from 'rn-vs-lb';
 import { useTheme, ThemeType, SizesType, GlobalStyleSheetType } from 'rn-vs-lb/theme';
-import { appVersion, TELEGRAM_URL } from '../../../constants/links';
+import { ADS_ENABLED, appVersion, TELEGRAM_URL } from '../../../constants/links';
 import { useRootStore } from '../../../store/StoreProvider';
 import { useActions, usePortalNavigation } from '../../../helpers/hooks';
 import { ProfileNav, ROUTES } from '../../../navigation/types';
@@ -102,7 +102,7 @@ export const ProfileSettingsScreen: FC = () => {
                         <View><Text style={styles.title}>Тема</Text></View>
                         <ThemeSwitcher />
                     </CardContainer>
-                    <RewardedAdSettingsCard style={styles.card} />
+                    {ADS_ENABLED ? <RewardedAdSettingsCard style={styles.card} /> : null}
                     <CardContainer style={styles.card}>
                         {COPY_LINK.map((item, index) => (
                             <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine hideArrow />
