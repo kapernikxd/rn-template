@@ -12,6 +12,7 @@ import type {
   BottomTabScreenProps,
 } from '@react-navigation/bottom-tabs';
 import type { CompositeNavigationProp, CompositeScreenProps } from '@react-navigation/native';
+import type { DashboardExperience } from '../types/dashboard';
 
 /**
  * 1) Единый источник имён роутов (без хардкода строк по проекту)
@@ -67,7 +68,7 @@ export type RouteName = typeof ROUTES[keyof typeof ROUTES];
  */
 export type DashboardStackParamList = {
   [ROUTES.Dashboard]: undefined;
-  [ROUTES.DashboardDetails]: undefined;
+  [ROUTES.DashboardDetails]: { card: DashboardExperience };
 };
 
 export type ChatsStackParamList = {
@@ -150,6 +151,11 @@ export type DashboardScreenProps = CompositeScreenProps<
 export type DashboardRoute = RouteProp<
   DashboardStackParamList,
   typeof ROUTES.Dashboard
+>;
+
+export type DashboardDetailsRoute = RouteProp<
+  DashboardStackParamList,
+  typeof ROUTES.DashboardDetails
 >;
 
 export type ChatMessagesRoute = RouteProp<
