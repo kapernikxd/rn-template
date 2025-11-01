@@ -5418,10 +5418,10 @@ rimraf@^3.0.2:
   dependencies:
     glob "^7.1.3"
 
-rn-vs-lb@1.0.64:
-  version "1.0.64"
-  resolved "https://registry.yarnpkg.com/rn-vs-lb/-/rn-vs-lb-1.0.64.tgz#7ec81256678fbb5fb3f775fb9240fda777dc4e33"
-  integrity sha512-n8xaG566FWtcTheIrsu0OwM43k7ME7p55IH6LPqd1aML4+sGs2xpO39irlwyyxflv/9UpfENe021uema8KpTIg==
+rn-vs-lb@1.0.66:
+  version "1.0.66"
+  resolved "https://registry.yarnpkg.com/rn-vs-lb/-/rn-vs-lb-1.0.66.tgz#01b3edb8800d334b6d055660e244cedc10a31711"
+  integrity sha512-SpsfnAs0JNo871nY0LZMyo8CjJvTWMyfpYfDwLG3ze96vVCyDfFNYvtBvHa+Xvub8dzBHjNtrMAQWL2OLbf5yg==
   dependencies:
     "@gorhom/bottom-sheet" "^5.2.6"
     "@react-native-async-storage/async-storage" "2.2.0"
@@ -5429,6 +5429,7 @@ rn-vs-lb@1.0.64:
     "@react-native-community/slider" "5.0.1"
     expo "^54.0.10"
     expo-constants "~18.0.9"
+    expo-linear-gradient "^15.0.7"
     expo-linking "~8.0.8"
     expo-router "~6.0.8"
     expo-splash-screen "~31.0.10"

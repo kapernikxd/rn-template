@@ -6,7 +6,7 @@ import { useTheme } from "rn-vs-lb/theme";
 import {
   HorizontalCardSection,
   type HorizontalCard,
-} from "rn-vs-lb/components/Home/HorizontalCardSection";
+} from "rn-vs-lb";
 import { Spacer } from "rn-vs-lb";
 import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";
 
@@ -142,7 +142,7 @@ export const DashboardScreen = () => {
           cards={section.cards}
           onPressSeeAll={() => handleSeeAll(section.title)}
           onPressCard={handleCardPress}
-          isDark
+          // isDark
           style={styles.section}
           contentContainerStyle={styles.sectionContent}
         />
