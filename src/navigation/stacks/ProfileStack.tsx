@@ -10,66 +10,9 @@ import {
   NotificationSettingsScreen,
   SocialProfilesScreen,
 } from '../../screens/profile/Settings';
-import { withAuthGuard } from '../guards/withAuthGuard';
 import { ROUTES, type ProfileStackParamList } from '../types';
 
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
-
-const GuardedProfileScreen = withAuthGuard(ProfileScreen, {
-  redirect: {
-    tab: ROUTES.ProfileTab,
-    params: { screen: ROUTES.Profile },
-  },
-});
-
-const GuardedProfileSettingsScreen = withAuthGuard(ProfileSettingsScreen, {
-  redirect: {
-    tab: ROUTES.ProfileTab,
-    params: { screen: ROUTES.ProfileSettings },
-  },
-});
-
-const GuardedEditProfileScreen = withAuthGuard(EditProfilesScreen, {
-  redirect: {
-    tab: ROUTES.ProfileTab,
-    params: { screen: ROUTES.ProfileEdit },
-  },
-});
-
-const GuardedAccountSettingsScreen = withAuthGuard(AccountSettingsScreen, {
-  redirect: {
-    tab: ROUTES.ProfileTab,
-    params: { screen: ROUTES.ProfileAccountSettings },
-  },
-});
-
-const GuardedChangePasswordScreen = withAuthGuard(ChangePasswordScreen, {
-  redirect: {
-    tab: ROUTES.ProfileTab,
-    params: { screen: ROUTES.ProfileChangePassword },
-  },
-});
-
-const GuardedSocialProfilesScreen = withAuthGuard(SocialProfilesScreen, {
-  redirect: {
-    tab: ROUTES.ProfileTab,
-    params: { screen: ROUTES.ProfileSocialProfiles },
-  },
-});
-
-const GuardedNotificationSettingsScreen = withAuthGuard(NotificationSettingsScreen, {
-  redirect: {
-    tab: ROUTES.ProfileTab,
-    params: { screen: ROUTES.ProfileNotificationSettings },
-  },
-});
-
-const GuardedUserProfileScreen = withAuthGuard(UserProfileScreen, {
-  redirect: {
-    tab: ROUTES.ProfileTab,
-    params: { screen: ROUTES.Profile },
-  },
-});
 
 export const ProfileStack = () => (
   <Stack.Navigator
@@ -81,7 +24,7 @@ export const ProfileStack = () => (
   >
     <Stack.Screen
       name={ROUTES.Profile}
-      component={GuardedProfileScreen}
+      component={ProfileScreen}
       options={{
         title: 'Профиль',
         headerShown: false,
@@ -89,7 +32,7 @@ export const ProfileStack = () => (
     />
     <Stack.Screen
       name={ROUTES.ProfileSettings}
-      component={GuardedProfileSettingsScreen}
+      component={ProfileSettingsScreen}
       options={{
         title: 'Настройки',
         headerBackTitle: 'Назад',
@@ -98,42 +41,42 @@ export const ProfileStack = () => (
     />
     <Stack.Screen
       name={ROUTES.ProfileEdit}
-      component={GuardedEditProfileScreen}
+      component={EditProfilesScreen}
       options={{
         headerShown: false,
       }}
     />
     <Stack.Screen
       name={ROUTES.ProfileAccountSettings}
-      component={GuardedAccountSettingsScreen}
+      component={AccountSettingsScreen}
       options={{
         headerShown: false,
       }}
     />
     <Stack.Screen
       name={ROUTES.ProfileChangePassword}
-      component={GuardedChangePasswordScreen}
+      component={ChangePasswordScreen}
       options={{
         headerShown: false,
       }}
     />
     <Stack.Screen
       name={ROUTES.ProfileSocialProfiles}
-      component={GuardedSocialProfilesScreen}
+      component={SocialProfilesScreen}
       options={{
         headerShown: false,
       }}
     />
     <Stack.Screen
       name={ROUTES.ProfileNotificationSettings}
-      component={GuardedNotificationSettingsScreen}
+      component={NotificationSettingsScreen}
       options={{
         headerShown: false,
       }}
     />
     <Stack.Screen
       name={ROUTES.UserProfile}
-      component={GuardedUserProfileScreen}
+      component={UserProfileScreen}
       options={{
         title: 'Профиль пользователя',
         headerShown: false,

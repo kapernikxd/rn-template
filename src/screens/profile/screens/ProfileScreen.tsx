@@ -14,7 +14,6 @@ import { type AiBotCardEntity } from '../../../components/aibot/AiBotCard';
 import { getAiBotIdentifier } from '../../../helpers/utils/agent-create';
 import { AiBotPlaceCardList } from '../../../components/aibot/AiBotPlaceCardList';
 
-// NB: этот экран обёрнут withAuthGuard в ProfileStack, поэтому доступен только авторизованным пользователям.
 type NavigationProp = NativeStackNavigationProp<
   ProfileStackParamList,
   typeof ROUTES.Profile
