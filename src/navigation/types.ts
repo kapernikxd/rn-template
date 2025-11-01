@@ -36,6 +36,9 @@ export const ROUTES = {
   Dashboard: 'Dashboard',
   DashboardDetails: 'DashboardDetails',
 
+  // Library stack
+  Library: 'Library',
+
   // Chats stack
   Chats: 'Chats',
   ChatMessages: 'ChatMessages',
@@ -90,9 +93,13 @@ export type ProfileStackParamList = {
 /**
  * 3) Tabs: кладём внутрь NavigatorScreenParams соответствующих стэков
  */
+export type LibraryStackParamList = {
+  [ROUTES.Library]: undefined;
+};
+
 export type MainTabParamList = {
   [ROUTES.DashboardTab]: NavigatorScreenParams<DashboardStackParamList>;
-  [ROUTES.LibraryTab]: undefined;
+  [ROUTES.LibraryTab]: NavigatorScreenParams<LibraryStackParamList>;
   [ROUTES.ChatsTab]: NavigatorScreenParams<ChatsStackParamList>;
   [ROUTES.ProfileTab]: NavigatorScreenParams<ProfileStackParamList>;
 };
@@ -140,6 +147,7 @@ export type RootNav = NativeStackNavigationProp<RootStackParamList>;
 export type DashboardNav = NativeStackNavigationProp<DashboardStackParamList>;
 export type ChatsNav = NativeStackNavigationProp<ChatsStackParamList>;
 export type ProfileNav = NativeStackNavigationProp<ProfileStackParamList>;
+export type LibraryNav = NativeStackNavigationProp<LibraryStackParamList>;
 
 // Пример: пропсы экрана Dashboard, вложенного в табы + стек
 export type DashboardScreenProps = CompositeScreenProps<
