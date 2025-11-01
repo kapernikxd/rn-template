@@ -27,7 +27,7 @@ export const ROUTES = {
 
   // Tabs
   DashboardTab: 'DashboardTab',
-  CreateBotTab: 'CreateBotTab',
+  LibraryTab: 'LibraryTab',
   ChatsTab: 'ChatsTab',
   ProfileTab: 'ProfileTab',
 
@@ -91,7 +91,7 @@ export type ProfileStackParamList = {
  */
 export type MainTabParamList = {
   [ROUTES.DashboardTab]: NavigatorScreenParams<DashboardStackParamList>;
-  [ROUTES.CreateBotTab]: undefined;
+  [ROUTES.LibraryTab]: undefined;
   [ROUTES.ChatsTab]: NavigatorScreenParams<ChatsStackParamList>;
   [ROUTES.ProfileTab]: NavigatorScreenParams<ProfileStackParamList>;
 };
