@@ -73,6 +73,7 @@ const GuardedUserProfileScreen = withAuthGuard(UserProfileScreen, {
 
 export const ProfileStack = () => (
   <Stack.Navigator
+    initialRouteName={ROUTES.ProfileSettings}
     screenOptions={{
       headerShown: false,
       contentStyle: { backgroundColor: '#F5F7FA' },
