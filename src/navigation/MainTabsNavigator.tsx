@@ -22,12 +22,13 @@ type TabConfig = {
   label: string;
   icon: keyof typeof Feather.glyphMap;
   component: ComponentType;
+  hidden?: boolean;
 };
 
 const TABS: TabConfig[] = [
   { name: 'DashboardTab', label: 'Главная', icon: 'home', component: DashboardStack },
-  { name: 'CreateBotTab', label: 'AI-агенты', icon: 'zap', component: AiAgentCreateScreen },
-  { name: 'ChatsTab', label: 'Чаты', icon: 'message-circle', component: ChatsStack },
+  { name: 'LibraryTab', label: 'Библиотека', icon: 'book', component: AiAgentCreateScreen },
+  { name: 'ChatsTab', label: 'Чаты', icon: 'message-circle', component: ChatsStack, hidden: true },
   { name: 'ProfileTab', label: 'Профиль', icon: 'user', component: ProfileStack },
 ];
 
@@ -65,7 +66,7 @@ const MainTabBar = ({ state, descriptors, navigation, showLabels = true }: MainT
     >
       {state.routes.map((route, index) => {
         const tab = TABS.find(({ name }) => name === route.name);
-        if (!tab) return null;
+        if (!tab || tab.hidden) return null;
 
         const isFocused = state.index === index;
         const iconColor = isFocused ? isDark ? theme.black : theme.white : theme.black;
