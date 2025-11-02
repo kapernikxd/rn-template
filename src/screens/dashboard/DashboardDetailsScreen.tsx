@@ -70,9 +70,9 @@ export const DashboardDetailsScreen = () => {
             <MaterialIcons
               name="diamond"
               size={18}
-              color={theme.white}
+              color={"white"}
             />
-            <Text style={[typography.body, { color: theme.white, fontWeight: "bold" }]}>{card.tokenCost}</Text>
+            <Text style={[typography.body, { color: "white", fontWeight: "bold" }]}>{card.tokenCost}</Text>
           </View>
         </Pressable>
       </View>
