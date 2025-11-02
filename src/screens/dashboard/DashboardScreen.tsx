@@ -1,14 +1,15 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useTheme } from "rn-vs-lb/theme";
+import { SIZES, useTheme } from "rn-vs-lb/theme";
 
 import { HorizontalCardSection } from "rn-vs-lb";
 import { Spacer } from "rn-vs-lb";
 import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";
 import { ROUTES, type DashboardNav } from "../../navigation/types";
 import type { DashboardExperience } from "../../types/dashboard";
+import { Theme } from "../../constants";
 
 const HALLOWEEN_BACKGROUND = "#070C1F";
 
@@ -102,16 +103,20 @@ const HOT_COSTUMES_CARDS: DashboardExperience[] = [
   },
 ];
 
+
+const chatBackground = require('../../assets/ai-background.png');
+
+
 export const DashboardScreen = () => {
-  const { typography, sizes } = useTheme();
+  const { typography, sizes, theme } = useTheme();
   const { setColors } = useSafeAreaColors();
   const insets = useSafeAreaInsets();
   const navigation = useNavigation<DashboardNav>();
 
   useEffect(() => {
     setColors({
-      topColor: HALLOWEEN_BACKGROUND,
-      bottomColor: HALLOWEEN_BACKGROUND,
+      topColor: theme.background,
+      bottomColor: theme.background,
     });
   }, [setColors]);
 
@@ -137,38 +142,38 @@ export const DashboardScreen = () => {
 
   return (
     <ScrollView
-      style={[styles.container, { backgroundColor: HALLOWEEN_BACKGROUND }]}
-      contentContainerStyle={[
-        styles.content,
-        {
-          paddingBottom: insets.bottom + sizes.xl,
-          paddingTop: insets.top + sizes.lg,
-          paddingHorizontal: sizes.lg,
-        },
-      ]}
+      style={[styles.container, { backgroundColor: theme.background }]}
       showsVerticalScrollIndicator={false}
     >
-      <View style={styles.header}>
-        <Text style={[typography.titleH1, styles.heading]}>Halloween Night</Text>
-        <Text style={[typography.bodyMd, styles.subheading]}>
-          Grab some popcorn and stream the scariest scenes of the season.
-        </Text>
-      </View>
+      <ImageBackground source={chatBackground} style={styles.background}>
+        <View style={[styles.header, { backgroundColor: theme.backgroundSemiTransparent }]}>
+          <Text style={[typography.titleH3, {color: theme.white}]}>Halloween Night</Text>
+          <Text style={[typography.body, {color: theme.white}]}>
+            Grab some popcorn and stream the scariest scenes of the season.
+          </Text>
+        </View>
+      </ImageBackground>
 
       <Spacer size="lg" />
 
-      {sections.map((section) => (
-        <HorizontalCardSection
-          key={section.title}
-          title={section.title}
-          cards={section.cards}
-          onPressSeeAll={() => handleSeeAll(section.title)}
-          onPressCard={(card) => handleCardPress(card as DashboardExperience)}
-          // isDark
-          style={styles.section}
-          contentContainerStyle={styles.sectionContent}
-        />
-      ))}
+      <View style={styles.content}>
+
+        {sections.map((section) => (
+          <>
+            <HorizontalCardSection
+              key={section.title}
+              title={section.title}
+              cards={section.cards}
+              // onPressSeeAll={() => handleSeeAll(section.title)}
+              onPressCard={(card) => handleCardPress(card as DashboardExperience)}
+              style={styles.section}
+              contentContainerStyle={styles.sectionContent}
+            />
+            <Spacer size="md" />
+            <Spacer size="lg" />
+          </>
+        ))}
+      </View>
     </ScrollView>
   );
 };
@@ -178,16 +183,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    gap: 28,
+    paddingHorizontal: SIZES.xxs as number
+  },
+  background: {
+    paddingVertical: 90,
   },
   header: {
     gap: 12,
-  },
-  heading: {
-    color: "#FFFFFF",
-  },
-  subheading: {
-    color: "rgba(255, 255, 255, 0.72)",
+    paddingHorizontal: SIZES.lg as number,
   },
   section: {
     gap: 16,

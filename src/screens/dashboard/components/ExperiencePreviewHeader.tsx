@@ -11,6 +11,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Feather } from "@expo/vector-icons";
 
 import { useTheme } from "rn-vs-lb/theme";
+import { TokenBadge } from "../../../components";
 
 export type ExperiencePreviewHeaderProps = {
   image: ImageSourcePropType;
@@ -27,7 +28,7 @@ export const ExperiencePreviewHeader = ({
   onClose,
   topInset,
 }: ExperiencePreviewHeaderProps) => {
-  const { typography, sizes } = useTheme();
+  const { typography, sizes, globalStyleSheet } = useTheme();
 
   return (
     <View style={styles.container}>
@@ -37,23 +38,26 @@ export const ExperiencePreviewHeader = ({
           style={StyleSheet.absoluteFill}
         />
 
-        <View style={[styles.header, { paddingTop: topInset + sizes.md, paddingHorizontal: sizes.lg }]}>        
-          <Pressable
-            onPress={onClose}
-            accessibilityRole="button"
-            accessibilityLabel="Close preview"
-            style={styles.closeButton}
-            hitSlop={8}
-          >
-            <Feather name="x" size={20} color="#FFFFFF" />
-          </Pressable>
+        <View style={[styles.header, { paddingTop: sizes.md, paddingHorizontal: sizes.md }]}>
+          <View style={[globalStyleSheet.flexRowCenter, {gap: sizes.md}]}>
+            <TokenBadge />
+            <Pressable
+              onPress={onClose}
+              accessibilityRole="button"
+              accessibilityLabel="Close preview"
+              style={styles.closeButton}
+              hitSlop={8}
+            >
+              <Feather name="x" size={20} color="#FFFFFF" />
+            </Pressable>
+          </View>
         </View>
 
-        <View style={[styles.textContainer, { paddingHorizontal: sizes.lg, paddingBottom: sizes.xl }]}>        
+        <View style={[styles.textContainer, { paddingHorizontal: sizes.lg, paddingBottom: sizes.xl }]}>
           <Text style={[typography.titleH2, styles.title]} numberOfLines={2}>
             {title}
           </Text>
-          <Text style={[typography.bodyMd, styles.description]} numberOfLines={3}>
+          <Text style={[typography.body, styles.description]} numberOfLines={3}>
             {description}
           </Text>
         </View>

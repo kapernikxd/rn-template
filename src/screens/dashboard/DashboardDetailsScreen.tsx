@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -17,7 +17,7 @@ export const DashboardDetailsScreen = () => {
   const navigation = useNavigation<DashboardNav>();
   const route = useRoute<DashboardDetailsRoute>();
   const { card } = route.params;
-  const { typography, sizes } = useTheme();
+  const { typography, sizes, theme } = useTheme();
   const insets = useSafeAreaInsets();
 
   const handleClose = useCallback(() => {
@@ -33,7 +33,7 @@ export const DashboardDetailsScreen = () => {
   }, []);
 
   return (
-    <View style={[styles.container, { backgroundColor: BACKGROUND_COLOR }]}>      
+    <View style={[styles.container, { backgroundColor: BACKGROUND_COLOR }]}>
       <ScrollView
         style={styles.scroll}
         contentContainerStyle={{ paddingBottom: sizes.xl * 2 }}
@@ -47,9 +47,9 @@ export const DashboardDetailsScreen = () => {
           topInset={insets.top}
         />
 
-        <View style={[styles.body, { paddingHorizontal: sizes.lg, paddingTop: sizes.lg }]}>        
-          <View style={[styles.infoCard, { padding: sizes.lg }]}>            
-            <Text style={[typography.bodyLg, styles.infoTitle]}>Create a spooky surprise</Text>
+        <View style={[styles.body, { paddingHorizontal: sizes.lg, paddingTop: sizes.lg }]}>
+          <View style={[styles.infoCard, { padding: sizes.lg }]}>
+            <Text style={[typography.body, styles.infoTitle]}>Create a spooky surprise</Text>
             <Spacer size="xs" />
             <Text style={[typography.bodySm, styles.infoDescription]}>
               {card.description}
@@ -60,15 +60,19 @@ export const DashboardDetailsScreen = () => {
         </View>
       </ScrollView>
 
-      <View style={[styles.footer, { paddingHorizontal: sizes.lg, paddingBottom: insets.bottom + sizes.lg }]}>        
+      <View style={[styles.footer, { paddingHorizontal: sizes.lg, paddingBottom: insets.bottom + sizes.lg }]}>
         <Pressable
           onPress={handleContinue}
           style={[styles.continueButton, { paddingVertical: sizes.md, paddingHorizontal: sizes.lg }]}
         >
-          <Text style={[typography.bodyLg, styles.continueText]}>Continue</Text>
-          <View style={styles.tokenWrapper}>
-            <Feather name="star" size={18} color="#121212" />
-            <Text style={[typography.bodyMd, styles.tokenText]}>{card.tokenCost}</Text>
+          <Text style={[typography.body, styles.continueText]}>Continue</Text>
+          <View style={[styles.tokenWrapper, { backgroundColor: theme.primary }]}>
+            <MaterialIcons
+              name="diamond"
+              size={18}
+              color={theme.white}
+            />
+            <Text style={[typography.body, { color: theme.white, fontWeight: "bold" }]}>{card.tokenCost}</Text>
           </View>
         </Pressable>
       </View>
@@ -122,14 +126,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    backgroundColor: "#FFE769",
     borderRadius: 999,
     paddingHorizontal: 14,
     paddingVertical: 6,
-  },
-  tokenText: {
-    color: "#121212",
-    fontWeight: "600",
   },
 });
 

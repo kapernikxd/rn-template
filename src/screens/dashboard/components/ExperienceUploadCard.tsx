@@ -22,7 +22,7 @@ export const ExperienceUploadCard = ({ onPress }: ExperienceUploadCardProps) => 
         <View style={styles.iconWrapper}>
           <Feather name="image" size={32} color="rgba(255,255,255,0.72)" />
         </View>
-        <Text style={[typography.bodyMd, styles.text]}>
+        <Text style={[typography.body, styles.text]}>
           Tap here to upload the photo you want to bring to life!
         </Text>
       </View>
