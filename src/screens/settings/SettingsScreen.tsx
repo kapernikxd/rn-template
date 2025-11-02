@@ -5,16 +5,17 @@ import {
   ListItem,
   Spacer,
   SettingsSection,
-  SettingsListItem,
   ThemeSwitcher,
 } from 'rn-vs-lb';
-import { useTheme, ThemeType, SizesType, GlobalStyleSheetType } from 'rn-vs-lb/theme';
+import { useTheme, ThemeType, SizesType, GlobalStyleSheetType, SIZES } from 'rn-vs-lb/theme';
 import { ADS_ENABLED, appVersion } from '../../constants/links';
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { RewardedAdSettingsCard } from '../../components/ads/components/RewardedAdSettingsCard';
 import { LanguageSelector } from '../../components/settings/LanguageSelector';
 import { truncateText } from '../../helpers/utils/common';
+import SettingsListItem from '../../components/SettingsListItem';
+import { FontAwesome } from '@expo/vector-icons';
 
 
 export const SettingsScreen: FC = () => {
@@ -45,11 +46,13 @@ export const SettingsScreen: FC = () => {
             title={"   Пользователь"}
             style={styles.section}
           >
-            <SettingsListItem
-              label={'ID пользователя'}
-              value={userId ? truncateText(userId, 18) : '—'}
-              valueTone='muted'
-            />
+            <View style={styles.cardWithoutH}>
+              <SettingsListItem
+                label={'ID пользователя'}
+                value={userId ? truncateText(userId, 18) : '—'}
+                valueTone='muted'
+              />
+            </View>
           </SettingsSection>
           {ADS_ENABLED &&
             <SettingsSection
@@ -66,11 +69,12 @@ export const SettingsScreen: FC = () => {
             style={styles.section}
           ><CardContainer style={styles.card}>
               <ThemeSwitcher lightModeLabel="Светлая тема" darkModeLabel="Тёмная тема" />
-            </CardContainer>
-            <CardContainer style={styles.card}>
-              <LanguageSelector />
-            </CardContainer>
-            <CardContainer style={styles.card}>
+              <Spacer size='xs' />
+              <SettingsListItem
+                label={'Язык интерфейса'}
+                accessory={<LanguageSelector />}
+                labelIcon={<FontAwesome name="language" size={21} />}
+              />
               {COPY_LINK.map((item, index) => (
                 <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine hideArrow />
               ))}
@@ -111,6 +115,10 @@ const getStyles = ({ sizes, globalStyleSheet, theme }: { theme: ThemeType, sizes
     borderRadius: 16,
     borderBottomWidth: 0,
     backgroundColor: theme.card,
+  },
+  cardWithoutH: {
+    paddingHorizontal: SIZES.xs,
+    paddingVertical: 0,
   },
   version: {
     alignItems: 'center',

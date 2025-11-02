@@ -8,14 +8,14 @@ interface LanguageOption {
 }
 
 const LANGUAGE_OPTIONS: LanguageOption[] = [
-  { code: 'en', label: 'Английский' },
+  { code: 'en', label: 'English' },
   { code: 'ru', label: 'Русский' },
-  { code: 'sr', label: 'Сербский' },
-  { code: 'es', label: 'Испанский' },
-  { code: 'it', label: 'Итальянский' },
-  { code: 'de', label: 'Немецкий' },
-  { code: 'fr', label: 'Французский' },
-  { code: 'pt', label: 'Португальский' },
+  { code: 'sr', label: 'Srpski' },
+  { code: 'es', label: 'Español' },
+  { code: 'it', label: 'Italiano' },
+  { code: 'de', label: 'Deutsch' },
+  { code: 'fr', label: 'Français' },
+  { code: 'pt', label: 'Português' },
 ];
 
 export const LanguageSelector: FC = () => {
@@ -35,7 +35,6 @@ export const LanguageSelector: FC = () => {
   return (
     <>
       <TouchableOpacity style={styles.trigger} onPress={openModal} activeOpacity={0.8}>
-        <Text style={styles.triggerLabel}>Язык интерфейса</Text>
         <Text style={styles.triggerValue}>{selectedLanguage.label}</Text>
       </TouchableOpacity>
 
@@ -79,20 +78,15 @@ const getStyles = ({
 }) =>
   StyleSheet.create({
     trigger: {
-      ...globalStyleSheet.row,
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      paddingHorizontal: sizes.md,
-      paddingVertical: sizes.sm,
+      justifyContent: "flex-end",
+      alignItems: "center",
       borderRadius: sizes.sm,
       backgroundColor: theme.card,
     },
     triggerLabel: {
-      ...globalStyleSheet.text,
       color: theme.text,
     },
     triggerValue: {
-      ...globalStyleSheet.text,
       color: theme.primary,
       fontWeight: '600',
     },
@@ -112,7 +106,6 @@ const getStyles = ({
       gap: sizes.md,
     },
     modalTitle: {
-      ...globalStyleSheet.text,
       color: theme.text,
       fontSize: sizes.lg,
       fontWeight: '600',
@@ -127,10 +120,9 @@ const getStyles = ({
       backgroundColor: theme.card,
     },
     optionSelected: {
-      backgroundColor: theme.primarySoft,
+      backgroundColor: theme.background,
     },
     optionLabel: {
-      ...globalStyleSheet.text,
       color: theme.text,
     },
     optionLabelSelected: {
