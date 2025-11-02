@@ -155,7 +155,7 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
                 style={styles.skipBtn}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <Text style={styles.skipText}>Skip</Text>
+                <Text style={styles.skipText}>Пропустить</Text>
               </TouchableOpacity>
 
               <View style={styles.divider} />
@@ -167,7 +167,7 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
                 <Text style={styles.nextText}>
-                  {index === slides.length - 1 ? "Start" : "Next"}
+                  {index === slides.length - 1 ? "Начать" : "Далее"}
                 </Text>
               </TouchableOpacity>
             </View>

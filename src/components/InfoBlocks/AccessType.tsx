@@ -9,27 +9,27 @@ export const AccessTypeTooltip: React.FC = () => {
     return (
         <View>
             <Text style={typography.titleH5}>
-                What does each access type mean?
+                Что означает каждый тип доступа?
             </Text>
             <Spacer size='xs' />
             <View>
-                <Text style={typography.titleH6}>• Common</Text>
+                <Text style={typography.titleH6}>• Открытый доступ</Text>
                 <Text style={typography.body}>
-                    Anyone in the app can view and join your event.
+                    Любой пользователь приложения сможет увидеть событие и присоединиться к нему.
                 </Text>
             </View>
             <Spacer size='xs' />
             <View>
-                <Text style={typography.titleH6}>• For subscribers</Text>
+                <Text style={typography.titleH6}>• Для подписчиков</Text>
                 <Text style={typography.body}>
-                    Only users who follow you will be able to see and join the event.
+                    Событие увидят только пользователи, которые подписаны на вас, и только они смогут присоединиться.
                 </Text>
             </View>
             <Spacer size='xs' />
             <View>
-                <Text style={typography.titleH6}>• Private</Text>
+                <Text style={typography.titleH6}>• Приватный</Text>
                 <Text style={typography.body}>
-                    The event is hidden from everyone. Only invited users can participate.
+                    Событие скрыто от всех. Принять участие смогут только приглашённые пользователи.
                 </Text>
             </View>
         </View>

@@ -127,7 +127,7 @@ export const ChatMessagesScreen: FC = observer(() => {
   const headerActions = useMemo<HeaderActionItem[]>(
     () => [
       {
-        label: 'Clear chat history',
+        label: 'Очистить историю чата',
         icon: 'trash-outline',
         colorIcon: theme.danger,
         onPress: () => {
@@ -259,7 +259,7 @@ export const ChatMessagesScreen: FC = observer(() => {
             <View style={styles.replyBar}>
               <TouchableOpacity onPress={actions.setReplyMode} style={[globalStyleSheet.flexRowCenterStart, { gap: 8 }]}>
                 <Ionicons name="arrow-undo-outline" size={25} color={theme.text} />
-                <Text style={[typography.body, { top: 3 }]}>Reply</Text>
+                <Text style={[typography.body, { top: 3 }]}>Ответить</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -282,7 +282,7 @@ export const ChatMessagesScreen: FC = observer(() => {
               editMessage={
                 selectedMessage?.actionType === 'edit'
                   ? selectedMessage?.content
-                    ? { content: selectedMessage?.content ?? 'photo' }
+                    ? { content: selectedMessage?.content ?? 'фото' }
                     : null
                   : null
               }

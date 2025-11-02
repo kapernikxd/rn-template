@@ -65,7 +65,7 @@ const ChatLimitLockedNotice: FC<ChatLimitLockedNoticeProps> = ({
     >
       {/* Header */}
       <View style={styles.headerRow}>
-        <Text style={[styles.lockEmoji]} accessibilityRole="image" accessibilityLabel="Locked">
+        <Text style={[styles.lockEmoji]} accessibilityRole="image" accessibilityLabel="Заблокировано">
           🔒
         </Text>
         <View style={styles.headerText}>

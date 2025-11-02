@@ -49,7 +49,7 @@ export const DashboardDetailsScreen = () => {
 
         <View style={[styles.body, { paddingHorizontal: sizes.lg, paddingTop: sizes.lg }]}>
           <View style={[styles.infoCard, { padding: sizes.lg }]}>
-            <Text style={[typography.body, styles.infoTitle]}>Create a spooky surprise</Text>
+            <Text style={[typography.body, styles.infoTitle]}>Создайте жуткий сюрприз</Text>
             <Spacer size="xs" />
             <Text style={[typography.bodySm, styles.infoDescription]}>
               {card.description}
@@ -65,7 +65,7 @@ export const DashboardDetailsScreen = () => {
           onPress={handleContinue}
           style={[styles.continueButton, { paddingVertical: sizes.md, paddingHorizontal: sizes.lg }]}
         >
-          <Text style={[typography.body, styles.continueText]}>Continue</Text>
+          <Text style={[typography.body, styles.continueText]}>Продолжить</Text>
           <View style={[styles.tokenWrapper, { backgroundColor: theme.primary }]}>
             <MaterialIcons
               name="diamond"

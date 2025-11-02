@@ -14,7 +14,7 @@ export interface SearchInputProps {
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({
-    placeholder = 'Search...',
+    placeholder = 'Поиск...',
     value,
     onChangeText,
     icon,

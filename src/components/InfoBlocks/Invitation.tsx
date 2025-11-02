@@ -9,25 +9,25 @@ export const InvitationTooltip: React.FC = () => {
   return (
     <View>
       <Text style={typography.titleH5}>
-        How invitations work
+        Как работают приглашения
       </Text>
 
       <Spacer size="xs" />
 
       <Text style={typography.body}>
-        You can invite users to your event — but only those who follow you.
+        Вы можете приглашать пользователей на своё событие, но только тех, кто подписан на вас.
       </Text>
 
       <Spacer size="xs" />
 
       <Text style={typography.body}>
-        Once you send an invitation, the user can either <Text style={{ fontWeight: '600' }}>accept</Text> or <Text style={{ fontWeight: '600' }}>decline</Text> it.
+        После отправки приглашения пользователь может <Text style={{ fontWeight: '600' }}>принять</Text> или <Text style={{ fontWeight: '600' }}>отклонить</Text> его.
       </Text>
 
       <Spacer size="xs" />
 
       <Text style={typography.body}>
-        You’ll be able to see their response status on this page.
+        Статус ответа будет отображаться на этой странице.
       </Text>
     </View>
   );

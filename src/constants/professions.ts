@@ -1,7 +1,7 @@
 export const PROFESSIONS = [
-  'Accountant','Actor','Architect','Artist','Baker','Barber','Chef','Coach','Dentist','Designer',
-  'Doctor','Driver','Electrician','Engineer','Farmer','Firefighter','Hairdresser','Journalist','Lawyer','Mechanic',
-  'Musician','Nurse','Pharmacist','Photographer','Pilot','Plumber','Police Officer','Programmer','Scientist','Teacher',
-  'Translator','Vet','Waiter','Writer','Marketing Specialist','Project Manager','Consultant','Therapist','Analyst','Banker',
-  'Construction Worker','Data Scientist','Economist','Event Planner','HR Manager','Insurance Agent','Real Estate Agent','Researcher','Salesperson','Social Worker'
+  'Бухгалтер','Актёр','Архитектор','Художник','Пекарь','Барбер','Шеф-повар','Тренер','Стоматолог','Дизайнер',
+  'Врач','Водитель','Электрик','Инженер','Фермер','Пожарный','Парикмахер','Журналист','Юрист','Механик',
+  'Музыкант','Медсестра','Фармацевт','Фотограф','Пилот','Сантехник','Полицейский','Программист','Учёный','Учитель',
+  'Переводчик','Ветеринар','Официант','Писатель','Маркетолог','Руководитель проекта','Консультант','Терапевт','Аналитик','Банкир',
+  'Строитель','Специалист по данным','Экономист','Организатор мероприятий','HR-менеджер','Страховой агент','Риелтор','Исследователь','Менеджер по продажам','Социальный работник'
 ];

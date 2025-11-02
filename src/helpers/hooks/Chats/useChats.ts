@@ -80,10 +80,10 @@ export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
       try {
         await chatStore.deleteChat(chatId);
         setChatIds(prev => prev.filter(id => id !== chatId));
-        uiStore.showSnackbar('Chat deleted', 'success');
+        uiStore.showSnackbar('Чат удалён', 'success');
       } catch (error) {
         console.error('Failed to delete chat', error);
-        uiStore.showSnackbar('Failed to delete chat', 'error');
+        uiStore.showSnackbar('Не удалось удалить чат', 'error');
       }
     },
     [chatStore, uiStore],

@@ -29,7 +29,7 @@ const Select: React.FC<SelectProps> = ({
   control,
   label,
   options,
-  placeholder = 'Select an option...',
+  placeholder = 'Выберите вариант...',
   style,
   containerStyle,
   rules = {},

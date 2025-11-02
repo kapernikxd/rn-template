@@ -30,7 +30,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   style,
   containerStyle,
   rules = {},
-  placeholder = 'Select...',
+  placeholder = 'Выберите...',
   errorTextStyle,
   required,
   zIndex = 1000,
@@ -99,7 +99,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                     setIsDropdownOpen(false);
                   }}
                 >
-                  <Text style={styles.doneButtonText}>SELECT</Text>
+                  <Text style={styles.doneButtonText}>ГОТОВО</Text>
                 </TouchableOpacity>
               )}
             </View>
