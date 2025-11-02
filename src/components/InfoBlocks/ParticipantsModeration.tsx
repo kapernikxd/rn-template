@@ -9,7 +9,7 @@ export const ParticipantsModerationTooltip: React.FC = () => {
   return (
     <View>
       <Text style={typography.body}>
-        If enabled, users will join the participant list but won\'t get chat access until you approve them. Declined requests will be removed automatically. Once turned on, participant moderation cannot be disabled later. When editing the event, this switch will be locked.
+        Если включить модерацию, пользователи будут попадать в список участников, но не получат доступ к чату, пока вы их не одобрите. Отклонённые заявки удаляются автоматически. После активации отключить модерацию уже нельзя, а при редактировании события переключатель будет заблокирован.
       </Text>
       <Spacer size="xs" />
     </View>

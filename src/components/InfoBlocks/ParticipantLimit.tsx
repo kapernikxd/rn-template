@@ -9,7 +9,7 @@ export const ParticipantLimitTooltip: React.FC = () => {
   return (
     <View>
       <Text style={typography.body}>
-        This field allows you to set a maximum number of participants who can join the event. If the limit is reached, new participants will not be able to join.
+        Это поле позволяет задать максимальное количество участников, которые могут присоединиться к событию. Когда лимит будет достигнут, новые пользователи не смогут подать заявку.
       </Text>
       <Spacer size="xs" />
     </View>

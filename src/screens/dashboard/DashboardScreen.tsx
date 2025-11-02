@@ -16,29 +16,29 @@ const HALLOWEEN_BACKGROUND = "#070C1F";
 const POPULAR_CARDS: DashboardExperience[] = [
   {
     id: "popular-1",
-    title: "Homeless Prank",
+    title: "Розыгрыш с незваным гостем",
     image: {
       uri: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=80",
     },
-    description: "Prank your loved ones with an unexpected guest in your home!",
+    description: "Разыграйте близких неожиданным гостем у себя дома!",
     tokenCost: 10,
   },
   {
     id: "popular-2",
-    title: "1940s",
+    title: "1940-е",
     image: {
       uri: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=600&q=80",
     },
-    description: "Travel back in time and recreate nostalgic family portraits in vintage style.",
+    description: "Отправьтесь назад во времени и воссоздайте семейные портреты в винтажном стиле.",
     tokenCost: 12,
   },
   {
     id: "popular-3",
-    title: "The Shining",
+    title: "Сияние",
     image: {
       uri: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=600&q=80",
     },
-    description: "Step into an iconic horror scene and bring spine-chilling stories to life.",
+    description: "Погрузитесь в культовую сцену ужаса и оживите леденящую историю.",
     tokenCost: 9,
   },
 ];
@@ -46,29 +46,29 @@ const POPULAR_CARDS: DashboardExperience[] = [
 const HORROR_SCENES_CARDS: DashboardExperience[] = [
   {
     id: "horror-1",
-    title: "Spooky Y2K",
+    title: "Мистический Y2K",
     image: {
       uri: "https://images.unsplash.com/photo-1506131864070-4d0baf2c0e4b?auto=format&fit=crop&w=600&q=80",
     },
-    description: "Glitch your photos with neon chills straight from the Y2K vault.",
+    description: "Добавьте фото неоновых глюков прямо из эпохи Y2K.",
     tokenCost: 8,
   },
   {
     id: "horror-2",
-    title: "Ghostface Movie Theater",
+    title: "Кинотеатр с Призрачным лицом",
     image: {
       uri: "https://images.unsplash.com/photo-1504198070170-4ca53bb1c1fa?auto=format&fit=crop&w=600&q=80",
     },
-    description: "Summon a masked stranger lurking in the aisles of a deserted cinema.",
+    description: "Призовите маскированного незнакомца, скрывающегося в проходах пустого кинотеатра.",
     tokenCost: 11,
   },
   {
     id: "horror-3",
-    title: "Chill",
+    title: "Ледяной холод",
     image: {
       uri: "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=600&q=80",
     },
-    description: "Freeze your frame with a haunting touch of midnight frost.",
+    description: "Окутайте кадр зловещим полуночным инеем.",
     tokenCost: 7,
   },
 ];
@@ -76,29 +76,29 @@ const HORROR_SCENES_CARDS: DashboardExperience[] = [
 const HOT_COSTUMES_CARDS: DashboardExperience[] = [
   {
     id: "costume-1",
-    title: "Midnight Witch",
+    title: "Полночная ведьма",
     image: {
       uri: "https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=600&q=80",
     },
-    description: "Enchant your feed with a coven-ready look under the moonlight glow.",
+    description: "Очаруйте ленту образом, готовым для шабаша в лунном сиянии.",
     tokenCost: 6,
   },
   {
     id: "costume-2",
-    title: "Neon Vampire",
+    title: "Неоновый вампир",
     image: {
       uri: "https://images.unsplash.com/photo-1549570144-336da183aefd?auto=format&fit=crop&w=600&q=80",
     },
-    description: "Blend cyberpunk vibes with bloodthirsty glam for a night out.",
+    description: "Соедините киберпанк и кровожадный гламур для яркой ночи.",
     tokenCost: 10,
   },
   {
     id: "costume-3",
-    title: "Pumpkin Squad",
+    title: "Тыквенный отряд",
     image: {
       uri: "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=600&q=80",
     },
-    description: "Turn your crew into the most charming patch of pumpkins in town.",
+    description: "Превратите свою компанию в самый обаятельный отряд тыкв в городе.",
     tokenCost: 5,
   },
 ];
@@ -122,9 +122,9 @@ export const DashboardScreen = () => {
 
   const sections = useMemo(
     () => [
-      { title: "Popular", cards: POPULAR_CARDS },
-      { title: "Horror Scenes", cards: HORROR_SCENES_CARDS },
-      { title: "Hot Costumes", cards: HOT_COSTUMES_CARDS },
+      { title: "Популярное", cards: POPULAR_CARDS },
+      { title: "Жуткие сцены", cards: HORROR_SCENES_CARDS },
+      { title: "Образы для костюмов", cards: HOT_COSTUMES_CARDS },
     ],
     [],
   );

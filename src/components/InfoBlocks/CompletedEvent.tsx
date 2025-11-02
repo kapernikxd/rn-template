@@ -12,19 +12,19 @@ export const CompletedEventTooltip: React.FC = () => {
   return (
     <View>
       <Text style={typography.titleH5}>
-        What happens after an event ends?
+        Что происходит после завершения события?
       </Text>
 
       <Spacer size="xs" />
 
       <Text style={typography.body}>
-        Completed events will be automatically <Text style={{ fontWeight: '600' }}>deleted after {DELETE_DURATION} days</Text>, along with all related data — including chats, media, messages, and the participant list.
+        Завершённые события автоматически <Text style={{ fontWeight: '600' }}>удаляются через {DELETE_DURATION} дней</Text> вместе со всеми связанными данными: чатами, медиа, сообщениями и списком участников.
       </Text>
 
       <Spacer size="xs" />
 
       <Text style={typography.body}>
-        Chats will become <Text style={{ fontWeight: '600' }}>inaccessible {CHAT_DURATION} days</Text> after the event ends.
+        Чаты станут <Text style={{ fontWeight: '600' }}>недоступны через {CHAT_DURATION} дней</Text> после завершения события.
       </Text>
     </View>
   );
