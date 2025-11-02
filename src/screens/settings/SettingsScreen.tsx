@@ -13,6 +13,7 @@ import { ADS_ENABLED, appVersion } from '../../constants/links';
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { RewardedAdSettingsCard } from '../../components/ads/components/RewardedAdSettingsCard';
+import { truncateText } from '../../helpers/utils/common';
 
 
 export const SettingsScreen: FC = () => {
@@ -45,7 +46,7 @@ export const SettingsScreen: FC = () => {
           >
             <SettingsListItem
               label={'UserId'}
-              value={userId ?? '—'}
+              value={userId ? truncateText(userId, 18) : '—'}
               valueTone='muted'
             />
           </SettingsSection>
