@@ -11,6 +11,7 @@ import {
 import { useTheme, ThemeType, SizesType, GlobalStyleSheetType } from 'rn-vs-lb/theme';
 import { ADS_ENABLED, appVersion } from '../../constants/links';
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
+import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { RewardedAdSettingsCard } from '../../components/ads/components/RewardedAdSettingsCard';
 
 
@@ -18,13 +19,16 @@ export const SettingsScreen: FC = () => {
   const { globalStyleSheet, theme, sizes, typography, isDark, toggleTheme } = useTheme();
   const { setColors } = useSafeAreaColors();
   const styles = getStyles({ globalStyleSheet, theme, sizes });
+  const rootStore = useRootStore();
+  const userId = useStoreData(rootStore.identityStore, (store) => store.userId);
 
   useEffect(() => {
     setColors({
       topColor: theme.background,
       bottomColor: theme.background,
     });
-  }, [setColors, theme.background]);
+    void rootStore.identityStore.ensureUserId();
+  }, [rootStore.identityStore, setColors, theme.background]);
 
   const COPY_LINK = [
     { icon: 'copy', label: 'Копировать ссылку на приложение', action: () => console.log('скопировано') },
@@ -41,7 +45,7 @@ export const SettingsScreen: FC = () => {
           >
             <SettingsListItem
               label={'UserId'}
-              value={"id"}
+              value={userId ?? '—'}
               valueTone='muted'
             />
           </SettingsSection>
