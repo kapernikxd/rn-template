@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { Dimensions, ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
-import { ProfileSelfiesGalleryView, Spacer } from "rn-vs-lb";
+import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ProfileSelfiesGalleryView } from "rn-vs-lb";
 import { type SizesType, type ThemeType, type TypographytType, useTheme } from "rn-vs-lb/theme";
 
 const WINDOW_WIDTH = Dimensions.get('window').width;
@@ -50,7 +50,7 @@ export const LibraryScreen = () => {
   }, []);
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContent}>
+    <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent}>
       <Text style={[typography.titleH4, {paddingHorizontal: 12, paddingVertical: 12}]}>Галерея</Text>
       <View style={styles.galleryWrapper}>
         <ProfileSelfiesGalleryView
@@ -79,6 +79,9 @@ const createStyles = ({
   typography: TypographytType;
 }) =>
   StyleSheet.create({
+    scroll: {
+      backgroundColor: theme.background,
+    },
     scrollContent: {
       flexGrow: 1,
       paddingHorizontal: sizes.xxs as number,
