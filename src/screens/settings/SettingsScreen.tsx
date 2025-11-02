@@ -13,6 +13,7 @@ import { ADS_ENABLED, appVersion } from '../../constants/links';
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { RewardedAdSettingsCard } from '../../components/ads/components/RewardedAdSettingsCard';
+import { LanguageSelector } from '../../components/settings/LanguageSelector';
 import { truncateText } from '../../helpers/utils/common';
 
 
@@ -65,6 +66,9 @@ export const SettingsScreen: FC = () => {
             style={styles.section}
           ><CardContainer style={styles.card}>
               <ThemeSwitcher lightModeLabel="Светлая тема" darkModeLabel="Тёмная тема" />
+            </CardContainer>
+            <CardContainer style={styles.card}>
+              <LanguageSelector />
             </CardContainer>
             <CardContainer style={styles.card}>
               {COPY_LINK.map((item, index) => (
