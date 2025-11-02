@@ -44,7 +44,7 @@ export const ExperiencePreviewHeader = ({
             <Pressable
               onPress={onClose}
               accessibilityRole="button"
-              accessibilityLabel="Close preview"
+              accessibilityLabel="Закрыть предпросмотр"
               style={styles.closeButton}
               hitSlop={8}
             >

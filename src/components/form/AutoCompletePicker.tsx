@@ -19,7 +19,7 @@ type AutoCompletePickerProps = {
 
 const AutoCompletePicker: React.FC<AutoCompletePickerProps> = ({
     items = [],
-    placeholder = 'Select...',
+    placeholder = 'Выберите...',
     onSelect,
     defaultValue = '',
     error,

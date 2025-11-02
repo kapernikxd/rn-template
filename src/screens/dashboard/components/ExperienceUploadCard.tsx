@@ -16,14 +16,14 @@ export const ExperienceUploadCard = ({ onPress }: ExperienceUploadCardProps) => 
       style={[styles.container, { padding: sizes.lg }]}
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel="Upload photo"
+      accessibilityLabel="Загрузить фото"
     >
       <View style={styles.inner}>
         <View style={styles.iconWrapper}>
           <Feather name="image" size={32} color="rgba(255,255,255,0.72)" />
         </View>
         <Text style={[typography.body, styles.text]}>
-          Tap here to upload the photo you want to bring to life!
+          Нажмите здесь, чтобы загрузить фото, которое хотите оживить!
         </Text>
       </View>
     </Pressable>

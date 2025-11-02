@@ -41,18 +41,18 @@ export const SettingsScreen: FC = () => {
       <ScrollView contentContainerStyle={styles.body}>
         <View style={styles.list}>
           <SettingsSection
-            title={"   User"}
+            title={"   Пользователь"}
             style={styles.section}
           >
             <SettingsListItem
-              label={'UserId'}
+              label={'ID пользователя'}
               value={userId ? truncateText(userId, 18) : '—'}
               valueTone='muted'
             />
           </SettingsSection>
           {ADS_ENABLED &&
             <SettingsSection
-              title={"   Ads"}
+              title={"   Реклама"}
               style={styles.section}
             ><CardContainer style={styles.card}>
                 <RewardedAdSettingsCard style={{ padding: 0, backgroundColor: theme.card }} />
@@ -61,10 +61,10 @@ export const SettingsScreen: FC = () => {
 
 
           <SettingsSection
-            title={"   Application"}
+            title={"   Приложение"}
             style={styles.section}
           ><CardContainer style={styles.card}>
-              <ThemeSwitcher lightModeLabel="Светлая тема" darkModeLabel="Теманя тема" />
+              <ThemeSwitcher lightModeLabel="Светлая тема" darkModeLabel="Тёмная тема" />
             </CardContainer>
             <CardContainer style={styles.card}>
               {COPY_LINK.map((item, index) => (

@@ -94,7 +94,7 @@ const ChatLimitLockedNotice = ({
       <View style={[styles.card, { borderColor: theme.border, backgroundColor: theme.card }]}>
         {/* верх */}
         <View style={styles.topRow}>
-          <Text style={styles.lock} accessibilityRole="image" accessibilityLabel="Locked">🔒</Text>
+          <Text style={styles.lock} accessibilityRole="image" accessibilityLabel="Заблокировано">🔒</Text>
           <Text style={[typography.bodySm, styles.title, { color: theme.title }]} numberOfLines={1}>
             {message}
           </Text>

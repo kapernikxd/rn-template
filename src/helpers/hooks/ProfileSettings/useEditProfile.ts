@@ -66,14 +66,14 @@ export const useEditProfile = () => {
         ) as Partial<EditProfileFormValues>;
 
         if (Object.keys(changedFields).length === 0) {
-          uiStore.showSnackbar('Nothing changed', 'info');
+          uiStore.showSnackbar('Ничего не изменилось', 'info');
           return;
         }
 
         await profileStore.updateProfile(changedFields as UpdateProfileProps);
-        uiStore.showSnackbar('Updated', 'success');
+        uiStore.showSnackbar('Обновлено', 'success');
       } catch (e) {
-        uiStore.showSnackbar('Failed', 'error');
+        uiStore.showSnackbar('Произошла ошибка', 'error');
       } finally {
         setIsSubmitting(false);
       }
@@ -161,10 +161,10 @@ export const useEditProfile = () => {
 
       await profileStore.uploadProfilePhoto(formData);
       await profileStore.fetchMyProfile();
-      uiStore.showSnackbar('Photo uploaded successfully', 'success');
+      uiStore.showSnackbar('Фото успешно загружено', 'success');
     } catch (error) {
       console.error('onPressSelect error:', error);
-      uiStore.showSnackbar('Upload failed', 'error');
+      uiStore.showSnackbar('Не удалось загрузить фото', 'error');
     }
   }, [compressImage, profileStore, uiStore]);
 
@@ -172,12 +172,12 @@ export const useEditProfile = () => {
     try {
       const fullPath = profileStore?.myProfile?.avatarFile;
       if (!fullPath) {
-        uiStore.showSnackbar('No photo to delete', 'warning');
+        uiStore.showSnackbar('Нет фото для удаления', 'warning');
         return;
       }
       const fileName = fullPath.split('/').pop();
       if (!fileName) {
-        uiStore.showSnackbar('Invalid file path', 'error');
+        uiStore.showSnackbar('Неверный путь к файлу', 'error');
         return;
       }
 
@@ -187,10 +187,10 @@ export const useEditProfile = () => {
       await profileStore.deleteProfilePhoto(fileName);
       await profileStore.fetchMyProfile();
 
-      uiStore.showSnackbar('Photo deleted successfully', 'success');
+      uiStore.showSnackbar('Фото успешно удалено', 'success');
     } catch (error) {
       console.error('onPressRemove error:', error);
-      uiStore.showSnackbar('Failed to delete photo', 'error');
+      uiStore.showSnackbar('Не удалось удалить фото', 'error');
     }
   }, [profileStore, uiStore]);
 

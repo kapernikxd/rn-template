@@ -22,7 +22,7 @@ export const useChangePassword = () => {
       setIsSubmitting(true);
       try {
         await profileStore.changePassword({ oldPassword: data.oldPassword, password: data.password });
-        uiStore.showSnackbar('Udpated', 'success');
+        uiStore.showSnackbar('Обновлено', 'success');
       } catch (errors: any) {
         if (errors && typeof errors === 'object') {
           Object.entries(errors).forEach(([field, message]) => {
@@ -32,7 +32,7 @@ export const useChangePassword = () => {
             });
           });
         }
-        uiStore.showSnackbar('Failed', 'error');
+        uiStore.showSnackbar('Произошла ошибка', 'error');
       } finally {
         setIsSubmitting(false);
       }

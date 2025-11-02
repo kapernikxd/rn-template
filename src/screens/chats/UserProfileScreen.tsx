@@ -71,7 +71,7 @@ export const UserProfileScreen = () => {
   const displayName = useMemo(() => {
     const fullName = currentProfile ? getUserFullName(currentProfile) : '';
     const fallback = fullName.trim();
-    return fallback || 'Profile';
+    return fallback || 'Профиль';
   }, [currentProfile]);
 
   const imageUri = useMemo(() => {
@@ -83,7 +83,7 @@ export const UserProfileScreen = () => {
   }, [currentProfile?.lastSeen]);
 
   const handleFeatureSoon = useCallback(() => {
-    uiStore.showSnackbar('This feature will be available soon.', 'info');
+    uiStore.showSnackbar('Эта функция скоро будет доступна.', 'info');
   }, [uiStore]);
 
   const handleFollowToggle = useCallback(() => {

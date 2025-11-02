@@ -75,7 +75,7 @@ export const getAiBotTitle = (bot: AiBotCardEntity): string => {
     return `@${bot.username}`;
   }
 
-  return 'AI Agent';
+  return 'AI-агент';
 };
 
 export const getAiBotDescription = (bot: AiBotCardEntity): string | undefined => {

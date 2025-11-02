@@ -86,7 +86,7 @@ export const AiBotCard = ({ bot, style, onPress }: AiBotCardProps) => {
     const last = ('lastname' in bot && bot.lastname) || undefined;
     if (name || last) return [name, last].filter(Boolean).join(' ');
     if ('username' in bot && bot.username) return bot.username!;
-    return 'AI Agent';
+    return 'AI-агент';
   }, [bot]);
 
   const bgSource = useMemo(() => resolveBgImage(bot), [bot]);
