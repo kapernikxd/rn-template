@@ -10,6 +10,7 @@ import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";
 import { ROUTES, type DashboardNav } from "../../navigation/types";
 import type { DashboardExperience } from "../../types/dashboard";
 import { Theme } from "../../constants";
+import { POPULAR_HOMELESS, POPULAR_NEIGHBOR, POPULAR_PLUMBER, SITUATION_2, SITUATION_GOVNO, TRAVEL_GIZA, TRAVEL_LONDON, TRAVEL_PARIS } from "../../helpers/utils/cards";
 
 const HALLOWEEN_BACKGROUND = "#070C1F";
 
@@ -18,88 +19,79 @@ const POPULAR_CARDS: DashboardExperience[] = [
     id: "popular-1",
     title: "Розыгрыш с незваным гостем",
     image: {
-      uri: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=600&q=80",
+      uri: POPULAR_HOMELESS,
     },
     description: "Разыграйте близких неожиданным гостем у себя дома!",
     tokenCost: 10,
   },
   {
     id: "popular-2",
-    title: "1940-е",
+    title: "Сантехник",
     image: {
-      uri: "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=600&q=80",
+      uri: POPULAR_PLUMBER,
     },
-    description: "Отправьтесь назад во времени и воссоздайте семейные портреты в винтажном стиле.",
-    tokenCost: 12,
+    description: "Разыграйте близких неожиданным гостем у себя дома!",
+    tokenCost: 10,
   },
   {
     id: "popular-3",
-    title: "Сияние",
+    title: "Соседка",
     image: {
-      uri: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=600&q=80",
+      uri: POPULAR_NEIGHBOR,
     },
-    description: "Погрузитесь в культовую сцену ужаса и оживите леденящую историю.",
-    tokenCost: 9,
+    description: "Разыграйте близких неожиданным гостем у себя дома!",
+    tokenCost: 10,
   },
 ];
 
-const HORROR_SCENES_CARDS: DashboardExperience[] = [
+const TRAVEL_CARDS: DashboardExperience[] = [
   {
     id: "horror-1",
-    title: "Мистический Y2K",
+    title: "Париж",
     image: {
-      uri: "https://images.unsplash.com/photo-1506131864070-4d0baf2c0e4b?auto=format&fit=crop&w=600&q=80",
+      uri: TRAVEL_PARIS
     },
-    description: "Добавьте фото неоновых глюков прямо из эпохи Y2K.",
-    tokenCost: 8,
+    description: "Поза с Эйфелевой башней в шикарном парижском стиле",
+    tokenCost: 10,
   },
   {
     id: "horror-2",
-    title: "Кинотеатр с Призрачным лицом",
+    title: "Лондон",
     image: {
-      uri: "https://images.unsplash.com/photo-1504198070170-4ca53bb1c1fa?auto=format&fit=crop&w=600&q=80",
+      uri: TRAVEL_LONDON
     },
-    description: "Призовите маскированного незнакомца, скрывающегося в проходах пустого кинотеатра.",
-    tokenCost: 11,
+    description: "Встаньте рядом с Биг-Беном в классическом лондонском стиле",
+    tokenCost: 10,
   },
   {
     id: "horror-3",
-    title: "Ледяной холод",
+    title: "Гиза",
     image: {
-      uri: "https://images.unsplash.com/photo-1440404653325-ab127d49abc1?auto=format&fit=crop&w=600&q=80",
+      uri: TRAVEL_GIZA
     },
-    description: "Окутайте кадр зловещим полуночным инеем.",
-    tokenCost: 7,
+    description: "Запечатлей свои первые восхищённые мгновения на фоне вечных пирамид.",
+    tokenCost: 10,
   },
 ];
 
-const HOT_COSTUMES_CARDS: DashboardExperience[] = [
+const SITUATION_CARDS: DashboardExperience[] = [
   {
     id: "costume-1",
-    title: "Полночная ведьма",
+    title: "Затопило",
     image: {
-      uri: "https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=600&q=80",
+      uri: SITUATION_GOVNO,
     },
-    description: "Очаруйте ленту образом, готовым для шабаша в лунном сиянии.",
+    description: "Разыграйте близких неожиданной ситуацией!",
     tokenCost: 6,
   },
   {
     id: "costume-2",
-    title: "Неоновый вампир",
+    title: 'Пришли цыгане',
     image: {
-      uri: "https://images.unsplash.com/photo-1549570144-336da183aefd?auto=format&fit=crop&w=600&q=80",
+      uri: SITUATION_2,
     },
-    description: "Соедините киберпанк и кровожадный гламур для яркой ночи.",
+    description: "Разыграйте близких неожиданной ситуацией!",
     tokenCost: 10,
-  },
-  {
-    id: "costume-3",
-    title: "Тыквенный отряд",
-    image: {
-      uri: "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?auto=format&fit=crop&w=600&q=80",
-    },
-    description: "Превратите свою компанию в самый обаятельный отряд тыкв в городе.",
-    tokenCost: 5,
   },
 ];
 
@@ -123,8 +115,8 @@ export const DashboardScreen = () => {
   const sections = useMemo(
     () => [
       { title: "Популярное", cards: POPULAR_CARDS },
-      { title: "Жуткие сцены", cards: HORROR_SCENES_CARDS },
-      { title: "Образы для костюмов", cards: HOT_COSTUMES_CARDS },
+      { title: "Путешествия", cards: TRAVEL_CARDS },
+      { title: "Ситуации", cards: SITUATION_CARDS },
     ],
     [],
   );
