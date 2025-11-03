@@ -1,8 +1,19 @@
-import React, { useCallback } from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import React, { useCallback, useMemo, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { launchImageLibrary, type Asset } from "react-native-image-picker";
 
 import { useTheme } from "rn-vs-lb/theme";
 import { Spacer } from "rn-vs-lb";
@@ -10,6 +21,7 @@ import { Spacer } from "rn-vs-lb";
 import { ExperiencePreviewHeader } from "./components/ExperiencePreviewHeader";
 import { ExperienceUploadCard } from "./components/ExperienceUploadCard";
 import { type DashboardNav, type DashboardDetailsRoute } from "../../navigation/types";
+import { useRootStore, useStoreData } from "../../store/StoreProvider";
 
 const BACKGROUND_COLOR = "#050505";
 
@@ -19,18 +31,88 @@ export const DashboardDetailsScreen = () => {
   const { card } = route.params;
   const { typography, sizes, theme } = useTheme();
   const insets = useSafeAreaInsets();
+  const { imageGenerationStore } = useRootStore();
+  const [customPrompt, setCustomPrompt] = useState("");
+
+  const { selectedImage, isSubmitting } = useStoreData(
+    imageGenerationStore,
+    (store) => ({
+      selectedImage: store.selectedImage,
+      isSubmitting: store.isSubmitting,
+    }),
+  );
+
+  const continueDisabled = useMemo(
+    () => !selectedImage || isSubmitting,
+    [selectedImage, isSubmitting],
+  );
+
+  const previewUri = selectedImage?.uri ?? null;
 
   const handleClose = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
 
   const handleUpload = useCallback(() => {
-    // TODO: integrate with media picker
-  }, []);
+    void (async () => {
+      const result = await launchImageLibrary({
+        mediaType: "photo",
+        selectionLimit: 1,
+        quality: 0.9,
+      });
+
+      if (result.didCancel) {
+        return;
+      }
+
+      const assets = (result.assets ?? []).filter(
+        (asset): asset is Asset & { uri: string } => Boolean(asset?.uri),
+      );
+
+      if (assets.length) {
+        imageGenerationStore.setSelectedImages(assets.slice(0, 1));
+      } else {
+        imageGenerationStore.clearSelection();
+      }
+    })();
+  }, [imageGenerationStore]);
+
+  const handleRemoveImage = useCallback(() => {
+    imageGenerationStore.clearSelection();
+  }, [imageGenerationStore]);
 
   const handleContinue = useCallback(() => {
-    // TODO: integrate checkout or generation flow
-  }, []);
+    if (!selectedImage) {
+      Alert.alert(
+        "Загрузите фото",
+        "Пожалуйста, добавьте изображение, которое нужно обработать.",
+      );
+      return;
+    }
+
+    const trimmedPrompt = customPrompt.trim();
+    const combinedPrompt = trimmedPrompt
+      ? `${card.generationPrompt}
+Дополнительные пожелания: ${trimmedPrompt}`
+      : card.generationPrompt;
+
+    void (async () => {
+      const success = await imageGenerationStore.submitEditRequest({
+        prompt: combinedPrompt,
+      });
+
+      if (success) {
+        Alert.alert(
+          "Запрос отправлен",
+          "Мы начали обработку вашего изображения. Готовый результат появится в библиотеке.",
+        );
+        setCustomPrompt("");
+      } else {
+        const message = imageGenerationStore.submitError ?? "Не удалось отправить запрос";
+        Alert.alert("Ошибка", message);
+      }
+    })();
+  }, [card.generationPrompt, customPrompt, imageGenerationStore, selectedImage]);
 
   return (
     <View style={[styles.container, { backgroundColor: BACKGROUND_COLOR }]}>
@@ -48,31 +130,68 @@ export const DashboardDetailsScreen = () => {
         />
 
         <View style={[styles.body, { paddingHorizontal: sizes.lg, paddingTop: sizes.lg }]}>
-          <View style={[styles.infoCard, { padding: sizes.lg }]}>
-            <Text style={[typography.body, styles.infoTitle]}>Создайте жуткий сюрприз</Text>
+          <View style={[styles.promptCard, { padding: sizes.lg }]}>
+            <Text style={[typography.body, styles.promptLabel]}>Добавьте свой промпт (необязательно)</Text>
             <Spacer size="xs" />
-            <Text style={[typography.bodySm, styles.infoDescription]}>
-              {card.description}
+            <TextInput
+              value={customPrompt}
+              onChangeText={setCustomPrompt}
+              placeholder="Например: добавь синее небо и немного дыма"
+              placeholderTextColor="rgba(255,255,255,0.4)"
+              multiline
+              style={[styles.promptInput, { minHeight: sizes.xl * 2 }]}
+              textAlignVertical="top"
+            />
+            <Spacer size="xs" />
+            <Text style={[typography.bodySm, styles.promptHelper]}>
+              Базовый стиль для этой сцены: {card.description}
             </Text>
           </View>
 
           <ExperienceUploadCard onPress={handleUpload} />
+
+          {previewUri ? (
+            <View style={[styles.previewCard, { padding: sizes.md }]}>
+              <Image
+                source={{ uri: previewUri }}
+                style={styles.previewImage}
+                resizeMode="cover"
+              />
+              <Spacer size="sm" />
+              <Pressable onPress={handleRemoveImage} style={styles.removeButton}>
+                <Text style={[typography.bodySm, styles.removeButtonText]}>Удалить фото</Text>
+              </Pressable>
+            </View>
+          ) : null}
         </View>
       </ScrollView>
 
       <View style={[styles.footer, { paddingHorizontal: sizes.lg, paddingBottom: insets.bottom + sizes.lg }]}>
         <Pressable
           onPress={handleContinue}
-          style={[styles.continueButton, { paddingVertical: sizes.md, paddingHorizontal: sizes.lg }]}
+          style={[
+            styles.continueButton,
+            {
+              paddingVertical: sizes.md,
+              paddingHorizontal: sizes.lg,
+              opacity: continueDisabled ? 0.6 : 1,
+            },
+          ]}
+          disabled={continueDisabled}
         >
-          <Text style={[typography.body, styles.continueText]}>Продолжить</Text>
-          <View style={[styles.tokenWrapper, { backgroundColor: theme.primary }]}>
-            <MaterialIcons
-              name="diamond"
-              size={18}
-              color={"white"}
-            />
-            <Text style={[typography.body, { color: "white", fontWeight: "bold" }]}>{card.tokenCost}</Text>
+          <Text style={[typography.body, styles.continueText]}>
+            {isSubmitting ? "Отправка..." : "Продолжить"}
+          </Text>
+          <View style={styles.buttonRight}>
+            <View style={[styles.tokenWrapper, { backgroundColor: theme.primary }]}>
+              <MaterialIcons
+                name="diamond"
+                size={18}
+                color={"white"}
+              />
+              <Text style={[typography.body, { color: "white", fontWeight: "bold" }]}>{card.tokenCost}</Text>
+            </View>
+            {isSubmitting ? <ActivityIndicator color={"#121212"} /> : null}
           </View>
         </Pressable>
       </View>
@@ -90,20 +209,54 @@ const styles = StyleSheet.create({
   body: {
     gap: 20,
   },
-  infoCard: {
+  promptCard: {
     borderRadius: 24,
     backgroundColor: "rgba(255,255,255,0.06)",
     borderWidth: 1,
     borderColor: "rgba(255,255,255,0.08)",
-    gap: 4,
+    gap: 8,
   },
-  infoTitle: {
+  promptLabel: {
     color: "#FFFFFF",
     fontWeight: "600",
   },
-  infoDescription: {
-    color: "rgba(255,255,255,0.72)",
-    lineHeight: 20,
+  promptInput: {
+    width: "100%",
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.16)",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    color: "#FFFFFF",
+    backgroundColor: "rgba(0,0,0,0.2)",
+    fontSize: 16,
+    lineHeight: 22,
+  },
+  promptHelper: {
+    color: "rgba(255,255,255,0.6)",
+    lineHeight: 18,
+  },
+  previewCard: {
+    borderRadius: 16,
+    backgroundColor: "rgba(255,255,255,0.04)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.08)",
+    alignItems: "center",
+  },
+  previewImage: {
+    width: "100%",
+    aspectRatio: 3 / 4,
+    borderRadius: 12,
+  },
+  removeButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 999,
+    backgroundColor: "rgba(255,255,255,0.12)",
+  },
+  removeButtonText: {
+    color: "#FFFFFF",
+    textAlign: "center",
   },
   footer: {
     borderTopWidth: StyleSheet.hairlineWidth,
@@ -121,6 +274,11 @@ const styles = StyleSheet.create({
   continueText: {
     color: "#121212",
     fontWeight: "600",
+  },
+  buttonRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
   },
   tokenWrapper: {
     flexDirection: "row",
