@@ -27,6 +27,6 @@ export class RootStore {
     this.notificationStore = new NotificationStore(this);
     this.aiBotStore = new AiBotStore(this);
     this.identityStore = new IdentityStore();
-    this.imageGenerationStore = new ImageGenerationStore(this);
+    this.imageGenerationStore = new ImageGenerationStore();
   }
 }

@@ -20,9 +20,7 @@ export const LibraryScreen = () => {
   const { theme, sizes, typography } = useTheme();
   const [isGalleryVisible, setIsGalleryVisible] = useState(false);
   const [initialIndex, setInitialIndex] = useState(0);
-  const { authStore, imageGenerationStore } = useRootStore();
-
-  const isAuthenticated = useStoreData(authStore, (store) => store.isAuthenticated);
+  const { imageGenerationStore } = useRootStore();
 
   const { photos, isLoading, isSyncing, pendingCount } = useStoreData(
     imageGenerationStore,
@@ -36,13 +34,8 @@ export const LibraryScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      if (!isAuthenticated) {
-        imageGenerationStore.resetRequests();
-        return;
-      }
-
       void imageGenerationStore.reloadRequests();
-    }, [imageGenerationStore, isAuthenticated]),
+    }, [imageGenerationStore]),
   );
 
   const styles = useMemo(
@@ -72,23 +65,15 @@ export const LibraryScreen = () => {
     setIsGalleryVisible(false);
   }, []);
 
-  const refreshing = isAuthenticated && (isLoading || isSyncing);
+  const refreshing = isLoading || isSyncing;
 
   const handleRefresh = useCallback(() => {
-    if (!isAuthenticated) {
-      return;
-    }
-
     void imageGenerationStore.reloadRequests();
-  }, [imageGenerationStore, isAuthenticated]);
+  }, [imageGenerationStore]);
 
   const handleSyncPending = useCallback(() => {
-    if (!isAuthenticated) {
-      return;
-    }
-
     void imageGenerationStore.refreshPendingRequests();
-  }, [imageGenerationStore, isAuthenticated]);
+  }, [imageGenerationStore]);
 
   return (
     <ScrollView
@@ -104,15 +89,7 @@ export const LibraryScreen = () => {
     >
       <Text style={[typography.titleH4, { paddingHorizontal: 12, paddingVertical: 12 }]}>Галерея</Text>
 
-      {!isAuthenticated ? (
-        <View style={styles.emptyState}>
-          <Text style={[typography.body, styles.emptyStateText]}>
-            Войдите в аккаунт, чтобы просматривать обработанные изображения.
-          </Text>
-        </View>
-      ) : null}
-
-      {isAuthenticated && pendingCount > 0 ? (
+      {pendingCount > 0 ? (
         <View style={styles.pendingWrapper}>
           <Text style={[typography.bodySm, styles.pendingText]}>
             Обрабатывается {pendingCount} {pendingCount === 1 ? "изображение" : "изображения"}...
@@ -123,33 +100,31 @@ export const LibraryScreen = () => {
         </View>
       ) : null}
 
-      {isAuthenticated ? (
-        <View style={styles.galleryWrapper}>
-          {photos.length ? (
-            <ProfileSelfiesGalleryView
-              style={{ padding: 0 }}
-              photos={photos}
-              columns={columns}
-              itemSize={itemSize}
-              gap={gap}
-              visible={isGalleryVisible}
-              initialIndex={initialIndex}
-              onOpenAt={handleOpenAt}
-              onClose={handleClose}
-            />
-          ) : (
-            <View style={styles.emptyState}>
-              {refreshing ? (
-                <ActivityIndicator color={theme.primary} />
-              ) : (
-                <Text style={[typography.body, styles.emptyStateText]}>
-                  Здесь появятся ваши готовые изображения после обработки.
-                </Text>
-              )}
-            </View>
-          )}
-        </View>
-      ) : null}
+      <View style={styles.galleryWrapper}>
+        {photos.length ? (
+          <ProfileSelfiesGalleryView
+            style={{ padding: 0 }}
+            photos={photos}
+            columns={columns}
+            itemSize={itemSize}
+            gap={gap}
+            visible={isGalleryVisible}
+            initialIndex={initialIndex}
+            onOpenAt={handleOpenAt}
+            onClose={handleClose}
+          />
+        ) : (
+          <View style={styles.emptyState}>
+            {refreshing ? (
+              <ActivityIndicator color={theme.primary} />
+            ) : (
+              <Text style={[typography.body, styles.emptyStateText]}>
+                Здесь появятся ваши готовые изображения после обработки.
+              </Text>
+            )}
+          </View>
+        )}
+      </View>
     </ScrollView>
   );
 };
