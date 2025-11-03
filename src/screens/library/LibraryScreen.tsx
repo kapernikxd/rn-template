@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { ProfileSelfiesGalleryView } from "rn-vs-lb";
 import { type SizesType, type ThemeType, useTheme } from "rn-vs-lb/theme";
+import { useFocusEffect } from "@react-navigation/native";
 
 import { useRootStore, useStoreData } from "../../store/StoreProvider";
 
@@ -19,7 +20,9 @@ export const LibraryScreen = () => {
   const { theme, sizes, typography } = useTheme();
   const [isGalleryVisible, setIsGalleryVisible] = useState(false);
   const [initialIndex, setInitialIndex] = useState(0);
-  const { imageGenerationStore } = useRootStore();
+  const { authStore, imageGenerationStore } = useRootStore();
+
+  const isAuthenticated = useStoreData(authStore, (store) => store.isAuthenticated);
 
   const { photos, isLoading, isSyncing, pendingCount } = useStoreData(
     imageGenerationStore,
@@ -31,9 +34,16 @@ export const LibraryScreen = () => {
     }),
   );
 
-  useEffect(() => {
-    void imageGenerationStore.reloadRequests();
-  }, [imageGenerationStore]);
+  useFocusEffect(
+    useCallback(() => {
+      if (!isAuthenticated) {
+        imageGenerationStore.resetRequests();
+        return;
+      }
+
+      void imageGenerationStore.reloadRequests();
+    }, [imageGenerationStore, isAuthenticated]),
+  );
 
   const styles = useMemo(
     () => createStyles({ theme, sizes }),
@@ -62,15 +72,23 @@ export const LibraryScreen = () => {
     setIsGalleryVisible(false);
   }, []);
 
-  const refreshing = isLoading || isSyncing;
+  const refreshing = isAuthenticated && (isLoading || isSyncing);
 
   const handleRefresh = useCallback(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+
     void imageGenerationStore.reloadRequests();
-  }, [imageGenerationStore]);
+  }, [imageGenerationStore, isAuthenticated]);
 
   const handleSyncPending = useCallback(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+
     void imageGenerationStore.refreshPendingRequests();
-  }, [imageGenerationStore]);
+  }, [imageGenerationStore, isAuthenticated]);
 
   return (
     <ScrollView
@@ -86,7 +104,15 @@ export const LibraryScreen = () => {
     >
       <Text style={[typography.titleH4, { paddingHorizontal: 12, paddingVertical: 12 }]}>Галерея</Text>
 
-      {pendingCount > 0 ? (
+      {!isAuthenticated ? (
+        <View style={styles.emptyState}>
+          <Text style={[typography.body, styles.emptyStateText]}>
+            Войдите в аккаунт, чтобы просматривать обработанные изображения.
+          </Text>
+        </View>
+      ) : null}
+
+      {isAuthenticated && pendingCount > 0 ? (
         <View style={styles.pendingWrapper}>
           <Text style={[typography.bodySm, styles.pendingText]}>
             Обрабатывается {pendingCount} {pendingCount === 1 ? "изображение" : "изображения"}...
@@ -97,31 +123,33 @@ export const LibraryScreen = () => {
         </View>
       ) : null}
 
-      <View style={styles.galleryWrapper}>
-        {photos.length ? (
-          <ProfileSelfiesGalleryView
-            style={{ padding: 0 }}
-            photos={photos}
-            columns={columns}
-            itemSize={itemSize}
-            gap={gap}
-            visible={isGalleryVisible}
-            initialIndex={initialIndex}
-            onOpenAt={handleOpenAt}
-            onClose={handleClose}
-          />
-        ) : (
-          <View style={styles.emptyState}>
-            {refreshing ? (
-              <ActivityIndicator color={theme.primary} />
-            ) : (
-              <Text style={[typography.body, styles.emptyStateText]}>
-                Здесь появятся ваши готовые изображения после обработки.
-              </Text>
-            )}
-          </View>
-        )}
-      </View>
+      {isAuthenticated ? (
+        <View style={styles.galleryWrapper}>
+          {photos.length ? (
+            <ProfileSelfiesGalleryView
+              style={{ padding: 0 }}
+              photos={photos}
+              columns={columns}
+              itemSize={itemSize}
+              gap={gap}
+              visible={isGalleryVisible}
+              initialIndex={initialIndex}
+              onOpenAt={handleOpenAt}
+              onClose={handleClose}
+            />
+          ) : (
+            <View style={styles.emptyState}>
+              {refreshing ? (
+                <ActivityIndicator color={theme.primary} />
+              ) : (
+                <Text style={[typography.body, styles.emptyStateText]}>
+                  Здесь появятся ваши готовые изображения после обработки.
+                </Text>
+              )}
+            </View>
+          )}
+        </View>
+      ) : null}
     </ScrollView>
   );
 };

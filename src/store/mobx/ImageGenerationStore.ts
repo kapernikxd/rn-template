@@ -12,6 +12,7 @@ import type { RootStore } from "../rootStore";
 export class ImageGenerationStore {
   private readonly baseStore = new BaseStore();
   readonly subscribe: (listener: StoreListener) => () => void;
+  private readonly root: RootStore;
 
   selectedImages: Asset[] = [];
   isSubmitting = false;
@@ -23,12 +24,17 @@ export class ImageGenerationStore {
   isSyncingRequests = false;
   requestsError: string | null = null;
 
-  constructor(_root: RootStore) {
+  constructor(root: RootStore) {
+    this.root = root;
     this.subscribe = this.baseStore.subscribe;
   }
 
   private notify() {
     this.baseStore.notify();
+  }
+
+  private get isAuthenticated(): boolean {
+    return this.root.authStore.isAuthenticated;
   }
 
   get selectedImage(): Asset | null {
@@ -52,6 +58,24 @@ export class ImageGenerationStore {
 
   clearSelection(): void {
     this.selectedImages = [];
+    this.notify();
+  }
+
+  resetRequests(): void {
+    const hadState =
+      this.requests.length > 0 ||
+      this.isLoadingRequests ||
+      this.isSyncingRequests ||
+      this.requestsError !== null;
+
+    if (!hadState) {
+      return;
+    }
+
+    this.requests = [];
+    this.isLoadingRequests = false;
+    this.isSyncingRequests = false;
+    this.requestsError = null;
     this.notify();
   }
 
@@ -80,6 +104,12 @@ export class ImageGenerationStore {
   }
 
   async submitEditRequest(payload: EditImageRequestPayload): Promise<boolean> {
+    if (!this.isAuthenticated) {
+      this.submitError = "Авторизуйтесь, чтобы отправлять запросы";
+      this.notify();
+      return false;
+    }
+
     if (!this.selectedImages.length) {
       this.submitError = "Не выбрано изображение";
       this.notify();
@@ -112,6 +142,11 @@ export class ImageGenerationStore {
   }
 
   async fetchRequests(): Promise<ImageGenerationRecord[]> {
+    if (!this.isAuthenticated) {
+      this.resetRequests();
+      return [];
+    }
+
     this.isLoadingRequests = true;
     this.requestsError = null;
     this.notify();
@@ -131,6 +166,10 @@ export class ImageGenerationStore {
   }
 
   async refreshRequest(id: string): Promise<ImageGenerationRecord | null> {
+    if (!this.isAuthenticated) {
+      return null;
+    }
+
     try {
       const updated = await imageGenerationService.refreshRequest(id);
       this.requests = this.requests.map((request) =>
@@ -146,6 +185,10 @@ export class ImageGenerationStore {
   }
 
   async refreshPendingRequests(): Promise<void> {
+    if (!this.isAuthenticated) {
+      return;
+    }
+
     const pending = this.requests.filter((request) => request.status !== "completed");
     if (!pending.length) {
       return;
@@ -177,6 +220,11 @@ export class ImageGenerationStore {
   }
 
   async reloadRequests(): Promise<void> {
+    if (!this.isAuthenticated) {
+      this.resetRequests();
+      return;
+    }
+
     try {
       await this.fetchRequests();
     } catch (error) {
