@@ -75,6 +75,10 @@ export class AiBotStore {
     this.baseStore.notify();
   }
 
+  get snapshotVersion() {
+    return this.baseStore.snapshotVersion;
+  }
+
   private isAvatarFile(file: File | AvatarFile): file is AvatarFile {
     return typeof (file as AvatarFile)?.uri === 'string';
   }
