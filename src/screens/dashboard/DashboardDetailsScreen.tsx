@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useRoute, useNavigation } from "@react-navigation/native";
+import { useRoute, useNavigation, useFocusEffect } from "@react-navigation/native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { launchImageLibrary, type Asset } from "react-native-image-picker";
 
@@ -22,6 +22,7 @@ import { ExperiencePreviewHeader } from "./components/ExperiencePreviewHeader";
 import { ExperienceUploadCard } from "./components/ExperienceUploadCard";
 import { type DashboardNav, type DashboardDetailsRoute } from "../../navigation/types";
 import { useRootStore, useStoreData } from "../../store/StoreProvider";
+import { getTokenBalance, subtractTokens } from "../../helpers/tokenStorage";
 
 const BACKGROUND_COLOR = "#050505";
 
@@ -31,8 +32,9 @@ export const DashboardDetailsScreen = () => {
   const { card } = route.params;
   const { typography, sizes, theme } = useTheme();
   const insets = useSafeAreaInsets();
-  const { imageGenerationStore } = useRootStore();
+  const { imageGenerationStore, uiStore } = useRootStore();
   const [customPrompt, setCustomPrompt] = useState("");
+  const [tokenBalance, setTokenBalance] = useState<number | null>(null);
 
   const { selectedImage, isSubmitting } = useStoreData(
     imageGenerationStore,
@@ -42,9 +44,30 @@ export const DashboardDetailsScreen = () => {
     }),
   );
 
+  const refreshTokenBalance = useCallback(async () => {
+    try {
+      const balance = await getTokenBalance();
+      setTokenBalance(balance);
+      return balance;
+    } catch (error) {
+      console.warn("Failed to load token balance", error);
+      setTokenBalance(null);
+      uiStore.showSnackbar("Не удалось получить баланс токенов.", "error");
+      return null;
+    }
+  }, [uiStore]);
+
+  useFocusEffect(
+    useCallback(() => {
+      void refreshTokenBalance();
+    }, [refreshTokenBalance]),
+  );
+
+  const hasEnoughTokens = tokenBalance !== null && tokenBalance >= card.tokenCost;
+
   const continueDisabled = useMemo(
-    () => !selectedImage || isSubmitting,
-    [selectedImage, isSubmitting],
+    () => !selectedImage || isSubmitting || !hasEnoughTokens,
+    [selectedImage, isSubmitting, hasEnoughTokens],
   );
 
   const previewUri = selectedImage?.uri ?? null;
@@ -90,18 +113,39 @@ export const DashboardDetailsScreen = () => {
       return;
     }
 
-    const trimmedPrompt = customPrompt.trim();
-    const combinedPrompt = trimmedPrompt
-      ? `${card.generationPrompt}
-Дополнительные пожелания: ${trimmedPrompt}`
-      : card.generationPrompt;
-
     void (async () => {
+      const balance = await refreshTokenBalance();
+
+      if (balance === null) {
+        return;
+      }
+
+      if (balance < card.tokenCost) {
+        Alert.alert(
+          "Недостаточно токенов",
+          "У вас недостаточно токенов для обработки. Пополните баланс и попробуйте снова.",
+        );
+        return;
+      }
+
+      const trimmedPrompt = customPrompt.trim();
+      const combinedPrompt = trimmedPrompt
+        ? `${card.generationPrompt}
+Дополнительные пожелания: ${trimmedPrompt}`
+        : card.generationPrompt;
+
       const success = await imageGenerationStore.submitEditRequest({
         prompt: combinedPrompt,
       });
 
       if (success) {
+        try {
+          const updatedBalance = await subtractTokens(card.tokenCost);
+          setTokenBalance(updatedBalance);
+        } catch (error) {
+          console.warn("Failed to subtract tokens", error);
+          uiStore.showSnackbar("Не удалось обновить баланс токенов.", "error");
+        }
         Alert.alert(
           "Запрос отправлен",
           "Мы начали обработку вашего изображения. Готовый результат появится в библиотеке.",
@@ -112,7 +156,14 @@ export const DashboardDetailsScreen = () => {
         Alert.alert("Ошибка", message);
       }
     })();
-  }, [card.generationPrompt, customPrompt, imageGenerationStore, selectedImage]);
+  }, [
+    card.generationPrompt,
+    card.tokenCost,
+    customPrompt,
+    imageGenerationStore,
+    refreshTokenBalance,
+    selectedImage,
+  ]);
 
   return (
     <View style={[styles.container, { backgroundColor: BACKGROUND_COLOR }]}>
