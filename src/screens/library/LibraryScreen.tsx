@@ -157,7 +157,6 @@ const createStyles = ({
     },
     emptyStateText: {
       textAlign: "center",
-      color: "rgba(255,255,255,0.72)",
     },
     pendingWrapper: {
       flexDirection: "row",
