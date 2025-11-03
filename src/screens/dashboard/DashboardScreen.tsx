@@ -23,6 +23,8 @@ const POPULAR_CARDS: DashboardExperience[] = [
     },
     description: "Разыграйте близких неожиданным гостем у себя дома!",
     tokenCost: 10,
+    generationPrompt:
+      "Hyper-realistic horror style scene of an uninvited guest standing in a dim apartment hallway, cinematic lighting, eerie tension, detailed textures",
   },
   {
     id: "popular-2",
@@ -32,6 +34,8 @@ const POPULAR_CARDS: DashboardExperience[] = [
     },
     description: "Разыграйте близких неожиданным гостем у себя дома!",
     tokenCost: 10,
+    generationPrompt:
+      "Transform the subject into a mischievous plumber surrounded by leaking pipes and dripping water, neon reflections, expressive face, dramatic realism",
   },
   {
     id: "popular-3",
@@ -41,6 +45,8 @@ const POPULAR_CARDS: DashboardExperience[] = [
     },
     description: "Разыграйте близких неожиданным гостем у себя дома!",
     tokenCost: 10,
+    generationPrompt:
+      "Stylish mysterious neighbor leaning on an apartment doorway, cinematic lighting, moody corridor, vibrant yet unsettling atmosphere, high detail",
   },
 ];
 
@@ -53,6 +59,8 @@ const TRAVEL_CARDS: DashboardExperience[] = [
     },
     description: "Поза с Эйфелевой башней в шикарном парижском стиле",
     tokenCost: 10,
+    generationPrompt:
+      "Elegant travel photo in front of the Eiffel Tower at dusk, warm golden hour glow, fashionable Parisian outfit, cinematic skyline, soft bokeh",
   },
   {
     id: "horror-2",
@@ -62,6 +70,8 @@ const TRAVEL_CARDS: DashboardExperience[] = [
     },
     description: "Встаньте рядом с Биг-Беном в классическом лондонском стиле",
     tokenCost: 10,
+    generationPrompt:
+      "Moody London street scene near Big Ben on a rainy evening, wet cobblestones, trench coat and umbrella, misty lights, high realism",
   },
   {
     id: "horror-3",
@@ -71,6 +81,8 @@ const TRAVEL_CARDS: DashboardExperience[] = [
     },
     description: "Запечатлей свои первые восхищённые мгновения на фоне вечных пирамид.",
     tokenCost: 10,
+    generationPrompt:
+      "Sunrise desert scene at the Pyramids of Giza, warm sand tones, dramatic sky, subject posed heroically with ancient monuments in background",
   },
 ];
 
@@ -83,6 +95,8 @@ const SITUATION_CARDS: DashboardExperience[] = [
     },
     description: "Разыграйте близких неожиданной ситуацией!",
     tokenCost: 6,
+    generationPrompt:
+      "Chaotic flooded apartment with water pouring from ceiling, floating household items, dynamic motion, cinematic lighting, high detail",
   },
   {
     id: "costume-2",
@@ -92,6 +106,8 @@ const SITUATION_CARDS: DashboardExperience[] = [
     },
     description: "Разыграйте близких неожиданной ситуацией!",
     tokenCost: 10,
+    generationPrompt:
+      "Lively doorway scene with a colorful group of festive street performers offering fortune telling props, rich fabrics, warm lighting, playful energy",
   },
 ];
 
