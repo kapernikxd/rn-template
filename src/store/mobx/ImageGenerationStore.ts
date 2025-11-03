@@ -33,6 +33,10 @@ export class ImageGenerationStore {
     this.baseStore.notify();
   }
 
+  get snapshotVersion() {
+    return this.baseStore.snapshotVersion;
+  }
+
   private get isAuthenticated(): boolean {
     return this.root.authStore.isAuthenticated;
   }
