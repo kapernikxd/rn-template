@@ -112,7 +112,7 @@ const SITUATION_CARDS: DashboardExperience[] = [
 ];
 
 
-const chatBackground = require('../../assets/ai-background.png');
+const chatBackground = require("../../assets/ai-background.jpg");
 
 
 export const DashboardScreen = () => {
