@@ -92,7 +92,8 @@ export const AiAgentHeader = memo((props: AiAgentHeaderProps) => {
           )}
         </View>
       ) : (
-        <View style={[styles.sideSlotRight, styles.sideSlotRightPlaceholder]} />
+        null
+        // <View style={[styles.sideSlotRight, styles.sideSlotRightPlaceholder]} />
       )}
     </View>
 

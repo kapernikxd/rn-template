@@ -18,6 +18,9 @@ import { useActions, usePortalNavigation } from '../../../helpers/hooks';
 import { ProfileNav, ROUTES } from '../../../navigation/types';
 import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
 import { RewardedAdSettingsCard } from '../../../components/ads/components/RewardedAdSettingsCard';
+import SettingsListItem from '../../../components/SettingsListItem';
+import LanguageSelector from '../../../components/settings/LanguageSelector';
+import { FontAwesome } from '@expo/vector-icons';
 
 type SettingsRoute =
     | typeof ROUTES.ProfileEdit
@@ -64,7 +67,7 @@ export const ProfileSettingsScreen: FC = () => {
 
     const COPY_LINK = useMemo(
         () => [
-            { icon: 'copy', label: 'Скопировать ссылку', action: () => handleShareUserLink(myId) },
+            { icon: 'copy', label: 'Скопировать ссылку на приложение', action: () => handleShareUserLink(myId) },
         ],
         [handleShareUserLink, myId],
     );
@@ -100,7 +103,15 @@ export const ProfileSettingsScreen: FC = () => {
                     </CardContainer>
                     <CardContainer style={styles.card}>
                         <View><Text style={styles.title}>Тема</Text></View>
-                        <ThemeSwitcher />
+                        <ThemeSwitcher lightModeLabel="Светлая тема" darkModeLabel="Тёмная тема" />
+                        <Spacer size='xs' />
+                        <SettingsListItem
+                            label={'Язык интерфейса'}
+                            laberColor={theme.text}
+                            accessory={<LanguageSelector />}
+                            labelIcon={<FontAwesome color={theme.text} name="language" size={21} />}
+                            labelIconColor={theme.text}
+                        />
                     </CardContainer>
                     {ADS_ENABLED ? <RewardedAdSettingsCard style={styles.card} /> : null}
                     <CardContainer style={styles.card}>
@@ -114,14 +125,14 @@ export const ProfileSettingsScreen: FC = () => {
                         </CardContainer>
                     </View>
                 </View>
-                <Spacer size='xl'/>
-                <Spacer size='xl'/>
+                <Spacer size='xl' />
+                <Spacer size='xl' />
                 <View>
                     <CardContainer style={styles.card}>
-                        <TelegramFeedbackLink link={TELEGRAM_URL} />
+                        <TelegramFeedbackLink title='Отзывы и ошибки' subtitle='Нажмите, чтобы написать нам в Telegram' unsupportedLinkMessage='Невозможно открыть URL-адрес Telegram' link={TELEGRAM_URL} />
                     </CardContainer>
                     <CardContainer style={styles.card}>
-                        <DeleteAccountButton deleteAccount={handleDeleteAccount} />
+                        <DeleteAccountButton cancelButtonLabel="Отменить" confirmButtonLabel="Удалить" triggerLabel='Удалить аккаунт' modalTitle='Подтвердить удаление' modalDescription="Все ваши данные, включая профиль, события и историю чата, будут удалены без возможности восстановления. Этот процесс необратим и завершится в течение 24 часов. Вы уверены, что хотите продолжить?" deleteAccount={handleDeleteAccount} />
                     </CardContainer>
                     <View style={styles.version}>
                         <Text style={typography.body}>Версия {appVersion}</Text>

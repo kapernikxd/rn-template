@@ -45,14 +45,14 @@ export const ChatMessagesScreen: FC = observer(() => {
   const { setColors } = useSafeAreaColors();
   const styles = getStyles({ theme, sizes, commonStyles });
   const insets = useSafeAreaInsets();
-  const bottomPadding = Math.max(insets.bottom, typeof sizes.xs === 'number' ? sizes.xs : 0);
+  const bottomPadding = Math.max(insets.bottom, typeof sizes.xs === 'number' ? 55 : 0);
 
   const route = useRoute<RouteProp<ChatsStackParamList, 'ChatMessages'>>();
   const chatId = route.params.chatId;
 
   const { uiStore } = useRootStore();
 
-  const { goBack, goToProfile } = usePortalNavigation();
+  const { goBack, goToAiBotProfile } = usePortalNavigation();
 
   const {
     // refs
@@ -181,7 +181,7 @@ export const ChatMessagesScreen: FC = observer(() => {
         keyboardVerticalOffset={bottomPadding}
         style={{ flex: 1 }}
       >
-        <View style={styles.container}>
+        <View style={[styles.container]}>
           <HeaderSwitcher
             isFirst={editMode}
             componentA={
@@ -202,7 +202,7 @@ export const ChatMessagesScreen: FC = observer(() => {
                 onBackPress={goBack}
                 onImgPress={() => {
                   if (companionId) {
-                    goToProfile(companionId);
+                    goToAiBotProfile(companionId);
                   }
                 }}
                 onActionPress={headerActions}
@@ -264,7 +264,7 @@ export const ChatMessagesScreen: FC = observer(() => {
             </View>
           )}
 
-          <View style={[styles.inputWrapper, { paddingBottom: bottomPadding }]}>
+          <View style={[styles.inputWrapper]}>
             <InputMessage
               value={inputMessage}
               onChange={setInputMessage}

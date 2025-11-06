@@ -416,7 +416,7 @@ export const AiAgentCreateScreen: React.FC = () => {
         />
         <Spacer />
       </View>
-      
+
       <ScrollView
         style={styles.flex}
         contentContainerStyle={styles.scrollContent}
@@ -441,15 +441,17 @@ export const AiAgentCreateScreen: React.FC = () => {
 
       {!completed ? (
         <View style={[styles.footer, step > 0 && styles.footerSingleAction]}>
-          <Button
-            title={step === steps.length - 1 ? "Создать" : "Далее"}
-            onPress={handleSubmitStep}
-            loading={isSubmitting}
-            disabled={!currentStepComplete || isSubmitting}
-          />
           {step === 0 ? (
-            <Button title="Отмена" type="gray-outline" onPress={handleCancel} disabled={isSubmitting} />
+            <Button leftIcon={<Ionicons name={"close-outline"} color={theme.text} size={18} />} type="gray-outline" onPress={handleCancel} disabled={isSubmitting} />
           ) : null}
+          <View style={step === 0 ? { width: "80%" } : { width: "100%" }}>
+            <Button
+              title={step === steps.length - 1 ? "Создать" : "Далее"}
+              onPress={handleSubmitStep}
+              loading={isSubmitting}
+              disabled={!currentStepComplete || isSubmitting}
+            />
+          </View>
         </View>
       ) : null}
     </KeyboardAvoidingView>
@@ -488,7 +490,7 @@ const createStyles = ({
       paddingBottom: (sizes.xl as number) * 2,
     },
     stepContainer: {
-      paddingHorizontal: sizes.xs as number,  
+      paddingHorizontal: sizes.xs as number,
     },
     card: {
       backgroundColor: isDark ? theme.card : theme.white,
@@ -658,7 +660,7 @@ const createStyles = ({
       color: theme.greyText,
     },
     footer: {
-      flexDirection: "column",
+      flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
       paddingHorizontal: sizes.lg as number,

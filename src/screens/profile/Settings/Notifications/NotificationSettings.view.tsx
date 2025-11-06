@@ -119,7 +119,7 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
                 <Spacer />
               </View>
 
-              {NOTIFICATION_SETTINGS.map(({ key, label, icon }) => (
+              {/* {NOTIFICATION_SETTINGS.map(({ key, label, icon }) => (
                 <View key={key}>
                   <View style={globalStyleSheet.flexRowCenterBetween}>
                     <View style={globalStyleSheet.flexRowCenterCenter}>
@@ -147,7 +147,7 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
                   </View>
                   <Spacer />
                 </View>
-              ))}
+              ))} */}
 
               <Spacer />
             </View>

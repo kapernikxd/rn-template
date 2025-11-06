@@ -135,6 +135,7 @@ export const ForceUpdateWrapper: FC<Props> = ({ children }) => {
         onPressUpdate={onPressUpdate}
         title="Требуется обновление"
         description="Доступна новая версия приложения. Пожалуйста, обновитесь, чтобы продолжить работу."
+        updateButtonText='Обновить'
       />
     );
   }

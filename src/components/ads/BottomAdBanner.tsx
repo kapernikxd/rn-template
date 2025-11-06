@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import mobileAds, {
   BannerAd,
@@ -6,6 +6,7 @@ import mobileAds, {
   TestIds,
   RequestConfiguration,
 } from 'react-native-google-mobile-ads';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ensureTrackingTransparencyPermission } from '../../services/privacy/trackingTransparency';
 import { ANDROID_AD_UNIT_ID_BANNER, IOS_AD_UNIT_ID_BANNER } from '../../constants/links';
@@ -15,39 +16,31 @@ const isMobilePlatform = Platform.OS === 'ios' || Platform.OS === 'android';
 
 export const BottomAdBanner = () => {
   const { theme } = useTheme();
+  const insets = useSafeAreaInsets();
+  const [adLoaded, setAdLoaded] = useState(false);
+
   useEffect(() => {
-    if (!isMobilePlatform) {
-      return;
-    }
+    if (!isMobilePlatform) return;
 
     let isMounted = true;
-
     const initializeAds = async () => {
       try {
         await ensureTrackingTransparencyPermission();
-
-        if (!isMounted) {
-          return;
-        }
+        if (!isMounted) return;
 
         const requestConfiguration: RequestConfiguration = {
           tagForChildDirectedTreatment: false,
         };
-
         await mobileAds().setRequestConfiguration(requestConfiguration);
-
-        if (!isMounted) {
-          return;
-        }
+        if (!isMounted) return;
 
         await mobileAds().initialize();
       } catch {
-        // Silently ignore initialization errors to avoid crashing the UI.
+        // ignore errors
       }
     };
 
     void initializeAds();
-
     return () => {
       isMounted = false;
     };
@@ -68,13 +61,23 @@ export const BottomAdBanner = () => {
   }
 
   return (
-    <View style={[styles.container, {backgroundColor: theme.background}]}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: theme.background,
+          paddingBottom: adLoaded ? 0 : insets.bottom,
+        },
+      ]}
+    >
       <BannerAd
         unitId={bannerAdUnitId}
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
         requestOptions={{
           requestNonPersonalizedAdsOnly: true,
         }}
+        onAdLoaded={() => setAdLoaded(true)}
+        onAdFailedToLoad={() => setAdLoaded(false)}
       />
     </View>
   );
@@ -84,7 +87,5 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    // paddingVertical: 8,
   },
 });
-

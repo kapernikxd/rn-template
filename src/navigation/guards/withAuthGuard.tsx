@@ -46,7 +46,7 @@ export function withAuthGuard<P extends { route?: { params?: Record<string, unkn
       const redirect = getRedirectFromProps(props, options?.redirect);
 
       // ВАЖНО: лямбда, чтобы в goToLogin не попал PressEvent из onPress
-      return <NoAuth onPress={() => goToLogin(redirect)} />;
+      return <NoAuth title="Добро пожаловать" description="Для продолжения, пожалуйста, войдите в систему." buttonText="Войти" onPress={() => goToLogin(redirect)} />;
     }
 
     return <Component {...(props as P)} />;

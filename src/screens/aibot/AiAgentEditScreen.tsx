@@ -362,12 +362,20 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
 
       <View style={styles.footer}>
         <Button
-          title={activeStep === steps.length - 1 ? "Сохранить" : "Далее"}
-          onPress={handleNext}
-          loading={isSubmitting}
+          leftIcon={<Ionicons name={activeStep === 0 ? "close-outline" : "caret-back-outline" } color={theme.text} size={18} />}
+          // title={activeStep === 0 ? "Отмена" : "Назад"} 
+          type="gray-outline"
+          onPress={handleBack}
           disabled={isSubmitting}
         />
-        <Button title={activeStep === 0 ? "Отмена" : "Назад"} type="gray-outline" onPress={handleBack} disabled={isSubmitting} />
+        <View style={{ width: "80%" }}>
+          <Button
+            title={activeStep === steps.length - 1 ? "Сохранить" : "Далее"}
+            onPress={handleNext}
+            loading={isSubmitting}
+            disabled={isSubmitting}
+          />
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
@@ -566,7 +574,7 @@ const createStyles = ({
       color: theme.greyText,
     },
     footer: {
-      flexDirection: "column",
+      flexDirection: "row",
       justifyContent: "space-between",
       paddingHorizontal: sizes.lg as number,
       paddingVertical: sizes.md as number,

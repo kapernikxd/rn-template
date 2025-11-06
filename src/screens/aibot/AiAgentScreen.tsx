@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, RefreshControl, ScrollView, Share, View, useWindowDimensions } from "react-native";
+import { Alert, KeyboardAvoidingView, Platform, RefreshControl, ScrollView, Share, View, useWindowDimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useTheme } from "rn-vs-lb/theme";
 import { ModalProfilePhoto, ReportModal, Spacer } from "rn-vs-lb";
@@ -22,6 +22,8 @@ import {
   AiAgentTabBar,
 } from "./components";
 import { createAiAgentStyles } from "./styles";
+import { postReasonOptions, userReasonOptions } from "../../constants";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 
 type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.AiAgent>;
@@ -62,6 +64,9 @@ export const AiAgentScreen = ({ route }: Props) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [isAvatarPreviewVisible, setIsAvatarPreviewVisible] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const insets = useSafeAreaInsets();
+  const bottomPadding = Math.max(insets.bottom, typeof sizes.xs === 'number' ? 55 : 0);
 
   useEffect(() => {
     setColors({
@@ -129,7 +134,7 @@ export const AiAgentScreen = ({ route }: Props) => {
   const handleCloseAvatarPreview = useCallback(() => {
     setIsAvatarPreviewVisible(false);
   }, []);
-  const noop = useCallback(() => {}, []);
+  const noop = useCallback(() => { }, []);
 
   useEffect(() => {
     if (!avatarUri && isAvatarPreviewVisible) {
@@ -223,7 +228,7 @@ export const AiAgentScreen = ({ route }: Props) => {
       });
     }
     items.push({
-      label: 'Пожаловаться на пользователя',
+      label: 'Пожаловаться',
       icon: 'megaphone-outline',
       colorIcon: '#E63946',
       onPress: handleOpenReport,
@@ -254,7 +259,11 @@ export const AiAgentScreen = ({ route }: Props) => {
   }
 
   return (
-    <>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={bottomPadding}
+      style={{ flex: 1 }}
+    >
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -272,7 +281,7 @@ export const AiAgentScreen = ({ route }: Props) => {
           <AiAgentHeader
             theme={theme}
             onBack={onBack}
-            onShare={handleShare}
+            // onShare={handleShare}
             items={menuItems}
             renderRight={ADS_ENABLED ? <TokenBadge iconSize={22} /> : null}
           />
@@ -325,6 +334,12 @@ export const AiAgentScreen = ({ route }: Props) => {
         onClose={handleCloseReport}
         onSubmit={handleReportSubmit}
         type="user"
+        title="Сообщить о пользователе"
+        cancelText="Оменить"
+        submitText="Отправить"
+        userReasons={userReasonOptions}
+        postReasons={postReasonOptions}
+        inputPlaceholder="Дополнительные сведения (необязательно)"
       />
       {aiBotId ? (
         <GuestAiChatModal
@@ -343,7 +358,7 @@ export const AiAgentScreen = ({ route }: Props) => {
           goToEditProfileSetting={noop}
         />
       ) : null}
-    </>
+    </KeyboardAvoidingView>
   );
 };
 
