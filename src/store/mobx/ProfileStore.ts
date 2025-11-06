@@ -209,7 +209,7 @@ export class ProfileStore {
         Object.assign(this.myProfile, data.user);
       });
       this.notify();
-      this.root.uiStore.showSnackbar("Updated", "success");
+      this.root.uiStore.showSnackbar('Обновлено', 'success');
     } catch (error) {
       console.error("Error updating profile", error);
     }
@@ -252,7 +252,7 @@ export class ProfileStore {
       });
       this.notify();
     } catch (error) {
-      this.root.uiStore.showSnackbar("Failed", "error");
+      this.root.uiStore.showSnackbar('Не удалось обновить подписку', 'error');
     }
   }
 
@@ -368,7 +368,7 @@ export class ProfileStore {
   async blockUser(data: { reason?: string, details?: string, targetId: string }) {
     try {
       await this.profileService.blockUser(data);
-      this.root.uiStore.showSnackbar("User blocked", "success");
+      this.root.uiStore.showSnackbar('Пользователь заблокирован', 'success');
     } catch (error) {
       console.error(error);
       throw error;
@@ -378,7 +378,7 @@ export class ProfileStore {
   async reportUser(data: { reason?: string; details?: string; targetId: string }) {
     try {
       await this.profileService.reportUser(data);
-      this.root.uiStore.showSnackbar("Report sended", "success");
+      this.root.uiStore.showSnackbar('Жалоба отправлена', 'success');
       return true;
     } catch (error) {
       console.error("Failed to report user", error);
@@ -389,7 +389,7 @@ export class ProfileStore {
   async reportAiBot(data: { reason?: string; details?: string; targetId: string }) {
     try {
       await this.profileService.reportAiBot(data);
-      this.root.uiStore.showSnackbar("Report sended", "success");
+      this.root.uiStore.showSnackbar('Жалоба отправлена', 'success');
       return true;
     } catch (error) {
       console.error("Failed to report AI agent", error);
@@ -400,7 +400,7 @@ export class ProfileStore {
   async deleteAccount() {
     try {
       await this.profileService.deleteAccount();
-      this.root.uiStore.showSnackbar("Request sended", "success");
+      this.root.uiStore.showSnackbar('Запрос отправлен', 'success');
     } catch (error) {
       console.error(error);
     }

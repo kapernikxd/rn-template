@@ -45,7 +45,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   const handleImagePick = async (onChange: any) => {
     if (disabled) return;
     if (imageUris.length >= maxImages) {
-      alert(`You can upload a maximum of ${maxImages} images`);
+      alert(`Можно загрузить не более ${maxImages} изображений`);
       return;
     }
 
@@ -75,7 +75,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             newUris.push(imageUri);
           } catch (err) {
             console.error('Image compression failed:', err);
-            alert('Failed to compress image');
+            alert('Не удалось сжать изображение');
           }
         }
       }
@@ -117,8 +117,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             >
               <Text style={styles.uploadButtonText}>
                 {imageUris.length < maxImages
-                  ? 'Upload Image'
-                  : `Maximum ${maxImages} images`}
+                  ? 'Загрузить изображение'
+                  : `Максимум ${maxImages} изображений`}
               </Text>
             </TouchableOpacity>
             <View style={styles.imageContainer}>

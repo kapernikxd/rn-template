@@ -23,4 +23,4 @@ export class BaseStore {
   }
 }
 
-export type SubscribableStore = Pick<BaseStore, 'subscribe'>;
+export type SubscribableStore = Pick<BaseStore, 'subscribe' | 'snapshotVersion'>;

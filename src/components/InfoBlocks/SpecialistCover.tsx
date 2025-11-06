@@ -8,14 +8,14 @@ export const SpecialistCoverTooltip: React.FC = () => {
 
   return (
     <View>
-      <Text style={typography.titleH5}>What is the cover for?</Text>
+      <Text style={typography.titleH5}>Зачем нужна обложка?</Text>
       <Spacer size='xs' />
       <Text style={typography.body}>
-        The cover is a large banner for your specialist page. It appears at the top of your public profile and helps showcase your services.
+        Обложка — это большой баннер для страницы специалиста. Она отображается в верхней части публичного профиля и помогает рассказать о ваших услугах.
       </Text>
       <Spacer size='xs' />
       <Text style={typography.body}>
-        Choose an image that represents you—visitors will see it whenever they open your specialist profile.
+        Выберите изображение, которое отражает вас: посетители будут видеть его каждый раз, когда открывают ваш профиль специалиста.
       </Text>
     </View>
   );

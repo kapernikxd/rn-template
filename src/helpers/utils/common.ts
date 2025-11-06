@@ -23,3 +23,10 @@ export const extractFirstUrl = (text?: string): string | undefined => {
   // нормализуем: если "www.", добавим "https://"
   return raw.startsWith('http') ? raw : `https://${raw}`;
 };
+
+export function truncateText(text: string, maxLength: number): string {
+  if (text.length <= maxLength) {
+    return text;
+  }
+  return text.slice(0, maxLength).trimEnd() + '...';
+}

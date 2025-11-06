@@ -75,6 +75,10 @@ export class AiBotStore {
     this.baseStore.notify();
   }
 
+  get snapshotVersion() {
+    return this.baseStore.snapshotVersion;
+  }
+
   private isAvatarFile(file: File | AvatarFile): file is AvatarFile {
     return typeof (file as AvatarFile)?.uri === 'string';
   }
@@ -303,7 +307,7 @@ export class AiBotStore {
         this.selectAiBot = null;
       });
       this.notify();
-      this.root.uiStore.showSnackbar("Failed", "error");
+      this.root.uiStore.showSnackbar('Не удалось загрузить AI-бота', 'error');
       console.error("Failed to load AI bot", error);
     } finally {
       runInAction(() => {
@@ -366,7 +370,7 @@ export class AiBotStore {
         this.myBots = [];
       });
       this.notify();
-      this.root.uiStore.showSnackbar("Failed", "error");
+      this.root.uiStore.showSnackbar('Не удалось загрузить ваших AI-ботов', 'error');
       console.error("Failed to load my AI bots", error);
     } finally {
       runInAction(() => {
@@ -395,7 +399,7 @@ export class AiBotStore {
         this.subscribedBots = [];
       });
       this.notify();
-      this.root.uiStore.showSnackbar("Failed", "error");
+      this.root.uiStore.showSnackbar('Не удалось загрузить подписки на AI-ботов', 'error');
       console.error("Failed to load subscribed AI bots", error);
     } finally {
       runInAction(() => {
@@ -442,7 +446,7 @@ export class AiBotStore {
       });
       this.notify();
     } catch (error) {
-      this.root.uiStore.showSnackbar('Failed to update follow status', 'error');
+      this.root.uiStore.showSnackbar('Не удалось обновить статус подписки', 'error');
       console.error('Failed to update follow status', error);
     }
   }
@@ -454,10 +458,10 @@ export class AiBotStore {
         this.myBots.push(data);
         this.notify();
       });
-      this.root.uiStore.showSnackbar("Created", "success");
+      this.root.uiStore.showSnackbar('AI-бот создан', 'success');
       return data;
     } catch (error: unknown) {
-      this.root.uiStore.showSnackbar("Failed", "error");
+      this.root.uiStore.showSnackbar('Не удалось создать AI-бота', 'error');
       throw error;
     }
   }
@@ -529,7 +533,7 @@ export class AiBotStore {
       });
       this.notify();
 
-      this.root.uiStore.showSnackbar('AI agent created', 'success');
+      this.root.uiStore.showSnackbar('AI-бот создан', 'success');
     } catch (error: unknown) {
       const message = this.resolveErrorMessage(error);
 
@@ -543,7 +547,7 @@ export class AiBotStore {
       });
       this.notify();
 
-      this.root.uiStore.showSnackbar('Failed to create AI agent', 'error');
+      this.root.uiStore.showSnackbar('Не удалось создать AI-бота', 'error');
     } finally {
       runInAction(() => {
         this.isSubmitting = false;
@@ -645,12 +649,12 @@ export class AiBotStore {
           this.notify();
         });
 
-        this.root.uiStore.showSnackbar('AI agent updated', 'success');
+        this.root.uiStore.showSnackbar('AI-бот обновлён', 'success');
       }
 
       return updated as AiBotDTO | undefined;
     } catch (error) {
-      this.root.uiStore.showSnackbar('Failed to update AI agent', 'error');
+      this.root.uiStore.showSnackbar('Не удалось обновить AI-бота', 'error');
       console.error('Failed to update AI agent', error);
       throw error;
     }
@@ -672,7 +676,7 @@ export class AiBotStore {
         this.botDetails = null;
         this.botPhotos = [];
         this.notify();
-        this.root.uiStore.showSnackbar('AI agent deleted', 'success');
+        this.root.uiStore.showSnackbar('AI-бот удалён', 'success');
       });
     } catch (error) {
       throw error;
@@ -694,7 +698,7 @@ export class AiBotStore {
       });
       this.notify();
     } catch (error) {
-      this.root.uiStore.showSnackbar("Failed", "error");
+      this.root.uiStore.showSnackbar('Не удалось обновить подписку', 'error');
       console.error('Failed to fetch AI bot details', error);
     } finally {
       runInAction(() => {
@@ -715,7 +719,7 @@ export class AiBotStore {
         } as AiBotDTO;
       });
     } catch (e) {
-      this.root.uiStore.showSnackbar("Failed", "error");
+      this.root.uiStore.showSnackbar('Не удалось обновить подписку', 'error');
     }
   }
 
@@ -728,9 +732,9 @@ export class AiBotStore {
         this.botPhotos = data.photos ?? [];
       });
       this.notify();
-      this.root.uiStore.showSnackbar("Saved", "success");
+      this.root.uiStore.showSnackbar('Фотографии сохранены', 'success');
     } catch (error) {
-      this.root.uiStore.showSnackbar("Upload failed", "error");
+      this.root.uiStore.showSnackbar('Не удалось загрузить фотографии', 'error');
       console.error('Failed to upload AI bot photos', error);
     } finally {
       runInAction(() => {
@@ -750,9 +754,9 @@ export class AiBotStore {
         this.botPhotos = data.photos ?? [];
       });
       this.notify();
-      this.root.uiStore.showSnackbar("Deleted", "success");
+      this.root.uiStore.showSnackbar('Фотографии удалены', 'success');
     } catch (error) {
-      this.root.uiStore.showSnackbar("Delete failed", "error");
+      this.root.uiStore.showSnackbar('Не удалось удалить фотографии', 'error');
       console.error('Failed to delete AI bot photos', error);
     } finally {
       runInAction(() => {

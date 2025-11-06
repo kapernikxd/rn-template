@@ -104,13 +104,13 @@ export class ChatStore {
 
   async pinMessage(message: MessageDTO) {
     if (this.isMessagePinned(message._id)) return;
-    if (this.pinnedMessages.length >= 5) {
-      this.root.uiStore.showSnackbar(
-        'You can pin up to 5 messages. To pin a new message, remove one of the messages that are already pinned.',
-        'info'
-      );
-      return;
-    }
+    // if (this.pinnedMessages.length >= 5) {
+    //   this.root.uiStore.showSnackbar(
+    //     'Можно закрепить до 5 сообщений. Чтобы закрепить новое, сначала открепите одно из текущих.',
+    //     'info'
+    //   );
+    //   return;
+    // }
 
     try {
       await this.chatService.pinMessage(message._id);
@@ -359,7 +359,7 @@ export class ChatStore {
         this.messages.push(messageData as any);
       });
     } catch (err) {
-      this.root.uiStore.showSnackbar("Failed", "error");
+      this.root.uiStore.showSnackbar('Не удалось отправить сообщение', 'error');
       console.error("Ошибка при отправке сообщения:", err);
     }
   }

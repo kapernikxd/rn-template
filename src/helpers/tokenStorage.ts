@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { DEFAULT_TOKEN_BALANCE } from '../constants/links';
 
 const TOKEN_BALANCE_STORAGE_KEY = 'app.tokens.balance';
-export const DEFAULT_TOKEN_BALANCE = 100;
 
 const sanitizeTokenAmount = (value: number) => {
     if (Number.isNaN(value) || !Number.isFinite(value)) {

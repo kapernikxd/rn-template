@@ -39,9 +39,9 @@ export const useSocialProfiles = () => {
             ...data,
           },
         });
-        uiStore.showSnackbar('Updated', 'success');
+        uiStore.showSnackbar('Обновлено', 'success');
       } catch {
-        uiStore.showSnackbar('Failed', 'error');
+        uiStore.showSnackbar('Произошла ошибка', 'error');
       } finally {
         setIsSubmitting(false);
       }

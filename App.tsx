@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { ThemeProvider } from 'rn-vs-lb/theme';
+import { ThemeProvider, useTheme } from 'rn-vs-lb/theme';
 import { StoreProvider } from './src/store/StoreProvider';
 import { AppNavigator } from './src/navigation';
 import { Theme } from './src/constants/theme';
@@ -12,13 +12,24 @@ import { View, StyleSheet } from 'react-native';
 import { BottomAdBanner } from './src/components/ads/BottomAdBanner';
 import { ADS_ENABLED } from './src/constants/links';
 
+const AppStatusBar = () => {
+  const { isDark, theme } = useTheme();
+
+  return (
+    <StatusBar
+      style={isDark ? 'light' : 'dark'}
+      backgroundColor={theme.background}
+    />
+  );
+};
+
 export default function App() {
   return (
     <Host>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <SafeAreaProvider>
           <ThemeProvider theme={Theme}>
-            <StatusBar style="auto" />
+            <AppStatusBar />
             <StoreProvider>
               <ForceUpdateWrapper>
                 <View style={styles.appContainer}>
