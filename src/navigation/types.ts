@@ -11,7 +11,8 @@ import type {
   BottomTabNavigationProp,
   BottomTabScreenProps,
 } from '@react-navigation/bottom-tabs';
-import type { CompositeNavigationProp, CompositeScreenProps } from '@react-navigation/native';
+import type { CompositeScreenProps } from '@react-navigation/native';
+import type { DashboardExperience } from '../types/dashboard';
 
 /**
  * 1) Единый источник имён роутов (без хардкода строк по проекту)
@@ -27,7 +28,7 @@ export const ROUTES = {
 
   // Tabs
   DashboardTab: 'DashboardTab',
-  CreateBotTab: 'CreateBotTab',
+  LibraryTab: 'LibraryTab',
   ChatsTab: 'ChatsTab',
   ProfileTab: 'ProfileTab',
 
@@ -35,19 +36,15 @@ export const ROUTES = {
   Dashboard: 'Dashboard',
   DashboardDetails: 'DashboardDetails',
 
+  // Library stack
+  Library: 'Library',
+
   // Chats stack
   Chats: 'Chats',
   ChatMessages: 'ChatMessages',
-  UserProfile: 'UserProfile',
 
-  // Profile stack
-  Profile: 'Profile',
-  ProfileSettings: 'ProfileSettings',
-  ProfileEdit: 'ProfileEdit',
-  ProfileAccountSettings: 'ProfileAccountSettings',
-  ProfileChangePassword: 'ProfileChangePassword',
-  ProfileSocialProfiles: 'ProfileSocialProfiles',
-  ProfileNotificationSettings: 'ProfileNotificationSettings',
+  // Settings stack
+  Settings: 'Settings',
 
   // Root-level (модалки/auth и т.п.)
   RootTabs: 'RootTabs',
@@ -67,7 +64,7 @@ export type RouteName = typeof ROUTES[keyof typeof ROUTES];
  */
 export type DashboardStackParamList = {
   [ROUTES.Dashboard]: undefined;
-  [ROUTES.DashboardDetails]: undefined;
+  [ROUTES.DashboardDetails]: { card: DashboardExperience };
 };
 
 export type ChatsStackParamList = {
@@ -75,25 +72,22 @@ export type ChatsStackParamList = {
   [ROUTES.ChatMessages]: { chatId: string };
 };
 
-export type ProfileStackParamList = {
-  [ROUTES.Profile]: undefined;
-  [ROUTES.ProfileSettings]: undefined;
-  [ROUTES.ProfileEdit]: undefined;
-  [ROUTES.ProfileAccountSettings]: undefined;
-  [ROUTES.ProfileChangePassword]: undefined;
-  [ROUTES.ProfileSocialProfiles]: undefined;
-  [ROUTES.ProfileNotificationSettings]: undefined;
-  [ROUTES.UserProfile]: { userId: string };
+export type SettingsParamList = {
+  [ROUTES.Settings]: undefined;
 };
 
 /**
  * 3) Tabs: кладём внутрь NavigatorScreenParams соответствующих стэков
  */
+export type LibraryStackParamList = {
+  [ROUTES.Library]: undefined;
+};
+
 export type MainTabParamList = {
   [ROUTES.DashboardTab]: NavigatorScreenParams<DashboardStackParamList>;
-  [ROUTES.CreateBotTab]: undefined;
+  [ROUTES.LibraryTab]: NavigatorScreenParams<LibraryStackParamList>;
   [ROUTES.ChatsTab]: NavigatorScreenParams<ChatsStackParamList>;
-  [ROUTES.ProfileTab]: NavigatorScreenParams<ProfileStackParamList>;
+  [ROUTES.ProfileTab]: NavigatorScreenParams<SettingsParamList>;
 };
 
 export type AuthRedirect = {
@@ -138,7 +132,8 @@ export type RootNav = NativeStackNavigationProp<RootStackParamList>;
 // Навигация конкретного стэка:
 export type DashboardNav = NativeStackNavigationProp<DashboardStackParamList>;
 export type ChatsNav = NativeStackNavigationProp<ChatsStackParamList>;
-export type ProfileNav = NativeStackNavigationProp<ProfileStackParamList>;
+export type ProfileNav = NativeStackNavigationProp<SettingsParamList>;
+export type LibraryNav = NativeStackNavigationProp<LibraryStackParamList>;
 
 // Пример: пропсы экрана Dashboard, вложенного в табы + стек
 export type DashboardScreenProps = CompositeScreenProps<
@@ -150,6 +145,11 @@ export type DashboardScreenProps = CompositeScreenProps<
 export type DashboardRoute = RouteProp<
   DashboardStackParamList,
   typeof ROUTES.Dashboard
+>;
+
+export type DashboardDetailsRoute = RouteProp<
+  DashboardStackParamList,
+  typeof ROUTES.DashboardDetails
 >;
 
 export type ChatMessagesRoute = RouteProp<

@@ -9,10 +9,12 @@ import mobileAds, {
 
 import { ensureTrackingTransparencyPermission } from '../../services/privacy/trackingTransparency';
 import { ANDROID_AD_UNIT_ID_BANNER, IOS_AD_UNIT_ID_BANNER } from '../../constants/links';
+import { useTheme } from 'rn-vs-lb/theme';
 
 const isMobilePlatform = Platform.OS === 'ios' || Platform.OS === 'android';
 
 export const BottomAdBanner = () => {
+  const { theme } = useTheme();
   useEffect(() => {
     if (!isMobilePlatform) {
       return;
@@ -66,7 +68,7 @@ export const BottomAdBanner = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: theme.background}]}>
       <BannerAd
         unitId={bannerAdUnitId}
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
@@ -82,8 +84,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
-    backgroundColor: 'transparent',
+    // paddingVertical: 8,
   },
 });
 

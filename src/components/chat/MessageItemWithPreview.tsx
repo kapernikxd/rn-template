@@ -9,7 +9,7 @@ import { extractFirstUrl } from '../../helpers/utils/common';
 type Props = Omit<MessageItemProps, 'linkPreview' | 'linkPreviewLoading' | 'linkHandler'>;
 
 export const MessageItemWithPreview: FC<Props> = ({ item, onLongPress, ...rest }) => {
-  const deletedPlaceholder = 'Message deleted';
+  const deletedPlaceholder = 'Сообщение удалено';
   const rawItem = item as any;
   const isDeleted = rawItem?.status === 'deleted';
 

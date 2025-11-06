@@ -3,6 +3,7 @@ import type { AuthUserLike } from "../../types/auth";
 import {
   getRefreshToken,
   getAccessToken,
+  getLocalUserId,
   setRefreshToken,
   setAccessToken,
   removeRefreshToken,
@@ -46,6 +47,10 @@ $api.interceptors.request.use(
       config.headers.Authorization = `Bearer ${accessToken}`;
     } else {
       delete config.headers.Authorization;
+    }
+    const localUserId = await getLocalUserId();
+    if (localUserId) {
+      config.headers['X-User-Id'] = localUserId;
     }
     return config;
   },

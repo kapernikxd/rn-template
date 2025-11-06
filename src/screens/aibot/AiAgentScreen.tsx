@@ -223,7 +223,7 @@ export const AiAgentScreen = ({ route }: Props) => {
       });
     }
     items.push({
-      label: 'Report user',
+      label: 'Пожаловаться на пользователя',
       icon: 'megaphone-outline',
       colorIcon: '#E63946',
       onPress: handleOpenReport,

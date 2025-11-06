@@ -233,7 +233,7 @@ export function useChatMessages() {
     reportSelected: () => {
       if (!selectedMessage) return;
       chatStore.reportMessage(selectedMessage._id);
-      uiStore.showSnackbar('The report has been sent', 'success');
+      uiStore.showSnackbar('Жалоба отправлена', 'success');
       setSelectedMessage(null);
       toggleMode();
     },
@@ -241,10 +241,10 @@ export function useChatMessages() {
       if (!selectedMessage) return;
       try {
         await chatStore.deleteMessage(selectedMessage._id);
-        uiStore.showSnackbar('Message deleted', 'success');
+        uiStore.showSnackbar('Сообщение удалено', 'success');
       } catch (error) {
         console.error('Failed to delete message', error);
-        uiStore.showSnackbar('Failed to delete message', 'error');
+        uiStore.showSnackbar('Не удалось удалить сообщение', 'error');
       } finally {
         setSelectedMessage(null);
         setEditMode(false);
@@ -254,7 +254,7 @@ export function useChatMessages() {
       if (!selectedMessage?.content) return;
       await Clipboard.setStringAsync(selectedMessage.content);
       setSelectedMessage(null);
-      uiStore.showSnackbar('Copied', 'success');
+      uiStore.showSnackbar('Скопировано', 'success');
       toggleMode();
     },
     togglePinSelected: () => {
@@ -283,10 +283,10 @@ export function useChatMessages() {
       try {
         await chatStore.clearChatHistory(chatId);
         setSkip(0);
-        uiStore.showSnackbar('Chat history cleared', 'success');
+        uiStore.showSnackbar('История чата очищена', 'success');
       } catch (error) {
         console.error('Failed to clear chat history', error);
-        uiStore.showSnackbar('Failed to clear chat history', 'error');
+        uiStore.showSnackbar('Не удалось очистить историю чата', 'error');
       }
     },
   };

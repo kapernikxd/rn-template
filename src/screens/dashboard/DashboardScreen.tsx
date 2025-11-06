@@ -1,182 +1,188 @@
-import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useTheme } from 'rn-vs-lb/theme';
-import { Spacer, TabBarAi } from 'rn-vs-lb';
+import React, { useCallback, useEffect, useMemo } from "react";
+import { ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SIZES, useTheme } from "rn-vs-lb/theme";
 
-import { useRootStore, useStoreData } from '../../store/StoreProvider';
-import type { AiBotMainPageBot } from '../../types';
-import { AiBotCard } from '../../components/aibot/AiBotCard';
-import { usePortalNavigation } from '../../helpers/hooks';
-import { MAIN_HORIZONTAL_PADDING } from '../../constants/layout';
-import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
-import { capitalizeFirstLetter } from '../../helpers/utils/common';
+import { HorizontalCardSection } from "rn-vs-lb";
+import { Spacer } from "rn-vs-lb";
+import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";
+import { ROUTES, type DashboardNav } from "../../navigation/types";
+import type { DashboardExperience } from "../../types/dashboard";
+import { Theme } from "../../constants";
+import { POPULAR_HOMELESS, POPULAR_NEIGHBOR, POPULAR_PLUMBER, SITUATION_2, SITUATION_GOVNO, TRAVEL_GIZA, TRAVEL_LONDON, TRAVEL_PARIS } from "../../helpers/utils/cards";
 
-const COLUMN_GAP = 2;
+const HALLOWEEN_BACKGROUND = "#070C1F";
+
+const POPULAR_CARDS: DashboardExperience[] = [
+  {
+    id: "popular-1",
+    title: "Розыгрыш с незваным гостем",
+    image: {
+      uri: POPULAR_HOMELESS,
+    },
+    description: "Разыграйте близких неожиданным гостем у себя дома!",
+    tokenCost: 10,
+    generationPrompt:
+      "Hyper-realistic horror style scene of an uninvited guest standing in a dim apartment hallway, cinematic lighting, eerie tension, detailed textures",
+  },
+  {
+    id: "popular-2",
+    title: "Сантехник",
+    image: {
+      uri: POPULAR_PLUMBER,
+    },
+    description: "Разыграйте близких неожиданным гостем у себя дома!",
+    tokenCost: 10,
+    generationPrompt:
+      "Transform the subject into a mischievous plumber surrounded by leaking pipes and dripping water, neon reflections, expressive face, dramatic realism",
+  },
+  {
+    id: "popular-3",
+    title: "Соседка",
+    image: {
+      uri: POPULAR_NEIGHBOR,
+    },
+    description: "Разыграйте близких неожиданным гостем у себя дома!",
+    tokenCost: 10,
+    generationPrompt:
+      "Stylish mysterious neighbor leaning on an apartment doorway, cinematic lighting, moody corridor, vibrant yet unsettling atmosphere, high detail",
+  },
+];
+
+const TRAVEL_CARDS: DashboardExperience[] = [
+  {
+    id: "horror-1",
+    title: "Париж",
+    image: {
+      uri: TRAVEL_PARIS
+    },
+    description: "Поза с Эйфелевой башней в шикарном парижском стиле",
+    tokenCost: 10,
+    generationPrompt:
+      "Elegant travel photo in front of the Eiffel Tower at dusk, warm golden hour glow, fashionable Parisian outfit, cinematic skyline, soft bokeh",
+  },
+  {
+    id: "horror-2",
+    title: "Лондон",
+    image: {
+      uri: TRAVEL_LONDON
+    },
+    description: "Встаньте рядом с Биг-Беном в классическом лондонском стиле",
+    tokenCost: 10,
+    generationPrompt:
+      "Moody London street scene near Big Ben on a rainy evening, wet cobblestones, trench coat and umbrella, misty lights, high realism",
+  },
+  {
+    id: "horror-3",
+    title: "Гиза",
+    image: {
+      uri: TRAVEL_GIZA
+    },
+    description: "Запечатлей свои первые восхищённые мгновения на фоне вечных пирамид.",
+    tokenCost: 10,
+    generationPrompt:
+      "Sunrise desert scene at the Pyramids of Giza, warm sand tones, dramatic sky, subject posed heroically with ancient monuments in background",
+  },
+];
+
+const SITUATION_CARDS: DashboardExperience[] = [
+  {
+    id: "costume-1",
+    title: "Затопило",
+    image: {
+      uri: SITUATION_GOVNO,
+    },
+    description: "Разыграйте близких неожиданной ситуацией!",
+    tokenCost: 6,
+    generationPrompt:
+      "Chaotic flooded apartment with water pouring from ceiling, floating household items, dynamic motion, cinematic lighting, high detail",
+  },
+  {
+    id: "costume-2",
+    title: 'Пришли цыгане',
+    image: {
+      uri: SITUATION_2,
+    },
+    description: "Разыграйте близких неожиданной ситуацией!",
+    tokenCost: 10,
+    generationPrompt:
+      "Lively doorway scene with a colorful group of festive street performers offering fortune telling props, rich fabrics, warm lighting, playful energy",
+  },
+];
+
+
+const chatBackground = require("../../assets/ai-background.jpg");
+
 
 export const DashboardScreen = () => {
-  const { aiBotStore } = useRootStore();
+  const { typography, sizes, theme } = useTheme();
   const { setColors } = useSafeAreaColors();
-  const bots = useStoreData(aiBotStore, (store) => store.mainPageBots);
-  const isLoading = useStoreData(aiBotStore, (store) => store.isLoadingMainPageBots);
-  const error = useStoreData(aiBotStore, (store) => store.mainPageBotsError);
-  const { width } = useWindowDimensions();
-  const { theme } = useTheme();
-  const { goToAiBotProfile } = usePortalNavigation();
-
-  const [index, setIndex] = useState(0);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const insets = useSafeAreaInsets();
+  const navigation = useNavigation<DashboardNav>();
 
   useEffect(() => {
     setColors({
       topColor: theme.background,
-      bottomColor: theme.white,
+      bottomColor: theme.background,
     });
-  }, [theme, setColors]);
+  }, [setColors]);
 
-  const categories = useMemo(() => {
-    const uniqueCategories = new Set<string>();
-
-    bots.forEach((bot) => {
-      bot.details?.categories?.forEach((category) => {
-        const normalizedCategory = category?.trim();
-        if (normalizedCategory) {
-          uniqueCategories.add(normalizedCategory);
-        }
-      });
-    });
-
-    return Array.from(uniqueCategories);
-  }, [bots]);
-
-  const tabs = useMemo(
+  const sections = useMemo(
     () => [
-      { key: 'all', label: 'Все' },
-      ...categories.map((category) => ({
-        key: category,
-        label: capitalizeFirstLetter(category),
-      })),
+      { title: "Популярное", cards: POPULAR_CARDS },
+      { title: "Путешествия", cards: TRAVEL_CARDS },
+      { title: "Ситуации", cards: SITUATION_CARDS },
     ],
-    [categories],
-  );
-
-  useEffect(() => {
-    if (index >= tabs.length) {
-      setIndex(0);
-    }
-  }, [index, tabs.length]);
-
-  const activeTab = tabs[index] ?? tabs[0];
-
-  const filteredBots = useMemo(() => {
-    if (!activeTab || activeTab.key === 'all') {
-      return bots;
-    }
-
-    return bots.filter((bot) =>
-      bot.details?.categories?.some((category) => category?.trim() === activeTab.key),
-    );
-  }, [activeTab, bots]);
-
-  useEffect(() => {
-    if (!bots.length && !isLoading) {
-      void aiBotStore.fetchMainPageBots();
-    }
-  }, [aiBotStore, bots.length, isLoading]);
-
-  const cardWidth = useMemo(() => {
-    return (width - MAIN_HORIZONTAL_PADDING * 2 - COLUMN_GAP) / 2;
-  }, [width]);
-
-  const renderHeader = useCallback(
-    () => (
-      <View style={styles.header}>
-        <Text style={styles.heading}>AI-компаньоны</Text>
-        <Text style={styles.subheading}>
-          Выберите бота, чтобы начать диалог или найти вдохновение. Команда ежедневно добавляет
-          новых героев и сценарии общения.
-        </Text>
-      </View>
-    ),
     [],
   );
 
-  const handleOpenBotProfile = useCallback((botId: string) => {
-    goToAiBotProfile(botId);
-  }, [goToAiBotProfile]);
+  const handleSeeAll = useCallback((_sectionTitle: string) => {
+    // TODO: integrate navigation to the full catalog
+  }, []);
 
-  const renderItem = useCallback(
-    ({ item }: { item: AiBotMainPageBot }) => (
-      <AiBotCard
-        bot={item}
-        style={{ width: cardWidth }}
-        onPress={() => handleOpenBotProfile(item.id)}
-      />
-    ),
-    [cardWidth, handleOpenBotProfile],
+  const handleCardPress = useCallback(
+    (card: DashboardExperience) => {
+      navigation.navigate(ROUTES.DashboardDetails, { card });
+    },
+    [navigation],
   );
 
-  const handleRefresh = useCallback(async () => {
-    if (isLoading || isRefreshing) {
-      return;
-    }
-
-    setIsRefreshing(true);
-    try {
-      await aiBotStore.fetchMainPageBots();
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [aiBotStore, isLoading, isRefreshing]);
-
-  const renderEmptyComponent = useCallback(() => (
-    <View style={styles.emptyState}>
-      {isLoading ? (
-        <ActivityIndicator color={theme.white} />
-      ) : (
-        <Text style={styles.emptyText}>
-          {error ?? 'AI-боты скоро появятся здесь. Попробуйте обновить позже.'}
-        </Text>
-      )}
-    </View>
-  ), [error, isLoading, theme.white]);
-
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
-      <TabBarAi
-        tabs={tabs}
-        activeIndex={index}
-        onChange={setIndex}
-        // кастомизация под твой тёмный UI
-        activeColor={theme.black}
-        inactiveColor={theme.black}
-        indicatorColor={theme.black}
-        indicatorHeight={2}
-        fontSize={16}
-        fontWeightActive="500"
-        fontWeightInactive="300"
-        gap={18}
-      />
-      <Spacer size='xs' />
-      <FlatList
-        data={filteredBots}
-        keyExtractor={(item) => item.id}
-        numColumns={2}
-        renderItem={renderItem}
-        contentContainerStyle={[styles.content, bots.length === 0 && styles.emptyContent]}
-        columnWrapperStyle={bots.length ? styles.columnWrapper : undefined}
-        // ListHeaderComponent={renderHeader}
-        ListEmptyComponent={renderEmptyComponent}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefreshing}
-            onRefresh={handleRefresh}
-            tintColor={theme.black}
-            colors={[theme.black]}
-          />
-        }
-      />
-    </View>
+    <ScrollView
+      style={[styles.container, { backgroundColor: theme.background }]}
+      showsVerticalScrollIndicator={false}
+    >
+      <ImageBackground source={chatBackground} style={styles.background}>
+        <View style={[styles.header, { backgroundColor: theme.backgroundSemiTransparent }]}>
+          <Text style={[typography.titleH3, {color: 'white'}]}>Halloween Night</Text>
+          <Text style={[typography.body, {color: 'white'}]}>
+            Grab some popcorn and stream the scariest scenes of the season.
+          </Text>
+        </View>
+      </ImageBackground>
+
+      <Spacer size="lg" />
+
+      <View style={styles.content}>
+
+        {sections.map((section) => (
+          <>
+            <HorizontalCardSection
+              key={section.title}
+              title={section.title}
+              cards={section.cards}
+              // onPressSeeAll={() => handleSeeAll(section.title)}
+              onPressCard={(card) => handleCardPress(card as DashboardExperience)}
+              style={styles.section}
+              contentContainerStyle={styles.sectionContent}
+            />
+            <Spacer size="md" />
+            <Spacer size="lg" />
+          </>
+        ))}
+      </View>
+    </ScrollView>
   );
 };
 
@@ -185,41 +191,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingBottom: 32,
-    paddingTop: 16,
-    gap: 2,
+    paddingHorizontal: SIZES.xxs as number
   },
-  emptyContent: {
-    flexGrow: 1,
-  },
-  columnWrapper: {
-    gap: COLUMN_GAP,
-    marginBottom: 2,
+  background: {
+    paddingVertical: 90,
   },
   header: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  heading: {
-    fontSize: 26,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  subheading: {
-    fontSize: 14,
-    lineHeight: 20,
-    color: 'rgba(255, 255, 255, 0.72)',
-  },
-  emptyState: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 24,
     gap: 12,
+    paddingHorizontal: SIZES.lg as number,
   },
-  emptyText: {
-    fontSize: 14,
-    textAlign: 'center',
-    color: 'rgba(255, 255, 255, 0.65)',
+  section: {
+    gap: 16,
+  },
+  sectionContent: {
+    paddingHorizontal: 0,
   },
 });
+
+export default DashboardScreen;

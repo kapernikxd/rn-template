@@ -3,32 +3,33 @@ import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { createBottomTabNavigator, type BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { useLinkBuilder } from '@react-navigation/native';
 import { PlatformPressable } from '@react-navigation/elements';
-import { Feather } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaInsetsContext, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ChatsStack } from './stacks/ChatsStack';
 import { DashboardStack } from './stacks/DashboardStack';
+import { LibraryStack } from './stacks/LibraryStack';
 import { ProfileStack } from './stacks/ProfileStack';
 import type { MainTabParamList } from './types';
 import { useTheme } from 'rn-vs-lb/theme';
 import { useRootStore, useStoreData } from '../store/StoreProvider';
 import { Dot } from 'rn-vs-lb';
-import { AiAgentCreateScreen } from '../screens/aibot';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 type TabConfig = {
   name: keyof MainTabParamList;
   label: string;
-  icon: keyof typeof Feather.glyphMap;
+  icon: keyof typeof MaterialIcons.glyphMap;
   component: ComponentType;
+  hidden?: boolean;
 };
 
 const TABS: TabConfig[] = [
-  { name: 'DashboardTab', label: 'Главная', icon: 'home', component: DashboardStack },
-  { name: 'CreateBotTab', label: 'AI-агенты', icon: 'zap', component: AiAgentCreateScreen },
-  { name: 'ChatsTab', label: 'Чаты', icon: 'message-circle', component: ChatsStack },
-  { name: 'ProfileTab', label: 'Профиль', icon: 'user', component: ProfileStack },
+  { name: 'DashboardTab', label: 'Главная', icon: 'dashboard', component: DashboardStack },
+  { name: 'LibraryTab', label: 'Библиотека', icon: 'photo-library', component: LibraryStack },
+  { name: 'ChatsTab', label: 'Чаты', icon: 'chat-bubble-outline', component: ChatsStack, hidden: true },
+  { name: 'ProfileTab', label: 'Профиль', icon: 'settings', component: ProfileStack },
 ];
 
 type MainTabBarProps = BottomTabBarProps & {
@@ -65,7 +66,7 @@ const MainTabBar = ({ state, descriptors, navigation, showLabels = true }: MainT
     >
       {state.routes.map((route, index) => {
         const tab = TABS.find(({ name }) => name === route.name);
-        if (!tab) return null;
+        if (!tab || tab.hidden) return null;
 
         const isFocused = state.index === index;
         const iconColor = isFocused ? isDark ? theme.black : theme.white : theme.black;
@@ -106,7 +107,7 @@ const MainTabBar = ({ state, descriptors, navigation, showLabels = true }: MainT
                 isFocused && { backgroundColor: "#212020" }, // активный круглый фон
               ]}
             >
-              <Feather name={tab.icon} size={20} color={iconColor} />
+              <MaterialIcons name={tab.icon} size={20} color={iconColor} />
             </CircleButton>
 
             {route.name === "ChatsTab" && <Dot style={{

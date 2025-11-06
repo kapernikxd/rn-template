@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useRef, type ReactNode } from 'react';
 import { useSyncExternalStore } from 'react';
 import { RootStore } from './rootStore';
 import type { SubscribableStore } from './mobx/BaseStore';
@@ -12,6 +12,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }
   useEffect(() => {
     void storeRef.current?.authStore.refreshAccessToken();
+    void storeRef.current?.identityStore.ensureUserId();
   }, []);
   return <StoreContext.Provider value={storeRef.current}>{children}</StoreContext.Provider>;
 }
@@ -25,9 +26,20 @@ export function useRootStore(): RootStore {
 }
 
 export function useStoreData<S extends SubscribableStore, R>(store: S, selector: (store: S) => R): R {
-  return useSyncExternalStore(
-    store.subscribe,
-    () => selector(store),
-    () => selector(store),
-  );
+  const cacheRef = useRef<{ version: number; value: R }>();
+
+  const getSnapshot = useCallback(() => {
+    const version = store.snapshotVersion;
+    const cached = cacheRef.current;
+
+    if (!cached || cached.version !== version) {
+      const value = selector(store);
+      cacheRef.current = { version, value };
+      return value;
+    }
+
+    return cached.value;
+  }, [selector, store]);
+
+  return useSyncExternalStore(store.subscribe, getSnapshot, getSnapshot);
 }
