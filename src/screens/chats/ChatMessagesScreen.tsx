@@ -299,6 +299,8 @@ export const ChatMessagesScreen: FC = observer(() => {
               onTyping={handleTypingStart}
               onStopTyping={handleTypingStop}
               enableImageAttachment={false}
+              placeholder='Сообщение'
+              editingLabel='Редактирование'
             />
             {isLocked ? (
               <View style={styles.limitLockContainer}>
