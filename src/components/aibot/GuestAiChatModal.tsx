@@ -8,7 +8,7 @@ import {
   GuestAiBotMessageResponse,
   GuestChatMessage,
 } from '../../types/aiBot';
-import { GuestAiChatModalView, PureChatMessage as ChatMessage } from 'rn-vs-lb';
+import GuestAiChatModalView, { PureChatMessage as ChatMessage } from './GuestAiChatModalView';
 
 interface GuestAiChatModalProps {
   visible: boolean;
@@ -18,6 +18,10 @@ interface GuestAiChatModalProps {
 }
 
 const MAX_HISTORY = 20;
+const DEFAULT_BOT_NAME = 'AI-бот';
+const DEFAULT_INPUT_PLACEHOLDER = 'Спросите что-нибудь...';
+const formatLimitLabel = (remaining: number, limit: number) =>
+  `Осталось сообщений: ${remaining} / ${limit}`;
 
 const getHistoryStorageKey = (botId: string) => `guest_ai_history_${botId}`;
 const getSessionStorageKey = (botId: string) => `guest_ai_session_${botId}`;
@@ -218,6 +222,9 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
       isSending={isSending}
       limit={limit}
       remaining={remaining}
+      defaultBotName={DEFAULT_BOT_NAME}
+      limitLabel={formatLimitLabel}
+      inputPlaceholder={DEFAULT_INPUT_PLACEHOLDER}
       onChangeInput={setInputValue}
       onSend={handleSend}
       listRef={listRef}
