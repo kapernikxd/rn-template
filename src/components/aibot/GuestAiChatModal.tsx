@@ -8,7 +8,7 @@ import {
   GuestAiBotMessageResponse,
   GuestChatMessage,
 } from '../../types/aiBot';
-import { GuestAiChatModalView, PureChatMessage as ChatMessage } from 'rn-vs-lb';
+import GuestAiChatModalView, { PureChatMessage as ChatMessage } from './GuestAiChatModalView';
 
 interface GuestAiChatModalProps {
   visible: boolean;
