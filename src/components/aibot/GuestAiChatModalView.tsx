@@ -93,7 +93,7 @@ const GuestAiChatModalView: FC<GuestAiChatViewProps> = memo(
       <Modal visible={visible} animationType="slide" onRequestClose={onClose} transparent>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={isAndroid ? 25 : 0}
+          keyboardVerticalOffset={isAndroid ? 0 : 0}
           style={styles.centered}
         >
           <View style={styles.modalContainer}>
