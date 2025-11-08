@@ -3,10 +3,26 @@
   "login": "Sign In",
   "logout": "Sign Out",
   "settings": {
+    "title": "Settings",
+    "cards": {
+      "accountManagement": {
+        "title": "Account management"
+      },
+      "theme": {
+        "title": "Theme"
+      }
+    },
     "sections": {
       "user": "User",
       "ads": "Advertising",
       "app": "Application"
+    },
+    "account": {
+      "editProfile": "Edit profile",
+      "accountSettings": "Account settings",
+      "socialProfiles": "Social profiles",
+      "changePassword": "Change password",
+      "notifications": "Notifications"
     },
     "user": {
       "id": "User ID"
@@ -28,6 +44,19 @@
         "fr": "French",
         "pt": "Portuguese"
       }
+    },
+    "feedback": {
+      "title": "Feedback and issues",
+      "subtitle": "Tap to message us on Telegram",
+      "unsupported": "Unable to open Telegram URL"
+    },
+    "deleteAccount": {
+      "cancel": "Cancel",
+      "confirm": "Delete",
+      "trigger": "Delete account",
+      "modalTitle": "Confirm deletion",
+      "modalDescription": "All of your data, including profile, events and chat history, will be permanently deleted within 24 hours. This process is irreversible. Are you sure you want to continue?",
+      "requestSent": "Your request has been sent. The account will be deleted within 24 hours."
     },
     "copyAppLink": "Copy the app link",
     "version": "Version {{version}}"
