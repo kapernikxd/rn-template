@@ -3,18 +3,21 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated, Easing,
 import Swiper from "react-native-swiper";
 import { useTheme } from 'rn-vs-lb/theme';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ONBOARDING_PHOTO_1, ONBOARDING_PHOTO_2, ONBOARDING_PHOTO_3, ONBOARDING_PHOTO_4 } from "../../helpers/utils/onboarding"
+import { ONBOARDING_PHOTO_1, ONBOARDING_PHOTO_2, ONBOARDING_PHOTO_3, ONBOARDING_PHOTO_4, ONBOARDING_PHOTO_5 } from "../../helpers/utils/onboarding"
 import { useTranslation } from "react-i18next";
+import { LANGUAGE_OPTIONS, normalizeLanguageCode } from "../../constants/languages";
 
 interface Slide {
+  key: SlideKey;
   title: string;
   description: string;
   uri: string;
 }
 
-type SlideKey = "welcome" | "memory" | "character" | "start";
+type SlideKey = "language" | "welcome" | "memory" | "character" | "start";
 
 const SLIDE_CONFIG: Array<{ key: SlideKey; uri: string }> = [
+  { key: "language", uri: ONBOARDING_PHOTO_5 },
   { key: "welcome", uri: ONBOARDING_PHOTO_1 },
   { key: "memory", uri: ONBOARDING_PHOTO_2 },
   { key: "character", uri: ONBOARDING_PHOTO_3 },
@@ -28,19 +31,26 @@ interface Props {
 const Onboarding: React.FC<Props> = ({ onFinish }) => {
   const swiperRef = useRef<Swiper>(null);
   const { typography, theme } = useTheme();
-  const { t } = useTranslation();
+  const { i18n, t } = useTranslation();
   const { width, height } = Dimensions.get("window");
   const styles = getStyles({ width, height, theme, typography });
 
   const slides: Slide[] = useMemo(
     () =>
       SLIDE_CONFIG.map(({ key, uri }) => ({
+        key,
         uri,
         title: t(`screens.onboarding.slides.${key}.title`),
         description: t(`screens.onboarding.slides.${key}.description`),
       })),
     [t],
   );
+
+  const resolvedLanguageCode =
+    normalizeLanguageCode(i18n.resolvedLanguage) ??
+    normalizeLanguageCode(i18n.language) ??
+    LANGUAGE_OPTIONS[0].code;
+  const [selectedLanguage, setSelectedLanguage] = useState(resolvedLanguageCode);
 
   const handleNext = (index: number) => {
     if (index === slides.length - 1) {
@@ -128,7 +138,7 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
         }}
       >
         {slides.map((slide, index) => (
-          <View key={index} style={styles.slide}>
+          <View key={slide.key} style={styles.slide}>
             {/* Иллюстрация-заглушка */}
             <Image source={{ uri: slide.uri }} style={styles.illustration} />
             {/* <View style={styles.illustration}>
@@ -139,6 +149,30 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
             <View style={styles.content}>
               <Text style={[typography.titleH3, styles.title]}>{slide.title}</Text>
               <Text style={[typography.body, styles.description]}>{slide.description}</Text>
+              {slide.key === "language" && (
+                <View style={styles.languageList}>
+                  {LANGUAGE_OPTIONS.map((language) => {
+                    const isSelected = language.code === selectedLanguage;
+
+                    return (
+                      <TouchableOpacity
+                        key={language.code}
+                        accessibilityRole="button"
+                        onPress={() => {
+                          setSelectedLanguage(language.code);
+                          void i18n.changeLanguage(language.code);
+                        }}
+                        style={[styles.languageOption, isSelected && styles.languageOptionSelected]}
+                        activeOpacity={0.8}
+                      >
+                        <Text style={[styles.languageOptionLabel, isSelected && styles.languageOptionLabelSelected]}>
+                          {t(language.translationKey, { defaultValue: language.fallbackLabel })}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              )}
             </View>
 
             {/* Футер с действиями */}
@@ -302,6 +336,35 @@ const getStyles = ({
       textAlign: "center",
       lineHeight: 20,
       color: theme?.greyText || "#6B6B6B",
+    },
+
+    languageList: {
+      marginTop: 24,
+      gap: 12,
+    },
+
+    languageOption: {
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: theme?.divider || "#E1E1E6",
+      backgroundColor: theme?.card || "#fff",
+    },
+
+    languageOptionSelected: {
+      borderColor: theme?.primary || "#6f2da8",
+      backgroundColor: `${theme?.primary || "#6f2da8"}14`,
+    },
+
+    languageOptionLabel: {
+      textAlign: "center",
+      fontWeight: "500",
+      color: theme?.text || "#111111",
+    },
+
+    languageOptionLabelSelected: {
+      color: theme?.primary || "#6f2da8",
     },
 
     // Пагинация

@@ -751,6 +751,10 @@
     },
     "onboarding": {
       "slides": {
+        "language": {
+          "title": "🌐 Wähle deine Sprache",
+          "description": "Lege die Sprache der Oberfläche fest, um deine AI-Pair-Erfahrung anzupassen."
+        },
         "welcome": {
           "title": "✨ Willkommen",
           "description": "Dein persönlicher KI-Partner für Gespräche, Ideen und Unterstützung."
