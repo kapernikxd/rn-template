@@ -1,5 +1,35 @@
 {
   "welcome": "Welcome",
   "login": "Sign In",
-  "logout": "Sign Out"
+  "logout": "Sign Out",
+  "settings": {
+    "sections": {
+      "user": "User",
+      "ads": "Advertising",
+      "app": "Application"
+    },
+    "user": {
+      "id": "User ID"
+    },
+    "theme": {
+      "light": "Light theme",
+      "dark": "Dark theme"
+    },
+    "language": {
+      "title": "Interface language",
+      "modalTitle": "Select language",
+      "languages": {
+        "en": "English",
+        "ru": "Russian",
+        "sr": "Serbian",
+        "es": "Spanish",
+        "it": "Italian",
+        "de": "German",
+        "fr": "French",
+        "pt": "Portuguese"
+      }
+    },
+    "copyAppLink": "Copy the app link",
+    "version": "Version {{version}}"
+  }
 }
