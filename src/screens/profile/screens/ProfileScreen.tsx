@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProfileCard, TabBar, type TabItem } from 'rn-vs-lb';
 import { useTheme } from 'rn-vs-lb/theme';
+import { useTranslation } from 'react-i18next';
 
 import { usePortalNavigation } from '../../../helpers/hooks';
 import { getUserAvatar, getUserFullName } from '../../../helpers/utils/user';
@@ -23,6 +24,7 @@ type NavigationProp = NativeStackNavigationProp<
 export const ProfileScreen = () => {
   const navigation = useNavigation<NavigationProp>();
   const { theme, isDark, typography } = useTheme();
+  const { t } = useTranslation();
   const { setColors } = useSafeAreaColors();
   const { goToMain, goToAiBotProfile } = usePortalNavigation();
 
@@ -49,10 +51,10 @@ export const ProfileScreen = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const tabs = useMemo<TabItem[]>(
     () => [
-      { key: 'my-bots', label: 'Мои', icon: 'person' },
-      { key: 'subscribed-bots', label: 'Подписки', icon: 'subscriptions' },
+      { key: 'my-bots', label: t('screens.profile.tabs.myBots'), icon: 'person' },
+      { key: 'subscribed-bots', label: t('screens.profile.tabs.subscriptions'), icon: 'subscriptions' },
     ],
-    [],
+    [t],
   );
 
   const scrollViewRef = useRef<ScrollView | null>(null);
@@ -98,8 +100,8 @@ export const ProfileScreen = () => {
     if (fullName) return fullName;
     if (authUser?.fullName) return authUser.fullName;
     if (authUser?.name) return authUser.name;
-    return 'Profile';
-  }, [authUser, profile]);
+    return t('screens.profile.fallbackName');
+  }, [authUser, profile, t]);
 
   const hasNotifications = useMemo(
     () => Boolean(notificationsCount > 0 || hasRealtimeNotification || hasUnreadMessage),
@@ -121,8 +123,8 @@ export const ProfileScreen = () => {
   }, [goToMain]);
 
   const handleFeatureSoon = useCallback(() => {
-    uiStore.showSnackbar('This feature will be available soon.', 'info');
-  }, [uiStore]);
+    uiStore.showSnackbar(t('screens.profile.featureSoon'), 'info');
+  }, [t, uiStore]);
 
   const scrollToBotsSection = useCallback(() => {
     const targetOffset = botsSectionMeasuredRef.current
@@ -149,11 +151,11 @@ export const ProfileScreen = () => {
   const handleOpenBotProfile = useCallback((bot: AiBotCardEntity) => {
     const botId = getAiBotIdentifier(bot);
     if (!botId) {
-      uiStore.showSnackbar('Не удалось открыть профиль бота', 'error');
+      uiStore.showSnackbar(t('screens.aibot.common.errors.openProfile'), 'error');
       return;
     }
     goToAiBotProfile(botId);
-  }, [goToAiBotProfile, uiStore]);
+  }, [goToAiBotProfile, t, uiStore]);
 
   const handleTabChange = useCallback((index: number) => {
     setActiveTabIndex(index);
@@ -167,8 +169,8 @@ export const ProfileScreen = () => {
   const isCurrentLoading = activeTabIndex === 0 ? isLoadingMyBots : isLoadingSubscribedBots;
   const currentEmptyText =
     activeTabIndex === 0
-      ? 'Вы еще не создали AI-ботов. Попробуйте создать первого героя!'
-      : 'Вы пока не подписались ни на одного AI-бота.';
+      ? t('screens.profile.empty.myBots')
+      : t('screens.profile.empty.subscriptions');
 
   const canGoBack = navigation.canGoBack();
 

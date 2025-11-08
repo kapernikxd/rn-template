@@ -37,6 +37,7 @@ import { useChatMessageLimitController } from '../../helpers/aiChat/useChatMessa
 import type { ChatsStackParamList } from '../../navigation';
 import ChatLimitLockedNotice from '../../components/chat/ChatLimitLockedNotice';
 import { CHAT_LIMIT_CONFIG } from '../../constants';
+import { useTranslation } from 'react-i18next';
 
 const chatBackground = require('../../assets/chat-background.png');
 
@@ -46,6 +47,7 @@ export const ChatMessagesScreen: FC = observer(() => {
   const styles = getStyles({ theme, sizes, commonStyles });
   const insets = useSafeAreaInsets();
   const bottomPadding = Math.max(insets.bottom, typeof sizes.xs === 'number' ? 55 : 0);
+  const { t } = useTranslation();
 
   const route = useRoute<RouteProp<ChatsStackParamList, 'ChatMessages'>>();
   const chatId = route.params.chatId;
@@ -127,7 +129,7 @@ export const ChatMessagesScreen: FC = observer(() => {
   const headerActions = useMemo<HeaderActionItem[]>(
     () => [
       {
-        label: 'Очистить историю чата',
+        label: t('screens.chats.messages.clearHistory'),
         icon: 'trash-outline',
         colorIcon: theme.danger,
         onPress: () => {
@@ -135,7 +137,7 @@ export const ChatMessagesScreen: FC = observer(() => {
         },
       },
     ],
-    [actions.clearChatHistory, theme.danger]
+    [actions.clearChatHistory, t, theme.danger]
   );
 
   const renderMessageItem = useCallback(
@@ -259,7 +261,7 @@ export const ChatMessagesScreen: FC = observer(() => {
             <View style={styles.replyBar}>
               <TouchableOpacity onPress={actions.setReplyMode} style={[globalStyleSheet.flexRowCenterStart, { gap: 8 }]}>
                 <Ionicons name="arrow-undo-outline" size={25} color={theme.text} />
-                <Text style={[typography.body, { top: 3 }]}>Ответить</Text>
+                <Text style={[typography.body, { top: 3 }]}>{t('screens.chats.messages.reply')}</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -282,7 +284,7 @@ export const ChatMessagesScreen: FC = observer(() => {
               editMessage={
                 selectedMessage?.actionType === 'edit'
                   ? selectedMessage?.content
-                    ? { content: selectedMessage?.content ?? 'фото' }
+                  ? { content: selectedMessage?.content ?? t('screens.chats.messages.photoPlaceholder') }
                     : null
                   : null
               }
@@ -299,8 +301,8 @@ export const ChatMessagesScreen: FC = observer(() => {
               onTyping={handleTypingStart}
               onStopTyping={handleTypingStop}
               enableImageAttachment={false}
-              placeholder='Сообщение'
-              editingLabel='Редактирование'
+              placeholder={t('screens.chats.messages.placeholder')}
+              editingLabel={t('screens.chats.messages.editing')}
             />
             {isLocked ? (
               <View style={styles.limitLockContainer}>

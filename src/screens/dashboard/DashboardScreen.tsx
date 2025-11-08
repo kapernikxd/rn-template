@@ -2,6 +2,7 @@ import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, View, us
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'rn-vs-lb/theme';
 import { Spacer, TabBarAi } from 'rn-vs-lb';
+import { useTranslation } from 'react-i18next';
 
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import type { AiBotMainPageBot } from '../../types';
@@ -22,6 +23,7 @@ export const DashboardScreen = () => {
   const { width } = useWindowDimensions();
   const { theme } = useTheme();
   const { goToAiBotProfile } = usePortalNavigation();
+  const { t } = useTranslation();
 
   const [index, setIndex] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -50,13 +52,13 @@ export const DashboardScreen = () => {
 
   const tabs = useMemo(
     () => [
-      { key: 'all', label: 'Все' },
+      { key: 'all', label: t('screens.dashboard.tabs.all') },
       ...categories.map((category) => ({
         key: category,
         label: capitalizeFirstLetter(category),
       })),
     ],
-    [categories],
+    [categories, t],
   );
 
   useEffect(() => {
@@ -90,14 +92,11 @@ export const DashboardScreen = () => {
   const renderHeader = useCallback(
     () => (
       <View style={styles.header}>
-        <Text style={styles.heading}>AI-компаньоны</Text>
-        <Text style={styles.subheading}>
-          Выберите бота, чтобы начать диалог или найти вдохновение. Команда ежедневно добавляет
-          новых героев и сценарии общения.
-        </Text>
+        <Text style={styles.heading}>{t('screens.dashboard.heading')}</Text>
+        <Text style={styles.subheading}>{t('screens.dashboard.subheading')}</Text>
       </View>
     ),
-    [],
+    [t],
   );
 
   const handleOpenBotProfile = useCallback((botId: string) => {
@@ -133,12 +132,10 @@ export const DashboardScreen = () => {
       {isLoading ? (
         <ActivityIndicator color={theme.white} />
       ) : (
-        <Text style={styles.emptyText}>
-          {error ?? 'AI-боты скоро появятся здесь. Попробуйте обновить позже.'}
-        </Text>
+        <Text style={styles.emptyText}>{error ?? t('screens.dashboard.empty.default')}</Text>
       )}
     </View>
-  ), [error, isLoading, theme.white]);
+  ), [error, isLoading, t, theme.white]);
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>

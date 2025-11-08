@@ -3,6 +3,7 @@ import { Animated, FlatList, RefreshControl, StyleSheet, View } from 'react-nati
 import { observer } from 'mobx-react-lite';
 import { EmptyState, Spacer, ChatItem } from 'rn-vs-lb';
 import { ThemeType, useTheme } from 'rn-vs-lb/theme';
+import { useTranslation } from 'react-i18next';
 
 import { SearchInput } from '../../components/form';
 import { SwipeableChatItem } from '../../components/chat/SwipeableChatItem';
@@ -19,6 +20,7 @@ export const ChatsScreen: FC = observer(() => {
   const { theme, isDark } = useTheme();
   const { setColors } = useSafeAreaColors();
   const styles = getStyles({ theme });
+  const { t } = useTranslation();
 
   const { goToChatMessages } = usePortalNavigation();
   const { authStore, onlineStore } = useRootStore();
@@ -87,7 +89,7 @@ export const ChatsScreen: FC = observer(() => {
           })
         }
         variant="group"
-        chatName={item?.title ?? 'Группа'}
+        chatName={item?.title ?? t('screens.chats.fallbacks.group')}
         createdAt={getSmartTime(item?.latestMessage?.createdAt)}
         lastMessage={item?.latestMessage?.content}
         imgUrl={item?.avatarUrl ?? ''}
@@ -109,7 +111,7 @@ export const ChatsScreen: FC = observer(() => {
           })
         }
         variant="bot"
-        chatName={item?.title ?? 'Бот'}
+        chatName={item?.title ?? t('screens.chats.fallbacks.bot')}
         createdAt={getSmartTime(item?.latestMessage?.createdAt)}
         lastMessage={item?.latestMessage?.content}
       />
@@ -128,7 +130,7 @@ export const ChatsScreen: FC = observer(() => {
       <View style={styles.searchContainer}>
         <SearchInput
           iconType="search"
-          placeholder="Поиск..."
+          placeholder={t('screens.chats.searchPlaceholder')}
           value={searchQuery}
           onChangeText={setSearchQuery}
         />

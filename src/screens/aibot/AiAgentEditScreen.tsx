@@ -29,6 +29,7 @@ import { ScreenLoader } from "../../components";
 import type { AvatarFile } from "../../types/profile";
 import { categoryOptions } from "../../helpers/data/agent-create";
 import { BackButton } from "../../components/buttons";
+import { useTranslation } from "react-i18next";
 
 const FALLBACK_IMAGE_TYPE = "image/jpeg";
 
@@ -56,6 +57,7 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
     [theme, sizes, typography, isDark],
   );
   const { setColors } = useSafeAreaColors();
+  const { t } = useTranslation();
 
   const aiAgent = useStoreData(aiBotStore, (store) => store.selectAiBot);
   const isLoading = useStoreData(aiBotStore, (store) => store.isAiUserLoading);
@@ -158,9 +160,9 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const renderIdentityStep = () => (
     <View style={styles.card}>
-      <Text style={styles.sectionTitle}>Основные данные</Text>
+      <Text style={styles.sectionTitle}>{t('screens.aibot.edit.identity.title')}</Text>
       <Text style={styles.sectionDescription}>
-        Обновите аватар и базовую информацию агента.
+        {t('screens.aibot.edit.identity.description')}
       </Text>
 
       <View style={styles.avatarRow}>
@@ -170,48 +172,50 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
           ) : (
             <View style={styles.avatarPlaceholder}>
               <Ionicons name="image-outline" size={28} color={theme.greyText} />
-              <Text style={styles.avatarPlaceholderText}>Изменить</Text>
+              <Text style={styles.avatarPlaceholderText}>
+                {t('screens.aibot.edit.identity.avatar.placeholder')}
+              </Text>
             </View>
           )}
         </TouchableOpacity>
         <View style={styles.avatarInfo}>
-          <Text style={styles.avatarHint}>Выберите новое изображение или удалите текущее.</Text>
-          <Button title="Удалить" type="gray-outline" onPress={handleAvatarRemove} />
+          <Text style={styles.avatarHint}>{t('screens.aibot.edit.identity.avatar.hint')}</Text>
+          <Button title={t('common.delete')} type="gray-outline" onPress={handleAvatarRemove} />
         </View>
       </View>
 
       <FormTextField
-        label="Имя"
+        label={t('screens.aibot.edit.identity.fields.firstName.label')}
         labelRight={charCounters.name}
         value={formState.name}
         onChangeText={(text) => setFormState((prev) => ({ ...prev, name: text }))}
-        placeholder="Имя агента"
+        placeholder={t('screens.aibot.edit.identity.fields.firstName.placeholder')}
       />
       <FormTextField
-        label="Фамилия"
+        label={t('screens.aibot.edit.identity.fields.lastName.label')}
         labelRight={charCounters.lastname}
         value={formState.lastname}
         onChangeText={(text) => setFormState((prev) => ({ ...prev, lastname: text }))}
-        placeholder="Фамилия агента"
+        placeholder={t('screens.aibot.edit.identity.fields.lastName.placeholder')}
       />
       <FormTextField
-        label="Профессия"
+        label={t('screens.aibot.edit.identity.fields.profession.label')}
         labelRight={charCounters.profession}
         value={formState.profession}
         onChangeText={(text) => setFormState((prev) => ({ ...prev, profession: text }))}
-        placeholder="Например, дизайнер"
+        placeholder={t('screens.aibot.edit.identity.fields.profession.placeholder')}
       />
     </View>
   );
 
   const renderFocusStep = () => (
     <View style={styles.card}>
-      <Text style={styles.sectionTitle}>Категории и ценность</Text>
+      <Text style={styles.sectionTitle}>{t('screens.aibot.edit.focus.title')}</Text>
       <Text style={styles.sectionDescription}>
-        Выберите направления и обновите список полезности агента.
+        {t('screens.aibot.edit.focus.description')}
       </Text>
 
-      <Text style={styles.subSectionTitle}>Категории</Text>
+      <Text style={styles.subSectionTitle}>{t('screens.aibot.edit.focus.categoriesTitle')}</Text>
       <View style={styles.chipsContainer}>
         {categoryOptions.map((category) => {
           const normalized = category.trim().toLowerCase();
@@ -222,19 +226,21 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
               style={[styles.chip, isActive && styles.chipActive]}
               onPress={() => toggleCategory(category)}
             >
-              <Text style={[styles.chipText, isActive && styles.chipTextActive]}>{category}</Text>
+              <Text style={[styles.chipText, isActive && styles.chipTextActive]}>
+                {getCategoryLabel(category)}
+              </Text>
             </TouchableOpacity>
           );
         })}
       </View>
 
-      <Text style={styles.subSectionTitle}>Ценность агента</Text>
+      <Text style={styles.subSectionTitle}>{t('screens.aibot.edit.focus.usefulnessTitle')}</Text>
       <View style={styles.usefulnessInputRow}>
         <FormTextField
           label=""
           value={usefulnessInput}
           onChangeText={setUsefulnessInput}
-          placeholder="Добавьте новый пункт"
+          placeholder={t('screens.aibot.edit.focus.usefulnessPlaceholder')}
           containerStyle={styles.usefulnessField}
           inputStyle={styles.usefulnessInput}
           onSubmitEditing={handleAddUsefulness}
@@ -252,7 +258,7 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
           </View>
         ))}
         {!formState.usefulness.length ? (
-          <Text style={styles.usefulnessEmpty}>Добавьте хотя бы один пункт.</Text>
+          <Text style={styles.usefulnessEmpty}>{t('screens.aibot.edit.focus.usefulnessEmpty')}</Text>
         ) : null}
       </View>
     </View>
@@ -260,32 +266,32 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const renderVoiceStep = () => (
     <View style={styles.card}>
-      <Text style={styles.sectionTitle}>Голос и история</Text>
+      <Text style={styles.sectionTitle}>{t('screens.aibot.edit.voice.title')}</Text>
       <Text style={styles.sectionDescription}>
-        Обновите промт, описание и приветствие агента.
+        {t('screens.aibot.edit.voice.description')}
       </Text>
 
       <FormTextField
-        label="Системный промт"
+        label={t('screens.aibot.edit.voice.fields.prompt.label')}
         labelRight={`${formState.aiPrompt.length}`}
         value={formState.aiPrompt}
         onChangeText={(text) => setFormState((prev) => ({ ...prev, aiPrompt: text }))}
-        placeholder="Опишите характер и стиль"
+        placeholder={t('screens.aibot.edit.voice.fields.prompt.placeholder')}
         multiline
       />
       <FormTextField
-        label="Описание профиля"
+        label={t('screens.aibot.edit.voice.fields.description.label')}
         labelRight={charCounters.userBio}
         value={formState.userBio}
         onChangeText={(text) => setFormState((prev) => ({ ...prev, userBio: text }))}
-        placeholder="Дополните биографию"
+        placeholder={t('screens.aibot.edit.voice.fields.description.placeholder')}
         multiline
       />
       <FormTextField
-        label="Приветственное сообщение"
+        label={t('screens.aibot.edit.voice.fields.intro.label')}
         value={formState.intro}
         onChangeText={(text) => setFormState((prev) => ({ ...prev, intro: text }))}
-        placeholder="Сообщение для первого контакта"
+        placeholder={t('screens.aibot.edit.voice.fields.intro.placeholder')}
         multiline
       />
     </View>
@@ -293,13 +299,20 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
 
   const renderMediaStep = () => (
     <View style={styles.card}>
-      <Text style={styles.sectionTitle}>Галерея</Text>
+      <Text style={styles.sectionTitle}>{t('screens.aibot.edit.media.title')}</Text>
       <Text style={styles.sectionDescription}>
-        Управляйте галереей изображений. Осталось {remainingGallerySlots} из {maxGalleryItems}.
+        {t('screens.aibot.edit.media.description', {
+          remaining: remainingGallerySlots,
+          max: maxGalleryItems,
+        })}
       </Text>
 
       <Button
-        title={remainingGallerySlots ? "Добавить изображения" : "Лимит изображений исчерпан"}
+        title={
+          remainingGallerySlots
+            ? t('screens.aibot.edit.media.upload')
+            : t('screens.aibot.edit.media.limitReached')
+        }
         type="primary-outline"
         onPress={handlePickGallery}
         disabled={!canUploadPhotos || photosUpdating}
@@ -316,7 +329,7 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
           </View>
         ))}
         {!botPhotos.length ? (
-          <Text style={styles.galleryEmpty}>У агента пока нет изображений.</Text>
+          <Text style={styles.galleryEmpty}>{t('screens.aibot.edit.media.empty')}</Text>
         ) : null}
       </View>
     </View>
@@ -343,7 +356,7 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
       <View style={styles.header}>
         <AiAgentHeader
           theme={theme}
-          title="Редактирование AI-агента"
+          title={t('screens.aibot.edit.headerTitle')}
           onBack={handleBack}
         />
         <Spacer />
@@ -355,22 +368,26 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.stepContainer}>
-          <StepProgress steps={steps} activeStep={Math.min(activeStep, steps.length - 1)} />
+          <StepProgress steps={localizedSteps} activeStep={Math.min(activeStep, steps.length - 1)} />
         </View>
         {renderStepContent()}
       </ScrollView>
 
       <View style={styles.footer}>
-        <Button
-          leftIcon={<Ionicons name={activeStep === 0 ? "close-outline" : "caret-back-outline" } color={theme.text} size={18} />}
-          // title={activeStep === 0 ? "Отмена" : "Назад"} 
-          type="gray-outline"
-          onPress={handleBack}
-          disabled={isSubmitting}
-        />
+          <Button
+            leftIcon={<Ionicons name={activeStep === 0 ? "close-outline" : "caret-back-outline" } color={theme.text} size={18} />}
+          // title={activeStep === 0 ? t('common.cancel') : t('common.back')}
+            type="gray-outline"
+            onPress={handleBack}
+            disabled={isSubmitting}
+          />
         <View style={{ width: "80%" }}>
           <Button
-            title={activeStep === steps.length - 1 ? "Сохранить" : "Далее"}
+            title={
+              activeStep === steps.length - 1
+                ? t('screens.aibot.edit.actions.save')
+                : t('common.next')
+            }
             onPress={handleNext}
             loading={isSubmitting}
             disabled={isSubmitting}
@@ -584,4 +601,24 @@ const createStyles = ({
       borderColor: theme.border,
     },
   });
+
+  const localizedSteps = useMemo(
+    () =>
+      steps.map((item, index) => ({
+        ...item,
+        title: t(`screens.aibot.edit.steps.${index}.title`),
+        description: t(`screens.aibot.edit.steps.${index}.description`),
+      })),
+    [steps, t],
+  );
+
+  const getCategoryLabel = useCallback(
+    (category: string) => {
+      const normalized = category.trim().toLowerCase().replace(/\s+/g, "-");
+      const key = `screens.aibot.common.categories.${normalized}`;
+      const translated = t(key);
+      return translated === key ? category : translated;
+    },
+    [t],
+  );
 

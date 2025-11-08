@@ -24,6 +24,7 @@ import {
 import { createAiAgentStyles } from "./styles";
 import { postReasonOptions, userReasonOptions } from "../../constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 
 
 type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.AiAgent>;
@@ -58,6 +59,7 @@ export const AiAgentScreen = ({ route }: Props) => {
   const { width } = useWindowDimensions();
   const { setColors } = useSafeAreaColors();
   const { profileStore, aiBotStore } = useRootStore();
+  const { t } = useTranslation();
 
   const [isReportVisible, setIsReportVisible] = useState(false);
   const [isGuestChatVisible, setIsGuestChatVisible] = useState(false);
@@ -168,12 +170,12 @@ export const AiAgentScreen = ({ route }: Props) => {
     }
 
     Alert.alert(
-      "Удалить AI-бота",
-      "Вы уверены, что хотите удалить этого AI-бота? Это действие нельзя отменить.",
+      t('screens.aibot.profile.deleteTitle'),
+      t('screens.aibot.profile.deleteMessage'),
       [
-        { text: "Отмена", style: "cancel" },
+        { text: t('common.cancel'), style: "cancel" },
         {
-          text: "Удалить",
+          text: t('common.delete'),
           style: "destructive",
           onPress: () => {
             void handleDeleteBot();
@@ -182,7 +184,7 @@ export const AiAgentScreen = ({ route }: Props) => {
       ],
       { cancelable: true },
     );
-  }, [aiBotId, handleDeleteBot, isDeleting]);
+  }, [aiBotId, handleDeleteBot, isDeleting, t]);
 
   const handleStartChatPress = useCallback(() => {
     if (isAuthenticated) {
@@ -215,28 +217,30 @@ export const AiAgentScreen = ({ route }: Props) => {
     const items: Array<{ label: string; icon: string; colorIcon: string; onPress: () => void }> = [];
     if (canEdit) {
       items.push({
-        label: 'Редактировать',
+        label: t('common.edit'),
         icon: 'create-outline',
         colorIcon: theme.black,
         onPress: handleEdit,
       });
       items.push({
-        label: 'Удалить',
+        label: t('common.delete'),
         icon: 'trash-outline',
         colorIcon: '#E63946',
         onPress: handleDeletePress,
       });
     }
     items.push({
-      label: 'Пожаловаться',
+      label: t('common.report'),
       icon: 'megaphone-outline',
       colorIcon: '#E63946',
       onPress: handleOpenReport,
     });
     return items;
-  }, [aiBotId, canEdit, handleDeletePress, handleEdit, handleOpenReport, theme.black]);
+  }, [aiBotId, canEdit, handleDeletePress, handleEdit, handleOpenReport, t, theme.black]);
 
-  const followButtonTitle = isFollowing ? "Отписаться" : "Подписаться";
+  const followButtonTitle = isFollowing
+    ? t('screens.aibot.profile.actions.unfollow')
+    : t('screens.aibot.profile.actions.follow');
 
   const handleRefresh = useCallback(async () => {
     if (!aiBotId || isLoading || isRefreshing) {
@@ -334,12 +338,12 @@ export const AiAgentScreen = ({ route }: Props) => {
         onClose={handleCloseReport}
         onSubmit={handleReportSubmit}
         type="user"
-        title="Сообщить о пользователе"
-        cancelText="Оменить"
-        submitText="Отправить"
+        title={t('screens.aibot.profile.reportTitle')}
+        cancelText={t('common.cancel')}
+        submitText={t('common.submit')}
         userReasons={userReasonOptions}
         postReasons={postReasonOptions}
-        inputPlaceholder="Дополнительные сведения (необязательно)"
+        inputPlaceholder={t('screens.aibot.profile.reportPlaceholder')}
       />
       {aiBotId ? (
         <GuestAiChatModal
