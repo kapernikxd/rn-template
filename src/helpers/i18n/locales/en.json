@@ -2,63 +2,165 @@
   "welcome": "Welcome",
   "login": "Sign In",
   "logout": "Sign Out",
+  "common": {
+    "cancel": "Cancel",
+    "update": "Update",
+    "reset": "Reset",
+    "confirm": "Confirm"
+  },
   "settings": {
     "title": "Settings",
-    "cards": {
+    "section": {
       "accountManagement": {
-        "title": "Account management"
+        "title": "Account Management",
+        "editProfile": "Edit Profile",
+        "changePassword": "Change Password",
+        "notifications": "Notifications"
       },
       "theme": {
         "title": "Theme"
-      }
+      },
+      "userID": "User ID",
+      "copyAppLink": "Copy App Link",
+      "version": "Version {{version}}"
     },
-    "sections": {
-      "user": "User",
-      "ads": "Advertising",
-      "app": "Application"
+    "editProfile": {
+      "title": "Edit Profile",
+      "subtitle": "Fill in your personal information",
+      "fields": {
+        "name": {
+          "label": "First Name",
+          "placeholder": "First name"
+        },
+        "lastname": {
+          "label": "Last Name",
+          "placeholder": "Last name"
+        },
+        "profession": {
+          "label": "Profession",
+          "placeholder": "Your profession"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "placeholder": "Enter phone number"
+        },
+        "userBio": {
+          "label": "About Me",
+          "placeholder": "A short bio about you"
+        }
+      },
+      "validation": {
+        "nameRequired": "Enter your first name!",
+        "lastnameRequired": "Enter your last name!"
+      }
     },
     "account": {
-      "editProfile": "Edit profile",
-      "accountSettings": "Account settings",
-      "socialProfiles": "Social profiles",
-      "changePassword": "Change password",
-      "notifications": "Notifications"
-    },
-    "user": {
-      "id": "User ID"
-    },
-    "theme": {
-      "light": "Light theme",
-      "dark": "Dark theme"
-    },
-    "language": {
-      "title": "Interface language",
-      "modalTitle": "Select language",
-      "languages": {
-        "en": "English",
-        "ru": "Russian",
-        "sr": "Serbian",
-        "es": "Spanish",
-        "it": "Italian",
-        "de": "German",
-        "fr": "French",
-        "pt": "Portuguese"
+      "title": "Account Settings",
+      "subtitle": "Update your username and manage your account",
+      "fields": {
+        "username": {
+          "label": "Username",
+          "placeholder": "Enter username"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "Enter email"
+        }
       }
     },
-    "feedback": {
-      "title": "Feedback and issues",
-      "subtitle": "Tap to message us on Telegram",
-      "unsupported": "Unable to open Telegram URL"
+    "socialProfiles": {
+      "title": "Social Profiles",
+      "subtitle": "Add links to your profiles",
+      "fields": {
+        "facebook": {
+          "label": "Facebook",
+          "placeholder": "Enter username"
+        },
+        "instagram": {
+          "label": "Instagram",
+          "placeholder": "Enter username"
+        },
+        "vk": {
+          "label": "VK",
+          "placeholder": "Enter username"
+        },
+        "tg": {
+          "label": "Telegram",
+          "placeholder": "Enter username"
+        }
+      }
     },
-    "deleteAccount": {
-      "cancel": "Cancel",
-      "confirm": "Delete",
-      "trigger": "Delete account",
-      "modalTitle": "Confirm deletion",
-      "modalDescription": "All of your data, including profile, events and chat history, will be permanently deleted within 24 hours. This process is irreversible. Are you sure you want to continue?",
-      "requestSent": "Your request has been sent. The account will be deleted within 24 hours."
+    "changePassword": {
+      "title": "Change Password",
+      "subtitle": "Update your account password",
+      "fields": {
+        "oldPassword": {
+          "label": "Current Password",
+          "placeholder": "Enter current password"
+        },
+        "password": {
+          "label": "New Password",
+          "placeholder": "Enter new password"
+        },
+        "rePassword": {
+          "label": "Confirm Password",
+          "placeholder": "Repeat new password"
+        }
+      },
+      "validation": {
+        "oldPasswordRequired": "Enter your current password!",
+        "passwordRequired": "Enter a password!",
+        "confirmPasswordRequired": "Confirm your password!",
+        "passwordMinLength": "Password must be at least {{min}} characters long!",
+        "passwordsDoNotMatch": "Passwords do not match!"
+      }
     },
-    "copyAppLink": "Copy the app link",
-    "version": "Version {{version}}"
+    "notifications": {
+      "title": "Notification Settings",
+      "subtitle": "Configure push notification preferences",
+      "pushToggleTitle": "Push Notifications",
+      "types": {
+        "likes": "Likes",
+        "followers": "Followers",
+        "groupMessages": "Group Messages",
+        "participants": "Participants",
+        "newPost": "Post Created/Updated",
+        "invites": "Post Invites",
+        "pollAnswers": "Poll Answers",
+        "pollInvites": "Poll Invites"
+      }
+    },
+    "component": {
+      "language": {
+        "title": "Interface Language",
+        "modalTitle": "Choose a Language",
+        "languages": {
+          "en": "English",
+          "ru": "Russian",
+          "sr": "Serbian",
+          "es": "Spanish",
+          "it": "Italian",
+          "de": "German",
+          "fr": "French",
+          "pt": "Portuguese"
+        }
+      },
+      "feedback": {
+        "title": "Feedback and Issues",
+        "subtitle": "Tap to contact us on Telegram",
+        "unsupported": "Unable to open Telegram URL"
+      },
+      "theme": {
+        "title": "Theme",
+        "light": "Light Theme",
+        "dark": "Dark Theme"
+      },
+      "deleteAccount": {
+        "title": "Delete Account",
+        "modalTitle": "Confirm Deletion",
+        "modalDescription": "All your data, including your profile, events, and chat history, will be permanently deleted. This process is irreversible and will be completed within 24 hours. Are you sure you want to continue?",
+        "requestSent": "Your request has been sent. The account will be deleted within 24 hours."
+      }
+    }
   }
 }

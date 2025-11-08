@@ -58,18 +58,18 @@ export const SettingsScreen: FC = () => {
 
     const SETTING_LIST = useMemo(
         () => [
-            { icon: 'user-o', label: t('settings.account.editProfile'), action: navigateTo(ROUTES.ProfileEdit) },
+            { icon: 'user-o', label: t('settings.section.accountManagement.editProfile'), action: navigateTo(ROUTES.ProfileEdit) },
             // { icon: 'gear', label: t('settings.account.accountSettings'), action: navigateTo(ROUTES.ProfileAccountSettings) },
-            { icon: 'key', label: t('settings.account.changePassword'), action: navigateTo(ROUTES.ProfileChangePassword) },
+            { icon: 'key', label: t('settings.section.accountManagement.changePassword'), action: navigateTo(ROUTES.ProfileChangePassword) },
             // { icon: 'group', label: t('settings.account.socialProfiles'), action: navigateTo(ROUTES.ProfileSocialProfiles) },
-            { icon: 'bell', label: t('settings.account.notifications'), action: navigateTo(ROUTES.ProfileNotificationSettings) },
+            { icon: 'bell', label: t('settings.section.accountManagement.notifications'), action: navigateTo(ROUTES.ProfileNotificationSettings) },
         ],
         [navigateTo, t],
     );
 
     const COPY_LINK = useMemo(
         () => [
-            { icon: 'copy', label: t('settings.copyAppLink'), action: () => handleShareUserLink(myId) },
+            { icon: 'copy', label: t('settings.section.copyAppLink'), action: () => handleShareUserLink(myId) },
         ],
         [handleShareUserLink, myId, t],
     );
@@ -98,17 +98,17 @@ export const SettingsScreen: FC = () => {
             <ScrollView contentContainerStyle={styles.body}>
                 <View style={styles.list}>
                     <CardContainer style={styles.card}>
-                        <View><Text style={styles.title}>{t('settings.cards.accountManagement.title')}</Text></View>
+                        <View><Text style={styles.title}>{t('settings.section.accountManagement.title')}</Text></View>
                         {SETTING_LIST.map((item, index) => (
                             <ListItem big iconColor={theme.text} key={index} {...item} hideBottomLine />
                         ))}
                     </CardContainer>
                     <CardContainer style={styles.card}>
-                        <View><Text style={styles.title}>{t('settings.cards.theme.title')}</Text></View>
-                        <ThemeSwitcher lightModeLabel={t('settings.theme.light')} darkModeLabel={t('settings.theme.dark')} />
+                        <View><Text style={styles.title}>{t('settings.component.theme.title')}</Text></View>
+                        <ThemeSwitcher lightModeLabel={t('settings.component.theme.light')} darkModeLabel={t('settings.component.theme.dark')} />
                         <Spacer size='xs' />
                         <SettingsListItem
-                            label={t('settings.language.title')}
+                            label={t('settings.component.language.title')}
                             laberColor={theme.text}
                             accessory={<LanguageSelector />}
                             labelIcon={<FontAwesome color={theme.text} name="language" size={21} />}
@@ -132,24 +132,24 @@ export const SettingsScreen: FC = () => {
                 <View>
                     <CardContainer style={styles.card}>
                         <TelegramFeedbackLink
-                            title={t('settings.feedback.title')}
-                            subtitle={t('settings.feedback.subtitle')}
-                            unsupportedLinkMessage={t('settings.feedback.unsupported')}
+                            title={t('settings.component.feedback.title')}
+                            subtitle={t('settings.component.feedback.subtitle')}
+                            unsupportedLinkMessage={t('settings.component.feedback.unsupported')}
                             link={TELEGRAM_URL}
                         />
                     </CardContainer>
                     <CardContainer style={styles.card}>
                         <DeleteAccountButton
-                            cancelButtonLabel={t('settings.deleteAccount.cancel')}
-                            confirmButtonLabel={t('settings.deleteAccount.confirm')}
-                            triggerLabel={t('settings.deleteAccount.trigger')}
-                            modalTitle={t('settings.deleteAccount.modalTitle')}
-                            modalDescription={t('settings.deleteAccount.modalDescription')}
+                            cancelButtonLabel={t('common.cancel')}
+                            confirmButtonLabel={t('common.confirm')}
+                            triggerLabel={t('settings.component.deleteAccount.title')}
+                            modalTitle={t('settings.component.deleteAccount.modalTitle')}
+                            modalDescription={t('settings.component.deleteAccount.modalDescription')}
                             deleteAccount={handleDeleteAccount}
                         />
                     </CardContainer>
                     <View style={styles.version}>
-                        <Text style={typography.body}>{t('settings.version', { version: appVersion })}</Text>
+                        <Text style={typography.body}>{t('settings.section.version', { version: appVersion })}</Text>
                     </View>
                 </View>
             </ScrollView>

@@ -14,6 +14,7 @@ import { FormProvider, UseFormReturn } from 'react-hook-form';
 
 import { TextInput } from '../../../components/form';
 import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
+import { useTranslation } from 'react-i18next';
 
 type SocialProfilesForm = {
   facebook?: string;
@@ -37,9 +38,10 @@ export const SocialProfilesView: FC<SocialProfilesViewProps> = ({
   onBackPress,
   isSubmitting,
 }) => {
-  const { theme, isDark } = useTheme();
+  const { theme } = useTheme();
   const { setColors } = useSafeAreaColors();
   const styles = getStyles({ theme });
+  const { t } = useTranslation();
 
   const iconStyle = { marginRight: 10 };
 
@@ -56,18 +58,18 @@ export const SocialProfilesView: FC<SocialProfilesViewProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <FormProvider {...methods}>
-        <HeaderDefault title="Социальные профили" onBackPress={onBackPress} />
+        <HeaderDefault title={t('settings.socialProfiles.title')} onBackPress={onBackPress} />
 
         <ScrollView style={{ flex: 1 }}>
           <CardContainer
             style={styles.card}
             styleTitleContainer={styles.cardTitleContainer}
-            subTitle="Добавьте ссылки на свои профили"
+            subTitle={t('settings.socialProfiles.subtitle')}
           >
             <View style={styles.cardContent}>
               <TextInput
                 name="facebook"
-                label="Facebook"
+                label={t('settings.socialProfiles.fields.facebook.label')}
                 icon={
                   <FontAwesome
                     name="facebook-official"
@@ -76,14 +78,14 @@ export const SocialProfilesView: FC<SocialProfilesViewProps> = ({
                     style={iconStyle}
                   />
                 }
-                placeholder="Введите имя пользователя"
+                placeholder={t('settings.socialProfiles.fields.facebook.placeholder')}
                 control={methods.control}
                 keyboardType="default"
               />
               <Spacer />
               <TextInput
                 name="instagram"
-                label="Instagram"
+                label={t('settings.socialProfiles.fields.instagram.label')}
                 icon={
                   <FontAwesome
                     name="instagram"
@@ -92,14 +94,14 @@ export const SocialProfilesView: FC<SocialProfilesViewProps> = ({
                     style={iconStyle}
                   />
                 }
-                placeholder="Введите имя пользователя"
+                placeholder={t('settings.socialProfiles.fields.instagram.placeholder')}
                 control={methods.control}
                 keyboardType="default"
               />
               <Spacer />
               <TextInput
                 name="vk"
-                label="VK"
+                label={t('settings.socialProfiles.fields.vk.label')}
                 icon={
                   <FontAwesome
                     name="vk"
@@ -108,14 +110,14 @@ export const SocialProfilesView: FC<SocialProfilesViewProps> = ({
                     style={iconStyle}
                   />
                 }
-                placeholder="Введите имя пользователя"
+                placeholder={t('settings.socialProfiles.fields.vk.placeholder')}
                 control={methods.control}
                 keyboardType="default"
               />
               <Spacer />
               <TextInput
                 name="tg"
-                label="Telegram"
+                label={t('settings.socialProfiles.fields.tg.label')}
                 icon={
                   <FontAwesome
                     name="telegram"
@@ -124,7 +126,7 @@ export const SocialProfilesView: FC<SocialProfilesViewProps> = ({
                     style={iconStyle}
                   />
                 }
-                placeholder="Введите имя пользователя"
+                placeholder={t('settings.socialProfiles.fields.tg.placeholder')}
                 control={methods.control}
                 keyboardType="default"
               />
@@ -134,9 +136,9 @@ export const SocialProfilesView: FC<SocialProfilesViewProps> = ({
         </ScrollView>
 
         <View style={styles.footer}>
-          <Button title="Обновить" onPress={onSubmit} loading={isSubmitting} />
+          <Button title={t('common.update')} onPress={onSubmit} loading={isSubmitting} />
           <Spacer size="xs" />
-          <Button title="Сбросить" type="gray-outline" onPress={onReset} />
+          <Button title={t('common.reset')} type="gray-outline" onPress={onReset} />
         </View>
       </FormProvider>
     </KeyboardAvoidingView>
@@ -163,4 +165,3 @@ const getStyles = ({ theme }: { theme: ThemeType }) =>
       paddingVertical: 8,
     },
   });
-

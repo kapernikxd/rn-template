@@ -6,13 +6,13 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { CardContainer, HeaderDefault, Spacer, Button } from 'rn-vs-lb';
 import { ThemeType, useTheme } from 'rn-vs-lb/theme';
 import { FormProvider, UseFormReturn } from 'react-hook-form';
 
 import { TextInput } from '../../../components/form';
 import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
+import { useTranslation } from 'react-i18next';
 
 type AccountSettingsFormValues = {
   username?: string;
@@ -34,9 +34,10 @@ export const AccountSettingsView: FC<AccountSettingsViewProps> = ({
   onBackPress,
   isSubmitting,
 }) => {
-  const { theme, isDark } = useTheme();
+  const { theme } = useTheme();
   const { setColors } = useSafeAreaColors();
   const styles = getStyles({ theme });
+  const { t } = useTranslation();
 
   useEffect(() => {
     setColors({
@@ -51,27 +52,27 @@ export const AccountSettingsView: FC<AccountSettingsViewProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <FormProvider {...methods}>
-        <HeaderDefault title="Настройки аккаунта" onBackPress={onBackPress} />
+        <HeaderDefault title={t('settings.account.title')} onBackPress={onBackPress} />
 
         <ScrollView style={{ flex: 1 }}>
           <CardContainer
             style={styles.card}
             styleTitleContainer={styles.cardTitleContainer}
-            subTitle="Обновите имя пользователя и управляйте аккаунтом"
+            subTitle={t('settings.account.subtitle')}
           >
             <View style={styles.cardContent}>
               <TextInput
                 name="username"
-                label="Имя пользователя"
-                placeholder="Введите имя пользователя"
+                label={t('settings.account.fields.username.label')}
+                placeholder={t('settings.account.fields.username.placeholder')}
                 control={methods.control}
                 keyboardType="default"
               />
               <Spacer />
               <TextInput
                 name="email"
-                label="Электронная почта"
-                placeholder="Введите электронную почту"
+                label={t('settings.account.fields.email.label')}
+                placeholder={t('settings.account.fields.email.placeholder')}
                 control={methods.control}
                 keyboardType="default"
                 editable={false}
@@ -81,9 +82,9 @@ export const AccountSettingsView: FC<AccountSettingsViewProps> = ({
         </ScrollView>
 
         <View style={styles.footer}>
-          <Button title="Обновить" onPress={onSubmit} loading={isSubmitting} />
+          <Button title={t('common.update')} onPress={onSubmit} loading={isSubmitting} />
           <Spacer size="xs" />
-          <Button title="Сбросить" type="gray-outline" onPress={onReset} />
+          <Button title={t('common.reset')} type="gray-outline" onPress={onReset} />
         </View>
       </FormProvider>
     </KeyboardAvoidingView>
@@ -110,4 +111,3 @@ const getStyles = ({ theme }: { theme: ThemeType }) =>
       paddingVertical: 8,
     },
   });
-

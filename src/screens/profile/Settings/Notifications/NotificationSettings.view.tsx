@@ -14,6 +14,7 @@ import { ThemeType, useTheme } from 'rn-vs-lb/theme';
 import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import { useSafeAreaColors } from '../../../../store/SafeAreaColorProvider';
+import { useTranslation } from 'react-i18next';
 
 type NotificationType =
   | 'likes'
@@ -46,7 +47,6 @@ type NotificationSettingsViewProps = {
   isSubmitting: boolean;
 };
 
-
 export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
   methods,
   hasPermission,
@@ -56,9 +56,10 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
   onBackPress,
   isSubmitting,
 }) => {
-  const { theme, globalStyleSheet, typography, isDark } = useTheme();
+  const { theme, globalStyleSheet, typography } = useTheme();
   const styles = getStyles({ theme });
   const { setColors } = useSafeAreaColors();
+  const { t } = useTranslation();
 
   useEffect(() => {
     setColors({
@@ -72,15 +73,15 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
     label: string;
     icon: React.ReactNode;
   }[] = [
-      { key: 'likes', label: 'Лайки', icon: <FontAwesome color={theme.text} name="heart-o" size={18} /> },
-      { key: 'followers', label: 'Подписчики', icon: <Ionicons color={theme.text} name="person-add-outline" size={18} /> },
-      { key: 'groupMessages', label: 'Групповые сообщения', icon: <FontAwesome color={theme.text} name="comments-o" size={18} /> },
-      { key: 'participants', label: 'Участники', icon: <Ionicons color={theme.text} name="add-outline" size={18} /> },
-      { key: 'newPost', label: 'Создан/обновлён пост', icon: <FontAwesome color={theme.text} name="calendar-o" size={18} /> },
-      { key: 'invites', label: 'Приглашения к посту', icon: <FontAwesome color={theme.text} name="calendar-plus-o" size={18} /> },
-      { key: 'pollAnswers', label: 'Ответы на опрос', icon: <Ionicons color={theme.text} name="bar-chart-outline" size={18} /> },
-      { key: 'pollInvites', label: 'Приглашения в опрос', icon: <Ionicons color={theme.text} name="stats-chart-outline" size={18} /> },
-    ];
+    { key: 'likes', label: t('settings.notifications.types.likes'), icon: <FontAwesome color={theme.text} name="heart-o" size={18} /> },
+    { key: 'followers', label: t('settings.notifications.types.followers'), icon: <Ionicons color={theme.text} name="person-add-outline" size={18} /> },
+    { key: 'groupMessages', label: t('settings.notifications.types.groupMessages'), icon: <FontAwesome color={theme.text} name="comments-o" size={18} /> },
+    { key: 'participants', label: t('settings.notifications.types.participants'), icon: <Ionicons color={theme.text} name="add-outline" size={18} /> },
+    { key: 'newPost', label: t('settings.notifications.types.newPost'), icon: <FontAwesome color={theme.text} name="calendar-o" size={18} /> },
+    { key: 'invites', label: t('settings.notifications.types.invites'), icon: <FontAwesome color={theme.text} name="calendar-plus-o" size={18} /> },
+    { key: 'pollAnswers', label: t('settings.notifications.types.pollAnswers'), icon: <Ionicons color={theme.text} name="bar-chart-outline" size={18} /> },
+    { key: 'pollInvites', label: t('settings.notifications.types.pollInvites'), icon: <Ionicons color={theme.text} name="stats-chart-outline" size={18} /> },
+  ];
 
   return (
     <KeyboardAvoidingView
@@ -88,13 +89,13 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <FormProvider {...methods}>
-        <HeaderDefault title="Настройки уведомлений" onBackPress={onBackPress} />
+        <HeaderDefault title={t('settings.notifications.title')} onBackPress={onBackPress} />
 
         <ScrollView style={{ flex: 1 }}>
           <CardContainer
             style={styles.card}
             styleTitleContainer={styles.cardTitleContainer}
-            subTitle="Настройте правила push-уведомлений"
+            subTitle={t('settings.notifications.subtitle')}
           >
             <View style={styles.cardContent}>
               <View>
@@ -105,7 +106,9 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
                     </View>
                     <View style={{ marginLeft: 8 }}>
                       <Spacer size="xs" />
-                      <Text style={[typography.titleH6Regular, { color: theme.text }]}>Push-уведомления</Text>
+                      <Text style={[typography.titleH6Regular, { color: theme.text }]}>
+                        {t('settings.notifications.pushToggleTitle')}
+                      </Text>
                     </View>
                   </View>
                   <Switch
@@ -119,7 +122,8 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
                 <Spacer />
               </View>
 
-              {/* {NOTIFICATION_SETTINGS.map(({ key, label, icon }) => (
+              {/* Если вернёте настройку отдельных типов, всё уже локализовано:
+              {NOTIFICATION_SETTINGS.map(({ key, label, icon }) => (
                 <View key={key}>
                   <View style={globalStyleSheet.flexRowCenterBetween}>
                     <View style={globalStyleSheet.flexRowCenterCenter}>
@@ -155,9 +159,9 @@ export const NotificationSettingsView: FC<NotificationSettingsViewProps> = ({
         </ScrollView>
 
         <View style={styles.footer}>
-          <Button title="Обновить" onPress={onSubmit} loading={isSubmitting} />
+          <Button title={t('common.update')} onPress={onSubmit} loading={isSubmitting} />
           <Spacer size="xs" />
-          <Button title="Сбросить" type="gray-outline" onPress={onReset} />
+          <Button title={t('common.reset')} type="gray-outline" onPress={onReset} />
         </View>
       </FormProvider>
     </KeyboardAvoidingView>
@@ -195,4 +199,3 @@ const getStyles = ({ theme }: { theme: ThemeType }) =>
       paddingVertical: 8,
     },
   });
-

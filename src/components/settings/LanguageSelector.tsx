@@ -10,14 +10,14 @@ interface LanguageOption {
 }
 
 const LANGUAGE_OPTIONS: LanguageOption[] = [
-  { code: 'en', translationKey: 'settings.language.languages.en', fallbackLabel: 'English' },
-  { code: 'ru', translationKey: 'settings.language.languages.ru', fallbackLabel: 'Русский' },
-  { code: 'sr', translationKey: 'settings.language.languages.sr', fallbackLabel: 'Srpski' },
-  { code: 'es', translationKey: 'settings.language.languages.es', fallbackLabel: 'Español' },
-  { code: 'it', translationKey: 'settings.language.languages.it', fallbackLabel: 'Italiano' },
-  { code: 'de', translationKey: 'settings.language.languages.de', fallbackLabel: 'Deutsch' },
-  { code: 'fr', translationKey: 'settings.language.languages.fr', fallbackLabel: 'Français' },
-  { code: 'pt', translationKey: 'settings.language.languages.pt', fallbackLabel: 'Português' },
+  { code: 'en', translationKey: 'settings.component.language.languages.en', fallbackLabel: 'English' },
+  { code: 'ru', translationKey: 'settings.component.language.languages.ru', fallbackLabel: 'Русский' },
+  { code: 'sr', translationKey: 'settings.component.language.languages.sr', fallbackLabel: 'Srpski' },
+  { code: 'es', translationKey: 'settings.component.language.languages.es', fallbackLabel: 'Español' },
+  { code: 'it', translationKey: 'settings.component.language.languages.it', fallbackLabel: 'Italiano' },
+  { code: 'de', translationKey: 'settings.component.language.languages.de', fallbackLabel: 'Deutsch' },
+  { code: 'fr', translationKey: 'settings.component.language.languages.fr', fallbackLabel: 'Français' },
+  { code: 'pt', translationKey: 'settings.component.language.languages.pt', fallbackLabel: 'Português' },
 ];
 
 export const LanguageSelector: FC = () => {
@@ -58,7 +58,7 @@ export const LanguageSelector: FC = () => {
       <Modal transparent animationType='fade' visible={isModalVisible} onRequestClose={closeModal}>
         <Pressable style={styles.backdrop} onPress={closeModal}>
           <Pressable style={styles.modalContainer} onPress={(event) => event.stopPropagation()}>
-            <Text style={styles.modalTitle}>{t('settings.language.modalTitle')}</Text>
+            <Text style={styles.modalTitle}>{t('settings.component.language.modalTitle')}</Text>
             <View style={styles.optionsContainer}>
               {LANGUAGE_OPTIONS.map((language) => {
                 const isSelected = language.code === selectedLanguage.code;

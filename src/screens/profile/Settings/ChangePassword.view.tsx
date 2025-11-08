@@ -13,6 +13,7 @@ import { FormProvider, UseFormReturn } from 'react-hook-form';
 
 import { TextInput } from '../../../components/form';
 import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
+import { useTranslation } from 'react-i18next';
 
 type ChangePasswordForm = {
   oldPassword: string;
@@ -35,9 +36,10 @@ export const ChangePasswordView: FC<ChangePasswordViewProps> = ({
   onBackPress,
   isSubmitting,
 }) => {
-  const { theme, isDark } = useTheme();
+  const { theme } = useTheme();
   const { setColors } = useSafeAreaColors();
   const styles = getStyles({ theme });
+  const { t } = useTranslation();
 
   useEffect(() => {
     setColors({
@@ -52,26 +54,26 @@ export const ChangePasswordView: FC<ChangePasswordViewProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <FormProvider {...methods}>
-        <HeaderDefault title="Смена пароля" onBackPress={onBackPress} />
+        <HeaderDefault title={t('settings.changePassword.title')} onBackPress={onBackPress} />
 
         <ScrollView style={{ flex: 1 }}>
           <CardContainer
             style={styles.card}
             styleTitleContainer={styles.cardTitleContainer}
-            subTitle="Измените пароль аккаунта"
+            subTitle={t('settings.changePassword.subtitle')}
           >
             <View style={styles.cardContent}>
               <TextInput
                 name="oldPassword"
-                label="Текущий пароль"
-                placeholder="Введите пароль"
+                label={t('settings.changePassword.fields.oldPassword.label')}
+                placeholder={t('settings.changePassword.fields.oldPassword.placeholder')}
                 secureTextEntry
                 control={methods.control}
                 rules={{
-                  required: 'Введите пароль!',
+                  required: t('settings.changePassword.validation.oldPasswordRequired'),
                   minLength: {
                     value: 6,
-                    message: 'Пароль должен содержать не менее 6 символов!',
+                    message: t('settings.changePassword.validation.passwordMinLength', { min: 6 }),
                   },
                 }}
               />
@@ -79,15 +81,15 @@ export const ChangePasswordView: FC<ChangePasswordViewProps> = ({
 
               <TextInput
                 name="password"
-                label="Новый пароль"
-                placeholder="Введите новый пароль"
+                label={t('settings.changePassword.fields.password.label')}
+                placeholder={t('settings.changePassword.fields.password.placeholder')}
                 secureTextEntry
                 control={methods.control}
                 rules={{
-                  required: 'Введите пароль!',
+                  required: t('settings.changePassword.validation.passwordRequired'),
                   minLength: {
                     value: 6,
-                    message: 'Пароль должен содержать не менее 6 символов!',
+                    message: t('settings.changePassword.validation.passwordMinLength', { min: 6 }),
                   },
                 }}
               />
@@ -95,18 +97,19 @@ export const ChangePasswordView: FC<ChangePasswordViewProps> = ({
 
               <TextInput
                 name="rePassword"
-                label="Подтверждение пароля"
-                placeholder="Повторите новый пароль"
+                label={t('settings.changePassword.fields.rePassword.label')}
+                placeholder={t('settings.changePassword.fields.rePassword.placeholder')}
                 secureTextEntry
                 control={methods.control}
                 rules={{
-                  required: 'Подтвердите пароль!',
+                  required: t('settings.changePassword.validation.confirmPasswordRequired'),
                   minLength: {
                     value: 6,
-                    message: 'Пароль должен содержать не менее 6 символов!',
+                    message: t('settings.changePassword.validation.passwordMinLength', { min: 6 }),
                   },
                   validate: (value: string) =>
-                    value === methods.getValues('password') || 'Пароли не совпадают!',
+                    value === methods.getValues('password') ||
+                    t('settings.changePassword.validation.passwordsDoNotMatch'),
                 }}
               />
             </View>
@@ -114,9 +117,9 @@ export const ChangePasswordView: FC<ChangePasswordViewProps> = ({
         </ScrollView>
 
         <View style={styles.footer}>
-          <Button title="Обновить" onPress={onSubmit} loading={isSubmitting} />
+          <Button title={t('common.update')} onPress={onSubmit} loading={isSubmitting} />
           <Spacer size="xs" />
-          <Button title="Сбросить" type="gray-outline" onPress={onReset} />
+          <Button title={t('common.reset')} type="gray-outline" onPress={onReset} />
         </View>
       </FormProvider>
     </KeyboardAvoidingView>
@@ -143,4 +146,3 @@ const getStyles = ({ theme }: { theme: ThemeType }) =>
       paddingVertical: 8,
     },
   });
-

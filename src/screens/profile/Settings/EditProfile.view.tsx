@@ -15,6 +15,7 @@ import { IOScrollView } from 'react-native-intersection-observer';
 import { TextArea, TextInput } from '../../../components/form';
 import { UpdateProfileProps } from '../../../types/profile';
 import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
+import { useTranslation } from 'react-i18next';
 
 type EditProfileFormValues = Pick<
   UpdateProfileProps,
@@ -54,9 +55,10 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
   localImageUri,
   isSubmitting,
 }) => {
-  const { theme, isDark } = useTheme();
+  const { theme } = useTheme();
   const { setColors } = useSafeAreaColors();
   const styles = getStyles({ theme });
+  const { t } = useTranslation();
 
   useEffect(() => {
     setColors({
@@ -71,7 +73,7 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <FormProvider {...methods}>
-        <HeaderDefault title="Редактирование профиля" onBackPress={onBackPress} />
+        <HeaderDefault title={t('settings.editProfile.title')} onBackPress={onBackPress} />
         <IOScrollView
           style={{ flex: 1 }}
           refreshControl={
@@ -86,7 +88,7 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
           <CardContainer
             style={styles.card}
             styleTitleContainer={styles.cardTitleContainer}
-            subTitle="Заполните личную информацию"
+            subTitle={t('settings.editProfile.subtitle')}
           >
             <View>
               <ProfilePhotoUpload
@@ -102,32 +104,32 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
             <View style={styles.cardContent}>
               <TextInput
                 name="name"
-                label="Имя"
-                placeholder="Имя"
+                label={t('settings.editProfile.fields.name.label')}
+                placeholder={t('settings.editProfile.fields.name.placeholder')}
                 control={methods.control}
                 keyboardType="default"
                 rules={{
-                  required: 'Введите имя!',
+                  required: t('settings.editProfile.validation.nameRequired'),
                 }}
               />
               <Spacer />
 
               <TextInput
                 name="lastname"
-                label="Фамилия"
-                placeholder="Фамилия"
+                label={t('settings.editProfile.fields.lastname.label')}
+                placeholder={t('settings.editProfile.fields.lastname.placeholder')}
                 control={methods.control}
                 keyboardType="default"
                 rules={{
-                  required: 'Введите фамилию!',
+                  required: t('settings.editProfile.validation.lastnameRequired'),
                 }}
               />
               <Spacer />
 
               <TextInput
                 name="profession"
-                label="Профессия"
-                placeholder="Ваша профессия"
+                label={t('settings.editProfile.fields.profession.label')}
+                placeholder={t('settings.editProfile.fields.profession.placeholder')}
                 control={methods.control}
                 keyboardType="default"
               />
@@ -135,8 +137,8 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
 
               <TextInput
                 name="phone"
-                label="Номер телефона"
-                placeholder="Введите номер телефона"
+                label={t('settings.editProfile.fields.phone.label')}
+                placeholder={t('settings.editProfile.fields.phone.placeholder')}
                 control={methods.control}
                 keyboardType="numeric"
               />
@@ -144,16 +146,16 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
 
               <TextArea
                 name="userBio"
-                label="О себе"
-                placeholder="Краткая информация о вас"
+                label={t('settings.editProfile.fields.userBio.label')}
+                placeholder={t('settings.editProfile.fields.userBio.placeholder')}
                 control={methods.control}
               />
             </View>
 
             <View style={styles.footer}>
-              <Button title="Обновить" onPress={onSubmit} loading={isSubmitting} />
+              <Button title={t('common.update')} onPress={onSubmit} loading={isSubmitting} />
               <Spacer size="xs" />
-              <Button title="Сбросить" type="gray-outline" onPress={onReset} />
+              <Button title={t('common.reset')} type="gray-outline" onPress={onReset} />
             </View>
           </CardContainer>
         </IOScrollView>
@@ -182,4 +184,3 @@ const getStyles = ({ theme }: { theme: ThemeType }) =>
       paddingVertical: 8,
     },
   });
-

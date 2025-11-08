@@ -1,64 +1,166 @@
 {
-  "welcome": "Добро пожаловать",
-  "login": "Войти",
+  "welcome": "Welcome",
+  "login": "Sign In",
   "logout": "Выйти",
+  "common": {
+    "cancel": "Отменить",
+    "update": "Обновить",
+    "reset": "Сбросить",
+    "confirm": "Подтвердить"
+  },
   "settings": {
     "title": "Настройки",
-    "cards": {
+    "section": {
       "accountManagement": {
-        "title": "Управление аккаунтом"
+        "title": "Управление аккаунтом",
+        "editProfile": "Редактировать профиль",
+        "changePassword": "Изменить пароль",
+        "notifications": "Уведомления"
       },
       "theme": {
         "title": "Тема"
-      }
+      },
+      "userID": "ID пользователя",
+      "copyAppLink": "Скопировать ссылку на приложение",
+      "version": "Версия {{version}}"
     },
-    "sections": {
-      "user": "Пользователь",
-      "ads": "Реклама",
-      "app": "Приложение"
+    "editProfile": {
+      "title": "Редактирование профиля",
+      "subtitle": "Заполните личную информацию",
+      "fields": {
+        "name": {
+          "label": "Имя",
+          "placeholder": "Имя"
+        },
+        "lastname": {
+          "label": "Фамилия",
+          "placeholder": "Фамилия"
+        },
+        "profession": {
+          "label": "Профессия",
+          "placeholder": "Ваша профессия"
+        },
+        "phone": {
+          "label": "Номер телефона",
+          "placeholder": "Введите номер телефона"
+        },
+        "userBio": {
+          "label": "О себе",
+          "placeholder": "Краткая информация о вас"
+        }
+      },
+      "validation": {
+        "nameRequired": "Введите имя!",
+        "lastnameRequired": "Введите фамилию!"
+      }
     },
     "account": {
-      "editProfile": "Редактировать профиль",
-      "accountSettings": "Настройки аккаунта",
-      "socialProfiles": "Социальные профили",
-      "changePassword": "Смена пароля",
-      "notifications": "Уведомления"
-    },
-    "user": {
-      "id": "ID пользователя"
-    },
-    "theme": {
-      "light": "Светлая тема",
-      "dark": "Тёмная тема"
-    },
-    "language": {
-      "title": "Язык интерфейса",
-      "modalTitle": "Выберите язык",
-      "languages": {
-        "en": "Английский",
-        "ru": "Русский",
-        "sr": "Сербский",
-        "es": "Испанский",
-        "it": "Итальянский",
-        "de": "Немецкий",
-        "fr": "Французский",
-        "pt": "Португальский"
+      "title": "Настройки аккаунта",
+      "subtitle": "Обновите имя пользователя и управляйте аккаунтом",
+      "fields": {
+        "username": {
+          "label": "Имя пользователя",
+          "placeholder": "Введите имя пользователя"
+        },
+        "email": {
+          "label": "Электронная почта",
+          "placeholder": "Введите электронную почту"
+        }
       }
     },
-    "feedback": {
-      "title": "Отзывы и ошибки",
-      "subtitle": "Нажмите, чтобы написать нам в Telegram",
-      "unsupported": "Невозможно открыть URL-адрес Telegram"
+    "socialProfiles": {
+      "title": "Социальные профили",
+      "subtitle": "Добавьте ссылки на свои профили",
+      "fields": {
+        "facebook": {
+          "label": "Facebook",
+          "placeholder": "Введите имя пользователя"
+        },
+        "instagram": {
+          "label": "Instagram",
+          "placeholder": "Введите имя пользователя"
+        },
+        "vk": {
+          "label": "VK",
+          "placeholder": "Введите имя пользователя"
+        },
+        "tg": {
+          "label": "Telegram",
+          "placeholder": "Введите имя пользователя"
+        }
+      }
     },
-    "deleteAccount": {
-      "cancel": "Отменить",
-      "confirm": "Удалить",
-      "trigger": "Удалить аккаунт",
-      "modalTitle": "Подтвердить удаление",
-      "modalDescription": "Все ваши данные, включая профиль, события и историю чата, будут удалены без возможности восстановления. Этот процесс необратим и завершится в течение 24 часов. Вы уверены, что хотите продолжить?",
-      "requestSent": "Ваш запрос отправлен. Аккаунт будет удалён в течение 24 часов."
+    "changePassword": {
+      "title": "Смена пароля",
+      "subtitle": "Измените пароль аккаунта",
+      "fields": {
+        "oldPassword": {
+          "label": "Текущий пароль",
+          "placeholder": "Введите пароль"
+        },
+        "password": {
+          "label": "Новый пароль",
+          "placeholder": "Введите новый пароль"
+        },
+        "rePassword": {
+          "label": "Подтверждение пароля",
+          "placeholder": "Повторите новый пароль"
+        }
+      },
+      "validation": {
+        "oldPasswordRequired": "Введите пароль!",
+        "passwordRequired": "Введите пароль!",
+        "confirmPasswordRequired": "Подтвердите пароль!",
+        "passwordMinLength": "Пароль должен содержать не менее {{min}} символов!",
+        "passwordsDoNotMatch": "Пароли не совпадают!"
+      }
     },
-    "copyAppLink": "Скопировать ссылку на приложение",
-    "version": "Версия {{version}}"
+    "notifications": {
+      "title": "Настройки уведомлений",
+      "subtitle": "Настройте правила push-уведомлений",
+      "pushToggleTitle": "Push-уведомления",
+      "types": {
+        "likes": "Лайки",
+        "followers": "Подписчики",
+        "groupMessages": "Групповые сообщения",
+        "participants": "Участники",
+        "newPost": "Создан/обновлён пост",
+        "invites": "Приглашения к посту",
+        "pollAnswers": "Ответы на опрос",
+        "pollInvites": "Приглашения в опрос"
+      }
+    },
+    "component": {
+      "language": {
+        "title": "Язык интерфейса",
+        "modalTitle": "Выберите язык",
+        "languages": {
+          "en": "Английский",
+          "ru": "Русский",
+          "sr": "Сербский",
+          "es": "Испанский",
+          "it": "Итальянский",
+          "de": "Немецкий",
+          "fr": "Французский",
+          "pt": "Португальский"
+        }
+      },
+      "feedback": {
+        "title": "Отзывы и ошибки",
+        "subtitle": "Нажмите, чтобы написать нам в Telegram",
+        "unsupported": "Невозможно открыть URL-адрес Telegram"
+      },
+      "theme": {
+        "title": "Тема",
+        "light": "Светлая тема",
+        "dark": "Тёмная тема"
+      },
+      "deleteAccount": {
+        "title": "Удалить аккаунт",
+        "modalTitle": "Подтвердить удаление",
+        "modalDescription": "Все ваши данные, включая профиль, события и историю чата, будут удалены без возможности восстановления. Этот процесс необратим и завершится в течение 24 часов. Вы уверены, что хотите продолжить?",
+        "requestSent": "Ваш запрос отправлен. Аккаунт будет удалён в течение 24 часов."
+      }
+    }
   }
 }
