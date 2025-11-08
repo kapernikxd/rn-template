@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, type StyleProp, type ViewStyle } from "react-native";
 import { Feather } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 import { useTheme } from "rn-vs-lb/theme";
 
 type ShareIconButtonProps = {
@@ -18,7 +19,7 @@ const DEFAULT_ICON_SIZE = 20;
 
 export const ShareIconButton: React.FC<ShareIconButtonProps> = ({
   onPress,
-  accessibilityLabel = "Поделиться",
+  accessibilityLabel,
   style,
   iconColor,
   backgroundColor,
@@ -26,11 +27,13 @@ export const ShareIconButton: React.FC<ShareIconButtonProps> = ({
   size = DEFAULT_SIZE,
 }) => {
   const { theme, isDark } = useTheme();
+  const { t } = useTranslation();
+  const resolvedAccessibilityLabel = accessibilityLabel ?? t('common.accessibility.share');
 
   return (
     <TouchableOpacity
       accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
+      accessibilityLabel={resolvedAccessibilityLabel}
       activeOpacity={0.7}
       onPress={onPress}
       style={[

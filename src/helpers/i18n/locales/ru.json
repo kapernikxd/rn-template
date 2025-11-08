@@ -1,12 +1,130 @@
 {
   "welcome": "Welcome",
   "login": "Sign In",
+  "ads": {
+    "rewardedCard": {
+      "title": "Мои токены",
+      "balance": "{{count}} токенов",
+      "reward": "Получить награду",
+      "adReady": "Реклама готова к показу",
+      "adLoading": "Реклама загружается..."
+    },
+    "tokenBadge": {
+      "accessibility": {
+        "withLabel": "{{label}}: {{balance}}",
+        "balance": "Баланс токенов: {{balance}}"
+      },
+      "adReady": "Реклама готова к показу",
+      "adLoading": "Реклама загружается...",
+      "menuAccessibility": "Меню токенов",
+      "menuTitle": "Баланс токенов",
+      "watchAd": "Посмотреть рекламу"
+    }
+  },
   "logout": "Выйти",
   "common": {
     "cancel": "Отменить",
     "update": "Обновить",
     "reset": "Сбросить",
-    "confirm": "Подтвердить"
+    "confirm": "Подтвердить",
+    "terms": {
+      "acceptPrefix": "Я принимаю",
+      "link": "Условия использования",
+      "error": "Чтобы продолжить, необходимо принять Условия использования"
+    },
+    "accessibility": {
+      "back": "Назад",
+      "share": "Поделиться"
+    }
+  },
+  "auth": {
+    "fields": {
+      "email": {
+        "label": "Электронная почта",
+        "placeholder": "Введите электронную почту",
+        "validation": {
+          "required": "Введите электронную почту!",
+          "invalid": "Неверный адрес электронной почты!"
+        }
+      },
+      "password": {
+        "label": "Пароль",
+        "placeholder": "Введите пароль",
+        "validation": {
+          "required": "Введите пароль!",
+          "minLength": "Пароль должен содержать не менее {{min}} символов!"
+        }
+      },
+      "name": {
+        "label": "Имя",
+        "placeholder": "Имя",
+        "validation": {
+          "required": "Введите имя!"
+        }
+      },
+      "lastname": {
+        "label": "Фамилия",
+        "placeholder": "Фамилия",
+        "validation": {
+          "required": "Введите фамилию!"
+        }
+      },
+      "confirmPassword": {
+        "label": "Подтвердите пароль",
+        "placeholder": "Повторите пароль",
+        "validation": {
+          "required": "Подтвердите пароль!",
+          "minLength": "Пароль должен содержать не менее {{min}} символов!",
+          "mismatch": "Пароли не совпадают!"
+        }
+      }
+    },
+    "login": {
+      "title": "Вход в аккаунт",
+      "subtitle": "Введите свои учётные данные, чтобы получить доступ к аккаунту и информации",
+      "forgotPassword": "Забыли пароль?",
+      "submit": "Войти",
+      "socialSignIn": "или войдите с помощью",
+      "googleSignIn": "Войти через Google",
+      "noAccount": "Нет аккаунта?",
+      "registerLink": "Зарегистрироваться",
+      "errors": {
+        "noGoogleIdToken": "Нет idToken от Google",
+        "noAppleIdentityToken": "Нет identityToken от Apple"
+      }
+    },
+    "register": {
+      "title": "Создать аккаунт",
+      "subtitle": "Введите свои данные, чтобы получить доступ к аккаунту и возможностям",
+      "submit": "Зарегистрироваться",
+      "haveAccount": "Уже есть аккаунт?",
+      "loginLink": "Войти"
+    },
+    "forgotPassword": {
+      "title": "Восстановление пароля",
+      "subtitle": "Введите электронную почту, чтобы получить доступ к восстановлению",
+      "submit": "Далее",
+      "haveAccount": "Уже есть аккаунт?",
+      "loginLink": "Войти"
+    },
+    "changePassword": {
+      "title": "Смена пароля",
+      "subtitle": "Введите новый пароль для доступа к аккаунту",
+      "submit": "Подтвердить",
+      "haveAccount": "Уже есть аккаунт?",
+      "loginLink": "Войти"
+    },
+    "otp": {
+      "title": "Введите код",
+      "subtitle": "Введите 9-значный код, отправленный на вашу почту",
+      "submit": "Далее",
+      "haveAccount": "Уже есть аккаунт?",
+      "loginLink": "Войти",
+      "validation": {
+        "required": "Заполните это поле",
+        "invalidLength": "Введите корректный код из 9 символов!"
+      }
+    }
   },
   "settings": {
     "title": "Настройки",

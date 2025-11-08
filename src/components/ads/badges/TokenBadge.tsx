@@ -12,11 +12,12 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme, ThemeType } from "rn-vs-lb/theme";
+import { useTranslation } from "react-i18next";
 
 import { useRewardedAdTokens } from "../../../helpers/hooks/useRewardedAdTokens";
 
-const formatTokens = (value: number) =>
-  Number.isFinite(value) ? value.toLocaleString("ru-RU") : String(value);
+const formatTokens = (value: number, locale: string) =>
+  Number.isFinite(value) ? value.toLocaleString(locale) : String(value);
 
 type TokenBadgeProps = {
   /** Текущее количество токенов. Если не передано — загружается из AsyncStorage. */
@@ -43,21 +44,24 @@ export const TokenBadge = memo(
     const styles = getStyles(theme);
     const { balance: storedBalance, isAdLoaded, showRewardedAd } = useRewardedAdTokens();
     const [isMenuVisible, setIsMenuVisible] = useState(false);
+    const { t, i18n } = useTranslation();
 
     const currentBalance = useMemo(
       () => (typeof balance === "number" ? balance : storedBalance),
       [balance, storedBalance],
     );
 
-    const formattedBalance = useMemo(() => formatTokens(currentBalance), [currentBalance]);
+    const locale = i18n.language || "en";
+    const formattedBalance = useMemo(
+      () => formatTokens(currentBalance, locale),
+      [currentBalance, locale],
+    );
 
     const accessibilityLabelText = label
-      ? `${label}: ${formattedBalance}`
-      : `Баланс токенов: ${formattedBalance}`;
+      ? t('ads.tokenBadge.accessibility.withLabel', { label, balance: formattedBalance })
+      : t('ads.tokenBadge.accessibility.balance', { balance: formattedBalance });
 
-    const menuStatusText = isAdLoaded
-      ? "Реклама готова к показу"
-      : "Реклама загружается...";
+    const menuStatusText = t(isAdLoaded ? 'ads.tokenBadge.adReady' : 'ads.tokenBadge.adLoading');
 
     const openMenu = useCallback(() => {
       setIsMenuVisible(true);
@@ -104,9 +108,9 @@ export const TokenBadge = memo(
             <Pressable
               style={styles.menuContainer}
               onPress={(event) => event.stopPropagation()}
-              accessibilityLabel="Меню токенов"
+              accessibilityLabel={t('ads.tokenBadge.menuAccessibility')}
             >
-              <Text style={[styles.menuTitle, { color: theme.text }]}>Баланс токенов</Text>
+              <Text style={[styles.menuTitle, { color: theme.text }]}>{t('ads.tokenBadge.menuTitle')}</Text>
               <Text style={[styles.menuValue, { color: theme.title }]}>{formattedBalance}</Text>
 
               <TouchableOpacity
@@ -122,7 +126,7 @@ export const TokenBadge = memo(
                 />
                 <View style={styles.menuButtonTextWrapper}>
                   <Text style={[styles.menuButtonText, { color: theme.title }]}>
-                    Посмотреть рекламу
+                    {t('ads.tokenBadge.watchAd')}
                   </Text>
                   <Text style={[styles.menuButtonSubtext, { color: theme.text }]}>
                     {menuStatusText}

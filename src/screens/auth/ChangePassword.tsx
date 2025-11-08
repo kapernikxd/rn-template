@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platfor
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FormProvider, useForm } from 'react-hook-form';
 import { RouteProp, useRoute } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { usePortalNavigation } from '../../helpers/hooks';
 import { TextInput as VSTextInput } from '../../components/form';
 import { useRootStore } from '../../store/StoreProvider';
@@ -15,6 +16,7 @@ type AuthScreenNavigationProp = RouteProp<AuthStackParamList, typeof ROUTES.Chan
 
 const ChangePassword: FC = () => {
     const { globalStyleSheet, theme, isDark, typography } = useTheme();
+    const { t } = useTranslation();
     const route = useRoute<AuthScreenNavigationProp>();
     const { link } = route.params;
 
@@ -56,23 +58,25 @@ const ChangePassword: FC = () => {
                                         <LogoAiPair isDark={isDark}/>
                                     </TouchableOpacity>
                                 </View>
-                                <Text style={typography.titleH2Regular}>Смена пароля</Text>
+                                <Text style={typography.titleH2Regular}>{t('auth.changePassword.title')}</Text>
                                 <Spacer size='xxs'/>
-                                <Text style={[typography.bodyXs, globalStyleSheet.formDescription]}>Введите новый пароль для доступа к аккаунту</Text>
+                                <Text style={[typography.bodyXs, globalStyleSheet.formDescription]}>
+                                    {t('auth.changePassword.subtitle')}
+                                </Text>
                             </View>
                             <View style={[globalStyleSheet.loginarea, { backgroundColor: theme.card }]}>
                                 <VSTextInput
                                     name='password'
-                                    label='Пароль'
-                                    placeholder='Введите пароль'
+                                    label={t('auth.fields.password.label')}
+                                    placeholder={t('auth.fields.password.placeholder')}
                                     iconType='lock'
                                     secureTextEntry={true}
                                     control={methods.control}
                                     rules={{
-                                        required: 'Введите пароль!',
+                                        required: t('auth.fields.password.validation.required'),
                                         minLength: {
                                             value: 6,
-                                            message: 'Пароль должен содержать не менее 6 символов!',
+                                            message: t('auth.fields.password.validation.minLength', { min: 6 }),
                                         }
                                     }
                                     } />
@@ -80,39 +84,38 @@ const ChangePassword: FC = () => {
 
                                 <VSTextInput
                                     name='rePassword'
-                                    label='Подтвердите пароль'
-                                    placeholder='Повторите пароль'
+                                    label={t('auth.fields.confirmPassword.label')}
+                                    placeholder={t('auth.fields.confirmPassword.placeholder')}
                                     iconType='lock'
                                     secureTextEntry={true}
                                     control={methods.control}
                                     rules={{
-                                        required: 'Подтвердите пароль!',
+                                        required: t('auth.fields.confirmPassword.validation.required'),
                                         minLength: {
                                             value: 6,
-                                            message: 'Пароль должен содержать не менее 6 символов!',
+                                            message: t('auth.fields.confirmPassword.validation.minLength', { min: 6 }),
                                         },
                                         validate: (value: string) =>
-                                            value === methods.getValues('password') || 'Пароли не совпадают!',
+                                            value === methods.getValues('password') || t('auth.fields.confirmPassword.validation.mismatch'),
                                     }}
                                 />
 
                                 <Spacer size='lg' />
 
-                                <View style={{}}>
+                                <View>
                                     <Button
-                                        title="Подтвердить"
+                                        title={t('auth.changePassword.submit')}
                                         onPress={handleSubmit}
                                     />
                                 </View>
 
                                 <View style={{ flex: 1 }}></View>
                                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 15 }}>
-                                    <Text style={typography.body}>Уже есть аккаунт
-                                    </Text>
-                                    <TouchableOpacity
-                                        onPress={goToLogin}
-                                    >
-                                        <Text style={[typography.textLink, { textDecorationLine: 'underline', marginLeft: 5 }]}>Войти</Text>
+                                    <Text style={typography.body}>{t('auth.changePassword.haveAccount')}</Text>
+                                    <TouchableOpacity onPress={goToLogin}>
+                                        <Text style={[typography.textLink, { textDecorationLine: 'underline', marginLeft: 5 }]}>
+                                            {t('auth.changePassword.loginLink')}
+                                        </Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
