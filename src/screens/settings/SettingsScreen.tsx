@@ -2,6 +2,7 @@ import { FC, useCallback, useEffect, useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import {
     CardContainer,
     DeleteAccountButton,
@@ -33,6 +34,7 @@ export const SettingsScreen: FC = () => {
     const { globalStyleSheet, theme, sizes, typography } = useTheme();
     const { setColors } = useSafeAreaColors();
     const styles = getStyles({ globalStyleSheet, theme, sizes });
+    const { t } = useTranslation();
 
     const { authStore, profileStore, uiStore } = useRootStore();
     const { goBack, goToLogin } = usePortalNavigation();
@@ -46,8 +48,8 @@ export const SettingsScreen: FC = () => {
 
     const handleDeleteAccount = useCallback(async () => {
         await profileStore.deleteAccount();
-        uiStore.showSnackbar("Ваш запрос отправлен. Аккаунт будет удалён в течение 24 часов.", "success");
-    }, [profileStore, uiStore]);
+        uiStore.showSnackbar(t('settings.deleteAccount.requestSent'), "success");
+    }, [profileStore, t, uiStore]);
 
     const navigateTo = useCallback(
         (screen: SettingsRoute) => () => navigation.navigate(screen),
@@ -56,25 +58,25 @@ export const SettingsScreen: FC = () => {
 
     const SETTING_LIST = useMemo(
         () => [
-            { icon: 'user-o', label: 'Редактировать профиль', action: navigateTo(ROUTES.ProfileEdit) },
-            // { icon: 'gear', label: 'Настройки аккаунта', action: navigateTo(ROUTES.ProfileAccountSettings) },
-            { icon: 'key', label: 'Смена пароля', action: navigateTo(ROUTES.ProfileChangePassword) },
-            // { icon: 'group', label: 'Социальные профили', action: navigateTo(ROUTES.ProfileSocialProfiles) },
-            { icon: 'bell', label: 'Уведомления', action: navigateTo(ROUTES.ProfileNotificationSettings) },
+            { icon: 'user-o', label: t('settings.account.editProfile'), action: navigateTo(ROUTES.ProfileEdit) },
+            // { icon: 'gear', label: t('settings.account.accountSettings'), action: navigateTo(ROUTES.ProfileAccountSettings) },
+            { icon: 'key', label: t('settings.account.changePassword'), action: navigateTo(ROUTES.ProfileChangePassword) },
+            // { icon: 'group', label: t('settings.account.socialProfiles'), action: navigateTo(ROUTES.ProfileSocialProfiles) },
+            { icon: 'bell', label: t('settings.account.notifications'), action: navigateTo(ROUTES.ProfileNotificationSettings) },
         ],
-        [navigateTo],
+        [navigateTo, t],
     );
 
     const COPY_LINK = useMemo(
         () => [
-            { icon: 'copy', label: 'Скопировать ссылку на приложение', action: () => handleShareUserLink(myId) },
+            { icon: 'copy', label: t('settings.copyAppLink'), action: () => handleShareUserLink(myId) },
         ],
-        [handleShareUserLink, myId],
+        [handleShareUserLink, myId, t],
     );
 
     const LOGOUT = useMemo(
-        () => ({ icon: 'sign-out', label: 'Выйти', action: () => handleLogOut() }),
-        [handleLogOut],
+        () => ({ icon: 'sign-out', label: t('logout'), action: () => handleLogOut() }),
+        [handleLogOut, t],
     );
 
     useEffect(() => {
@@ -92,21 +94,21 @@ export const SettingsScreen: FC = () => {
 
     return (
         <View style={styles.content}>
-            <HeaderDefault title={'Настройки'} onBackPress={goBack} />
+            <HeaderDefault title={t('settings.title')} onBackPress={goBack} />
             <ScrollView contentContainerStyle={styles.body}>
                 <View style={styles.list}>
                     <CardContainer style={styles.card}>
-                        <View><Text style={styles.title}>Управление аккаунтом</Text></View>
+                        <View><Text style={styles.title}>{t('settings.cards.accountManagement.title')}</Text></View>
                         {SETTING_LIST.map((item, index) => (
                             <ListItem big iconColor={theme.text} key={index} {...item} hideBottomLine />
                         ))}
                     </CardContainer>
                     <CardContainer style={styles.card}>
-                        <View><Text style={styles.title}>Тема</Text></View>
-                        <ThemeSwitcher lightModeLabel="Светлая тема" darkModeLabel="Тёмная тема" />
+                        <View><Text style={styles.title}>{t('settings.cards.theme.title')}</Text></View>
+                        <ThemeSwitcher lightModeLabel={t('settings.theme.light')} darkModeLabel={t('settings.theme.dark')} />
                         <Spacer size='xs' />
                         <SettingsListItem
-                            label={'Язык интерфейса'}
+                            label={t('settings.language.title')}
                             laberColor={theme.text}
                             accessory={<LanguageSelector />}
                             labelIcon={<FontAwesome color={theme.text} name="language" size={21} />}
@@ -129,13 +131,25 @@ export const SettingsScreen: FC = () => {
                 <Spacer size='xl' />
                 <View>
                     <CardContainer style={styles.card}>
-                        <TelegramFeedbackLink title='Отзывы и ошибки' subtitle='Нажмите, чтобы написать нам в Telegram' unsupportedLinkMessage='Невозможно открыть URL-адрес Telegram' link={TELEGRAM_URL} />
+                        <TelegramFeedbackLink
+                            title={t('settings.feedback.title')}
+                            subtitle={t('settings.feedback.subtitle')}
+                            unsupportedLinkMessage={t('settings.feedback.unsupported')}
+                            link={TELEGRAM_URL}
+                        />
                     </CardContainer>
                     <CardContainer style={styles.card}>
-                        <DeleteAccountButton cancelButtonLabel="Отменить" confirmButtonLabel="Удалить" triggerLabel='Удалить аккаунт' modalTitle='Подтвердить удаление' modalDescription="Все ваши данные, включая профиль, события и историю чата, будут удалены без возможности восстановления. Этот процесс необратим и завершится в течение 24 часов. Вы уверены, что хотите продолжить?" deleteAccount={handleDeleteAccount} />
+                        <DeleteAccountButton
+                            cancelButtonLabel={t('settings.deleteAccount.cancel')}
+                            confirmButtonLabel={t('settings.deleteAccount.confirm')}
+                            triggerLabel={t('settings.deleteAccount.trigger')}
+                            modalTitle={t('settings.deleteAccount.modalTitle')}
+                            modalDescription={t('settings.deleteAccount.modalDescription')}
+                            deleteAccount={handleDeleteAccount}
+                        />
                     </CardContainer>
                     <View style={styles.version}>
-                        <Text style={typography.body}>Версия {appVersion}</Text>
+                        <Text style={typography.body}>{t('settings.version', { version: appVersion })}</Text>
                     </View>
                 </View>
             </ScrollView>
