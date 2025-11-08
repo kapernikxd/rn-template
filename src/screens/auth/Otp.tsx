@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platfor
 import { SafeAreaView } from "react-native-safe-area-context";
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { FormProvider, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useRootStore } from '../../store/StoreProvider';
 import { OtpInput } from '../../components/form';
 import { usePortalNavigation } from '../../helpers/hooks';
@@ -21,6 +22,7 @@ const INPUT_CODE_NAME = "code"
 
 const Otp: FC = () => {
     const { globalStyleSheet, theme, isDark, typography } = useTheme();
+    const { t } = useTranslation();
     const route = useRoute<AuthScreenNavigationProp>();
     const { goToLogin, goToMain, goToChangePassword } = usePortalNavigation();
     const { email, reset, redirectTo } = route.params;
@@ -47,7 +49,7 @@ const Otp: FC = () => {
 
         if (fullOtp.length !== 9) {
             methods.setError(`${INPUT_CODE_NAME}`, {
-                message: 'Введите корректный код из 9 символов!',
+                message: t('auth.otp.validation.invalidLength'),
             });
             return;
         }
@@ -90,9 +92,11 @@ const Otp: FC = () => {
                                         <LogoAiPair isDark={isDark}/>
                                     </TouchableOpacity>
                                 </View>
-                                <Text style={typography.titleH2Regular}>Введите код</Text>
+                                <Text style={typography.titleH2Regular}>{t('auth.otp.title')}</Text>
                                 <Spacer size='xxs'/>
-                                <Text style={[typography.bodyXs, globalStyleSheet.formDescription]}>Введите 9-значный код, отправленный на вашу почту</Text>
+                                <Text style={[typography.bodyXs, globalStyleSheet.formDescription]}>
+                                    {t('auth.otp.subtitle')}
+                                </Text>
                             </View>
                             <View style={[globalStyleSheet.loginarea, { backgroundColor: theme.card }]}> 
 
@@ -103,25 +107,25 @@ const Otp: FC = () => {
                                         sectionLength={3}
                                         methods={methods}
                                         rules={{
-                                            required: 'Заполните это поле',
+                                            required: t('auth.otp.validation.required'),
                                         }}
                                     />
                                 </View>
 
                                 <View style={{ marginTop: 10 }}>
-                                    <Button title="Далее"
+                                    <Button
+                                        title={t('auth.otp.submit')}
                                         onPress={handleSubmit}
                                     />
                                 </View>
 
                                 <View style={{ flex: 1 }}></View>
                                 <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 15 }}>
-                                    <Text style={typography.body}>Уже есть аккаунт
-                                    </Text>
-                                    <TouchableOpacity
-                                        onPress={goToLogin}
-                                    >
-                                        <Text style={[typography.textLink, { textDecorationLine: 'underline', marginLeft: 5 }]}>Войти</Text>
+                                    <Text style={typography.body}>{t('auth.otp.haveAccount')}</Text>
+                                    <TouchableOpacity onPress={goToLogin}>
+                                        <Text style={[typography.textLink, { textDecorationLine: 'underline', marginLeft: 5 }]}>
+                                            {t('auth.otp.loginLink')}
+                                        </Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>

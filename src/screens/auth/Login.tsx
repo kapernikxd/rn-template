@@ -2,6 +2,7 @@ import React, { FC, useCallback, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FormProvider, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useRootStore } from '../../store/StoreProvider';
 import { TermsCheckbox, TextInput } from '../../components/form';
 import { Spacer, Button } from 'rn-vs-lb';
@@ -23,6 +24,7 @@ import { GOOGLE_SIGN_IN_CLIENT_ID } from '../../constants/links';
 
 const Login: FC = observer(() => {
   const { globalStyleSheet, theme, isDark, typography } = useTheme();
+  const { t } = useTranslation();
   const methods = useForm();
   const { authStore } = useRootStore();
   const { goToOtp, goToForgotPassword, goToMain, goToRegister } = usePortalNavigation();
@@ -87,14 +89,14 @@ const Login: FC = observer(() => {
 
       const idToken = userInfo.data ? userInfo.data.idToken : "";
 
-      if (!idToken) throw new Error('Нет idToken от Google');
+      if (!idToken) throw new Error(t('auth.login.errors.noGoogleIdToken'));
 
       const response = await authStore.loginByGoogle(idToken, expoPushToken); // отправка idToken на бэкенд
       if (!response.user.isActivated) goToOtp(response.user.email, { redirect: redirectTo })
       else navigateToMain();
 
     } catch (error) {
-      console.error('Ошибка входа через Google:', error);
+      console.error('Google sign-in error:', error);
     }
     finally {
       setloadingGoogle(false);
@@ -120,13 +122,13 @@ const Login: FC = observer(() => {
 
       const identityToken = credential.identityToken;
 
-      if (!identityToken) throw new Error('Нет identityToken от Apple');
+      if (!identityToken) throw new Error(t('auth.login.errors.noAppleIdentityToken'));
 
       await authStore.loginByApple(identityToken, expoPushToken);
       navigateToMain();
 
     } catch (error) {
-      console.error('Ошибка входа через Apple:', error);
+      console.error('Apple sign-in error:', error);
     } finally {
       setloadingApple(false);
     }
@@ -169,23 +171,25 @@ const Login: FC = observer(() => {
                       <LogoAiPair isDark={isDark} />
                     </TouchableOpacity>
                   </View>
-                  <Text style={typography.titleH2Regular}>Вход в аккаунт</Text>
+                  <Text style={typography.titleH2Regular}>{t('auth.login.title')}</Text>
                   <Spacer size='xxs' />
-                  <Text style={[typography.bodyXs, globalStyleSheet.formDescription]}>Введите свои учётные данные, чтобы получить доступ к аккаунту и информации</Text>
+                  <Text style={[typography.bodyXs, globalStyleSheet.formDescription]}>
+                    {t('auth.login.subtitle')}
+                  </Text>
                 </View>
                 <View style={[globalStyleSheet.loginarea, { backgroundColor: theme.card }]}>
                   <TextInput
                     name='email'
-                    label='Электронная почта'
-                    placeholder='Введите электронную почту'
+                    label={t('auth.fields.email.label')}
+                    placeholder={t('auth.fields.email.placeholder')}
                     control={methods.control}
                     keyboardType='email-address'
                     iconType='alternate-email'
                     rules={{
-                      required: 'Введите электронную почту!',
+                      required: t('auth.fields.email.validation.required'),
                       pattern: {
                         value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                        message: 'Неверный адрес электронной почты!',
+                        message: t('auth.fields.email.validation.invalid'),
                       }
                     }}
                   />
@@ -193,16 +197,16 @@ const Login: FC = observer(() => {
 
                   <TextInput
                     name='password'
-                    label='Пароль'
-                    placeholder='Введите пароль'
+                    label={t('auth.fields.password.label')}
+                    placeholder={t('auth.fields.password.placeholder')}
                     iconType='lock'
                     secureTextEntry={true}
                     control={methods.control}
                     rules={{
-                      required: 'Введите пароль!',
+                      required: t('auth.fields.password.validation.required'),
                       minLength: {
                         value: 6,
-                        message: 'Пароль должен содержать не менее 6 символов!',
+                        message: t('auth.fields.password.validation.minLength', { min: 6 }),
                       }
                     }
                     } />
@@ -220,20 +224,22 @@ const Login: FC = observer(() => {
                     <TouchableOpacity
                       onPress={goToForgotPassword}
                     >
-                      <Text style={globalStyleSheet.btnlink}>Забыли пароль?</Text>
+                      <Text style={globalStyleSheet.btnlink}>{t('auth.login.forgotPassword')}</Text>
                     </TouchableOpacity>
                   </View>
 
                   <Button
                     loading={loading}
-                    title="Войти"
+                    title={t('auth.login.submit')}
                     onPress={handleSubmit}
                   />
 
                   <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 0, flex: 1 }}>
                     <View style={{ flex: 1, width: 0, backgroundColor: theme.border, height: 1 }}></View>
                     <View>
-                      <Text style={[typography.body, { paddingHorizontal: 10, paddingVertical: Platform.OS === 'ios' ? 30 : 20 }]}>или войдите с помощью</Text>
+                      <Text style={[typography.body, { paddingHorizontal: 10, paddingVertical: Platform.OS === 'ios' ? 30 : 20 }]}>
+                        {t('auth.login.socialSignIn')}
+                      </Text>
                     </View>
                     <View style={{ flex: 1, width: 0, backgroundColor: theme.border, height: 1 }}></View>
                   </View>
@@ -256,17 +262,16 @@ const Login: FC = observer(() => {
                             style={{ position: 'absolute', left: 25, width: 20, height: 20 }}
                             source={IMAGES.google}
                           />
-                          <Text style={typography.titleH6}>Войти через Google</Text></>
+                          <Text style={typography.titleH6}>{t('auth.login.googleSignIn')}</Text></>
                       }
                     </TouchableOpacity>
 
                     <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: 10 }}>
-                      <Text style={typography.body}>Нет аккаунта?
-                      </Text>
-                      <TouchableOpacity
-                        onPress={goToRegister}
-                      >
-                        <Text style={[typography.textLink, { textDecorationLine: 'underline', marginLeft: 5 }]}>Зарегистрироваться</Text>
+                      <Text style={typography.body}>{t('auth.login.noAccount')}</Text>
+                      <TouchableOpacity onPress={goToRegister}>
+                        <Text style={[typography.textLink, { textDecorationLine: 'underline', marginLeft: 5 }]}>
+                          {t('auth.login.registerLink')}
+                        </Text>
                       </TouchableOpacity>
                     </View>
 

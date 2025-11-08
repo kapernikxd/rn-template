@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { usePortalNavigation } from '../../helpers/hooks';
 import { useTheme } from 'rn-vs-lb/theme';
 
@@ -18,6 +19,7 @@ export const TermsCheckbox: React.FC<Props> = ({
 }) => {
   const { goToTermOfUse } = usePortalNavigation();
   const { theme, formStyles, typography } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View>
@@ -32,14 +34,14 @@ export const TermsCheckbox: React.FC<Props> = ({
           {accepted && <Text style={styles.checkmark}>✓</Text>}
         </TouchableOpacity>
         <Text style={typography.body}>
-          Я принимаю{' '}
+          {t('common.terms.acceptPrefix')}{' '}
           <Text style={[styles.link, { color }]} onPress={goToTermOfUse}>
-            Условия использования
+            {t('common.terms.link')}
           </Text>
         </Text>
       </View>
       {showError && (
-        <Text style={formStyles.errorText}>Чтобы продолжить, необходимо принять Условия использования</Text>
+        <Text style={formStyles.errorText}>{t('common.terms.error')}</Text>
       )}
     </View>
   );

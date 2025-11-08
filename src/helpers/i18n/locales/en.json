@@ -2,11 +2,129 @@
   "welcome": "Welcome",
   "login": "Sign In",
   "logout": "Sign Out",
+  "ads": {
+    "rewardedCard": {
+      "title": "My tokens",
+      "balance": "{{count}} tokens",
+      "reward": "Claim reward",
+      "adReady": "Ad ready to play",
+      "adLoading": "Loading ad..."
+    },
+    "tokenBadge": {
+      "accessibility": {
+        "withLabel": "{{label}}: {{balance}}",
+        "balance": "Token balance: {{balance}}"
+      },
+      "adReady": "Ad ready to play",
+      "adLoading": "Ad is loading...",
+      "menuAccessibility": "Token menu",
+      "menuTitle": "Token balance",
+      "watchAd": "Watch an ad"
+    }
+  },
   "common": {
     "cancel": "Cancel",
     "update": "Update",
     "reset": "Reset",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "terms": {
+      "acceptPrefix": "I accept",
+      "link": "Terms of Use",
+      "error": "You must accept the Terms of Use to continue"
+    },
+    "accessibility": {
+      "back": "Go back",
+      "share": "Share"
+    }
+  },
+  "auth": {
+    "fields": {
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter email",
+        "validation": {
+          "required": "Enter your email!",
+          "invalid": "Enter a valid email address!"
+        }
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Enter password",
+        "validation": {
+          "required": "Enter your password!",
+          "minLength": "Password must be at least {{min}} characters long!"
+        }
+      },
+      "name": {
+        "label": "First name",
+        "placeholder": "First name",
+        "validation": {
+          "required": "Enter your first name!"
+        }
+      },
+      "lastname": {
+        "label": "Last name",
+        "placeholder": "Last name",
+        "validation": {
+          "required": "Enter your last name!"
+        }
+      },
+      "confirmPassword": {
+        "label": "Confirm password",
+        "placeholder": "Repeat password",
+        "validation": {
+          "required": "Confirm your password!",
+          "minLength": "Password must be at least {{min}} characters long!",
+          "mismatch": "Passwords do not match!"
+        }
+      }
+    },
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Enter your credentials to access your account",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign in",
+      "socialSignIn": "or sign in with",
+      "googleSignIn": "Sign in with Google",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Create account",
+      "errors": {
+        "noGoogleIdToken": "No Google idToken received.",
+        "noAppleIdentityToken": "No Apple identity token received."
+      }
+    },
+    "register": {
+      "title": "Create account",
+      "subtitle": "Enter your details to access your account and features",
+      "submit": "Sign up",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in"
+    },
+    "forgotPassword": {
+      "title": "Password recovery",
+      "subtitle": "Enter your email address to start recovery",
+      "submit": "Continue",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in"
+    },
+    "changePassword": {
+      "title": "Change password",
+      "subtitle": "Enter a new password to access your account",
+      "submit": "Confirm",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in"
+    },
+    "otp": {
+      "title": "Enter code",
+      "subtitle": "Enter the 9-digit code sent to your email",
+      "submit": "Continue",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in",
+      "validation": {
+        "required": "This field is required",
+        "invalidLength": "Enter a valid 9-character code!"
+      }
+    }
   },
   "settings": {
     "title": "Settings",
