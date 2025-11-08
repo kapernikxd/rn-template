@@ -128,7 +128,7 @@ const ChatLimitLockedNotice = ({
         </View>
 
         {/* подзаголовок */}
-        <Text style={[typography.caption, { color: theme.text }]} numberOfLines={1}>
+        <Text style={[typography.body, { color: theme.text }]} numberOfLines={1}>
           {countdownText
             ? t('components.chat.limitNotice.countdownWithValue', { countdown: countdownText })
             : t('components.chat.limitNotice.countdownShort')}
@@ -168,12 +168,12 @@ const ChatLimitLockedNotice = ({
             {isUnlocking ? (
               <View style={styles.btnContent}>
                 <ActivityIndicator size="small" color={theme.white} />
-                <Text style={[typography.caption, styles.primaryText]}>
+                <Text style={[typography.body, styles.primaryText]}>
                   {t('components.chat.limitNotice.checking')}
                 </Text>
               </View>
             ) : (
-              <Text style={[typography.caption, styles.primaryText]} numberOfLines={1}>
+              <Text style={[typography.body, styles.primaryText]} numberOfLines={1}>
                 {t('components.chat.limitNotice.unlockButton', { count: tokenCost })}
               </Text>
             )}
@@ -188,7 +188,7 @@ const ChatLimitLockedNotice = ({
             accessibilityRole="button"
           >
             <Ionicons name="flash-outline" size={14} color={theme.primary} />
-            <Text style={[typography.caption, { color: theme.primary }]} numberOfLines={1}>
+            <Text style={[typography.body, { color: theme.primary }]} numberOfLines={1}>
               {t('components.chat.limitNotice.more')}
             </Text>
           </Pressable>
@@ -285,7 +285,7 @@ const SheetItem = ({
         {title}
       </Text>
       {subtitle ? (
-        <Text style={[typography.caption, { color: theme.text }]} numberOfLines={1}>
+        <Text style={[typography.body, { color: theme.text }]} numberOfLines={1}>
           {subtitle}
         </Text>
       ) : null}

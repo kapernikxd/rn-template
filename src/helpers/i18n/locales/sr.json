@@ -1,0 +1,873 @@
+{
+  "welcome": "Dobrodošli",
+  "login": "Prijava",
+  "ads": {
+    "rewardedCard": {
+      "title": "Moji tokeni",
+      "balance": "{{count}} tokena",
+      "reward": "Dobij nagradu",
+      "adReady": "Oglas je spreman za prikaz",
+      "adLoading": "Oglas se učitava..."
+    },
+    "tokenBadge": {
+      "accessibility": {
+        "withLabel": "{{label}}: {{balance}}",
+        "balance": "Stanje tokena: {{balance}}"
+      },
+      "adReady": "Oglas je spreman za prikaz",
+      "adLoading": "Oglas se učitava...",
+      "menuAccessibility": "Meni tokena",
+      "menuTitle": "Stanje tokena",
+      "watchAd": "Pogledaj oglas"
+    }
+  },
+  "logout": "Odjava",
+  "common": {
+    "cancel": "Otkaži",
+    "update": "Ažuriraj",
+    "reset": "Poništi",
+    "confirm": "Potvrdi",
+    "delete": "Obriši",
+    "edit": "Izmeni",
+    "report": "Prijavi",
+    "submit": "Pošalji",
+    "done": "Gotovo",
+    "next": "Dalje",
+    "terms": {
+      "acceptPrefix": "Prihvatam",
+      "link": "Uslove korišćenja",
+      "error": "Da biste nastavili, morate prihvatiti Uslove korišćenja"
+    },
+    "accessibility": {
+      "back": "Nazad",
+      "share": "Podeli"
+    }
+  },
+  "auth": {
+    "fields": {
+      "email": {
+        "label": "E-pošta",
+        "placeholder": "Unesite e-poštu",
+        "validation": {
+          "required": "Unesite e-poštu!",
+          "invalid": "Neispravna adresa e-pošte!"
+        }
+      },
+      "password": {
+        "label": "Lozinka",
+        "placeholder": "Unesite lozinku",
+        "validation": {
+          "required": "Unesite lozinku!",
+          "minLength": "Lozinka mora imati najmanje {{min}} znakova!"
+        }
+      },
+      "name": {
+        "label": "Ime",
+        "placeholder": "Ime",
+        "validation": {
+          "required": "Unesite ime!"
+        }
+      },
+      "lastname": {
+        "label": "Prezime",
+        "placeholder": "Prezime",
+        "validation": {
+          "required": "Unesite prezime!"
+        }
+      },
+      "confirmPassword": {
+        "label": "Potvrdite lozinku",
+        "placeholder": "Ponovite lozinku",
+        "validation": {
+          "required": "Potvrdite lozinku!",
+          "minLength": "Lozinka mora imati najmanje {{min}} znakova!",
+          "mismatch": "Lozinke se ne poklapaju!"
+        }
+      }
+    },
+    "login": {
+      "title": "Prijava na nalog",
+      "subtitle": "Unesite svoje podatke da biste dobili pristup nalogu i informacijama",
+      "forgotPassword": "Zaboravili ste lozinku?",
+      "submit": "Prijavi se",
+      "socialSignIn": "ili se prijavite pomoću",
+      "googleSignIn": "Prijava preko Google-a",
+      "noAccount": "Nemate nalog?",
+      "registerLink": "Registrujte se",
+      "errors": {
+        "noGoogleIdToken": "Nema idToken sa Google-a",
+        "noAppleIdentityToken": "Nema identityToken sa Apple-a"
+      }
+    },
+    "register": {
+      "title": "Kreirajte nalog",
+      "subtitle": "Unesite svoje podatke da biste dobili pristup nalogu i funkcijama",
+      "submit": "Registruj se",
+      "haveAccount": "Već imate nalog?",
+      "loginLink": "Prijava"
+    },
+    "forgotPassword": {
+      "title": "Obnova lozinke",
+      "subtitle": "Unesite e-poštu da biste dobili pristup oporavku",
+      "submit": "Dalje",
+      "haveAccount": "Već imate nalog?",
+      "loginLink": "Prijava"
+    },
+    "changePassword": {
+      "title": "Promena lozinke",
+      "subtitle": "Unesite novu lozinku za pristup nalogu",
+      "submit": "Potvrdi",
+      "haveAccount": "Već imate nalog?",
+      "loginLink": "Prijava"
+    },
+    "otp": {
+      "title": "Unesite kod",
+      "subtitle": "Unesite 9-cifreni kod poslat na vašu e-poštu",
+      "submit": "Dalje",
+      "haveAccount": "Već imate nalog?",
+      "loginLink": "Prijava",
+      "validation": {
+        "required": "Popunite ovo polje",
+        "invalidLength": "Unesite ispravan kod od 9 znakova!"
+      }
+    }
+  },
+  "settings": {
+    "title": "Podešavanja",
+    "section": {
+      "accountManagement": {
+        "title": "Upravljanje nalogom",
+        "editProfile": "Uredi profil",
+        "changePassword": "Promeni lozinku",
+        "notifications": "Obaveštenja"
+      },
+      "theme": {
+        "title": "Tema"
+      },
+      "userID": "ID korisnika",
+      "copyAppLink": "Kopiraj link aplikacije",
+      "version": "Verzija {{version}}"
+    },
+    "editProfile": {
+      "title": "Uređivanje profila",
+      "subtitle": "Popunite lične podatke",
+      "fields": {
+        "name": {
+          "label": "Ime",
+          "placeholder": "Ime"
+        },
+        "lastname": {
+          "label": "Prezime",
+          "placeholder": "Prezime"
+        },
+        "profession": {
+          "label": "Zanimanje",
+          "placeholder": "Vaše zanimanje"
+        },
+        "phone": {
+          "label": "Broj telefona",
+          "placeholder": "Unesite broj telefona"
+        },
+        "userBio": {
+          "label": "O sebi",
+          "placeholder": "Kratke informacije o vama"
+        }
+      },
+      "validation": {
+        "nameRequired": "Unesite ime!",
+        "lastnameRequired": "Unesite prezime!"
+      }
+    },
+    "account": {
+      "title": "Podešavanja naloga",
+      "subtitle": "Ažurirajte korisničko ime i upravljajte nalogom",
+      "fields": {
+        "username": {
+          "label": "Korisničko ime",
+          "placeholder": "Unesite korisničko ime"
+        },
+        "email": {
+          "label": "E-pošta",
+          "placeholder": "Unesite e-poštu"
+        }
+      }
+    },
+    "socialProfiles": {
+      "title": "Društveni profili",
+      "subtitle": "Dodajte linkove ka svojim profilima",
+      "fields": {
+        "facebook": {
+          "label": "Facebook",
+          "placeholder": "Unesite korisničko ime"
+        },
+        "instagram": {
+          "label": "Instagram",
+          "placeholder": "Unesite korisničko ime"
+        },
+        "vk": {
+          "label": "VK",
+          "placeholder": "Unesite korisničko ime"
+        },
+        "tg": {
+          "label": "Telegram",
+          "placeholder": "Unesite korisničko ime"
+        }
+      }
+    },
+    "changePassword": {
+      "title": "Promena lozinke",
+      "subtitle": "Izmenite lozinku naloga",
+      "fields": {
+        "oldPassword": {
+          "label": "Trenutna lozinka",
+          "placeholder": "Unesite lozinku"
+        },
+        "password": {
+          "label": "Nova lozinka",
+          "placeholder": "Unesite novu lozinku"
+        },
+        "rePassword": {
+          "label": "Potvrda lozinke",
+          "placeholder": "Ponovite novu lozinku"
+        }
+      },
+      "validation": {
+        "oldPasswordRequired": "Unesite lozinku!",
+        "passwordRequired": "Unesite lozinku!",
+        "confirmPasswordRequired": "Potvrdite lozinku!",
+        "passwordMinLength": "Lozinka mora imati najmanje {{min}} znakova!",
+        "passwordsDoNotMatch": "Lozinke se ne poklapaju!"
+      }
+    },
+    "notifications": {
+      "title": "Podešavanja obaveštenja",
+      "subtitle": "Podesite pravila za push obaveštenja",
+      "pushToggleTitle": "Push obaveštenja",
+      "types": {
+        "likes": "Lajkovi",
+        "followers": "Pratioci",
+        "groupMessages": "Grupne poruke",
+        "participants": "Učesnici",
+        "newPost": "Kreirana/ažurirana objava",
+        "invites": "Pozivnice za objavu",
+        "pollAnswers": "Odgovori na anketu",
+        "pollInvites": "Pozivnice za anketu"
+      }
+    },
+    "component": {
+      "language": {
+        "title": "Jezik interfejsa",
+        "modalTitle": "Izaberite jezik",
+        "languages": {
+          "en": "Engleski",
+          "ru": "Ruski",
+          "sr": "Srpski",
+          "es": "Španski",
+          "it": "Italijanski",
+          "de": "Nemački",
+          "fr": "Francuski",
+          "pt": "Portugalski"
+        }
+      },
+      "feedback": {
+        "title": "Povratne informacije i greške",
+        "subtitle": "Tapnite da nam pišete na Telegramu",
+        "unsupported": "Nije moguće otvoriti Telegram URL adresu"
+      },
+      "theme": {
+        "title": "Tema",
+        "light": "Svetla tema",
+        "dark": "Tamna tema"
+      },
+      "deleteAccount": {
+        "title": "Obriši nalog",
+        "modalTitle": "Potvrdite brisanje",
+        "modalDescription": "Svi vaši podaci, uključujući profil, događaje i istoriju četa, biće trajno obrisani. Ovaj proces je nepovratan i biće završen u roku od 24 sata. Da li ste sigurni da želite da nastavite?",
+        "requestSent": "Vaš zahtev je poslat. Nalog će biti obrisan u roku od 24 sata."
+      }
+    }
+  },
+  "components": {
+    "form": {
+      "autoCompletePicker": {
+        "placeholder": "Izaberite..."
+      },
+      "textArea": {
+        "placeholder": "Unesite tekst..."
+      },
+      "limitParticipate": {
+        "maxParticipantsLabel": "Maksimalan broj učesnika",
+        "validation": {
+          "required": "Obavezno polje"
+        }
+      },
+      "multiSelect": {
+        "placeholder": "Izaberite...",
+        "done": "Gotovo"
+      },
+      "autoComplete": {
+        "placeholder": "Pronađite grad..."
+      },
+      "imageUploader": {
+        "limitReached": "Možete otpremiti najviše {{count}} slika",
+        "errors": {
+          "largeFile": "Slika je prevelika (više od 40 MB). Izaberite manji fajl.",
+          "compressionFailed": "Nije uspelo kompresovanje slike"
+        },
+        "upload": "Otpremi sliku",
+        "maxImages": "Maksimum {{count}} slika"
+      },
+      "priceField": {
+        "priceToggle": "Cena / Donacija",
+        "donationToggle": "Donacija",
+        "amountLabel": "Iznos",
+        "validation": {
+          "required": "Obavezno polje"
+        },
+        "currencyLabel": "Valuta",
+        "currencyPlaceholder": "Izaberite valutu",
+        "rangeLabel": "Opseg",
+        "rangePlaceholder": "Opseg",
+        "rangeOptions": {
+          "from": "od",
+          "to": "do"
+        }
+      },
+      "select": {
+        "placeholder": "Izaberite opciju..."
+      },
+      "searchInput": {
+        "placeholder": "Pretraga..."
+      }
+    },
+    "infoBlocks": {
+      "accessType": {
+        "title": "Šta znači svaki tip pristupa?",
+        "open": {
+          "title": "• Otvoren pristup",
+          "description": "Svaki korisnik aplikacije može videti događaj i pridružiti mu se."
+        },
+        "followers": {
+          "title": "• Za pratioce",
+          "description": "Događaj će videti samo korisnici koji vas prate i samo oni mogu da se pridruže."
+        },
+        "private": {
+          "title": "• Privatno",
+          "description": "Događaj je skriven od svih. Samo pozvani korisnici mogu učestvovati."
+        }
+      },
+      "participantLimit": {
+        "description": "Ovo polje omogućava da postavite maksimalan broj učesnika koji mogu da se pridruže događaju. Kada se dostigne limit, novi korisnici neće moći da pošalju prijavu."
+      },
+      "participantsModeration": {
+        "description": "Ako uključite moderaciju, korisnici će se pojaviti na listi učesnika, ali neće dobiti pristup četu dok ih ne odobrite. Odbijene prijave se automatski brišu. Nakon aktivacije, moderaciju nije moguće isključiti, a pri uređivanju događaja prekidač će biti zaključan."
+      },
+      "invitation": {
+        "title": "Kako funkcionišu pozivnice",
+        "description1": "Možete pozivati korisnike na svoj događaj, ali samo one koji vas prate.",
+        "description2": {
+          "part1": "Nakon slanja pozivnice korisnik može",
+          "accept": "prihvatiti",
+          "connector": "ili",
+          "decline": "odbitI",
+          "part2": "je."
+        },
+        "description3": "Status odgovora biće prikazan na ovoj stranici."
+      },
+      "completedEvent": {
+        "title": "Šta se dešava posle završetka događaja?",
+        "description1": {
+          "prefix": "Završeni događaji se automatski",
+          "highlight": "brišu posle {{count}} dana",
+          "suffix": "zajedno sa svim povezanim podacima: četovima, medijima, porukama i listom učesnika."
+        },
+        "description2": {
+          "prefix": "Četovi postaju",
+          "highlight": "nedostupni posle {{count}} dana",
+          "suffix": "nakon završetka događaja."
+        }
+      },
+      "postModeration": {
+        "title": "Šta znači svaki status?",
+        "statuses": {
+          "pending": {
+            "title": "• PENDING (na razmatranju)",
+            "description": "Objava čeka proveru moderatora. Još nije vidljiva drugim korisnicima (osim autoru).",
+            "name": "Na razmatranju"
+          },
+          "approved": {
+            "title": "• APPROVED (odobreno)",
+            "description": "Objava je prošla proveru moderatora i odobrena je. Dostupna je svim korisnicima.",
+            "name": "Odobreno"
+          },
+          "rejected": {
+            "title": "• REJECTED (odbijeno)",
+            "description": "Objava je proverena i odbijena zbog kršenja pravila, neprimerenog sadržaja ili neslaganja sa standardima kvaliteta.",
+            "name": "Odbijeno"
+          }
+        },
+        "currentStatusPrefix": "Vaš trenutni status —",
+        "reasons": {
+          "image": "Jedna od slika krši pravila. Otpremite drugu.",
+          "content": "Opis događaja krši pravila. Ažurirajte tekst."
+        }
+      },
+      "userModeration": {
+        "title": "Šta znače statusi profila?",
+        "statuses": {
+          "pending": {
+            "title": "• PENDING (na razmatranju)",
+            "description": "Vaš profil je u procesu moderacije. Možete koristiti aplikaciju, ali ne i objavljivati sadržaj, kreirati događaje ili stupati u interakciju sa drugim korisnicima dok profil ne bude odobren.",
+            "name": "Na razmatranju"
+          },
+          "approved": {
+            "title": "• APPROVED (odobren)",
+            "description": "Vaš profil je odobren. Imate pun pristup svim funkcijama: objavama, četovima, kreiranju i učešću u događajima.",
+            "name": "Odobren"
+          },
+          "rejected": {
+            "title": "• REJECTED (odbijen)",
+            "description": "Vaš profil je odbijen zbog kršenja pravila zajednice ili nedovoljnih/neodgovarajućih informacija. Možda je potrebno izmeniti podatke i ponovo poslati profil na moderaciju.",
+            "name": "Odbijen"
+          }
+        },
+        "currentStatusPrefix": "Vaš trenutni status —",
+        "reasons": {
+          "image": "Fotografija krši pravila. Otpremite drugu sliku.",
+          "content": "Informacije u profilu krše pravila. Ažurirajte podatke da biste ispunili standarde zajednice."
+        }
+      },
+      "specialistCover": {
+        "title": "Zašto je potrebna naslovna slika?",
+        "description1": "Naslovna slika je veliki baner za stranicu specijaliste. Prikazuje se na vrhu javnog profila i pomaže da predstavite svoje usluge.",
+        "description2": "Izaberite sliku koja vas predstavlja: posetioci će je videti svaki put kada otvore vaš profil specijaliste."
+      }
+    },
+    "aibot": {
+      "card": {
+        "defaultName": "AI agent"
+      },
+      "listSection": {
+        "empty": "Ovde je zasad prazno. Vratite se kasnije!"
+      },
+      "placeCardList": {
+        "empty": "Ovde je zasad prazno. Vratite se kasnije!",
+        "noDescription": "Opis nije dostupan"
+      },
+      "guestChat": {
+        "defaultBotName": "AI bot",
+        "inputPlaceholder": "Pitajte nešto...",
+        "limitLabel": "Preostalo poruka: {{remaining}} / {{limit}}",
+        "errors": {
+          "limitReached": "Dnevni limit je dostignut. Pokušajte kasnije.",
+          "sendFailed": "Slanje poruke nije uspelo. Pokušajte ponovo."
+        }
+      }
+    },
+    "chat": {
+      "limitNotice": {
+        "message": "Limit poruka je iscrpljen",
+        "adReady": "Oglas je spreman za prikaz",
+        "adLoading": "Oglas se učitava…",
+        "countdownWithValue": "Sačekajte {{countdown}} ili koristite tokene.",
+        "countdown": "Sačekajte kraj tajmera ili koristite tokene.",
+        "countdownShort": "Sačekajte tajmer ili koristite tokene",
+        "costLabel": "Cena otključavanja",
+        "costValue": "{{count}} tokena",
+        "balanceLabel": "Vaše stanje",
+        "balanceValue": "Tokena: {{count}}",
+        "balanceUnavailable": "Nedostupno",
+        "checking": "Proveravamo…",
+        "unlockButton": "Nastavi za {{count}} tokena",
+        "watchAd": "Pogledaj oglas",
+        "accessibility": {
+          "locked": "Zaključano"
+        },
+        "pillCost": "Cena: {{count}}",
+        "pillBalance": "Stanje: {{count}}",
+        "pillBalanceUnavailable": "Stanje nedostupno",
+        "more": "Još",
+        "refreshBalance": "Osveži stanje",
+        "refreshBalanceDescription": "Zatraži ažurno stanje tokena",
+        "whatAreTokens": "Šta su tokeni?",
+        "whatAreTokensDescription": "Kako funkcionišu i gde ih dobiti",
+        "unavailableSuffix": "(nedostupno)"
+      },
+      "swipeable": {
+        "deleteChatAccessibility": "Obriši čet"
+      },
+      "header": {
+        "online": "Na mreži",
+        "offline": "Van mreže",
+        "typing": "kuca...",
+        "groupTyping": "{{user}}: kuca..."
+      },
+      "messageItem": {
+        "deleted": "Poruka je obrisana"
+      }
+    },
+    "forceUpdate": {
+      "title": "Potrebno je ažuriranje",
+      "description": "Dostupna je nova verzija aplikacije. Ažurirajte da biste nastavili sa radom.",
+      "button": "Ažuriraj"
+    }
+  },
+  "screens": {
+    "dashboard": {
+      "tabs": {
+        "all": "Svi"
+      },
+      "heading": "AI saputnici",
+      "subheading": "Izaberite bota da započnete dijalog ili pronađete inspiraciju. Tim svakodnevno dodaje nove junake i scenarije razgovora.",
+      "empty": {
+        "default": "AI botovi će uskoro biti ovde. Pokušajte kasnije da osvežite."
+      },
+      "experience": {
+        "accessibility": {
+          "uploadPhoto": "Otpremi fotografiju",
+          "closePreview": "Zatvori pregled"
+        },
+        "uploadPrompt": "Kliknite ovde da otpremite fotografiju koju želite da oživite!"
+      }
+    },
+    "library": {
+      "title": "Galerija",
+      "pendingStatus_one": "Obrađuje se {{count}} slika...",
+      "pendingStatus_few": "Obrađuju se {{count}} slike...",
+      "pendingStatus_many": "Obrađuje se {{count}} slika...",
+      "pendingStatus_other": "Obrađuje se {{count}} slika...",
+      "refreshStatus": "Osveži status",
+      "empty": "Ovde će se pojaviti vaše gotove slike nakon obrade."
+    },
+    "aibot": {
+      "profile": {
+        "deleteTitle": "Obriši AI-bota",
+        "deleteMessage": "Da li ste sigurni da želite da obrišete ovog AI-bota? Ova radnja je nepovratna.",
+        "actions": {
+          "follow": "Prati",
+          "unfollow": "Otprati"
+        },
+        "reportTitle": "Prijavi korisnika",
+        "reportPlaceholder": "Dodatne informacije (opciono)"
+      },
+      "hero": {
+        "badge": "AI agent",
+        "chatButton": "Idi u čet"
+      },
+      "tabs": {
+        "info": "Informacije",
+        "gallery": "Galerija"
+      },
+      "info": {
+        "introTitle": "Upoznavanje",
+        "introPlaceholder": "Kreator još nije dodao opis.",
+        "usefulnessTitle": "Kako će biti koristan",
+        "usefulnessPlaceholder": "Korisnost još nije popunjena.",
+        "creatorTitle": "Informacije o kreatoru",
+        "creatorLabel": "Kreator",
+        "createdAtLabel": "Kreiran"
+      },
+      "gallery": {
+        "empty": "Kreator još nije dodao fotografije."
+      },
+      "common": {
+        "categories": {
+          "обучение": "Obrazovanje",
+          "английский": "Engleski",
+          "для-прикола": "Za šalu",
+          "романтический": "Romantično",
+          "роли": "Uloge",
+          "история": "Istorija"
+        },
+        "errors": {
+          "openProfile": "Nije moguće otvoriti profil bota"
+        }
+      },
+      "create": {
+        "headerTitle": "Kreiranje AI-agenta",
+        "steps": {
+          "0": {
+            "title": "Lik",
+            "description": "Avatar, ime i osnovne informacije koje stvaraju prvi utisak."
+          },
+          "1": {
+            "title": "Vrednost",
+            "description": "Kategorije i koristi koje korisnik dobija od razgovora sa agentom."
+          },
+          "2": {
+            "title": "Karakter",
+            "description": "Prompt, legenda i pozdrav koji određuju stil razgovora."
+          },
+          "3": {
+            "title": "Mediji",
+            "description": "Galerija slika koja pomaže da se agent vizuelizuje."
+          }
+        },
+        "identity": {
+          "title": "Personalizacija",
+          "description": "Dodajte sliku i osnovne informacije kako bi korisnici odmah prepoznali vašeg agenta.",
+          "avatar": {
+            "placeholder": "Otpremi",
+            "hint": "Preporučuje se kvadratna slika najmanje 512×512 px."
+          },
+          "fields": {
+            "firstName": {
+              "label": "Ime",
+              "placeholder": "Unesite ime agenta"
+            },
+            "lastName": {
+              "label": "Prezime",
+              "placeholder": "Unesite prezime"
+            },
+            "profession": {
+              "label": "Zanimanje ili uloga",
+              "placeholder": "Na primer, marketar ili predavač"
+            }
+          }
+        },
+        "focus": {
+          "title": "Vrednost i publika",
+          "description": "Izaberite kategorije i definišite u čemu je vaš agent koristan.",
+          "categoriesTitle": "Kategorije",
+          "usefulnessTitle": "U čemu će agent biti koristan?",
+          "usefulnessPlaceholder": "Dodajte vrednost",
+          "usefulnessEmpty": "Dodajte makar jednu stavku vrednosti."
+        },
+        "voice": {
+          "title": "Karakter",
+          "description": "Opišite karakter, legendu i početnu poruku agenta.",
+          "fields": {
+            "prompt": {
+              "label": "Sistemski prompt",
+              "placeholder": "Opišite ponašanje i stil razgovora"
+            },
+            "description": {
+              "label": "Opis profila",
+              "placeholder": "Recite čime se agent bavi"
+            },
+            "intro": {
+              "label": "Pozdravna poruka",
+              "placeholder": "Šta agent kaže na početku dijaloga"
+            }
+          }
+        },
+        "media": {
+          "title": "Medija-set",
+          "description": "Pripremite vizuelne materijale za galeriju. Preostalo {{remaining}} od {{max}}.",
+          "upload": "Otpremi slike",
+          "limitReached": "Limit otpremljenih slika",
+          "empty": "Još niste dodali slike."
+        },
+        "completed": {
+          "title": "AI-agent je kreiran!",
+          "subtitleWithName": "{{name}} {{lastname}} je spreman da upozna korisnike.",
+          "subtitleDefault": "Vaš agent je spreman da upozna korisnike.",
+          "openProfile": "Otvori profil",
+          "createAnother": "Kreiraj još"
+        },
+        "actions": {
+          "submit": "Kreiraj"
+        }
+      },
+      "edit": {
+        "headerTitle": "Uređivanje AI-agenta",
+        "steps": {
+          "0": {
+            "title": "Osnovni podaci",
+            "description": "Ažurirajte avatar i osnovne informacije."
+          },
+          "1": {
+            "title": "Kategorije",
+            "description": "Izaberite pravce i ažurirajte listu korisnosti."
+          },
+          "2": {
+            "title": "Glas",
+            "description": "Ažurirajte prompt, opis i pozdrav."
+          },
+          "3": {
+            "title": "Galerija",
+            "description": "Upravljajte galerijom slika."
+          }
+        },
+        "identity": {
+          "title": "Osnovni podaci",
+          "description": "Ažurirajte avatar i osnovne informacije agenta.",
+          "avatar": {
+            "placeholder": "Promeni",
+            "hint": "Izaberite novu sliku ili uklonite trenutnu."
+          },
+          "fields": {
+            "firstName": {
+              "label": "Ime",
+              "placeholder": "Ime agenta"
+            },
+            "lastName": {
+              "label": "Prezime",
+              "placeholder": "Prezime agenta"
+            },
+            "profession": {
+              "label": "Zanimanje",
+              "placeholder": "Na primer, dizajner"
+            }
+          }
+        },
+        "focus": {
+          "title": "Kategorije i vrednost",
+          "description": "Izaberite pravce i ažurirajte listu vrednosti agenta.",
+          "categoriesTitle": "Kategorije",
+          "usefulnessTitle": "Vrednost agenta",
+          "usefulnessPlaceholder": "Dodajte novu stavku",
+          "usefulnessEmpty": "Dodajte makar jednu stavku."
+        },
+        "voice": {
+          "title": "Glas i priča",
+          "description": "Ažurirajte prompt, opis i pozdrav agenta.",
+          "fields": {
+            "prompt": {
+              "label": "Sistemski prompt",
+              "placeholder": "Opišite karakter i stil"
+            },
+            "description": {
+              "label": "Opis profila",
+              "placeholder": "Dopunite biografiju"
+            },
+            "intro": {
+              "label": "Pozdravna poruka",
+              "placeholder": "Poruka za prvi kontakt"
+            }
+          }
+        },
+        "media": {
+          "title": "Galerija",
+          "description": "Upravljajte galerijom slika. Preostalo {{remaining}} od {{max}}.",
+          "upload": "Dodaj slike",
+          "limitReached": "Limit slika je iscrpljen",
+          "empty": "Agent još nema slike."
+        },
+        "actions": {
+          "save": "Sačuvaj"
+        }
+      }
+    },
+    "onboarding": {
+      "slides": {
+        "welcome": {
+          "title": "✨ Dobrodošli",
+          "description": "Vaš lični AI partner za razgovore, ideje i podršku."
+        },
+        "memory": {
+          "title": "🧠 Pamti važno",
+          "description": "AI Pair pamti vaš kontekst i uči iz vaših priča."
+        },
+        "character": {
+          "title": "🎭 Kreirajte karakter",
+          "description": "Ime, stil razgovora, ciljevi — podesite po sebi."
+        },
+        "start": {
+          "title": "🚀 Spremni za početak?",
+          "description": "Upoznajte svog AI Pair-a i započnite dijalog."
+        }
+      },
+      "skip": "Preskoči",
+      "next": "Dalje",
+      "start": "Započni"
+    },
+    "profile": {
+      "tabs": {
+        "myBots": "Moji",
+        "subscriptions": "Pretplate"
+      },
+      "fallbackName": "Profil",
+      "featureSoon": "Ova funkcija će uskoro biti dostupna.",
+      "empty": {
+        "myBots": "Još niste kreirali AI botove. Pokušajte da napravite prvog junaka!",
+        "subscriptions": "Još se niste pretplatili ni na jednog AI bota."
+      },
+      "userBotsSection": {
+        "title": "AI botovi korisnika",
+        "empty": "Korisnik još nema kreirane AI botove."
+      }
+    },
+    "chats": {
+      "fallbacks": {
+        "group": "Grupa",
+        "bot": "Bot"
+      },
+      "searchPlaceholder": "Pretraga...",
+      "messages": {
+        "reply": "Odgovori",
+        "photoPlaceholder": "fotografija",
+        "placeholder": "Poruka",
+        "editing": "Uređivanje",
+        "clearHistory": "Obriši istoriju četa"
+      }
+    },
+    "docs": {
+      "terms": {
+        "title": "Uslovi korišćenja",
+        "sections": {
+          "welcome": {
+            "title": "Dobro došli u {{siteName}}!",
+            "paragraph1": {
+              "prefix": "Ovi Uslovi korišćenja („Uslovi”) uređuju pristup i korišćenje mobilne aplikacije {{siteName}}, kao i sajta ",
+              "suffix": " (zajedno — „Servis”)."
+            },
+            "paragraph2": "Pristupom Servisu ili njegovim korišćenjem potvrđujete svoje pristajanje na ove Uslove.",
+            "paragraph3": "Ako se ne slažete sa Uslovima, molimo vas da ne koristite Servis."
+          },
+          "usage": {
+            "title": "1. Korišćenje Servisa",
+            "items": [
+              "Koristite Servis samo u skladu sa važećim zakonima.",
+              "Ne koristite Servis u protivpravne ili neovlašćene svrhe.",
+              "Ne uznemiravajte, ne vređajte i ne nanosite štetu drugim korisnicima.",
+              "Ne narušavajte bezbednost ili integritet Servisa."
+            ]
+          },
+          "content": {
+            "title": "2. Korisnički sadržaj",
+            "paragraph1": "Dostavljanjem sadržaja dajete {{siteName}} neekskluzivnu, svetsku i besplatnu licencu za korišćenje, čuvanje, prikazivanje i distribuciju vašeg sadržaja.",
+            "paragraph2": "Odgovorni ste za sadržaj koji kreirate i distribuirate."
+          },
+          "security": {
+            "title": "3. Registracija i bezbednost naloga",
+            "paragraph": "Odgovorni ste za čuvanje poverljivosti pristupnih podataka i za sve radnje preduzete u okviru vašeg naloga."
+          },
+          "privacy": {
+            "title": "4. Privatnost",
+            "paragraph": {
+              "prefix": "Prikupljanje i korišćenje ličnih podataka uređeno je našom ",
+              "suffix": "."
+            },
+            "linkLabel": "Politikom privatnosti"
+          },
+          "ip": {
+            "title": "5. Intelektualna svojina",
+            "paragraph": "Sva prava na Servis (osim korisničkog sadržaja) pripadaju {{siteName}} i njegovim davaocima licenci."
+          },
+          "termination": {
+            "title": "6. Prestanak pristupa",
+            "paragraph": "Možemo obustaviti ili ukinuti vaš pristup Servisu u bilo kom trenutku i iz bilo kog razloga."
+          },
+          "changes": {
+            "title": "7. Izmene Uslova",
+            "paragraph": "Možemo ažurirati ove Uslove u bilo kom trenutku. Nastavak korišćenja Servisa nakon stupanja izmena na snagu znači prihvatanje novih Uslova."
+          },
+          "moderation": {
+            "title": "8. Prijave i moderacija",
+            "paragraph1": "U {{siteName}} važi nulta tolerancija na neprihvatljiv sadržaj, uključujući govor mržnje, uznemiravanje, pornografiju i svaku nezakonitu aktivnost.",
+            "paragraph2": "Korisnici mogu prijaviti neprimeren sadržaj direktno u aplikaciji. Sve prijave razmatramo u roku od 24 sata i preduzimamo odgovarajuće mere, uključujući uklanjanje sadržaja ili blokiranje odgovornog korisnika.",
+            "paragraph3": "Korišćenjem {{siteName}} pristajete da se ponašate sa poštovanjem i poštujete ova pravila."
+          },
+          "contact": {
+            "title": "9. Kontakt",
+            "paragraph": {
+              "prefix": "Ako imate pitanja u vezi sa ovim Uslovima, kontaktirajte nas na adresu ",
+              "suffix": "."
+            }
+          }
+        }
+      }
+    }
+  }
+}

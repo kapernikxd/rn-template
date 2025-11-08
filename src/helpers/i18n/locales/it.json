@@ -1,0 +1,873 @@
+{
+  "welcome": "Benvenuto",
+  "login": "Accedi",
+  "ads": {
+    "rewardedCard": {
+      "title": "I miei token",
+      "balance": "{{count}} token",
+      "reward": "Ottieni ricompensa",
+      "adReady": "L'annuncio è pronto per la visualizzazione",
+      "adLoading": "Caricamento dell'annuncio..."
+    },
+    "tokenBadge": {
+      "accessibility": {
+        "withLabel": "{{label}}: {{balance}}",
+        "balance": "Saldo token: {{balance}}"
+      },
+      "adReady": "L'annuncio è pronto per la visualizzazione",
+      "adLoading": "Caricamento dell'annuncio...",
+      "menuAccessibility": "Menu dei token",
+      "menuTitle": "Saldo token",
+      "watchAd": "Guarda un annuncio"
+    }
+  },
+  "logout": "Esci",
+  "common": {
+    "cancel": "Annulla",
+    "update": "Aggiorna",
+    "reset": "Reimposta",
+    "confirm": "Conferma",
+    "delete": "Elimina",
+    "edit": "Modifica",
+    "report": "Segnala",
+    "submit": "Invia",
+    "done": "Fatto",
+    "next": "Avanti",
+    "terms": {
+      "acceptPrefix": "Accetto i",
+      "link": "Termini d'uso",
+      "error": "Per continuare devi accettare i Termini d'uso"
+    },
+    "accessibility": {
+      "back": "Indietro",
+      "share": "Condividi"
+    }
+  },
+  "auth": {
+    "fields": {
+      "email": {
+        "label": "Email",
+        "placeholder": "Inserisci la tua email",
+        "validation": {
+          "required": "Inserisci la tua email!",
+          "invalid": "Indirizzo email non valido!"
+        }
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Inserisci la tua password",
+        "validation": {
+          "required": "Inserisci la tua password!",
+          "minLength": "La password deve contenere almeno {{min}} caratteri!"
+        }
+      },
+      "name": {
+        "label": "Nome",
+        "placeholder": "Nome",
+        "validation": {
+          "required": "Inserisci il nome!"
+        }
+      },
+      "lastname": {
+        "label": "Cognome",
+        "placeholder": "Cognome",
+        "validation": {
+          "required": "Inserisci il cognome!"
+        }
+      },
+      "confirmPassword": {
+        "label": "Conferma password",
+        "placeholder": "Ripeti la password",
+        "validation": {
+          "required": "Conferma la password!",
+          "minLength": "La password deve contenere almeno {{min}} caratteri!",
+          "mismatch": "Le password non coincidono!"
+        }
+      }
+    },
+    "login": {
+      "title": "Accesso all'account",
+      "subtitle": "Inserisci le tue credenziali per accedere all'account e alle informazioni",
+      "forgotPassword": "Hai dimenticato la password?",
+      "submit": "Accedi",
+      "socialSignIn": "oppure accedi con",
+      "googleSignIn": "Accedi con Google",
+      "noAccount": "Non hai un account?",
+      "registerLink": "Registrati",
+      "errors": {
+        "noGoogleIdToken": "Manca l'idToken di Google",
+        "noAppleIdentityToken": "Manca l'identityToken di Apple"
+      }
+    },
+    "register": {
+      "title": "Crea account",
+      "subtitle": "Inserisci i tuoi dati per accedere all'account e alle funzionalità",
+      "submit": "Registrati",
+      "haveAccount": "Hai già un account?",
+      "loginLink": "Accedi"
+    },
+    "forgotPassword": {
+      "title": "Recupero password",
+      "subtitle": "Inserisci la tua email per procedere con il recupero",
+      "submit": "Avanti",
+      "haveAccount": "Hai già un account?",
+      "loginLink": "Accedi"
+    },
+    "changePassword": {
+      "title": "Modifica password",
+      "subtitle": "Inserisci una nuova password per accedere all'account",
+      "submit": "Conferma",
+      "haveAccount": "Hai già un account?",
+      "loginLink": "Accedi"
+    },
+    "otp": {
+      "title": "Inserisci il codice",
+      "subtitle": "Inserisci il codice di 9 cifre inviato alla tua email",
+      "submit": "Avanti",
+      "haveAccount": "Hai già un account?",
+      "loginLink": "Accedi",
+      "validation": {
+        "required": "Compila questo campo",
+        "invalidLength": "Inserisci un codice valido di 9 caratteri!"
+      }
+    }
+  },
+  "settings": {
+    "title": "Impostazioni",
+    "section": {
+      "accountManagement": {
+        "title": "Gestione account",
+        "editProfile": "Modifica profilo",
+        "changePassword": "Cambia password",
+        "notifications": "Notifiche"
+      },
+      "theme": {
+        "title": "Tema"
+      },
+      "userID": "ID utente",
+      "copyAppLink": "Copia link dell'app",
+      "version": "Versione {{version}}"
+    },
+    "editProfile": {
+      "title": "Modifica profilo",
+      "subtitle": "Compila le informazioni personali",
+      "fields": {
+        "name": {
+          "label": "Nome",
+          "placeholder": "Nome"
+        },
+        "lastname": {
+          "label": "Cognome",
+          "placeholder": "Cognome"
+        },
+        "profession": {
+          "label": "Professione",
+          "placeholder": "La tua professione"
+        },
+        "phone": {
+          "label": "Numero di telefono",
+          "placeholder": "Inserisci il numero di telefono"
+        },
+        "userBio": {
+          "label": "Su di me",
+          "placeholder": "Breve descrizione su di te"
+        }
+      },
+      "validation": {
+        "nameRequired": "Inserisci il nome!",
+        "lastnameRequired": "Inserisci il cognome!"
+      }
+    },
+    "account": {
+      "title": "Impostazioni account",
+      "subtitle": "Aggiorna il nome utente e gestisci l'account",
+      "fields": {
+        "username": {
+          "label": "Nome utente",
+          "placeholder": "Inserisci il nome utente"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "Inserisci la tua email"
+        }
+      }
+    },
+    "socialProfiles": {
+      "title": "Profili social",
+      "subtitle": "Aggiungi i link ai tuoi profili",
+      "fields": {
+        "facebook": {
+          "label": "Facebook",
+          "placeholder": "Inserisci il nome utente"
+        },
+        "instagram": {
+          "label": "Instagram",
+          "placeholder": "Inserisci il nome utente"
+        },
+        "vk": {
+          "label": "VK",
+          "placeholder": "Inserisci il nome utente"
+        },
+        "tg": {
+          "label": "Telegram",
+          "placeholder": "Inserisci il nome utente"
+        }
+      }
+    },
+    "changePassword": {
+      "title": "Modifica password",
+      "subtitle": "Cambia la password dell'account",
+      "fields": {
+        "oldPassword": {
+          "label": "Password attuale",
+          "placeholder": "Inserisci la password"
+        },
+        "password": {
+          "label": "Nuova password",
+          "placeholder": "Inserisci la nuova password"
+        },
+        "rePassword": {
+          "label": "Conferma password",
+          "placeholder": "Ripeti la nuova password"
+        }
+      },
+      "validation": {
+        "oldPasswordRequired": "Inserisci la password!",
+        "passwordRequired": "Inserisci la password!",
+        "confirmPasswordRequired": "Conferma la password!",
+        "passwordMinLength": "La password deve contenere almeno {{min}} caratteri!",
+        "passwordsDoNotMatch": "Le password non coincidono!"
+      }
+    },
+    "notifications": {
+      "title": "Impostazioni notifiche",
+      "subtitle": "Configura le regole delle notifiche push",
+      "pushToggleTitle": "Notifiche push",
+      "types": {
+        "likes": "Mi piace",
+        "followers": "Follower",
+        "groupMessages": "Messaggi di gruppo",
+        "participants": "Partecipanti",
+        "newPost": "Post creato/aggiornato",
+        "invites": "Inviti al post",
+        "pollAnswers": "Risposte al sondaggio",
+        "pollInvites": "Inviti al sondaggio"
+      }
+    },
+    "component": {
+      "language": {
+        "title": "Lingua dell'interfaccia",
+        "modalTitle": "Scegli una lingua",
+        "languages": {
+          "en": "Inglese",
+          "ru": "Russo",
+          "sr": "Serbo",
+          "es": "Spagnolo",
+          "it": "Italiano",
+          "de": "Tedesco",
+          "fr": "Francese",
+          "pt": "Portoghese"
+        }
+      },
+      "feedback": {
+        "title": "Feedback e errori",
+        "subtitle": "Tocca per scriverci su Telegram",
+        "unsupported": "Impossibile aprire l'URL di Telegram"
+      },
+      "theme": {
+        "title": "Tema",
+        "light": "Tema chiaro",
+        "dark": "Tema scuro"
+      },
+      "deleteAccount": {
+        "title": "Elimina account",
+        "modalTitle": "Conferma eliminazione",
+        "modalDescription": "Tutti i tuoi dati, inclusi profilo, eventi e cronologia chat, saranno eliminati in modo permanente. Questo processo è irreversibile e sarà completato entro 24 ore. Sei sicuro di voler continuare?",
+        "requestSent": "La tua richiesta è stata inviata. L'account sarà eliminato entro 24 ore."
+      }
+    }
+  },
+  "components": {
+    "form": {
+      "autoCompletePicker": {
+        "placeholder": "Seleziona..."
+      },
+      "textArea": {
+        "placeholder": "Inserisci il testo..."
+      },
+      "limitParticipate": {
+        "maxParticipantsLabel": "Numero massimo di partecipanti",
+        "validation": {
+          "required": "Campo obbligatorio"
+        }
+      },
+      "multiSelect": {
+        "placeholder": "Seleziona...",
+        "done": "Fatto"
+      },
+      "autoComplete": {
+        "placeholder": "Trova una città..."
+      },
+      "imageUploader": {
+        "limitReached": "Puoi caricare al massimo {{count}} immagini",
+        "errors": {
+          "largeFile": "L'immagine è troppo grande (oltre 40 MB). Scegli un file più piccolo.",
+          "compressionFailed": "Compressione dell'immagine non riuscita"
+        },
+        "upload": "Carica immagine",
+        "maxImages": "Massimo {{count}} immagini"
+      },
+      "priceField": {
+        "priceToggle": "Prezzo / Donazione",
+        "donationToggle": "Donazione",
+        "amountLabel": "Importo",
+        "validation": {
+          "required": "Campo obbligatorio"
+        },
+        "currencyLabel": "Valuta",
+        "currencyPlaceholder": "Seleziona la valuta",
+        "rangeLabel": "Intervallo",
+        "rangePlaceholder": "Intervallo",
+        "rangeOptions": {
+          "from": "da",
+          "to": "a"
+        }
+      },
+      "select": {
+        "placeholder": "Seleziona un'opzione..."
+      },
+      "searchInput": {
+        "placeholder": "Cerca..."
+      }
+    },
+    "infoBlocks": {
+      "accessType": {
+        "title": "Cosa significa ogni tipo di accesso?",
+        "open": {
+          "title": "• Accesso aperto",
+          "description": "Qualsiasi utente dell'app potrà vedere l'evento e unirsi."
+        },
+        "followers": {
+          "title": "• Per i follower",
+          "description": "Solo gli utenti che ti seguono vedranno l'evento e potranno unirsi."
+        },
+        "private": {
+          "title": "• Privato",
+          "description": "L'evento è nascosto a tutti. Solo gli utenti invitati potranno partecipare."
+        }
+      },
+      "participantLimit": {
+        "description": "Questo campo consente di impostare il numero massimo di partecipanti che possono unirsi all'evento. Una volta raggiunto il limite, i nuovi utenti non potranno candidarsi."
+      },
+      "participantsModeration": {
+        "description": "Se attivi la moderazione, gli utenti appariranno nell'elenco dei partecipanti ma non avranno accesso alla chat finché non li approverai. Le richieste rifiutate vengono eliminate automaticamente. Dopo l'attivazione non è possibile disabilitare la moderazione e, durante la modifica dell'evento, l'interruttore sarà bloccato."
+      },
+      "invitation": {
+        "title": "Come funzionano gli inviti",
+        "description1": "Puoi invitare gli utenti al tuo evento, ma solo quelli che ti seguono.",
+        "description2": {
+          "part1": "Dopo l'invio dell'invito l'utente può",
+          "accept": "accettarlo",
+          "connector": "oppure",
+          "decline": "rifiutarlo",
+          "part2": "."
+        },
+        "description3": "Lo stato della risposta verrà mostrato in questa pagina."
+      },
+      "completedEvent": {
+        "title": "Cosa succede dopo la fine dell'evento?",
+        "description1": {
+          "prefix": "Gli eventi conclusi vengono",
+          "highlight": "eliminati automaticamente dopo {{count}} giorni",
+          "suffix": "insieme a tutti i dati correlati: chat, media, messaggi ed elenco dei partecipanti."
+        },
+        "description2": {
+          "prefix": "Le chat diventano",
+          "highlight": "inaccessibili dopo {{count}} giorni",
+          "suffix": "dal termine dell'evento."
+        }
+      },
+      "postModeration": {
+        "title": "Cosa significa ogni stato?",
+        "statuses": {
+          "pending": {
+            "title": "• PENDING (in revisione)",
+            "description": "La pubblicazione è in attesa di revisione da parte di un moderatore. Non è ancora visibile agli altri utenti (tranne all'autore).",
+            "name": "In revisione"
+          },
+          "approved": {
+            "title": "• APPROVED (approvato)",
+            "description": "La pubblicazione è stata revisionata e approvata. È disponibile per tutti gli utenti.",
+            "name": "Approvato"
+          },
+          "rejected": {
+            "title": "• REJECTED (rifiutato)",
+            "description": "La pubblicazione è stata revisionata e rifiutata per violazione delle regole, contenuto inappropriato o mancato rispetto degli standard di qualità.",
+            "name": "Rifiutato"
+          }
+        },
+        "currentStatusPrefix": "Il tuo stato attuale è —",
+        "reasons": {
+          "image": "Una delle immagini viola le regole. Caricane un'altra.",
+          "content": "La descrizione dell'evento viola le regole. Aggiorna il testo."
+        }
+      },
+      "userModeration": {
+        "title": "Cosa significano gli stati del profilo?",
+        "statuses": {
+          "pending": {
+            "title": "• PENDING (in revisione)",
+            "description": "Il tuo profilo è in moderazione. Puoi usare l'app, ma non pubblicare contenuti, creare eventi o interagire con altri utenti finché non sarà approvato.",
+            "name": "In revisione"
+          },
+          "approved": {
+            "title": "• APPROVED (approvato)",
+            "description": "Il tuo profilo è stato approvato. Hai accesso completo a tutte le funzioni: pubblicazioni, chat, creazione e partecipazione agli eventi.",
+            "name": "Approvato"
+          },
+          "rejected": {
+            "title": "• REJECTED (rifiutato)",
+            "description": "Il tuo profilo è stato rifiutato per violazione delle regole della community o per informazioni insufficienti/inappropriate. Potrebbe essere necessario apportare modifiche e inviarlo di nuovo in moderazione.",
+            "name": "Rifiutato"
+          }
+        },
+        "currentStatusPrefix": "Il tuo stato attuale è —",
+        "reasons": {
+          "image": "La foto viola le regole. Carica un'altra immagine.",
+          "content": "Le informazioni del profilo violano le regole. Aggiorna i dati per soddisfare gli standard della community."
+        }
+      },
+      "specialistCover": {
+        "title": "Perché serve l'immagine di copertina?",
+        "description1": "La copertina è un grande banner per la pagina dello specialista. Viene mostrata nella parte superiore del profilo pubblico e aiuta a presentare i tuoi servizi.",
+        "description2": "Scegli un'immagine che ti rappresenti: i visitatori la vedranno ogni volta che aprono il tuo profilo da specialista."
+      }
+    },
+    "aibot": {
+      "card": {
+        "defaultName": "Agente IA"
+      },
+      "listSection": {
+        "empty": "Qui per ora non c'è nulla. Torna più tardi!"
+      },
+      "placeCardList": {
+        "empty": "Qui per ora non c'è nulla. Torna più tardi!",
+        "noDescription": "Nessuna descrizione"
+      },
+      "guestChat": {
+        "defaultBotName": "Bot IA",
+        "inputPlaceholder": "Chiedi qualcosa...",
+        "limitLabel": "Messaggi rimanenti: {{remaining}} / {{limit}}",
+        "errors": {
+          "limitReached": "Limite giornaliero raggiunto. Riprova più tardi.",
+          "sendFailed": "Invio del messaggio non riuscito. Riprova."
+        }
+      }
+    },
+    "chat": {
+      "limitNotice": {
+        "message": "Limite di messaggi raggiunto",
+        "adReady": "L'annuncio è pronto per la visualizzazione",
+        "adLoading": "Caricamento dell'annuncio…",
+        "countdownWithValue": "Attendi {{countdown}} oppure usa i token.",
+        "countdown": "Attendi la fine del timer oppure usa i token.",
+        "countdownShort": "Attendi il timer oppure usa i token",
+        "costLabel": "Costo di sblocco",
+        "costValue": "{{count}} token",
+        "balanceLabel": "Il tuo saldo",
+        "balanceValue": "Token: {{count}}",
+        "balanceUnavailable": "Non disponibile",
+        "checking": "Verifica in corso…",
+        "unlockButton": "Continua per {{count}} token",
+        "watchAd": "Guarda un annuncio",
+        "accessibility": {
+          "locked": "Bloccato"
+        },
+        "pillCost": "Costo: {{count}}",
+        "pillBalance": "Saldo: {{count}}",
+        "pillBalanceUnavailable": "Saldo non disponibile",
+        "more": "Altro",
+        "refreshBalance": "Aggiorna saldo",
+        "refreshBalanceDescription": "Richiedi i token aggiornati",
+        "whatAreTokens": "Cosa sono i token?",
+        "whatAreTokensDescription": "Come funzionano e dove ottenerli",
+        "unavailableSuffix": "(non disponibile)"
+      },
+      "swipeable": {
+        "deleteChatAccessibility": "Elimina chat"
+      },
+      "header": {
+        "online": "Online",
+        "offline": "Offline",
+        "typing": "sta scrivendo...",
+        "groupTyping": "{{user}}: sta scrivendo..."
+      },
+      "messageItem": {
+        "deleted": "Messaggio eliminato"
+      }
+    },
+    "forceUpdate": {
+      "title": "Aggiornamento richiesto",
+      "description": "È disponibile una nuova versione dell'app. Aggiorna per continuare a utilizzare l'app.",
+      "button": "Aggiorna"
+    }
+  },
+  "screens": {
+    "dashboard": {
+      "tabs": {
+        "all": "Tutti"
+      },
+      "heading": "Compagni IA",
+      "subheading": "Scegli un bot per iniziare un dialogo o trovare ispirazione. Il team aggiunge quotidianamente nuovi personaggi e scenari di conversazione.",
+      "empty": {
+        "default": "I bot IA appariranno qui a breve. Prova ad aggiornare più tardi."
+      },
+      "experience": {
+        "accessibility": {
+          "uploadPhoto": "Carica foto",
+          "closePreview": "Chiudi anteprima"
+        },
+        "uploadPrompt": "Tocca qui per caricare la foto che vuoi animare!"
+      }
+    },
+    "library": {
+      "title": "Galleria",
+      "pendingStatus_one": "Elaborazione di {{count}} immagine...",
+      "pendingStatus_few": "Elaborazione di {{count}} immagini...",
+      "pendingStatus_many": "Elaborazione di {{count}} immagini...",
+      "pendingStatus_other": "Elaborazione di {{count}} immagini...",
+      "refreshStatus": "Aggiorna stato",
+      "empty": "Le tue immagini elaborate appariranno qui."
+    },
+    "aibot": {
+      "profile": {
+        "deleteTitle": "Elimina bot IA",
+        "deleteMessage": "Sei sicuro di voler eliminare questo bot IA? Questa azione non può essere annullata.",
+        "actions": {
+          "follow": "Segui",
+          "unfollow": "Smetti di seguire"
+        },
+        "reportTitle": "Segnala utente",
+        "reportPlaceholder": "Dettagli aggiuntivi (opzionale)"
+      },
+      "hero": {
+        "badge": "Agente IA",
+        "chatButton": "Vai alla chat"
+      },
+      "tabs": {
+        "info": "Informazioni",
+        "gallery": "Galleria"
+      },
+      "info": {
+        "introTitle": "Presentazione",
+        "introPlaceholder": "Il creatore non ha ancora aggiunto una descrizione.",
+        "usefulnessTitle": "In che modo sarà utile",
+        "usefulnessPlaceholder": "Utilità non ancora compilata.",
+        "creatorTitle": "Informazioni sul creatore",
+        "creatorLabel": "Creatore",
+        "createdAtLabel": "Creato"
+      },
+      "gallery": {
+        "empty": "Il creatore non ha ancora aggiunto foto."
+      },
+      "common": {
+        "categories": {
+          "обучение": "Istruzione",
+          "английский": "Inglese",
+          "для-прикола": "Per scherzo",
+          "романтический": "Romantico",
+          "роли": "Ruoli",
+          "история": "Storia"
+        },
+        "errors": {
+          "openProfile": "Impossibile aprire il profilo del bot"
+        }
+      },
+      "create": {
+        "headerTitle": "Creazione agente IA",
+        "steps": {
+          "0": {
+            "title": "Personaggio",
+            "description": "Avatar, nome e informazioni di base che creano la prima impressione."
+          },
+          "1": {
+            "title": "Valore",
+            "description": "Categorie e benefici che l'utente ottiene conversando con l'agente."
+          },
+          "2": {
+            "title": "Carattere",
+            "description": "Prompt, storia e saluto che definiscono lo stile della conversazione."
+          },
+          "3": {
+            "title": "Media",
+            "description": "Galleria di immagini che aiuta a visualizzare l'agente."
+          }
+        },
+        "identity": {
+          "title": "Personalizzazione",
+          "description": "Aggiungi un'immagine e informazioni di base per far riconoscere subito il tuo agente agli utenti.",
+          "avatar": {
+            "placeholder": "Carica",
+            "hint": "Si consiglia un'immagine quadrata di almeno 512×512 px."
+          },
+          "fields": {
+            "firstName": {
+              "label": "Nome",
+              "placeholder": "Inserisci il nome dell'agente"
+            },
+            "lastName": {
+              "label": "Cognome",
+              "placeholder": "Inserisci il cognome"
+            },
+            "profession": {
+              "label": "Professione o ruolo",
+              "placeholder": "Ad esempio, marketer o insegnante"
+            }
+          }
+        },
+        "focus": {
+          "title": "Valore e pubblico",
+          "description": "Seleziona le categorie e definisci in cosa è utile il tuo agente.",
+          "categoriesTitle": "Categorie",
+          "usefulnessTitle": "In cosa sarà utile l'agente?",
+          "usefulnessPlaceholder": "Aggiungi valore",
+          "usefulnessEmpty": "Aggiungi almeno un punto di valore."
+        },
+        "voice": {
+          "title": "Carattere",
+          "description": "Descrivi il carattere, la storia e il messaggio iniziale dell'agente.",
+          "fields": {
+            "prompt": {
+              "label": "Prompt di sistema",
+              "placeholder": "Descrivi comportamento e stile di conversazione"
+            },
+            "description": {
+              "label": "Descrizione profilo",
+              "placeholder": "Racconta di cosa si occupa l'agente"
+            },
+            "intro": {
+              "label": "Messaggio di benvenuto",
+              "placeholder": "Cosa dirà l'agente all'inizio del dialogo"
+            }
+          }
+        },
+        "media": {
+          "title": "Set multimediale",
+          "description": "Prepara i materiali visivi per la galleria. Rimasti {{remaining}} su {{max}}.",
+          "upload": "Carica immagini",
+          "limitReached": "Limite di immagini caricate",
+          "empty": "Non hai ancora aggiunto immagini."
+        },
+        "completed": {
+          "title": "Agente IA creato!",
+          "subtitleWithName": "{{name}} {{lastname}} è pronto a incontrare gli utenti.",
+          "subtitleDefault": "Il tuo agente è pronto a incontrare gli utenti.",
+          "openProfile": "Apri profilo",
+          "createAnother": "Crea un altro"
+        },
+        "actions": {
+          "submit": "Crea"
+        }
+      },
+      "edit": {
+        "headerTitle": "Modifica agente IA",
+        "steps": {
+          "0": {
+            "title": "Dati di base",
+            "description": "Aggiorna avatar e informazioni di base."
+          },
+          "1": {
+            "title": "Categorie",
+            "description": "Seleziona gli ambiti e aggiorna l'elenco delle utilità."
+          },
+          "2": {
+            "title": "Voce",
+            "description": "Aggiorna prompt, descrizione e saluto."
+          },
+          "3": {
+            "title": "Galleria",
+            "description": "Gestisci la galleria di immagini."
+          }
+        },
+        "identity": {
+          "title": "Dati di base",
+          "description": "Aggiorna avatar e informazioni di base dell'agente.",
+          "avatar": {
+            "placeholder": "Modifica",
+            "hint": "Scegli una nuova immagine o rimuovi quella attuale."
+          },
+          "fields": {
+            "firstName": {
+              "label": "Nome",
+              "placeholder": "Nome dell'agente"
+            },
+            "lastName": {
+              "label": "Cognome",
+              "placeholder": "Cognome dell'agente"
+            },
+            "profession": {
+              "label": "Professione",
+              "placeholder": "Ad esempio, designer"
+            }
+          }
+        },
+        "focus": {
+          "title": "Categorie e valore",
+          "description": "Seleziona gli ambiti e aggiorna l'elenco del valore dell'agente.",
+          "categoriesTitle": "Categorie",
+          "usefulnessTitle": "Valore dell'agente",
+          "usefulnessPlaceholder": "Aggiungi un nuovo punto",
+          "usefulnessEmpty": "Aggiungi almeno un punto."
+        },
+        "voice": {
+          "title": "Voce e storia",
+          "description": "Aggiorna prompt, descrizione e saluto dell'agente.",
+          "fields": {
+            "prompt": {
+              "label": "Prompt di sistema",
+              "placeholder": "Descrivi carattere e stile"
+            },
+            "description": {
+              "label": "Descrizione profilo",
+              "placeholder": "Completa la biografia"
+            },
+            "intro": {
+              "label": "Messaggio di benvenuto",
+              "placeholder": "Messaggio per il primo contatto"
+            }
+          }
+        },
+        "media": {
+          "title": "Galleria",
+          "description": "Gestisci la galleria di immagini. Rimasti {{remaining}} su {{max}}.",
+          "upload": "Aggiungi immagini",
+          "limitReached": "Limite di immagini raggiunto",
+          "empty": "L'agente non ha ancora immagini."
+        },
+        "actions": {
+          "save": "Salva"
+        }
+      }
+    },
+    "onboarding": {
+      "slides": {
+        "welcome": {
+          "title": "✨ Benvenuto",
+          "description": "Il tuo partner IA per conversazioni, idee e supporto."
+        },
+        "memory": {
+          "title": "🧠 Ricorda ciò che conta",
+          "description": "AI Pair ricorda il tuo contesto e impara dalle tue storie."
+        },
+        "character": {
+          "title": "🎭 Crea il carattere",
+          "description": "Nome, stile di conversazione, obiettivi — personalizza come preferisci."
+        },
+        "start": {
+          "title": "🚀 Pronto a iniziare?",
+          "description": "Conosci il tuo AI Pair e avvia il dialogo."
+        }
+      },
+      "skip": "Salta",
+      "next": "Avanti",
+      "start": "Inizia"
+    },
+    "profile": {
+      "tabs": {
+        "myBots": "Miei",
+        "subscriptions": "Iscrizioni"
+      },
+      "fallbackName": "Profilo",
+      "featureSoon": "Questa funzionalità sarà presto disponibile.",
+      "empty": {
+        "myBots": "Non hai ancora creato bot IA. Prova a creare il tuo primo personaggio!",
+        "subscriptions": "Non segui ancora alcun bot IA."
+      },
+      "userBotsSection": {
+        "title": "Bot IA dell'utente",
+        "empty": "L'utente non ha ancora creato bot IA."
+      }
+    },
+    "chats": {
+      "fallbacks": {
+        "group": "Gruppo",
+        "bot": "Bot"
+      },
+      "searchPlaceholder": "Cerca...",
+      "messages": {
+        "reply": "Rispondi",
+        "photoPlaceholder": "foto",
+        "placeholder": "Messaggio",
+        "editing": "Modifica",
+        "clearHistory": "Cancella cronologia chat"
+      }
+    },
+    "docs": {
+      "terms": {
+        "title": "Termini d'uso",
+        "sections": {
+          "welcome": {
+            "title": "Benvenuto su {{siteName}}!",
+            "paragraph1": {
+              "prefix": "I presenti Termini d'uso («Termini») regolano l'accesso e l'uso dell'app mobile {{siteName}}, nonché del sito ",
+              "suffix": " (congiuntamente il «Servizio»)."
+            },
+            "paragraph2": "Accedendo o utilizzando il Servizio, confermi di accettare questi Termini.",
+            "paragraph3": "Se non accetti i Termini, ti preghiamo di non utilizzare il Servizio."
+          },
+          "usage": {
+            "title": "1. Uso del Servizio",
+            "items": [
+              "Usa il Servizio solo in conformità con le leggi applicabili.",
+              "Non utilizzare il Servizio per scopi illegali o non autorizzati.",
+              "Non molestare, insultare o danneggiare altri utenti.",
+              "Non compromettere la sicurezza o l'integrità del Servizio."
+            ]
+          },
+          "content": {
+            "title": "2. Contenuti dell'utente",
+            "paragraph1": "Fornendo contenuti, concedi a {{siteName}} una licenza non esclusiva, mondiale e gratuita per utilizzare, archiviare, mostrare e distribuire i tuoi contenuti.",
+            "paragraph2": "Sei responsabile dei contenuti che crei e distribuisci."
+          },
+          "security": {
+            "title": "3. Registrazione e sicurezza dell'account",
+            "paragraph": "Sei responsabile della riservatezza delle credenziali e di tutte le azioni effettuate tramite il tuo account."
+          },
+          "privacy": {
+            "title": "4. Privacy",
+            "paragraph": {
+              "prefix": "La raccolta e l'uso dei dati personali sono regolati dalla nostra ",
+              "suffix": "."
+            },
+            "linkLabel": "Informativa sulla privacy"
+          },
+          "ip": {
+            "title": "5. Proprietà intellettuale",
+            "paragraph": "Tutti i diritti sul Servizio (ad eccezione dei contenuti degli utenti) appartengono a {{siteName}} e ai suoi licenziatari."
+          },
+          "termination": {
+            "title": "6. Interruzione dell'accesso",
+            "paragraph": "Possiamo sospendere o interrompere il tuo accesso al Servizio in qualsiasi momento e per qualsiasi motivo."
+          },
+          "changes": {
+            "title": "7. Modifiche ai Termini",
+            "paragraph": "Possiamo aggiornare questi Termini in qualsiasi momento. Continuare a utilizzare il Servizio dopo l'entrata in vigore delle modifiche implica l'accettazione dei nuovi Termini."
+          },
+          "moderation": {
+            "title": "8. Segnalazioni e moderazione",
+            "paragraph1": "Su {{siteName}} vige tolleranza zero verso contenuti inaccettabili, inclusi incitazione all'odio, molestie, pornografia e qualsiasi attività illegale.",
+            "paragraph2": "Gli utenti possono segnalare contenuti inappropriati direttamente nell'app. Esaminiamo tutte le segnalazioni entro 24 ore e adottiamo le misure appropriate, inclusa la rimozione dei contenuti o il blocco dell'utente responsabile.",
+            "paragraph3": "Utilizzando {{siteName}} accetti di comportarti con rispetto e di rispettare queste regole."
+          },
+          "contact": {
+            "title": "9. Contatti",
+            "paragraph": {
+              "prefix": "Se hai domande riguardo a questi Termini, contattaci all'indirizzo ",
+              "suffix": "."
+            }
+          }
+        }
+      }
+    }
+  }
+}

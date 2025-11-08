@@ -190,6 +190,26 @@ export const AiAgentCreateScreen: React.FC = () => {
 
   const remainingGallerySlots = Math.max(0, maxGalleryItems - gallery.length);
 
+  const localizedSteps = useMemo(
+    () =>
+      steps.map((item, index) => ({
+        ...item,
+        title: t(`screens.aibot.create.steps.${index}.title`),
+        description: t(`screens.aibot.create.steps.${index}.description`),
+      })),
+    [steps, t],
+  );
+
+  const getCategoryLabel = useCallback(
+    (category: string) => {
+      const normalized = category.trim().toLowerCase().replace(/\s+/g, "-");
+      const key = `screens.aibot.common.categories.${normalized}`;
+      const translated = t(key);
+      return translated === key ? category : translated;
+    },
+    [t],
+  );
+
   const renderIdentityStep = () => (
     <View style={styles.card}>
       <Text style={styles.sectionTitle}>{t('screens.aibot.create.identity.title')}</Text>
@@ -726,24 +746,4 @@ const createStyles = ({
       gap: sizes.sm as number,
     },
   });
-
-  const localizedSteps = useMemo(
-    () =>
-      steps.map((item, index) => ({
-        ...item,
-        title: t(`screens.aibot.create.steps.${index}.title`),
-        description: t(`screens.aibot.create.steps.${index}.description`),
-      })),
-    [steps, t],
-  );
-
-  const getCategoryLabel = useCallback(
-    (category: string) => {
-      const normalized = category.trim().toLowerCase().replace(/\s+/g, "-");
-      const key = `screens.aibot.common.categories.${normalized}`;
-      const translated = t(key);
-      return translated === key ? category : translated;
-    },
-    [t],
-  );
 

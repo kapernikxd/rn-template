@@ -158,6 +158,26 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
     return <ScreenLoader />;
   }
 
+  const localizedSteps = useMemo(
+    () =>
+      steps.map((item, index) => ({
+        ...item,
+        title: t(`screens.aibot.edit.steps.${index}.title`),
+        description: t(`screens.aibot.edit.steps.${index}.description`),
+      })),
+    [steps, t],
+  );
+
+  const getCategoryLabel = useCallback(
+    (category: string) => {
+      const normalized = category.trim().toLowerCase().replace(/\s+/g, "-");
+      const key = `screens.aibot.common.categories.${normalized}`;
+      const translated = t(key);
+      return translated === key ? category : translated;
+    },
+    [t],
+  );
+
   const renderIdentityStep = () => (
     <View style={styles.card}>
       <Text style={styles.sectionTitle}>{t('screens.aibot.edit.identity.title')}</Text>
@@ -374,13 +394,13 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
       </ScrollView>
 
       <View style={styles.footer}>
-          <Button
-            leftIcon={<Ionicons name={activeStep === 0 ? "close-outline" : "caret-back-outline" } color={theme.text} size={18} />}
+        <Button
+          leftIcon={<Ionicons name={activeStep === 0 ? "close-outline" : "caret-back-outline"} color={theme.text} size={18} />}
           // title={activeStep === 0 ? t('common.cancel') : t('common.back')}
-            type="gray-outline"
-            onPress={handleBack}
-            disabled={isSubmitting}
-          />
+          type="gray-outline"
+          onPress={handleBack}
+          disabled={isSubmitting}
+        />
         <View style={{ width: "80%" }}>
           <Button
             title={
@@ -602,23 +622,4 @@ const createStyles = ({
     },
   });
 
-  const localizedSteps = useMemo(
-    () =>
-      steps.map((item, index) => ({
-        ...item,
-        title: t(`screens.aibot.edit.steps.${index}.title`),
-        description: t(`screens.aibot.edit.steps.${index}.description`),
-      })),
-    [steps, t],
-  );
-
-  const getCategoryLabel = useCallback(
-    (category: string) => {
-      const normalized = category.trim().toLowerCase().replace(/\s+/g, "-");
-      const key = `screens.aibot.common.categories.${normalized}`;
-      const translated = t(key);
-      return translated === key ? category : translated;
-    },
-    [t],
-  );
 
