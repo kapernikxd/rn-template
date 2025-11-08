@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { ThemeType, useTheme } from 'rn-vs-lb/theme';
-import { LARGE_FILE_ERROR } from '../../constants';
 import { useImageCompressor } from '../../helpers/hooks';
 
 export interface ImageUploaderProps {
@@ -36,6 +36,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   maxImages = 3,
 }) => {
   const { theme, formStyles } = useTheme();
+  const { t } = useTranslation();
   const styles = getStyles({ theme });
 
   const [imageUris, setImageUris] = useState<string[]>(defaultValue);
@@ -45,7 +46,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   const handleImagePick = async (onChange: any) => {
     if (disabled) return;
     if (imageUris.length >= maxImages) {
-      alert(`Можно загрузить не более ${maxImages} изображений`);
+      alert(t('components.form.imageUploader.limitReached', { count: maxImages }));
       return;
     }
 
@@ -62,7 +63,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
 
       for (const asset of result.assets) {
         if (asset.fileSize && asset.fileSize > maxFileSize) {
-          alert(LARGE_FILE_ERROR);
+          alert(t('components.form.imageUploader.errors.largeFile'));
           continue;
         }
 
@@ -75,7 +76,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             newUris.push(imageUri);
           } catch (err) {
             console.error('Image compression failed:', err);
-            alert('Не удалось сжать изображение');
+            alert(t('components.form.imageUploader.errors.compressionFailed'));
           }
         }
       }
@@ -117,8 +118,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
             >
               <Text style={styles.uploadButtonText}>
                 {imageUris.length < maxImages
-                  ? 'Загрузить изображение'
-                  : `Максимум ${maxImages} изображений`}
+                  ? t('components.form.imageUploader.upload')
+                  : t('components.form.imageUploader.maxImages', { count: maxImages })}
               </Text>
             </TouchableOpacity>
             <View style={styles.imageContainer}>

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MultiSelect as RNEMultiSelect } from 'react-native-element-dropdown';
 import { Controller } from 'react-hook-form';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { useTheme, ThemeType } from 'rn-vs-lb/theme';
 import { InfoTooltip } from 'rn-vs-lb';
 
@@ -30,7 +31,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   style,
   containerStyle,
   rules = {},
-  placeholder = 'Выберите...',
+  placeholder,
   errorTextStyle,
   required,
   zIndex = 1000,
@@ -38,10 +39,13 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   dropdownPosition = "top",
 }) => {
   const { theme, formStyles } = useTheme();
+  const { t } = useTranslation();
   const styles = getStyles({ theme });
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<any>(null);
+
+  const placeholderText = placeholder ?? t('components.form.multiSelect.placeholder');
 
   return (
     <View style={[{ zIndex }, containerStyle]}>
@@ -71,7 +75,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                 data={options}
                 labelField="label"
                 valueField="value"
-                placeholder={placeholder}
+                placeholder={placeholderText}
                 value={value}
                 onChange={onChange}
                 dropdownPosition={dropdownPosition}
@@ -99,7 +103,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                     setIsDropdownOpen(false);
                   }}
                 >
-                  <Text style={styles.doneButtonText}>ГОТОВО</Text>
+                  <Text style={styles.doneButtonText}>{t('components.form.multiSelect.done')}</Text>
                 </TouchableOpacity>
               )}
             </View>

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { observer } from 'mobx-react-lite';
+import { useTranslation } from 'react-i18next';
 import { useRootStore } from '../../store/StoreProvider';
 
 import { GlobalStyleSheetType, SizesType, ThemeType, useTheme, CommonStylesType } from 'rn-vs-lb/theme';
@@ -21,6 +22,7 @@ interface HeaderProps {
 
 const HeaderWithImg: React.FC<HeaderProps> = observer(({ imgUrl, title, onImgPress, onActionPress, onBackPress, isGroupChat, users }) => {
   const { globalStyleSheet, theme, sizes, commonStyles, typography } = useTheme();
+  const { t } = useTranslation();
   const styles = getStyles({ globalStyleSheet, theme, sizes, commonStyles });
   const { onlineStore } = useRootStore();
   // Получаем ID пользователя
@@ -37,7 +39,11 @@ const HeaderWithImg: React.FC<HeaderProps> = observer(({ imgUrl, title, onImgPre
   const getStatus = (isOnline: boolean) => {
     return (
       <View style={globalStyleSheet.flexRowCenter}>
-        <Text style={[typography.body, { fontStyle: 'italic' }]}>{isOnline ? "В сети" : "Не в сети"}</Text>
+        <Text style={[typography.body, { fontStyle: 'italic' }]}>
+          {isOnline
+            ? t('components.chat.header.online')
+            : t('components.chat.header.offline')}
+        </Text>
         <View style={[styles.status, isOnline ? styles.online : styles.offline]}></View>
       </View>
     )
@@ -62,13 +68,22 @@ const HeaderWithImg: React.FC<HeaderProps> = observer(({ imgUrl, title, onImgPre
               </Text>
 
               {!isGroupChat
-                ? <Text style={{ fontStyle: 'italic', color: theme.text }}>{isTyping ? "печатает..." : getStatus(isUserOnline())}</Text>
-                : typingSomeUser ?
+                ? (
+                  <Text style={{ fontStyle: 'italic', color: theme.text }}>
+                    {isTyping
+                      ? t('components.chat.header.typing')
+                      : getStatus(isUserOnline())}
+                  </Text>
+                )
+                : typingSomeUser ? (
                   <Text
                     numberOfLines={1}
                     ellipsizeMode="tail"
-                    style={{ fontStyle: 'italic', color: theme.text, }}
-                  >{typingSomeUser.userName}: печатает...</Text> : null
+                    style={{ fontStyle: 'italic', color: theme.text }}
+                  >
+                    {t('components.chat.header.groupTyping', { user: typingSomeUser.userName })}
+                  </Text>
+                ) : null
               }
 
             </View>

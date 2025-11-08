@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import { MaterialIcons as IconAwesome } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { inputHeight } from '../../constants/theme/styles/commonFormStyles';
 import { ThemeType, useTheme } from 'rn-vs-lb/theme';
 
@@ -14,7 +15,7 @@ export interface SearchInputProps {
 }
 
 const SearchInput: React.FC<SearchInputProps> = ({
-    placeholder = 'Поиск...',
+    placeholder,
     value,
     onChangeText,
     icon,
@@ -22,7 +23,9 @@ const SearchInput: React.FC<SearchInputProps> = ({
     editable = true,
 }) => {
     const { theme, formStyles } = useTheme();
+    const { t } = useTranslation();
     const styles = getStyles({ theme });
+    const placeholderText = placeholder ?? t('components.form.searchInput.placeholder');
 
     return (
         <View style={styles.container}>
@@ -40,7 +43,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
                     style={(iconType || icon) ? [formStyles.inputWithIcon, styles.searchWithIcon] : [formStyles.inputBorder, formStyles.inputContainer, styles.textInput]}
                     value={value}
                     onChangeText={onChangeText}
-                    placeholder={placeholder}
+                    placeholder={placeholderText}
                     placeholderTextColor={theme.placeholder}
                     editable={editable}
                 />

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import axios from "axios";
+import { useTranslation } from 'react-i18next';
 import { inputHeight } from "../../constants/theme/styles/commonFormStyles";
 import { ThemeType, useTheme } from 'rn-vs-lb/theme';
 
@@ -33,13 +34,16 @@ function useDebounce<T extends (...args: any[]) => void>(fn: T, delay = 500) {
 }
 
 const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
-    placeholder = "Найдите город...",
+    placeholder,
     onSelect,
     defaultValue = "",
     error,
 }) => {
     const { theme, formStyles } = useTheme();
+    const { t } = useTranslation();
     const styles = getStyles({ theme });
+
+    const placeholderText = placeholder ?? t('components.form.autoComplete.placeholder');
 
     const [query, setQuery] = useState(defaultValue);
     const [cities, setCities] = useState<CityItem[]>([]);
@@ -125,7 +129,7 @@ const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
                     ]}
                     value={query}
                     onChangeText={handleChangeText}
-                    placeholder={placeholder}
+                    placeholder={placeholderText}
                     placeholderTextColor={theme.placeholder}
                     blurOnSubmit={false}
                 />

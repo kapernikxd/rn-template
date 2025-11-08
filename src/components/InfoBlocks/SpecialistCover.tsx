@@ -1,21 +1,23 @@
 import React from 'react';
 import { View, Text } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'rn-vs-lb/theme';
 import { Spacer } from 'rn-vs-lb';
 
 export const SpecialistCoverTooltip: React.FC = () => {
   const { typography } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View>
-      <Text style={typography.titleH5}>Зачем нужна обложка?</Text>
+      <Text style={typography.titleH5}>{t('components.infoBlocks.specialistCover.title')}</Text>
       <Spacer size='xs' />
       <Text style={typography.body}>
-        Обложка — это большой баннер для страницы специалиста. Она отображается в верхней части публичного профиля и помогает рассказать о ваших услугах.
+        {t('components.infoBlocks.specialistCover.description1')}
       </Text>
       <Spacer size='xs' />
       <Text style={typography.body}>
-        Выберите изображение, которое отражает вас: посетители будут видеть его каждый раз, когда открывают ваш профиль специалиста.
+        {t('components.infoBlocks.specialistCover.description2')}
       </Text>
     </View>
   );

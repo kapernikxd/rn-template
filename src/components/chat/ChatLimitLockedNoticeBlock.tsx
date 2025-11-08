@@ -6,6 +6,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useTheme, type SizesType } from 'rn-vs-lb/theme';
 
 import { useRewardedAdTokens } from '../../helpers/hooks/useRewardedAdTokens';
@@ -21,7 +22,7 @@ interface ChatLimitLockedNoticeProps {
 }
 
 const ChatLimitLockedNotice: FC<ChatLimitLockedNoticeProps> = ({
-  message = 'Лимит сообщений исчерпан',
+  message,
   countdownText,
   tokenCost,
   tokenBalance,
@@ -30,8 +31,10 @@ const ChatLimitLockedNotice: FC<ChatLimitLockedNoticeProps> = ({
   onTokenBalanceRefresh,
 }) => {
   const { theme, typography, sizes } = useTheme();
+  const { t } = useTranslation();
 
   const styles = useMemo(() => getStyles(sizes, theme), [sizes, theme]);
+  const resolvedMessage = message ?? t('components.chat.limitNotice.message');
 
   const handleRewardEarned = useCallback(
     (_updatedBalance: number) => {
@@ -44,8 +47,13 @@ const ChatLimitLockedNotice: FC<ChatLimitLockedNoticeProps> = ({
     useRewardedAdTokens({ onRewardEarned: handleRewardEarned });
 
   const adStatusText = useMemo(
-    () => (isAdLoaded ? 'Реклама готова к показу' : 'Реклама загружается…'),
-    [isAdLoaded],
+    () =>
+      t(
+        isAdLoaded
+          ? 'components.chat.limitNotice.adReady'
+          : 'components.chat.limitNotice.adLoading',
+      ),
+    [isAdLoaded, t],
   );
 
   const effectiveTokenBalance = useMemo(() => {
@@ -70,12 +78,12 @@ const ChatLimitLockedNotice: FC<ChatLimitLockedNoticeProps> = ({
         </Text>
         <View style={styles.headerText}>
           <Text style={[typography.titleH6, { color: theme.title }]}>
-            {message}
+            {resolvedMessage}
           </Text>
           <Text style={[typography.bodySm, { color: theme.text }]}>
             {countdownText
-              ? `Подождите ${countdownText} или используйте токены.`
-              : 'Подождите окончания таймера или используйте токены.'}
+              ? t('components.chat.limitNotice.countdownWithValue', { countdown: countdownText })
+              : t('components.chat.limitNotice.countdown')}
           </Text>
         </View>
       </View>
@@ -86,21 +94,25 @@ const ChatLimitLockedNotice: FC<ChatLimitLockedNoticeProps> = ({
       {/* Cost / Balance */}
       <View style={styles.rowsGap}>
         <View style={styles.rowBetween}>
-          <Text style={[typography.body, { color: theme.text }]}>Стоимость разблокировки</Text>
+          <Text style={[typography.body, { color: theme.text }]}>
+            {t('components.chat.limitNotice.costLabel')}
+          </Text>
           <View
             style={[
               styles.pill,
               { backgroundColor: theme.primary + '22', borderColor: theme.primary },
             ]}
           >
-            <Text style={[typography.bodySm, { color: theme.primary }]}>
-              {tokenCost} токенов
+            <Text style={[typography.bodySm, { color: theme.primary }]}> 
+              {t('components.chat.limitNotice.costValue', { count: tokenCost })}
             </Text>
           </View>
         </View>
 
         <View style={styles.rowBetween}>
-          <Text style={[typography.body, { color: theme.text }]}>Ваш баланс</Text>
+          <Text style={[typography.body, { color: theme.text }]}>
+            {t('components.chat.limitNotice.balanceLabel')}
+          </Text>
           <View
             style={[
               styles.pill,
@@ -130,7 +142,11 @@ const ChatLimitLockedNotice: FC<ChatLimitLockedNoticeProps> = ({
                 },
               ]}
             >
-              {hasBalance ? `Токенов: ${effectiveTokenBalance}` : 'Недоступно'}
+              {hasBalance
+                ? t('components.chat.limitNotice.balanceValue', {
+                    count: effectiveTokenBalance,
+                  })
+                : t('components.chat.limitNotice.balanceUnavailable')}
             </Text>
           </View>
         </View>
@@ -154,11 +170,13 @@ const ChatLimitLockedNotice: FC<ChatLimitLockedNoticeProps> = ({
           {isUnlocking ? (
             <View style={styles.btnContent}>
               <ActivityIndicator size="small" color={theme.white} />
-              <Text style={[typography.body, styles.primaryBtnText]}>Проверяем…</Text>
+              <Text style={[typography.body, styles.primaryBtnText]}>
+                {t('components.chat.limitNotice.checking')}
+              </Text>
             </View>
           ) : (
             <Text style={[typography.body, styles.primaryBtnText]}>
-              Продолжить за {tokenCost} токенов
+              {t('components.chat.limitNotice.unlockButton', { count: tokenCost })}
             </Text>
           )}
         </Pressable>
@@ -176,7 +194,7 @@ const ChatLimitLockedNotice: FC<ChatLimitLockedNoticeProps> = ({
           ]}
         >
           <Text style={[typography.body, { color: theme.primary }]}>
-            Посмотреть рекламу
+            {t('components.chat.limitNotice.watchAd')}
           </Text>
           <Text
             style={[

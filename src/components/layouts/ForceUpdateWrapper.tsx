@@ -9,6 +9,7 @@ import {
   Easing,
 } from 'react-native';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 import { API_URL, appVersion } from '../../constants/links';
 import { UpdateRequiredView } from 'rn-vs-lb';
 
@@ -36,6 +37,7 @@ export const ForceUpdateWrapper: FC<Props> = ({ children }) => {
   const [storeUrl, setStoreUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const { t } = useTranslation();
 
   const isMountedRef = useRef(true);
 
@@ -133,9 +135,9 @@ export const ForceUpdateWrapper: FC<Props> = ({ children }) => {
         refreshing={refreshing}
         onRefresh={onRefresh}
         onPressUpdate={onPressUpdate}
-        title="Требуется обновление"
-        description="Доступна новая версия приложения. Пожалуйста, обновитесь, чтобы продолжить работу."
-        updateButtonText='Обновить'
+        title={t('components.forceUpdate.title')}
+        description={t('components.forceUpdate.description')}
+        updateButtonText={t('components.forceUpdate.button')}
       />
     );
   }

@@ -4,6 +4,7 @@ import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
 import type { SwipeableProps } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, interpolate, Extrapolation, type SharedValue } from 'react-native-reanimated';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 type SwipeableActionRenderArgs = {
   progress: SharedValue<number>;
@@ -34,6 +35,7 @@ const RightAction: FC<{
   backgroundColor: string;
   icon?: ReactNode;
 }> = ({ progress, onPress, width, backgroundColor, icon }) => {
+  const { t } = useTranslation();
   const animatedStyle = useAnimatedStyle(() => {
     const scale = interpolate(progress.value, [0, 1], [0.85, 1], Extrapolation.CLAMP);
     return { transform: [{ scale }] };
@@ -46,7 +48,7 @@ const RightAction: FC<{
         style={[styles.deleteButton, { width, backgroundColor }]}
         android_ripple={{ color: 'rgba(255,255,255,0.25)' }}
         accessibilityRole="button"
-        accessibilityLabel="Удалить чат"
+        accessibilityLabel={t('components.chat.swipeable.deleteChatAccessibility')}
         testID="chat-item-delete-action"
       >
         {icon}

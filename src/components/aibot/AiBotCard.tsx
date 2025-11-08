@@ -12,6 +12,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'rn-vs-lb/theme';
 
 import type { AiBotDTO, AiBotMainPageBot, UserDTO } from '../../types';
@@ -79,6 +80,7 @@ const getDescription = (b: AiBotCardEntity) =>
 /* ---------- component ---------- */
 export const AiBotCard = ({ bot, style, onPress }: AiBotCardProps) => {
   const { theme } = useTheme();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
 
   const fullName = useMemo(() => {
@@ -86,8 +88,8 @@ export const AiBotCard = ({ bot, style, onPress }: AiBotCardProps) => {
     const last = ('lastname' in bot && bot.lastname) || undefined;
     if (name || last) return [name, last].filter(Boolean).join(' ');
     if ('username' in bot && bot.username) return bot.username!;
-    return 'AI-агент';
-  }, [bot]);
+    return t('components.aibot.card.defaultName');
+  }, [bot, t]);
 
   const bgSource = useMemo(() => resolveBgImage(bot), [bot]);
   const avatarSrc = useMemo(() => resolveAvatar(bot), [bot]);

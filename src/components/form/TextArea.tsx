@@ -1,6 +1,7 @@
 import React from 'react';
 import { TextInput, StyleSheet, View, Text, TextInputProps } from 'react-native';
 import { Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'rn-vs-lb/theme';
 
 export interface TextAreaProps extends TextInputProps {
@@ -21,7 +22,7 @@ const TextArea: React.FC<TextAreaProps> = ({
     name,
     control,
     label,
-    placeholder = 'Введите текст...',
+    placeholder,
     numberOfLines = 4,
     style,
     containerStyle,
@@ -32,6 +33,8 @@ const TextArea: React.FC<TextAreaProps> = ({
     ...rest
 }) => {
     const { theme, formStyles, typography } = useTheme();
+    const { t } = useTranslation();
+    const placeholderText = placeholder ?? t('components.form.textArea.placeholder');
 
     return (
         <View style={[styles.container, containerStyle]}>
@@ -51,7 +54,7 @@ const TextArea: React.FC<TextAreaProps> = ({
                             value={value}
                             onChangeText={onChange}
                             onBlur={onBlur}
-                            placeholder={placeholder}
+                            placeholder={placeholderText}
                             multiline={true}
                             numberOfLines={numberOfLines}
                             placeholderTextColor={theme.placeholder}
