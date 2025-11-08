@@ -26,7 +26,12 @@ export const LanguageSelector: FC = () => {
   const styles = useMemo(() => getStyles({ theme, sizes, globalStyleSheet }), [globalStyleSheet, sizes, theme]);
   const [isModalVisible, setModalVisible] = useState(false);
 
-  const resolvedLanguageCode = i18n.resolvedLanguage ?? i18n.language;
+  const normalizeLanguageCode = (language?: string | null) => language?.split('-')[0];
+
+  const resolvedLanguageCode =
+    normalizeLanguageCode(i18n.resolvedLanguage) ??
+    normalizeLanguageCode(i18n.language) ??
+    LANGUAGE_OPTIONS[0].code;
   const selectedLanguage = useMemo(
     () => LANGUAGE_OPTIONS.find((language) => language.code === resolvedLanguageCode) ?? LANGUAGE_OPTIONS[0],
     [resolvedLanguageCode],
