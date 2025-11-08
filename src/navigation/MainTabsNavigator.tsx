@@ -9,7 +9,7 @@ import { SafeAreaInsetsContext, useSafeAreaInsets } from 'react-native-safe-area
 import { ChatsStack } from './stacks/ChatsStack';
 import { DashboardStack } from './stacks/DashboardStack';
 import { ProfileStack } from './stacks/ProfileStack';
-import type { MainTabParamList } from './types';
+import { ROUTES, type MainTabParamList } from './types';
 import { useTheme } from 'rn-vs-lb/theme';
 import { useRootStore, useStoreData } from '../store/StoreProvider';
 import { Dot } from 'rn-vs-lb';
@@ -72,8 +72,17 @@ const MainTabBar = ({ state, descriptors, navigation, showLabels = true }: MainT
 
         const onPress = () => {
           const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-          if (!isFocused && !event.defaultPrevented) {
-            navigation.navigate(route.name as any, route.params as never);
+          if (event.defaultPrevented) {
+            return;
+          }
+
+          if (route.name === ROUTES.ChatsTab) {
+            navigation.navigate(route.name as never, { screen: ROUTES.Chats } as never);
+            return;
+          }
+
+          if (!isFocused) {
+            navigation.navigate(route.name as never, route.params as never);
           }
         };
         const onLongPress = () => navigation.emit({ type: 'tabLongPress', target: route.key });
