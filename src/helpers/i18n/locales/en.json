@@ -27,6 +27,12 @@
     "update": "Update",
     "reset": "Reset",
     "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "report": "Report",
+    "submit": "Submit",
+    "done": "Done",
+    "next": "Next",
     "terms": {
       "acceptPrefix": "I accept",
       "link": "Terms of Use",
@@ -504,6 +510,362 @@
       "title": "Update required",
       "description": "A new version of the app is available. Please update to continue.",
       "button": "Update"
+    }
+  },
+  "screens": {
+    "dashboard": {
+      "tabs": {
+        "all": "All"
+      },
+      "heading": "AI companions",
+      "subheading": "Choose a bot to start a conversation or find inspiration. The team adds new characters and scenarios every day.",
+      "empty": {
+        "default": "AI bots will appear here soon. Try refreshing later."
+      },
+      "experience": {
+        "accessibility": {
+          "uploadPhoto": "Upload photo",
+          "closePreview": "Close preview"
+        },
+        "uploadPrompt": "Tap here to upload a photo you want to bring to life!"
+      }
+    },
+    "library": {
+      "title": "Gallery",
+      "pendingStatus_one": "Processing {{count}} image...",
+      "pendingStatus_other": "Processing {{count}} images...",
+      "refreshStatus": "Refresh status",
+      "empty": "Your processed images will appear here after completion."
+    },
+    "aibot": {
+      "profile": {
+        "deleteTitle": "Delete AI bot",
+        "deleteMessage": "Are you sure you want to delete this AI bot? This action cannot be undone.",
+        "actions": {
+          "follow": "Follow",
+          "unfollow": "Unfollow"
+        },
+        "reportTitle": "Report user",
+        "reportPlaceholder": "Additional details (optional)"
+      },
+      "hero": {
+        "badge": "AI agent",
+        "chatButton": "Go to chat"
+      },
+      "tabs": {
+        "info": "Info",
+        "gallery": "Gallery"
+      },
+      "info": {
+        "introTitle": "Introduction",
+        "introPlaceholder": "The creator hasn't added a description yet.",
+        "usefulnessTitle": "How it helps",
+        "usefulnessPlaceholder": "Usefulness isn't filled in yet.",
+        "creatorTitle": "Creator details",
+        "creatorLabel": "Creator",
+        "createdAtLabel": "Created"
+      },
+      "gallery": {
+        "empty": "The creator hasn't added photos yet."
+      },
+      "common": {
+        "categories": {
+          "обучение": "Education",
+          "английский": "English",
+          "для-прикола": "For fun",
+          "романтический": "Romantic",
+          "роли": "Roles",
+          "история": "History"
+        },
+        "errors": {
+          "openProfile": "Failed to open bot profile"
+        }
+      },
+      "create": {
+        "headerTitle": "Create AI agent",
+        "steps": {
+          "0": {
+            "title": "Character",
+            "description": "Avatar, name, and key info that form the first impression."
+          },
+          "1": {
+            "title": "Value",
+            "description": "Categories and benefits users get from talking to the agent."
+          },
+          "2": {
+            "title": "Personality",
+            "description": "Prompt, story, and greeting that define the communication style."
+          },
+          "3": {
+            "title": "Media",
+            "description": "Gallery of images that helps visualize the agent."
+          }
+        },
+        "identity": {
+          "title": "Personalization",
+          "description": "Add an image and basic information so users recognize your agent instantly.",
+          "avatar": {
+            "placeholder": "Upload",
+            "hint": "Use a square image at least 512×512 px."
+          },
+          "fields": {
+            "firstName": {
+              "label": "First name",
+              "placeholder": "Enter the agent's first name"
+            },
+            "lastName": {
+              "label": "Last name",
+              "placeholder": "Enter the agent's last name"
+            },
+            "profession": {
+              "label": "Profession or role",
+              "placeholder": "For example, marketer or teacher"
+            }
+          }
+        },
+        "focus": {
+          "title": "Value and audience",
+          "description": "Pick categories and describe how your agent is helpful.",
+          "categoriesTitle": "Categories",
+          "usefulnessTitle": "How will the agent help?",
+          "usefulnessPlaceholder": "Add a value point",
+          "usefulnessEmpty": "Add at least one value point."
+        },
+        "voice": {
+          "title": "Personality",
+          "description": "Describe the prompt, story, and welcome message of the agent.",
+          "fields": {
+            "prompt": {
+              "label": "System prompt",
+              "placeholder": "Describe behaviour and tone"
+            },
+            "description": {
+              "label": "Profile description",
+              "placeholder": "Explain what the agent does"
+            },
+            "intro": {
+              "label": "Welcome message",
+              "placeholder": "What will the agent say first?"
+            }
+          }
+        },
+        "media": {
+          "title": "Media kit",
+          "description": "Prepare visuals for the gallery. {{remaining}} of {{max}} slots remain.",
+          "upload": "Upload images",
+          "limitReached": "Image limit reached",
+          "empty": "You haven't added any images yet."
+        },
+        "completed": {
+          "title": "AI agent created!",
+          "subtitleWithName": "{{name}} {{lastname}} is ready to meet users.",
+          "subtitleDefault": "Your agent is ready to meet users.",
+          "openProfile": "Open profile",
+          "createAnother": "Create another"
+        },
+        "actions": {
+          "submit": "Create"
+        }
+      },
+      "edit": {
+        "headerTitle": "Edit AI agent",
+        "steps": {
+          "0": {
+            "title": "Basics",
+            "description": "Update the avatar and core information."
+          },
+          "1": {
+            "title": "Categories",
+            "description": "Adjust categories and the usefulness list."
+          },
+          "2": {
+            "title": "Voice",
+            "description": "Refresh the prompt, description, and greeting."
+          },
+          "3": {
+            "title": "Gallery",
+            "description": "Manage the gallery of images."
+          }
+        },
+        "identity": {
+          "title": "Basic details",
+          "description": "Update the avatar and key information.",
+          "avatar": {
+            "placeholder": "Change",
+            "hint": "Choose a new image or remove the current one."
+          },
+          "fields": {
+            "firstName": {
+              "label": "First name",
+              "placeholder": "Agent's first name"
+            },
+            "lastName": {
+              "label": "Last name",
+              "placeholder": "Agent's last name"
+            },
+            "profession": {
+              "label": "Profession",
+              "placeholder": "For example, designer"
+            }
+          }
+        },
+        "focus": {
+          "title": "Categories and value",
+          "description": "Pick directions and update the agent's usefulness.",
+          "categoriesTitle": "Categories",
+          "usefulnessTitle": "Agent value",
+          "usefulnessPlaceholder": "Add a new value",
+          "usefulnessEmpty": "Add at least one value point."
+        },
+        "voice": {
+          "title": "Voice and story",
+          "description": "Update the prompt, description, and greeting.",
+          "fields": {
+            "prompt": {
+              "label": "System prompt",
+              "placeholder": "Describe personality and tone"
+            },
+            "description": {
+              "label": "Profile description",
+              "placeholder": "Add more biographical details"
+            },
+            "intro": {
+              "label": "Welcome message",
+              "placeholder": "Message for the first contact"
+            }
+          }
+        },
+        "media": {
+          "title": "Gallery",
+          "description": "Manage gallery images. {{remaining}} of {{max}} slots remain.",
+          "upload": "Add images",
+          "limitReached": "Image limit reached",
+          "empty": "The agent has no images yet."
+        },
+        "actions": {
+          "save": "Save"
+        }
+      }
+    },
+    "onboarding": {
+      "slides": {
+        "welcome": {
+          "title": "✨ Welcome",
+          "description": "Your personal AI partner for conversations, ideas, and support."
+        },
+        "memory": {
+          "title": "🧠 It remembers what matters",
+          "description": "AI Pair remembers your context and learns from your stories."
+        },
+        "character": {
+          "title": "🎭 Shape the character",
+          "description": "Name, tone, goals—configure everything to your liking."
+        },
+        "start": {
+          "title": "🚀 Ready to begin?",
+          "description": "Meet your AI Pair and start the conversation."
+        }
+      },
+      "skip": "Skip",
+      "next": "Next",
+      "start": "Start"
+    },
+    "profile": {
+      "tabs": {
+        "myBots": "My bots",
+        "subscriptions": "Subscriptions"
+      },
+      "fallbackName": "Profile",
+      "featureSoon": "This feature will be available soon.",
+      "empty": {
+        "myBots": "You haven't created any AI bots yet. Create your first hero!",
+        "subscriptions": "You haven't subscribed to any AI bots yet."
+      },
+      "userBotsSection": {
+        "title": "User's AI bots",
+        "empty": "This user hasn't created any AI bots yet."
+      }
+    },
+    "chats": {
+      "fallbacks": {
+        "group": "Group",
+        "bot": "Bot"
+      },
+      "searchPlaceholder": "Search...",
+      "messages": {
+        "reply": "Reply",
+        "photoPlaceholder": "photo",
+        "placeholder": "Message",
+        "editing": "Editing",
+        "clearHistory": "Clear chat history"
+      }
+    },
+    "docs": {
+      "terms": {
+        "title": "Terms of Use",
+        "sections": {
+          "welcome": {
+            "title": "Welcome to {{siteName}}!",
+            "paragraph1": {
+              "prefix": "These Terms of Use (the “Terms”) govern access to and use of the {{siteName}} mobile app and the website ",
+              "suffix": " (together, the “Service”)."
+            },
+            "paragraph2": "By accessing or using the Service, you agree to these Terms.",
+            "paragraph3": "If you do not agree with the Terms, please do not use the Service."
+          },
+          "usage": {
+            "title": "1. Use of the Service",
+            "items": [
+              "Use the Service only in accordance with applicable law.",
+              "Do not use the Service for unlawful or unauthorized purposes.",
+              "Do not harass, abuse, or harm other users.",
+              "Do not compromise the security or integrity of the Service."
+            ]
+          },
+          "content": {
+            "title": "2. User content",
+            "paragraph1": "By providing content, you grant {{siteName}} a non-exclusive, worldwide, royalty-free license to use, store, display, and distribute it.",
+            "paragraph2": "You are responsible for the content you create and share."
+          },
+          "security": {
+            "title": "3. Account security",
+            "paragraph": "You are responsible for keeping your credentials confidential and for all activity under your account."
+          },
+          "privacy": {
+            "title": "4. Privacy",
+            "paragraph": {
+              "prefix": "Collection and use of personal data are governed by our ",
+              "suffix": "."
+            },
+            "linkLabel": "Privacy Policy"
+          },
+          "ip": {
+            "title": "5. Intellectual property",
+            "paragraph": "All rights to the Service (except for user content) belong to {{siteName}} and its licensors."
+          },
+          "termination": {
+            "title": "6. Termination",
+            "paragraph": "We may suspend or terminate your access to the Service at any time for any reason."
+          },
+          "changes": {
+            "title": "7. Changes to the Terms",
+            "paragraph": "We may update these Terms at any time. Continuing to use the Service after changes take effect means you accept the new Terms."
+          },
+          "moderation": {
+            "title": "8. Complaints and moderation",
+            "paragraph1": "{{siteName}} has zero tolerance for prohibited content, including hate speech, harassment, pornography, or illegal activity.",
+            "paragraph2": "Users can report inappropriate content directly in the app. We review all reports within 24 hours and take appropriate action.",
+            "paragraph3": "By using {{siteName}}, you agree to behave respectfully and follow these rules."
+          },
+          "contact": {
+            "title": "9. Contact us",
+            "paragraph": {
+              "prefix": "If you have questions about these Terms, contact us at ",
+              "suffix": "."
+            }
+          }
+        }
+      }
     }
   }
 }

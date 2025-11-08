@@ -12,6 +12,7 @@ import { Feather } from "@expo/vector-icons";
 
 import { useTheme } from "rn-vs-lb/theme";
 import { TokenBadge } from "../../../components";
+import { useTranslation } from "react-i18next";
 
 export type ExperiencePreviewHeaderProps = {
   image: ImageSourcePropType;
@@ -29,6 +30,7 @@ export const ExperiencePreviewHeader = ({
   topInset,
 }: ExperiencePreviewHeaderProps) => {
   const { typography, sizes, globalStyleSheet } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View style={styles.container}>
@@ -44,7 +46,7 @@ export const ExperiencePreviewHeader = ({
             <Pressable
               onPress={onClose}
               accessibilityRole="button"
-              accessibilityLabel="Закрыть предпросмотр"
+              accessibilityLabel={t('screens.dashboard.experience.accessibility.closePreview')}
               style={styles.closeButton}
               hitSlop={8}
             >

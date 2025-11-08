@@ -1,5 +1,6 @@
 import React, { memo, useCallback, useState } from "react";
 import { AiAgentGalleryView } from "rn-vs-lb";
+import { useTranslation } from "react-i18next";
 
 type AiAgentGalleryProps = {
   isLoading: boolean;
@@ -12,6 +13,7 @@ export const AiAgentGallery = memo(
   ({ isLoading, photos, galleryColumns, galleryItemSize }: AiAgentGalleryProps) => {
     const [visible, setVisible] = useState(false);
     const [index, setIndex] = useState(0);
+    const { t } = useTranslation();
 
     const onOpenAt = useCallback((i: number) => {
       setIndex(i);
@@ -30,7 +32,7 @@ export const AiAgentGallery = memo(
         initialIndex={index}
         onOpenAt={onOpenAt}
         onClose={onClose}
-        emptyTest="Создатель еще не добавил фото."
+        emptyTest={t('screens.aibot.gallery.empty')}
       />
     );
   }

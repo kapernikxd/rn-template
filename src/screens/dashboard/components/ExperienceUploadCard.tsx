@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 import { useTheme } from "rn-vs-lb/theme";
+import { useTranslation } from "react-i18next";
 
 export type ExperienceUploadCardProps = {
   onPress: () => void;
@@ -10,20 +11,21 @@ export type ExperienceUploadCardProps = {
 
 export const ExperienceUploadCard = ({ onPress }: ExperienceUploadCardProps) => {
   const { typography, sizes } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <Pressable
       style={[styles.container, { padding: sizes.lg }]}
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel="Загрузить фото"
+      accessibilityLabel={t('screens.dashboard.experience.accessibility.uploadPhoto')}
     >
       <View style={styles.inner}>
         <View style={styles.iconWrapper}>
           <Feather name="image" size={32} color="rgba(255,255,255,0.72)" />
         </View>
         <Text style={[typography.body, styles.text]}>
-          Нажмите здесь, чтобы загрузить фото, которое хотите оживить!
+          {t('screens.dashboard.experience.uploadPrompt')}
         </Text>
       </View>
     </Pressable>

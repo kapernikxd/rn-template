@@ -1,9 +1,10 @@
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated, Easing, Image } from "react-native";
 import Swiper from "react-native-swiper";
 import { useTheme } from 'rn-vs-lb/theme';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ONBOARDING_PHOTO_1, ONBOARDING_PHOTO_2, ONBOARDING_PHOTO_3, ONBOARDING_PHOTO_4 } from "../../helpers/utils/onboarding"
+import { useTranslation } from "react-i18next";
 
 interface Slide {
   title: string;
@@ -11,31 +12,13 @@ interface Slide {
   uri: string;
 }
 
-const slides: Slide[] = [
-  {
-    uri: ONBOARDING_PHOTO_1,
-    title: "✨ Добро пожаловать",
-    description:
-      "Ваш личный AI-партнёр для разговоров, идей и поддержки.",
-  },
-  {
-    uri: ONBOARDING_PHOTO_2,
-    title: "🧠 Он запоминает важное",
-    description:
-      "AI Pair помнит ваш контекст и учится на ваших историях.",
-  },
-  {
-    uri: ONBOARDING_PHOTO_3,
-    title: "🎭 Создайте характер",
-    description:
-      "Имя, стиль общения, цели — настройте под себя.",
-  },
-  {
-    uri: ONBOARDING_PHOTO_4,
-    title: "🚀 Готовы начать?",
-    description:
-      "Познакомьтесь со своим AI Pair и начните диалог.",
-  },
+type SlideKey = "welcome" | "memory" | "character" | "start";
+
+const SLIDE_CONFIG: Array<{ key: SlideKey; uri: string }> = [
+  { key: "welcome", uri: ONBOARDING_PHOTO_1 },
+  { key: "memory", uri: ONBOARDING_PHOTO_2 },
+  { key: "character", uri: ONBOARDING_PHOTO_3 },
+  { key: "start", uri: ONBOARDING_PHOTO_4 },
 ];
 
 interface Props {
@@ -45,8 +28,19 @@ interface Props {
 const Onboarding: React.FC<Props> = ({ onFinish }) => {
   const swiperRef = useRef<Swiper>(null);
   const { typography, theme } = useTheme();
+  const { t } = useTranslation();
   const { width, height } = Dimensions.get("window");
   const styles = getStyles({ width, height, theme, typography });
+
+  const slides: Slide[] = useMemo(
+    () =>
+      SLIDE_CONFIG.map(({ key, uri }) => ({
+        uri,
+        title: t(`screens.onboarding.slides.${key}.title`),
+        description: t(`screens.onboarding.slides.${key}.description`),
+      })),
+    [t],
+  );
 
   const handleNext = (index: number) => {
     if (index === slides.length - 1) {
@@ -155,7 +149,7 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
                 style={styles.skipBtn}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <Text style={styles.skipText}>Пропустить</Text>
+                <Text style={styles.skipText}>{t('screens.onboarding.skip')}</Text>
               </TouchableOpacity>
 
               <View style={styles.divider} />
@@ -167,7 +161,9 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
                 <Text style={styles.nextText}>
-                  {index === slides.length - 1 ? "Начать" : "Далее"}
+                  {index === slides.length - 1
+                    ? t('screens.onboarding.start')
+                    : t('screens.onboarding.next')}
                 </Text>
               </TouchableOpacity>
             </View>
