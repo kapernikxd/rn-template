@@ -85,6 +85,11 @@
         }
       }
     },
+    "guard": {
+      "title": "Bem-vindo",
+      "description": "Faça login para continuar.",
+      "button": "Entrar"
+    },
     "login": {
       "title": "Acesso à conta",
       "subtitle": "Digite suas credenciais para acessar sua conta e informações",

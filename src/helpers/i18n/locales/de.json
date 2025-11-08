@@ -85,6 +85,11 @@
         }
       }
     },
+    "guard": {
+      "title": "Willkommen",
+      "description": "Bitte melde dich an, um fortzufahren.",
+      "button": "Anmelden"
+    },
     "login": {
       "title": "Anmeldung",
       "subtitle": "Gib deine Zugangsdaten ein, um auf dein Konto und Informationen zuzugreifen",
