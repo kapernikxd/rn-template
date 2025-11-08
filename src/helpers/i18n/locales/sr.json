@@ -85,6 +85,11 @@
         }
       }
     },
+    "guard": {
+      "title": "Dobro došli",
+      "description": "Molimo prijavite se da biste nastavili.",
+      "button": "Prijavi se"
+    },
     "login": {
       "title": "Prijava na nalog",
       "subtitle": "Unesite svoje podatke da biste dobili pristup nalogu i informacijama",

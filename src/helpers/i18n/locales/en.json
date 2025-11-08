@@ -85,6 +85,11 @@
         }
       }
     },
+    "guard": {
+      "title": "Welcome",
+      "description": "Please sign in to continue.",
+      "button": "Sign in"
+    },
     "login": {
       "title": "Sign in",
       "subtitle": "Enter your credentials to access your account",
