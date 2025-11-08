@@ -1,7 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { ProfileScreen } from '../../screens/profile/screens/ProfileScreen';
-import { ProfileSettingsScreen } from '../../screens/profile/screens/ProfileSettingsScreen';
+import { SettingsScreen } from '../../screens/settings';
 import { UserProfileScreen } from '../../screens/chats/UserProfileScreen';
 import {
   AccountSettingsScreen,
@@ -22,7 +22,7 @@ const GuardedProfileScreen = withAuthGuard(ProfileScreen, {
   },
 });
 
-const GuardedProfileSettingsScreen = withAuthGuard(ProfileSettingsScreen, {
+const GuardedProfileSettingsScreen = withAuthGuard(SettingsScreen, {
   redirect: {
     tab: ROUTES.ProfileTab,
     params: { screen: ROUTES.ProfileSettings },

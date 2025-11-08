@@ -1,132 +1,180 @@
-import { FC, useEffect } from 'react';
+import { FC, useCallback, useEffect, useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
-import {
-  CardContainer,
-  ListItem,
-  Spacer,
-  SettingsSection,
-  ThemeSwitcher,
-} from 'rn-vs-lb';
-import { useTheme, ThemeType, SizesType, GlobalStyleSheetType, SIZES } from 'rn-vs-lb/theme';
-import { ADS_ENABLED, appVersion } from '../../constants/links';
-import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
-import { useRootStore, useStoreData } from '../../store/StoreProvider';
-import { RewardedAdSettingsCard } from '../../components/ads/components/RewardedAdSettingsCard';
-import { LanguageSelector } from '../../components/settings/LanguageSelector';
-import { truncateText } from '../../helpers/utils/common';
-import SettingsListItem from '../../components/SettingsListItem';
-import { FontAwesome } from '@expo/vector-icons';
-import { useTranslation } from 'react-i18next';
 
+import { useNavigation } from '@react-navigation/native';
+import {
+    CardContainer,
+    DeleteAccountButton,
+    HeaderDefault,
+    TelegramFeedbackLink,
+    ListItem,
+    ThemeSwitcher,
+    Spacer,
+} from 'rn-vs-lb';
+import { useTheme, ThemeType, SizesType, GlobalStyleSheetType } from 'rn-vs-lb/theme';
+import { ADS_ENABLED, appVersion, TELEGRAM_URL } from '../../constants/links';
+import { useRootStore } from '../../store/StoreProvider';
+import { useActions, usePortalNavigation } from '../../helpers/hooks';
+import { ProfileNav, ROUTES } from '../../navigation/types';
+import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
+import { RewardedAdSettingsCard } from '../../components/ads/components/RewardedAdSettingsCard';
+import SettingsListItem from '../../components/SettingsListItem';
+import LanguageSelector from '../../components/settings/LanguageSelector';
+import { FontAwesome } from '@expo/vector-icons';
+
+type SettingsRoute =
+    | typeof ROUTES.ProfileEdit
+    | typeof ROUTES.ProfileAccountSettings
+    | typeof ROUTES.ProfileChangePassword
+    | typeof ROUTES.ProfileSocialProfiles
+    | typeof ROUTES.ProfileNotificationSettings;
 
 export const SettingsScreen: FC = () => {
-  const { globalStyleSheet, theme, sizes, typography, isDark, toggleTheme } = useTheme();
-  const { setColors } = useSafeAreaColors();
-  const styles = getStyles({ globalStyleSheet, theme, sizes });
-  const rootStore = useRootStore();
-  const userId = useStoreData(rootStore.identityStore, (store) => store.userId);
-  const { t } = useTranslation();
+    const { globalStyleSheet, theme, sizes, typography } = useTheme();
+    const { setColors } = useSafeAreaColors();
+    const styles = getStyles({ globalStyleSheet, theme, sizes });
 
-  useEffect(() => {
-    setColors({
-      topColor: theme.background,
-      bottomColor: theme.background,
-    });
-    void rootStore.identityStore.ensureUserId();
-  }, [rootStore.identityStore, setColors, theme.background]);
+    const { authStore, profileStore, uiStore } = useRootStore();
+    const { goBack, goToLogin } = usePortalNavigation();
+    const { handleShareUserLink, myId } = useActions();
+    const navigation = useNavigation<ProfileNav>();
 
-  const copyLinkItems = [
-    { icon: 'copy', label: t('settings.copyAppLink'), action: () => console.log('скопировано') },
-  ];
+    const handleLogOut = useCallback(async () => {
+        await authStore.logout();
+        goToLogin();
+    }, [authStore, goToLogin]);
 
+    const handleDeleteAccount = useCallback(async () => {
+        await profileStore.deleteAccount();
+        uiStore.showSnackbar("Ваш запрос отправлен. Аккаунт будет удалён в течение 24 часов.", "success");
+    }, [profileStore, uiStore]);
 
-  return (
-    <View style={styles.content}>
-      <ScrollView contentContainerStyle={styles.body}>
-        <View style={styles.list}>
-          <SettingsSection
-            title={`   ${t('settings.sections.user')}`}
-            style={styles.section}
-          >
-            <View style={styles.cardWithoutH}>
-              <SettingsListItem
-                label={t('settings.user.id')}
-                value={userId ? truncateText(userId, 18) : '—'}
-                valueTone='muted'
-              />
-            </View>
-          </SettingsSection>
-          {ADS_ENABLED &&
-            <SettingsSection
-              title={`   ${t('settings.sections.ads')}`}
-              style={styles.section}
-            ><CardContainer style={styles.card}>
-                <RewardedAdSettingsCard style={{ padding: 0, backgroundColor: theme.card }} />
-              </CardContainer>
-            </SettingsSection>}
+    const navigateTo = useCallback(
+        (screen: SettingsRoute) => () => navigation.navigate(screen),
+        [navigation],
+    );
 
+    const SETTING_LIST = useMemo(
+        () => [
+            { icon: 'user-o', label: 'Редактировать профиль', action: navigateTo(ROUTES.ProfileEdit) },
+            // { icon: 'gear', label: 'Настройки аккаунта', action: navigateTo(ROUTES.ProfileAccountSettings) },
+            { icon: 'key', label: 'Смена пароля', action: navigateTo(ROUTES.ProfileChangePassword) },
+            // { icon: 'group', label: 'Социальные профили', action: navigateTo(ROUTES.ProfileSocialProfiles) },
+            { icon: 'bell', label: 'Уведомления', action: navigateTo(ROUTES.ProfileNotificationSettings) },
+        ],
+        [navigateTo],
+    );
 
-          <SettingsSection
-            title={`   ${t('settings.sections.app')}`}
-            style={styles.section}
-          ><CardContainer style={styles.card}>
-              <ThemeSwitcher lightModeLabel={t('settings.theme.light')} darkModeLabel={t('settings.theme.dark')} />
-              <Spacer size='xs' />
-              <SettingsListItem
-                label={t('settings.language.title')}
-                laberColor={theme.text}
-                accessory={<LanguageSelector />}
-                labelIcon={<FontAwesome color={theme.text} name="language" size={21} />}
-                labelIconColor={theme.text}
-              />
-              {copyLinkItems.map((item, index) => (
-                <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine hideArrow />
-              ))}
-            </CardContainer>
-          </SettingsSection>
+    const COPY_LINK = useMemo(
+        () => [
+            { icon: 'copy', label: 'Скопировать ссылку на приложение', action: () => handleShareUserLink(myId) },
+        ],
+        [handleShareUserLink, myId],
+    );
+
+    const LOGOUT = useMemo(
+        () => ({ icon: 'sign-out', label: 'Выйти', action: () => handleLogOut() }),
+        [handleLogOut],
+    );
+
+    useEffect(() => {
+        if (!profileStore.myProfile?._id) {
+            profileStore.fetchMyProfile();
+        }
+    }, [profileStore, profileStore.myProfile?._id]);
+
+    useEffect(() => {
+        setColors({
+            topColor: theme.white,
+            bottomColor: theme.white,
+        });
+    }, [theme, setColors]);
+
+    return (
+        <View style={styles.content}>
+            <HeaderDefault title={'Настройки'} onBackPress={goBack} />
+            <ScrollView contentContainerStyle={styles.body}>
+                <View style={styles.list}>
+                    <CardContainer style={styles.card}>
+                        <View><Text style={styles.title}>Управление аккаунтом</Text></View>
+                        {SETTING_LIST.map((item, index) => (
+                            <ListItem big iconColor={theme.text} key={index} {...item} hideBottomLine />
+                        ))}
+                    </CardContainer>
+                    <CardContainer style={styles.card}>
+                        <View><Text style={styles.title}>Тема</Text></View>
+                        <ThemeSwitcher lightModeLabel="Светлая тема" darkModeLabel="Тёмная тема" />
+                        <Spacer size='xs' />
+                        <SettingsListItem
+                            label={'Язык интерфейса'}
+                            laberColor={theme.text}
+                            accessory={<LanguageSelector />}
+                            labelIcon={<FontAwesome color={theme.text} name="language" size={21} />}
+                            labelIconColor={theme.text}
+                        />
+                    </CardContainer>
+                    {ADS_ENABLED ? <RewardedAdSettingsCard style={styles.card} /> : null}
+                    <CardContainer style={styles.card}>
+                        {COPY_LINK.map((item, index) => (
+                            <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine hideArrow />
+                        ))}
+                    </CardContainer>
+                    <View style={styles.logoutContainer}>
+                        <CardContainer style={styles.card}>
+                            <ListItem iconColor={theme.text} {...LOGOUT} hideBottomLine />
+                        </CardContainer>
+                    </View>
+                </View>
+                <Spacer size='xl' />
+                <Spacer size='xl' />
+                <View>
+                    <CardContainer style={styles.card}>
+                        <TelegramFeedbackLink title='Отзывы и ошибки' subtitle='Нажмите, чтобы написать нам в Telegram' unsupportedLinkMessage='Невозможно открыть URL-адрес Telegram' link={TELEGRAM_URL} />
+                    </CardContainer>
+                    <CardContainer style={styles.card}>
+                        <DeleteAccountButton cancelButtonLabel="Отменить" confirmButtonLabel="Удалить" triggerLabel='Удалить аккаунт' modalTitle='Подтвердить удаление' modalDescription="Все ваши данные, включая профиль, события и историю чата, будут удалены без возможности восстановления. Этот процесс необратим и завершится в течение 24 часов. Вы уверены, что хотите продолжить?" deleteAccount={handleDeleteAccount} />
+                    </CardContainer>
+                    <View style={styles.version}>
+                        <Text style={typography.body}>Версия {appVersion}</Text>
+                    </View>
+                </View>
+            </ScrollView>
         </View>
-        <Spacer size='xl' />
-        <Spacer size='xl' />
-        <View>
-          <View style={styles.version}>
-            <Text style={typography.body}>{t('settings.version', { version: appVersion })}</Text>
-          </View>
-        </View>
-      </ScrollView>
-    </View>
-  );
+    );
 }
 
 const getStyles = ({ sizes, globalStyleSheet, theme }: { theme: ThemeType, sizes: SizesType, globalStyleSheet: GlobalStyleSheetType }) => StyleSheet.create({
-  content: {
-    paddingHorizontal: sizes.xxs,
-    backgroundColor: theme.background,
-    height: '100%'
-  },
-  section: {
-    marginBottom: sizes.lg,
-  },
-  body: {
-    flexGrow: 1,
-    justifyContent: 'space-between',
-  },
-  list: {
-    marginTop: 4,
-  },
-  card: {
-    marginHorizontal: 0,
-    marginVertical: 4,
-    borderRadius: 16,
-    borderBottomWidth: 0,
-    backgroundColor: theme.card,
-  },
-  cardWithoutH: {
-    paddingHorizontal: SIZES.xs,
-    paddingVertical: 0,
-  },
-  version: {
-    alignItems: 'center',
-    padding: sizes.xs,
-  },
+    container: {
+        flex: 1,
+        backgroundColor: theme.white
+    },
+    content: {
+        backgroundColor: theme.background,
+        height: '100%'
+    },
+    body: {
+        flexGrow: 1,
+        justifyContent: 'space-between',
+    },
+    list: {
+        marginTop: 4,
+    },
+    card: {
+        marginHorizontal: 8,
+        marginVertical: 4,
+        borderRadius: 16,
+        borderBottomWidth: 0,
+        backgroundColor: theme.card,
+    },
+    title: {
+        marginLeft: sizes.xxs,
+        paddingVertical: sizes.xxs,
+        ...globalStyleSheet.descriptionCard,
+        color: theme.placeholder,
+    },
+    logoutContainer: {},
+    version: {
+        alignItems: 'center',
+        padding: sizes.xs,
+    },
 });
-
