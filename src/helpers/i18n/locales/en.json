@@ -280,5 +280,230 @@
         "requestSent": "Your request has been sent. The account will be deleted within 24 hours."
       }
     }
+  },
+  "components": {
+    "form": {
+      "autoCompletePicker": {
+        "placeholder": "Select..."
+      },
+      "textArea": {
+        "placeholder": "Enter text..."
+      },
+      "limitParticipate": {
+        "maxParticipantsLabel": "Maximum number of participants",
+        "validation": {
+          "required": "This field is required"
+        }
+      },
+      "multiSelect": {
+        "placeholder": "Select...",
+        "done": "Done"
+      },
+      "autoComplete": {
+        "placeholder": "Find a city..."
+      },
+      "imageUploader": {
+        "limitReached": "You can upload no more than {{count}} images",
+        "errors": {
+          "largeFile": "The image is too large (over 40 MB). Please choose a smaller file.",
+          "compressionFailed": "Failed to compress the image"
+        },
+        "upload": "Upload image",
+        "maxImages": "Maximum of {{count}} images"
+      },
+      "priceField": {
+        "priceToggle": "Price / Donation",
+        "donationToggle": "Donation",
+        "amountLabel": "Amount",
+        "validation": {
+          "required": "This field is required"
+        },
+        "currencyLabel": "Currency",
+        "currencyPlaceholder": "Select a currency",
+        "rangeLabel": "Range",
+        "rangePlaceholder": "Range",
+        "rangeOptions": {
+          "from": "From",
+          "to": "To"
+        }
+      },
+      "select": {
+        "placeholder": "Select an option..."
+      },
+      "searchInput": {
+        "placeholder": "Search..."
+      }
+    },
+    "infoBlocks": {
+      "accessType": {
+        "title": "What does each access type mean?",
+        "open": {
+          "title": "• Public access",
+          "description": "Any user can see the event and join it."
+        },
+        "followers": {
+          "title": "• Followers only",
+          "description": "Only users who follow you can see the event and join it."
+        },
+        "private": {
+          "title": "• Private",
+          "description": "The event is hidden. Only invited users can join."
+        }
+      },
+      "participantLimit": {
+        "description": "This field lets you set the maximum number of participants who can join the event. Once the limit is reached, new users cannot apply."
+      },
+      "participantsModeration": {
+        "description": "If moderation is enabled, users appear in the participant list but cannot access the chat until you approve them. Declined requests are removed automatically. After activation you can no longer disable moderation, and the toggle will be locked when editing the event."
+      },
+      "invitation": {
+        "title": "How invitations work",
+        "description1": "You can invite users to your event, but only those who follow you.",
+        "description2": {
+          "part1": "After you send an invitation, the user can",
+          "accept": "accept",
+          "connector": "or",
+          "decline": "decline",
+          "part2": "it."
+        },
+        "description3": "The response status is shown on this page."
+      },
+      "completedEvent": {
+        "title": "What happens after the event ends?",
+        "description1": {
+          "prefix": "Completed events are automatically",
+          "highlight": "deleted after {{count}} days",
+          "suffix": "together with all related data: chats, media, messages, and participants."
+        },
+        "description2": {
+          "prefix": "Chats become",
+          "highlight": "unavailable {{count}} days",
+          "suffix": "after the event ends."
+        }
+      },
+      "postModeration": {
+        "title": "What does each status mean?",
+        "statuses": {
+          "pending": {
+            "title": "• PENDING (under review)",
+            "description": "The post is waiting for moderation. It is visible only to the author.",
+            "name": "Pending"
+          },
+          "approved": {
+            "title": "• APPROVED (approved)",
+            "description": "The post passed moderation and is available to all users.",
+            "name": "Approved"
+          },
+          "rejected": {
+            "title": "• REJECTED (rejected)",
+            "description": "The post was rejected due to rule violations, inappropriate content, or failing quality standards.",
+            "name": "Rejected"
+          }
+        },
+        "currentStatusPrefix": "Your current status is",
+        "reasons": {
+          "image": "One of the images violates the rules. Please upload another one.",
+          "content": "The event description violates the rules. Please update the text."
+        }
+      },
+      "userModeration": {
+        "title": "What do profile statuses mean?",
+        "statuses": {
+          "pending": {
+            "title": "• PENDING (under review)",
+            "description": "Your profile is being reviewed. You can use the app, but you cannot publish content, create events, or interact with other users until it is approved.",
+            "name": "Pending"
+          },
+          "approved": {
+            "title": "• APPROVED (approved)",
+            "description": "Your profile is approved. You have full access to all features: posts, chats, creating and joining events.",
+            "name": "Approved"
+          },
+          "rejected": {
+            "title": "• REJECTED (rejected)",
+            "description": "Your profile was rejected due to community rule violations or insufficient/unsuitable information. You may need to make changes and resubmit for review.",
+            "name": "Rejected"
+          }
+        },
+        "currentStatusPrefix": "Your current status is",
+        "reasons": {
+          "image": "The photo violates the rules. Please upload another image.",
+          "content": "Profile information violates the rules. Update it to meet community standards."
+        }
+      },
+      "specialistCover": {
+        "title": "Why do you need a cover?",
+        "description1": "The cover is a large banner for the specialist page. It appears at the top of the public profile and helps showcase your services.",
+        "description2": "Choose an image that represents you: visitors will see it every time they open your specialist profile."
+      }
+    },
+    "aibot": {
+      "card": {
+        "defaultName": "AI agent"
+      },
+      "listSection": {
+        "empty": "Nothing here yet. Check back later!"
+      },
+      "placeCardList": {
+        "empty": "Nothing here yet. Check back later!",
+        "noDescription": "No description available"
+      },
+      "guestChat": {
+        "defaultBotName": "AI bot",
+        "inputPlaceholder": "Ask something...",
+        "limitLabel": "Messages left: {{remaining}} / {{limit}}",
+        "errors": {
+          "limitReached": "You have reached the daily limit. Please try again later.",
+          "sendFailed": "Couldn't send the message. Please try again."
+        }
+      }
+    },
+    "chat": {
+      "limitNotice": {
+        "message": "Message limit reached",
+        "adReady": "Ad ready to play",
+        "adLoading": "Ad is loading...",
+        "countdownWithValue": "Wait {{countdown}} or use tokens.",
+        "countdown": "Wait for the timer to finish or use tokens.",
+        "countdownShort": "Wait for the timer or use tokens",
+        "costLabel": "Unlock cost",
+        "costValue": "{{count}} tokens",
+        "balanceLabel": "Your balance",
+        "balanceValue": "Tokens: {{count}}",
+        "balanceUnavailable": "Unavailable",
+        "checking": "Checking…",
+        "unlockButton": "Continue for {{count}} tokens",
+        "watchAd": "Watch an ad",
+        "accessibility": {
+          "locked": "Locked"
+        },
+        "pillCost": "Cost: {{count}}",
+        "pillBalance": "Balance: {{count}}",
+        "pillBalanceUnavailable": "Balance unavailable",
+        "more": "More",
+        "refreshBalance": "Refresh balance",
+        "refreshBalanceDescription": "Request the latest tokens",
+        "whatAreTokens": "What are tokens?",
+        "whatAreTokensDescription": "How they work and where to get them",
+        "unavailableSuffix": "(unavailable)"
+      },
+      "swipeable": {
+        "deleteChatAccessibility": "Delete chat"
+      },
+      "header": {
+        "online": "Online",
+        "offline": "Offline",
+        "typing": "typing...",
+        "groupTyping": "{{user}} is typing..."
+      },
+      "messageItem": {
+        "deleted": "Message deleted"
+      }
+    },
+    "forceUpdate": {
+      "title": "Update required",
+      "description": "A new version of the app is available. Please update to continue.",
+      "button": "Update"
+    }
   }
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Switch } from 'react-native';
 import { Controller, useWatch } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'rn-vs-lb/theme';
 import TextInput from './TextInput';
 import { InfoTooltip, Spacer } from 'rn-vs-lb';
@@ -14,6 +15,7 @@ export interface LimitParticipateProps {
 
 const LimitParticipate: React.FC<LimitParticipateProps> = ({ control, label, name }) => {
   const { theme, formStyles } = useTheme();
+  const { t } = useTranslation();
   const limitEnabled = useWatch({ control, name: 'limitParticipants' });
 
   return (
@@ -41,11 +43,11 @@ const LimitParticipate: React.FC<LimitParticipateProps> = ({ control, label, nam
           <Spacer />
           <TextInput
             name="maxParticipants"
-            label="Максимальное количество участников"
+            label={t('components.form.limitParticipate.maxParticipantsLabel')}
             placeholder="0"
             keyboardType="number-pad"
             control={control}
-            rules={{ required: 'Обязательное поле' }}
+            rules={{ required: t('components.form.limitParticipate.validation.required') }}
           />
         </>
       )}

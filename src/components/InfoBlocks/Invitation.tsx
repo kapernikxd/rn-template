@@ -1,33 +1,41 @@
 import React from 'react';
 import { View, Text } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'rn-vs-lb/theme';
 import { Spacer } from 'rn-vs-lb';
 
 export const InvitationTooltip: React.FC = () => {
   const { typography } = useTheme();
+  const { t } = useTranslation();
 
   return (
     <View>
       <Text style={typography.titleH5}>
-        Как работают приглашения
+        {t('components.infoBlocks.invitation.title')}
       </Text>
 
       <Spacer size="xs" />
 
       <Text style={typography.body}>
-        Вы можете приглашать пользователей на своё событие, но только тех, кто подписан на вас.
+        {t('components.infoBlocks.invitation.description1')}
       </Text>
 
       <Spacer size="xs" />
 
       <Text style={typography.body}>
-        После отправки приглашения пользователь может <Text style={{ fontWeight: '600' }}>принять</Text> или <Text style={{ fontWeight: '600' }}>отклонить</Text> его.
+        {t('components.infoBlocks.invitation.description2.part1')}{' '}
+        <Text style={{ fontWeight: '600' }}>{t('components.infoBlocks.invitation.description2.accept')}</Text>
+        {' '}
+        {t('components.infoBlocks.invitation.description2.connector')}{' '}
+        <Text style={{ fontWeight: '600' }}>{t('components.infoBlocks.invitation.description2.decline')}</Text>
+        {' '}
+        {t('components.infoBlocks.invitation.description2.part2')}
       </Text>
 
       <Spacer size="xs" />
 
       <Text style={typography.body}>
-        Статус ответа будет отображаться на этой странице.
+        {t('components.infoBlocks.invitation.description3')}
       </Text>
     </View>
   );

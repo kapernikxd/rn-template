@@ -1,13 +1,13 @@
 import React from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { PlaceCardList } from 'rn-vs-lb';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'rn-vs-lb/theme';
 
 import type { AiBotCardEntity } from './AiBotCard';
 import { getAiBotDescription, getAiBotImageUri, getAiBotTitle } from '../../helpers/utils/aibot';
 import { getAiBotIdentifier } from '../../helpers/utils/agent-create';
 
-const DEFAULT_DESCRIPTION = 'Описание отсутствует';
 const DEFAULT_IMAGE = 'https://via.placeholder.com/320x180.png?text=AI';
 
 type AiBotPlaceCardListProps = {
@@ -20,10 +20,13 @@ type AiBotPlaceCardListProps = {
 export const AiBotPlaceCardList = ({
   bots,
   isLoading = false,
-  emptyText = 'Здесь пока пусто. Возвращайтесь позже!',
+  emptyText,
   onBotPress,
 }: AiBotPlaceCardListProps) => {
   const { theme, typography } = useTheme();
+  const { t } = useTranslation();
+  const resolvedEmptyText = emptyText ?? t('components.aibot.placeCardList.empty');
+  const defaultDescription = t('components.aibot.placeCardList.noDescription');
 
   if (isLoading) {
     return (
@@ -35,7 +38,7 @@ export const AiBotPlaceCardList = ({
 
   if (!bots.length) {
     return (
-      <Text style={[typography.bodyXs, styles.emptyText, { color: theme.greyText }]}>{emptyText}</Text>
+      <Text style={[typography.bodyXs, styles.emptyText, { color: theme.greyText }]}>{resolvedEmptyText}</Text>
     );
   }
 
@@ -45,7 +48,7 @@ export const AiBotPlaceCardList = ({
         const key = getAiBotIdentifier(bot) || `${getAiBotTitle(bot)}-${index}`;
         const imageUri = getAiBotImageUri(bot) ?? DEFAULT_IMAGE;
         const title = getAiBotTitle(bot);
-        const description = getAiBotDescription(bot) ?? DEFAULT_DESCRIPTION;
+        const description = getAiBotDescription(bot) ?? defaultDescription;
 
         return (
           <Pressable

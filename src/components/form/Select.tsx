@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useTheme, ThemeType } from 'rn-vs-lb/theme';
 import { inputHeight } from '../../constants/theme/styles/commonFormStyles';
 import { InfoTooltip } from 'rn-vs-lb';
@@ -29,7 +30,7 @@ const Select: React.FC<SelectProps> = ({
   control,
   label,
   options,
-  placeholder = 'Выберите вариант...',
+  placeholder,
   style,
   containerStyle,
   rules = {},
@@ -41,7 +42,9 @@ const Select: React.FC<SelectProps> = ({
   infoTooltip
 }) => {
   const { theme, formStyles, globalStyleSheet } = useTheme();
+  const { t } = useTranslation();
   const styles = getStyles({ theme });
+  const placeholderText = placeholder ?? t('components.form.select.placeholder');
 
   return (
     <View style={[{ zIndex }, containerStyle]}>
@@ -67,7 +70,7 @@ const Select: React.FC<SelectProps> = ({
               data={options}
               labelField="label"
               valueField="value"
-              placeholder={placeholder}
+              placeholder={placeholderText}
               value={value}
               onChange={(val) => onChange(val?.value)}
               dropdownPosition={dropdownPosition}

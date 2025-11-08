@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, findNodeHandle, UIManager, Dimensions } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { inputHeight } from '../../constants/theme/styles/commonFormStyles';
 import { ThemeType, useTheme } from 'rn-vs-lb/theme';
 import { Portal } from 'react-native-portalize';
@@ -19,7 +20,7 @@ type AutoCompletePickerProps = {
 
 const AutoCompletePicker: React.FC<AutoCompletePickerProps> = ({
     items = [],
-    placeholder = 'Выберите...',
+    placeholder,
     onSelect,
     defaultValue = '',
     error,
@@ -27,8 +28,11 @@ const AutoCompletePicker: React.FC<AutoCompletePickerProps> = ({
     isActive,
 }) => {
     const { theme, formStyles } = useTheme();
+    const { t } = useTranslation();
     const styles = getStyles({ theme });
     const insets = useSafeAreaInsets();
+
+    const placeholderText = placeholder ?? t('components.form.autoCompletePicker.placeholder');
 
     const inputRef = useRef<TextInput>(null);
     const [query, setQuery] = useState(defaultValue);
@@ -111,7 +115,7 @@ const AutoCompletePicker: React.FC<AutoCompletePickerProps> = ({
                     ]}
                     value={query}
                     onChangeText={handleChangeText}
-                    placeholder={placeholder}
+                    placeholder={placeholderText}
                     placeholderTextColor={theme.placeholder}
                     blurOnSubmit={false}
                 />
