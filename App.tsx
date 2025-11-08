@@ -12,6 +12,8 @@ import { View, StyleSheet } from 'react-native';
 import { BottomAdBanner } from './src/components/ads/BottomAdBanner';
 import { ADS_ENABLED } from './src/constants/links';
 
+import './src/helpers/i18n';
+
 const AppStatusBar = () => {
   const { isDark, theme } = useTheme();
 

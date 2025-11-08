@@ -16,6 +16,7 @@ import { LanguageSelector } from '../../components/settings/LanguageSelector';
 import { truncateText } from '../../helpers/utils/common';
 import SettingsListItem from '../../components/SettingsListItem';
 import { FontAwesome } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 
 
 export const SettingsScreen: FC = () => {
@@ -24,6 +25,7 @@ export const SettingsScreen: FC = () => {
   const styles = getStyles({ globalStyleSheet, theme, sizes });
   const rootStore = useRootStore();
   const userId = useStoreData(rootStore.identityStore, (store) => store.userId);
+  const { t } = useTranslation();
 
   useEffect(() => {
     setColors({
@@ -33,8 +35,8 @@ export const SettingsScreen: FC = () => {
     void rootStore.identityStore.ensureUserId();
   }, [rootStore.identityStore, setColors, theme.background]);
 
-  const COPY_LINK = [
-    { icon: 'copy', label: 'Копировать ссылку на приложение', action: () => console.log('скопировано') },
+  const copyLinkItems = [
+    { icon: 'copy', label: t('settings.copyAppLink'), action: () => console.log('скопировано') },
   ];
 
 
@@ -43,12 +45,12 @@ export const SettingsScreen: FC = () => {
       <ScrollView contentContainerStyle={styles.body}>
         <View style={styles.list}>
           <SettingsSection
-            title={"   Пользователь"}
+            title={`   ${t('settings.sections.user')}`}
             style={styles.section}
           >
             <View style={styles.cardWithoutH}>
               <SettingsListItem
-                label={'ID пользователя'}
+                label={t('settings.user.id')}
                 value={userId ? truncateText(userId, 18) : '—'}
                 valueTone='muted'
               />
@@ -56,7 +58,7 @@ export const SettingsScreen: FC = () => {
           </SettingsSection>
           {ADS_ENABLED &&
             <SettingsSection
-              title={"   Реклама"}
+              title={`   ${t('settings.sections.ads')}`}
               style={styles.section}
             ><CardContainer style={styles.card}>
                 <RewardedAdSettingsCard style={{ padding: 0, backgroundColor: theme.card }} />
@@ -65,19 +67,19 @@ export const SettingsScreen: FC = () => {
 
 
           <SettingsSection
-            title={"   Приложение"}
+            title={`   ${t('settings.sections.app')}`}
             style={styles.section}
           ><CardContainer style={styles.card}>
-              <ThemeSwitcher lightModeLabel="Светлая тема" darkModeLabel="Тёмная тема" />
+              <ThemeSwitcher lightModeLabel={t('settings.theme.light')} darkModeLabel={t('settings.theme.dark')} />
               <Spacer size='xs' />
               <SettingsListItem
-                label={'Язык интерфейса'}
+                label={t('settings.language.title')}
                 laberColor={theme.text}
                 accessory={<LanguageSelector />}
                 labelIcon={<FontAwesome color={theme.text} name="language" size={21} />}
                 labelIconColor={theme.text}
               />
-              {COPY_LINK.map((item, index) => (
+              {copyLinkItems.map((item, index) => (
                 <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine hideArrow />
               ))}
             </CardContainer>
@@ -87,7 +89,7 @@ export const SettingsScreen: FC = () => {
         <Spacer size='xl' />
         <View>
           <View style={styles.version}>
-            <Text style={typography.body}>Версия {appVersion}</Text>
+            <Text style={typography.body}>{t('settings.version', { version: appVersion })}</Text>
           </View>
         </View>
       </ScrollView>
