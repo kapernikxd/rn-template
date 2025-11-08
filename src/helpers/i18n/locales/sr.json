@@ -751,6 +751,10 @@
     },
     "onboarding": {
       "slides": {
+        "language": {
+          "title": "🌐 Izaberite jezik",
+          "description": "Odaberite jezik interfejsa kako biste nastavili po svojim željama."
+        },
         "welcome": {
           "title": "✨ Dobrodošli",
           "description": "Vaš lični AI partner za razgovore, ideje i podršku."

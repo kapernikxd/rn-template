@@ -2,31 +2,13 @@ import { FC, useMemo, useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useTheme, ThemeType, SizesType, GlobalStyleSheetType } from 'rn-vs-lb/theme';
-
-interface LanguageOption {
-  code: string;
-  translationKey: string;
-  fallbackLabel: string;
-}
-
-const LANGUAGE_OPTIONS: LanguageOption[] = [
-  { code: 'en', translationKey: 'settings.component.language.languages.en', fallbackLabel: 'English' },
-  { code: 'ru', translationKey: 'settings.component.language.languages.ru', fallbackLabel: 'Русский' },
-  { code: 'sr', translationKey: 'settings.component.language.languages.sr', fallbackLabel: 'Srpski' },
-  { code: 'es', translationKey: 'settings.component.language.languages.es', fallbackLabel: 'Español' },
-  { code: 'it', translationKey: 'settings.component.language.languages.it', fallbackLabel: 'Italiano' },
-  { code: 'de', translationKey: 'settings.component.language.languages.de', fallbackLabel: 'Deutsch' },
-  { code: 'fr', translationKey: 'settings.component.language.languages.fr', fallbackLabel: 'Français' },
-  { code: 'pt', translationKey: 'settings.component.language.languages.pt', fallbackLabel: 'Português' },
-];
+import { LANGUAGE_OPTIONS, normalizeLanguageCode, LanguageOption } from '../../constants/languages';
 
 export const LanguageSelector: FC = () => {
   const { theme, sizes, globalStyleSheet } = useTheme();
   const { i18n, t } = useTranslation();
   const styles = useMemo(() => getStyles({ theme, sizes, globalStyleSheet }), [globalStyleSheet, sizes, theme]);
   const [isModalVisible, setModalVisible] = useState(false);
-
-  const normalizeLanguageCode = (language?: string | null) => language?.split('-')[0];
 
   const resolvedLanguageCode =
     normalizeLanguageCode(i18n.resolvedLanguage) ??

@@ -751,6 +751,10 @@
     },
     "onboarding": {
       "slides": {
+        "language": {
+          "title": "🌐 Choisissez votre langue",
+          "description": "Sélectionnez la langue de l’interface pour personnaliser votre expérience AI Pair."
+        },
         "welcome": {
           "title": "✨ Bienvenue",
           "description": "Votre partenaire IA pour discuter, trouver des idées et obtenir du soutien."
