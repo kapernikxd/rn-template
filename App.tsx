@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider, useTheme } from 'rn-vs-lb/theme';
@@ -11,6 +12,7 @@ import { ForceUpdateWrapper } from './src/components/layouts/ForceUpdateWrapper'
 import { View, StyleSheet } from 'react-native';
 import { BottomAdBanner } from './src/components/ads/BottomAdBanner';
 import { ADS_ENABLED } from './src/constants/links';
+import { initAppMetrica, reportAppOpen } from './src/services/analytics/appMetrica';
 
 import './src/helpers/i18n';
 
@@ -26,6 +28,11 @@ const AppStatusBar = () => {
 };
 
 export default function App() {
+  useEffect(() => {
+    initAppMetrica();
+    reportAppOpen();
+  }, []);
+
   return (
     <Host>
       <GestureHandlerRootView style={{ flex: 1 }}>
