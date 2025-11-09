@@ -18,6 +18,7 @@ export const EMAIL = "AiPairPro@yandex.com";
 
 export const SITE_NAME = "AiPair";
 
+export const APP_METRICA = "cf0be637-7531-49d5-bdab-fcb9590fe10c";
 
 export const appVersion = Constants.expoConfig?.version || '1.0.0';
 
