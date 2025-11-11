@@ -1,11 +1,11 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { SettingsScreen } from '../../screens/settings';
-import { ROUTES, type SettingsParamList } from '../types';
+import { LibraryScreen } from '../../screens/library';
+import { ROUTES, type LibraryStackParamList } from '../types';
 
-const Stack = createNativeStackNavigator<SettingsParamList>();
+const Stack = createNativeStackNavigator<LibraryStackParamList>();
 
-export const ProfileStack = () => (
+export const LibraryStack = () => (
   <Stack.Navigator
     screenOptions={{
       headerShown: false,
@@ -13,11 +13,13 @@ export const ProfileStack = () => (
     }}
   >
     <Stack.Screen
-      name={ROUTES.Settings}
-      component={SettingsScreen}
+      name={ROUTES.Library}
+      component={LibraryScreen}
       options={{
         headerShown: false,
       }}
     />
   </Stack.Navigator>
 );
+
+export default LibraryStack;

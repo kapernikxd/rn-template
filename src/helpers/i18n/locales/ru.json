@@ -149,6 +149,9 @@
       "theme": {
         "title": "Тема"
       },
+      "userTitle": "Пользователь",
+      "adsTitle": "Реклама",
+      "appTitle": "Приложение",
       "userID": "ID пользователя",
       "copyAppLink": "Скопировать ссылку на приложение",
       "version": "Версия {{version}}"
