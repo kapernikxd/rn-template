@@ -1,5 +1,6 @@
 import { FC, useCallback, useEffect, useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import * as Clipboard from 'expo-clipboard';
 
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
@@ -11,10 +12,11 @@ import {
     ListItem,
     ThemeSwitcher,
     Spacer,
+    SettingsSection,
 } from 'rn-vs-lb';
 import { useTheme, ThemeType, SizesType, GlobalStyleSheetType } from 'rn-vs-lb/theme';
 import { ADS_ENABLED, appVersion, TELEGRAM_URL } from '../../constants/links';
-import { useRootStore } from '../../store/StoreProvider';
+import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { useActions, usePortalNavigation } from '../../helpers/hooks';
 import { ProfileNav, ROUTES } from '../../navigation/types';
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
@@ -22,6 +24,7 @@ import { RewardedAdSettingsCard } from '../../components/ads/components/Rewarded
 import SettingsListItem from '../../components/SettingsListItem';
 import LanguageSelector from '../../components/settings/LanguageSelector';
 import { FontAwesome } from '@expo/vector-icons';
+import { truncateText } from '../../helpers/utils/common';
 
 type SettingsRoute =
     | typeof ROUTES.ProfileEdit
@@ -36,7 +39,8 @@ export const SettingsScreen: FC = () => {
     const styles = getStyles({ globalStyleSheet, theme, sizes });
     const { t } = useTranslation();
 
-    const { authStore, profileStore, uiStore } = useRootStore();
+    const { authStore, profileStore, uiStore, identityStore } = useRootStore();
+    const userId = useStoreData(identityStore, (store) => store.userId);
     const { goBack, goToLogin } = usePortalNavigation();
     const { handleShareUserLink, myId } = useActions();
     const navigation = useNavigation<ProfileNav>();
@@ -79,6 +83,13 @@ export const SettingsScreen: FC = () => {
         [handleLogOut, t],
     );
 
+    const onCopy = async () => {
+        if (userId) {
+            await Clipboard.setStringAsync(userId);
+            uiStore.showSnackbar(t('common.copy'), 'success');
+        }
+    }
+
     useEffect(() => {
         if (!profileStore.myProfile?._id) {
             profileStore.fetchMyProfile();
@@ -90,13 +101,24 @@ export const SettingsScreen: FC = () => {
             topColor: theme.white,
             bottomColor: theme.white,
         });
-    }, [theme, setColors]);
+        void identityStore.ensureUserId();
+    }, [theme, setColors, identityStore]);
 
     return (
         <View style={styles.content}>
             <HeaderDefault title={t('settings.title')} onBackPress={goBack} />
             <ScrollView contentContainerStyle={styles.body}>
                 <View style={styles.list}>
+
+                    <Pressable onPress={onCopy} style={styles.cardWithoutH}>
+                        <SettingsListItem
+                            label={t('settings.section.userID')}
+                            laberColor={theme.text}
+                            value={userId ? truncateText(userId, 18) : '—'}
+                            valueTone='muted'
+                        />
+                    </Pressable>
+
                     <CardContainer style={styles.card}>
                         <View><Text style={styles.title}>{t('settings.section.accountManagement.title')}</Text></View>
                         {SETTING_LIST.map((item, index) => (
@@ -161,6 +183,19 @@ const getStyles = ({ sizes, globalStyleSheet, theme }: { theme: ThemeType, sizes
     container: {
         flex: 1,
         backgroundColor: theme.white
+    },
+    section: {
+        marginBottom: sizes.xxs,
+        paddingHorizontal: sizes.xs,
+    },
+    cardWithoutH: {
+        paddingHorizontal: sizes.sm,
+        paddingVertical: 0,
+        backgroundColor: theme.card,
+        marginTop: sizes.xxs,
+        marginBottom: sizes.xxs,
+        marginHorizontal: sizes.xs,
+        borderRadius: 8
     },
     content: {
         backgroundColor: theme.background,

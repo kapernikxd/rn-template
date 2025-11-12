@@ -33,6 +33,7 @@
     "submit": "Submit",
     "done": "Done",
     "next": "Next",
+    "copy": "Copied",
     "terms": {
       "acceptPrefix": "I accept",
       "link": "Terms of Use",
@@ -149,6 +150,9 @@
       "theme": {
         "title": "Theme"
       },
+      "userTitle": "User",
+      "adsTitle": "Ad",
+      "appTitle": "App",
       "userID": "User ID",
       "copyAppLink": "Copy App Link",
       "version": "Version {{version}}"
