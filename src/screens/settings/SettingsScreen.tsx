@@ -44,7 +44,7 @@ export const SettingsScreen: FC = () => {
     const configUrls = useStoreData(configStore, (store) => store.urls);
     const userId = useStoreData(identityStore, (store) => store.userId);
     const { goBack, goToLogin } = usePortalNavigation();
-    const { handleShareUserLink, myId } = useActions();
+    const { handleShareAppLink } = useActions();
     const navigation = useNavigation<ProfileNav>();
 
     const handleLogOut = useCallback(async () => {
@@ -75,9 +75,9 @@ export const SettingsScreen: FC = () => {
 
     const COPY_LINK = useMemo(
         () => [
-            { icon: 'copy', label: t('settings.section.copyAppLink'), action: () => handleShareUserLink(myId) },
+            { icon: 'copy', label: t('settings.section.copyAppLink'), action: handleShareAppLink },
         ],
-        [handleShareUserLink, myId, t],
+        [handleShareAppLink, t],
     );
 
     const LOGOUT = useMemo(
