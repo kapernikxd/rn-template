@@ -15,7 +15,7 @@ import {
     SettingsSection,
 } from 'rn-vs-lb';
 import { useTheme, ThemeType, SizesType, GlobalStyleSheetType } from 'rn-vs-lb/theme';
-import { ADS_ENABLED, appVersion, TELEGRAM_URL } from '../../constants/links';
+import { appVersion, TELEGRAM_URL } from '../../constants/links';
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { useActions, usePortalNavigation } from '../../helpers/hooks';
 import { ProfileNav, ROUTES } from '../../navigation/types';
@@ -39,7 +39,8 @@ export const SettingsScreen: FC = () => {
     const styles = getStyles({ globalStyleSheet, theme, sizes });
     const { t } = useTranslation();
 
-    const { authStore, profileStore, uiStore, identityStore } = useRootStore();
+    const { authStore, profileStore, uiStore, identityStore, configStore } = useRootStore();
+    const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
     const userId = useStoreData(identityStore, (store) => store.userId);
     const { goBack, goToLogin } = usePortalNavigation();
     const { handleShareUserLink, myId } = useActions();
@@ -137,7 +138,7 @@ export const SettingsScreen: FC = () => {
                             labelIconColor={theme.text}
                         />
                     </CardContainer>
-                    {ADS_ENABLED ? <RewardedAdSettingsCard style={styles.card} /> : null}
+                    {adsEnabled ? <RewardedAdSettingsCard style={styles.card} /> : null}
                     <CardContainer style={styles.card}>
                         {COPY_LINK.map((item, index) => (
                             <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine hideArrow />

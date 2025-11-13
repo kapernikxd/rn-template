@@ -7,6 +7,7 @@ import { NotificationStore } from './mobx/NotificationStore';
 import { AiBotStore } from './mobx/AiBotStore';
 import { IdentityStore } from './mobx/IdentityStore';
 import { ImageGenerationStore } from './mobx/ImageGenerationStore';
+import { ConfigStore } from './mobx/ConfigStore';
 
 export class RootStore {
   readonly authStore: AuthStore;
@@ -18,6 +19,7 @@ export class RootStore {
   readonly aiBotStore: AiBotStore;
   readonly identityStore: IdentityStore;
   readonly imageGenerationStore: ImageGenerationStore;
+  readonly configStore: ConfigStore;
   constructor() {
     this.authStore = new AuthStore(this);
     this.profileStore = new ProfileStore(this);
@@ -28,5 +30,6 @@ export class RootStore {
     this.aiBotStore = new AiBotStore(this);
     this.identityStore = new IdentityStore();
     this.imageGenerationStore = new ImageGenerationStore();
+    this.configStore = new ConfigStore(this);
   }
 }

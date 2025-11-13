@@ -11,9 +11,8 @@ import { getSmartTime } from "../../helpers/utils/date";
 import { ScreenLoader, TokenBadge } from "../../components";
 import { GuestAiChatModal } from "../../components/aibot/GuestAiChatModal";
 import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";
-import { useRootStore } from "../../store/StoreProvider";
+import { useRootStore, useStoreData } from "../../store/StoreProvider";
 import { usePortalNavigation } from "../../helpers/hooks";
-import { ADS_ENABLED } from "../../constants/links";
 import {
   AiAgentGallery,
   AiAgentHeader,
@@ -58,7 +57,8 @@ export const AiAgentScreen = ({ route }: Props) => {
   const { theme, sizes, typography, isDark } = useTheme();
   const { width } = useWindowDimensions();
   const { setColors } = useSafeAreaColors();
-  const { profileStore, aiBotStore } = useRootStore();
+  const { profileStore, aiBotStore, configStore } = useRootStore();
+  const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
   const { t } = useTranslation();
 
   const [isReportVisible, setIsReportVisible] = useState(false);
@@ -287,7 +287,7 @@ export const AiAgentScreen = ({ route }: Props) => {
             onBack={onBack}
             // onShare={handleShare}
             items={menuItems}
-            renderRight={ADS_ENABLED ? <TokenBadge iconSize={22} /> : null}
+            renderRight={adsEnabled ? <TokenBadge iconSize={22} /> : null}
           />
           <Spacer />
 

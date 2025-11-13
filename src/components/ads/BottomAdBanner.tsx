@@ -9,8 +9,8 @@ import mobileAds, {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ensureTrackingTransparencyPermission } from '../../services/privacy/trackingTransparency';
-import { ANDROID_AD_UNIT_ID_BANNER, IOS_AD_UNIT_ID_BANNER } from '../../constants/links';
 import { useTheme } from 'rn-vs-lb/theme';
+import { useRootStore, useStoreData } from '../../store/StoreProvider';
 
 const isMobilePlatform = Platform.OS === 'ios' || Platform.OS === 'android';
 
@@ -18,6 +18,8 @@ export const BottomAdBanner = () => {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const [adLoaded, setAdLoaded] = useState(false);
+  const { configStore } = useRootStore();
+  const adsConfig = useStoreData(configStore, (store) => store.adsConfig);
 
   useEffect(() => {
     if (!isMobilePlatform) return;
@@ -50,11 +52,11 @@ export const BottomAdBanner = () => {
     if (__DEV__) return TestIds.BANNER;
 
     return Platform.select({
-      ios: IOS_AD_UNIT_ID_BANNER,
-      android: ANDROID_AD_UNIT_ID_BANNER,
+      ios: adsConfig.IOS_AD_UNIT_ID_BANNER,
+      android: adsConfig.ANDROID_AD_UNIT_ID_BANNER,
       default: undefined,
     });
-  }, []);
+  }, [adsConfig]);
 
   if (!isMobilePlatform || !bannerAdUnitId) {
     return null;
