@@ -7,7 +7,6 @@ export const BASE_URL = isDev
   : "https://aipair.pro/";
   
 
-export const TELEGRAM_URL = 'https://t.me/pllacesupport';
 export const DOMAIN = "https://AiPair.pro"
 export const API_URL = `${BASE_URL}api/`;
 

@@ -15,7 +15,7 @@ import {
     SettingsSection,
 } from 'rn-vs-lb';
 import { useTheme, ThemeType, SizesType, GlobalStyleSheetType } from 'rn-vs-lb/theme';
-import { appVersion, TELEGRAM_URL } from '../../constants/links';
+import { appVersion } from '../../constants/links';
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { useActions, usePortalNavigation } from '../../helpers/hooks';
 import { ProfileNav, ROUTES } from '../../navigation/types';
@@ -41,6 +41,7 @@ export const SettingsScreen: FC = () => {
 
     const { authStore, profileStore, uiStore, identityStore, configStore } = useRootStore();
     const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
+    const configUrls = useStoreData(configStore, (store) => store.urls);
     const userId = useStoreData(identityStore, (store) => store.userId);
     const { goBack, goToLogin } = usePortalNavigation();
     const { handleShareUserLink, myId } = useActions();
@@ -158,7 +159,7 @@ export const SettingsScreen: FC = () => {
                             title={t('settings.component.feedback.title')}
                             subtitle={t('settings.component.feedback.subtitle')}
                             unsupportedLinkMessage={t('settings.component.feedback.unsupported')}
-                            link={TELEGRAM_URL}
+                            link={configUrls.TELEGRAM_URL}
                         />
                     </CardContainer>
                     <CardContainer style={styles.card}>

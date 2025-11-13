@@ -16,10 +16,12 @@ export type AdsConfig = {
 
 export type AppConfigResponse = {
   appVer: Partial<AppVersionConfig>;
-  add?: Partial<AdsConfig>;
+  ads?: Partial<AdsConfig>;
+  urls?: any;
 };
 
 export type NormalizedAppConfig = {
   appVer: AppVersionConfig;
-  add: AdsConfig;
+  ads: AdsConfig;
+  urls?: any;
 };

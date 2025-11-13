@@ -13,7 +13,8 @@ export class ConfigStore {
 
   private config: NormalizedAppConfig = {
     appVer: { ...DEFAULT_APP_VERSION_CONFIG },
-    add: { ...DEFAULT_ADS_CONFIG },
+    ads: { ...DEFAULT_ADS_CONFIG },
+    urls: {},
   };
 
   loading = false;
@@ -47,8 +48,12 @@ export class ConfigStore {
     return this.config.appVer;
   }
 
+  get urls() {
+    return this.config.urls;
+  }
+
   get adsConfig(): AdsConfig {
-    return this.config.add;
+    return this.config.ads;
   }
 
   get adsEnabled(): boolean {
@@ -69,7 +74,8 @@ export class ConfigStore {
       runInAction(() => {
         this.config = {
           appVer: { ...DEFAULT_APP_VERSION_CONFIG, ...response.appVer },
-          add: { ...DEFAULT_ADS_CONFIG, ...(response.add ?? {}) },
+          ads: { ...DEFAULT_ADS_CONFIG, ...(response.ads ?? {}) },
+          urls: { ...(response.urls ?? {}) }
         };
         this.loading = false;
       });
