@@ -285,6 +285,7 @@ export const AiAgentScreen = ({ route }: Props) => {
           <AiAgentHeader
             theme={theme}
             onBack={onBack}
+            menuPositionLeft={160}
             // onShare={handleShare}
             items={menuItems}
             renderRight={adsEnabled ? <TokenBadge iconSize={22} /> : null}

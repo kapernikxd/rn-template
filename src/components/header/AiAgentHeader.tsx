@@ -33,7 +33,7 @@ export const AiAgentHeader = memo((props: AiAgentHeaderProps) => {
     onBack,
     onShare,
     items,
-    menuPositionLeft = 210,
+    menuPositionLeft,
     menuPositionTop = 10,
     isDark = false,
     title,
