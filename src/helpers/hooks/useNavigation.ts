@@ -40,34 +40,34 @@ export const usePortalNavigation = () => {
     [navigation],
   );
 
-  const goToProfile = useCallback(
-    (userId: string) => {
-      if (!userId) return;
+  // const goToProfile = useCallback(
+  //   (userId: string) => {
+  //     if (!userId) return;
 
-      const currentMyId = myUserId ?? authStore.getMyId() ?? null;
+  //     const currentMyId = myUserId ?? authStore.getMyId() ?? null;
 
-      if (currentMyId && userId === currentMyId) {
-        navigation.navigate(ROUTES.RootTabs, {
-          screen: ROUTES.ProfileTab,
-          params: {
-            screen: ROUTES.Profile,
-          },
-        });
-        return;
-      }
+  //     if (currentMyId && userId === currentMyId) {
+  //       navigation.navigate(ROUTES.RootTabs, {
+  //         screen: ROUTES.ProfileTab,
+  //         params: {
+  //           screen: ROUTES.Profile,
+  //         },
+  //       });
+  //       return;
+  //     }
 
-      navigation.navigate(ROUTES.RootTabs, {
-        screen: ROUTES.ProfileTab,
-        params: {
-          screen: ROUTES.UserProfile,
-          params: {
-            userId,
-          },
-        },
-      });
-    },
-    [authStore, myUserId, navigation],
-  );
+  //     navigation.navigate(ROUTES.RootTabs, {
+  //       screen: ROUTES.ProfileTab,
+  //       params: {
+  //         screen: ROUTES.UserProfile,
+  //         params: {
+  //           userId,
+  //         },
+  //       },
+  //     });
+  //   },
+  //   [authStore, myUserId, navigation],
+  // );
 
   return {
     goToLogin: useCallback(
@@ -128,7 +128,7 @@ export const usePortalNavigation = () => {
     ),
     goToMain,
 
-    goToProfile,
+    // goToProfile,
 
     goBack: useCallback(() => navigation.goBack(), [navigation]),
     canGoBack: useCallback(() => navigation.canGoBack(), [navigation]),

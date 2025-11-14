@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react';
+import { FC, useCallback, useEffect } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import {
   CardContainer,
@@ -17,16 +17,31 @@ import { truncateText } from '../../helpers/utils/common';
 import SettingsListItem from '../../components/SettingsListItem';
 import { FontAwesome } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
+import { ProfileNav, ROUTES } from '../../navigation';
+import { useNavigation } from '@react-navigation/native';
+
+type SettingsRoute =
+    | typeof ROUTES.ProfleSettings
+
 
 
 export const SettingsScreen: FC = () => {
   const { globalStyleSheet, theme, sizes, typography } = useTheme();
   const { setColors } = useSafeAreaColors();
   const { t } = useTranslation();
+  const navigation = useNavigation<ProfileNav>();
+
 
   const styles = getStyles({ globalStyleSheet, theme, sizes });
   const rootStore = useRootStore();
   const userId = useStoreData(rootStore.identityStore, (store) => store.userId);
+
+
+  const navigateTo = useCallback(
+    (screen: SettingsRoute) => () => navigation.navigate(screen),
+    [navigation],
+  );
+
 
   useEffect(() => {
     setColors({
@@ -35,6 +50,11 @@ export const SettingsScreen: FC = () => {
     });
     void rootStore.identityStore.ensureUserId();
   }, [rootStore.identityStore, setColors, theme.background]);
+
+
+  const PROFILE = [
+    { icon: 'user-o', label: t('settings.section.userTitle'), action: navigateTo(ROUTES.ProfleSettings) },
+  ];
 
   const COPY_LINK = [
     { icon: 'copy', label: t('settings.section.copyAppLink'), action: () => console.log('скопировано') },
@@ -45,7 +65,7 @@ export const SettingsScreen: FC = () => {
       <ScrollView contentContainerStyle={styles.body}>
         <View style={styles.list}>
           <SettingsSection
-            title={   t('settings.section.userTitle')}
+            title={t('settings.section.userTitle')}
             style={styles.section}
           >
             <View style={styles.cardWithoutH}>
@@ -55,11 +75,15 @@ export const SettingsScreen: FC = () => {
                 value={userId ? truncateText(userId, 18) : '—'}
                 valueTone='muted'
               />
+              {PROFILE.map((item, index) => (
+                <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine />
+              ))}
+              <Spacer size='xxs' />
             </View>
           </SettingsSection>
           {ADS_ENABLED &&
             <SettingsSection
-              title={   t('settings.section.adsTitle')}
+              title={t('settings.section.adsTitle')}
               style={styles.section}
             ><CardContainer style={styles.card}>
                 <RewardedAdSettingsCard style={{ padding: 0, backgroundColor: theme.card }} />
@@ -68,7 +92,7 @@ export const SettingsScreen: FC = () => {
 
 
           <SettingsSection
-            title={   t('settings.section.appTitle')}
+            title={t('settings.section.appTitle')}
             style={styles.section}
           ><CardContainer style={styles.card}>
               <ThemeSwitcher lightModeLabel={t('settings.component.theme.light')} darkModeLabel={t('settings.component.theme.dark')} />

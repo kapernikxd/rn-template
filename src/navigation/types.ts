@@ -45,6 +45,7 @@ export const ROUTES = {
 
   // Settings stack
   Settings: 'Settings',
+  ProfleSettings: 'ProfleSettings',
 
   // Root-level (модалки/auth и т.п.)
   RootTabs: 'RootTabs',
@@ -74,6 +75,7 @@ export type ChatsStackParamList = {
 
 export type SettingsParamList = {
   [ROUTES.Settings]: undefined;
+  [ROUTES.ProfleSettings]: undefined;
 };
 
 /**

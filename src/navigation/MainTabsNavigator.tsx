@@ -27,7 +27,7 @@ type TabConfig = {
 
 const TABS: TabConfig[] = [
   { name: 'DashboardTab', label: 'Главная', icon: 'dashboard', component: DashboardStack },
-  { name: 'LibraryTab', label: 'Библиотека', icon: 'photo-library', component: LibraryStack },
+  { name: 'LibraryTab', label: 'Библиотека', icon: 'photo-library', component: LibraryStack, hidden: true },
   { name: 'ChatsTab', label: 'Чаты', icon: 'chat-bubble-outline', component: ChatsStack, hidden: true },
   { name: 'ProfileTab', label: 'Профиль', icon: 'settings', component: ProfileStack },
 ];

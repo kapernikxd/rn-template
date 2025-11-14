@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemeType, SizesType, useTheme } from 'rn-vs-lb/theme';
 
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
+import { TabBarAi as TabBar } from 'rn-vs-lb';
 
 type HoroscopeCardData = {
   key: string;
@@ -61,7 +62,7 @@ const HOROSCOPE_CARDS: HoroscopeCardData[] = [
   },
 ];
 
-const HOROSCOPE_TABS: HoroscopeTab[] = [
+const tabs = [
   { key: 'yesterday', label: 'Вчера' },
   { key: 'today', label: 'Сегодня' },
   { key: 'tomorrow', label: 'Завтра' },
@@ -131,9 +132,9 @@ const createStyles = ({ theme, sizes, topInset }: CreateStylesParams) =>
     },
     scrollContent: {
       gap: sizes.lg as number,
-      paddingTop: topInset + (sizes.xl as number),
+      paddingTop: 0,
       paddingBottom: (sizes.xl as number) * 2,
-      paddingHorizontal: sizes.lg as number,
+      paddingHorizontal: sizes.xxs as number,
     },
   });
 
@@ -151,6 +152,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onPressFilters }) => 
           flexDirection: 'row',
           alignItems: 'center',
           justifyContent: 'space-between',
+          paddingHorizontal: sizes.xs as number,
         },
         logo: {
           letterSpacing: 1,
@@ -180,7 +182,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onPressFilters }) => 
   return (
     <View style={styles.container}>
       <View style={styles.left}>
-        <Text style={styles.logo}>CityLife</Text>
+        <Text style={styles.logo}>AiAstrology</Text>
         <Text style={styles.subtitle}>Гороскоп на каждый день</Text>
       </View>
       <Pressable
@@ -210,31 +212,6 @@ const HoroscopeTabBar: React.FC<HoroscopeTabBarProps> = ({ activeIndex, onChange
         container: {
           gap: sizes.sm as number,
         },
-        tabs: {
-          flexDirection: 'row',
-          alignItems: 'center',
-          gap: sizes.md as number,
-        },
-        tab: {
-          paddingVertical: sizes.xs as number,
-          paddingHorizontal: sizes.sm as number,
-          alignItems: 'center',
-          justifyContent: 'center',
-        },
-        label: {
-          ...typography.bodySm,
-          color: theme.greyText,
-        },
-        labelActive: {
-          color: theme.title,
-          fontWeight: '700',
-        },
-        indicator: {
-          marginTop: sizes.xs as number,
-          height: 3,
-          borderRadius: 2,
-          alignSelf: 'stretch',
-        },
         divider: {
           height: 1,
           backgroundColor: theme.border,
@@ -246,29 +223,20 @@ const HoroscopeTabBar: React.FC<HoroscopeTabBarProps> = ({ activeIndex, onChange
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.tabs}
-      >
-        {HOROSCOPE_TABS.map((tab, index) => {
-          const isActive = index === activeIndex;
-          return (
-            <Pressable
-              key={tab.key}
-              onPress={() => onChange(index)}
-              style={styles.tab}
-              accessibilityRole="tab"
-              accessibilityState={{ selected: isActive }}
-            >
-              <Text style={[styles.label, isActive && styles.labelActive]}>{tab.label}</Text>
-              {isActive ? (
-                <View style={[styles.indicator, { backgroundColor: '#F7C977', width: '100%' }]} />
-              ) : null}
-            </Pressable>
-          );
-        })}
-      </ScrollView>
+        <TabBar
+          tabs={tabs}
+          activeIndex={activeIndex}
+          onChange={onChange}
+          activeColor={theme.title}
+          inactiveColor={theme.text}
+          indicatorColor="#F7C977"
+          indicatorHeight={3}
+          fontSize={16}
+          fontWeightActive="700"
+          fontWeightInactive="500"
+          tabHorizontalPadding={0}
+          gap={20}
+        />
       <View style={styles.divider} />
     </View>
   );
@@ -301,6 +269,30 @@ const HoroscopeDescription: React.FC = () => {
     <View style={styles.container}>
       <Text style={styles.title}>Понедельник, 10 ноября</Text>
       <Text style={styles.text}>
+        Сегодня, Козерог, энергия Луны во Льве помогает смело заявить о себе. Используйте этот заряд, чтобы показать
+        свои идеи и таланты, а также поддержать тех, кто рядом с вами.
+      </Text>
+      <Text style={styles.text}>
+        День отлично подходит для проектов, что зажигают вас изнутри. Делитесь вдохновением и не бойтесь инициативы —
+        это поможет получить заслуженное внимание.
+      </Text>
+            <Text style={styles.text}>
+        Сегодня, Козерог, энергия Луны во Льве помогает смело заявить о себе. Используйте этот заряд, чтобы показать
+        свои идеи и таланты, а также поддержать тех, кто рядом с вами.
+      </Text>
+      <Text style={styles.text}>
+        День отлично подходит для проектов, что зажигают вас изнутри. Делитесь вдохновением и не бойтесь инициативы —
+        это поможет получить заслуженное внимание.
+      </Text>
+            <Text style={styles.text}>
+        Сегодня, Козерог, энергия Луны во Льве помогает смело заявить о себе. Используйте этот заряд, чтобы показать
+        свои идеи и таланты, а также поддержать тех, кто рядом с вами.
+      </Text>
+      <Text style={styles.text}>
+        День отлично подходит для проектов, что зажигают вас изнутри. Делитесь вдохновением и не бойтесь инициативы —
+        это поможет получить заслуженное внимание.
+      </Text>
+            <Text style={styles.text}>
         Сегодня, Козерог, энергия Луны во Льве помогает смело заявить о себе. Используйте этот заряд, чтобы показать
         свои идеи и таланты, а также поддержать тех, кто рядом с вами.
       </Text>
