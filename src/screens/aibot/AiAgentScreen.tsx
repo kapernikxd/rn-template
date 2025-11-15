@@ -21,7 +21,7 @@ import {
   AiAgentTabBar,
 } from "./components";
 import { createAiAgentStyles } from "./styles";
-import { postReasonOptions, userReasonOptions } from "../../constants";
+import { POST_REPORT_REASON_KEYS, USER_REPORT_REASON_KEYS } from "../../constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 
@@ -109,6 +109,15 @@ export const AiAgentScreen = ({ route }: Props) => {
     const availableWidth = width - horizontalPadding - gallerySpacing * (galleryColumns - 1);
     return Math.max(80, availableWidth / galleryColumns);
   }, [galleryColumns, gallerySpacing, horizontalPadding, width]);
+
+  const userReportReasons = useMemo(
+    () => USER_REPORT_REASON_KEYS.map((key) => t(key)),
+    [t],
+  );
+  const postReportReasons = useMemo(
+    () => POST_REPORT_REASON_KEYS.map((key) => t(key)),
+    [t],
+  );
 
   const handleShare = useCallback(async () => {
     if (!aiBot) return;
@@ -342,8 +351,8 @@ export const AiAgentScreen = ({ route }: Props) => {
         title={t('screens.aibot.profile.reportTitle')}
         cancelText={t('common.cancel')}
         submitText={t('common.submit')}
-        userReasons={userReasonOptions}
-        postReasons={postReasonOptions}
+        userReasons={userReportReasons}
+        postReasons={postReportReasons}
         inputPlaceholder={t('screens.aibot.profile.reportPlaceholder')}
       />
       {aiBotId ? (

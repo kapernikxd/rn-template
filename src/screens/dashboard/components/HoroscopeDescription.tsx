@@ -8,9 +8,28 @@ import {
   View,
 } from 'react-native';
 import { ThemeType, SizesType, useTheme } from 'rn-vs-lb/theme';
+import { useTranslation } from 'react-i18next';
+import i18n from '../../../helpers/i18n';
+import 'dayjs/locale/en';
+import 'dayjs/locale/ru';
+import 'dayjs/locale/sr';
+import 'dayjs/locale/es';
+import 'dayjs/locale/it';
+import 'dayjs/locale/de';
+import 'dayjs/locale/fr';
+import 'dayjs/locale/pt';
+
+const SUPPORTED_DAYJS_LOCALES = new Set(['en', 'ru', 'sr', 'es', 'it', 'de', 'fr', 'pt']);
+
+const resolveDayjsLocale = (language: string | undefined) => {
+  const base = language?.split('-')[0] ?? 'en';
+  return SUPPORTED_DAYJS_LOCALES.has(base) ? base : 'en';
+};
 
 export const getTodayTitle = () => {
-  const formatted = dayjs().locale('ru').format('dddd, D MMMM');
+  const locale = resolveDayjsLocale(i18n.resolvedLanguage ?? i18n.language);
+  const format = i18n.t('screens.dashboard.horoscope.dateFormat');
+  const formatted = dayjs().locale(locale).format(format);
   return formatted.charAt(0).toUpperCase() + formatted.slice(1);
 };
 
@@ -36,6 +55,7 @@ export const HoroscopeDescription: React.FC<HoroscopeDescriptionProps> = ({
   onRetry,
 }) => {
   const { theme, typography, sizes } = useTheme();
+  const { t } = useTranslation();
 
   const styles = useMemo(
     () =>
@@ -92,20 +112,20 @@ export const HoroscopeDescription: React.FC<HoroscopeDescriptionProps> = ({
       {isLoading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator color={theme.title} />
-          <Text style={styles.helperText}>Готовим гороскоп...</Text>
+          <Text style={styles.helperText}>{t('screens.dashboard.horoscope.loading')}</Text>
         </View>
       ) : errorMessage ? (
         <View style={styles.messageContainer}>
-          <Text style={styles.errorText}>Не удалось загрузить гороскоп.</Text>
+          <Text style={styles.errorText}>{t('screens.dashboard.horoscope.errorTitle')}</Text>
           <Text style={styles.helperText}>{errorMessage}</Text>
           <Pressable
             onPress={onRetry}
             style={styles.retryButton}
             accessibilityRole="button"
-            accessibilityLabel="Попробовать снова получить гороскоп"
+            accessibilityLabel={t('screens.dashboard.horoscope.retryAccessibility')}
             hitSlop={8}
           >
-            <Text style={styles.retryText}>Попробовать снова</Text>
+            <Text style={styles.retryText}>{t('screens.dashboard.horoscope.retry')}</Text>
           </Pressable>
         </View>
       ) : paragraphs.length > 0 ? (
@@ -116,7 +136,7 @@ export const HoroscopeDescription: React.FC<HoroscopeDescriptionProps> = ({
         ))
       ) : (
         <Text style={styles.helperText}>
-          Здесь появится ваш гороскоп, как только мы его получим.
+          {t('screens.dashboard.horoscope.emptyPlaceholder')}
         </Text>
       )}
     </View>

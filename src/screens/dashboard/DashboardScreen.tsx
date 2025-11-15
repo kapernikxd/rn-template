@@ -10,6 +10,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemeType, SizesType, useTheme } from 'rn-vs-lb/theme';
+import { useTranslation } from 'react-i18next';
 
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 import astrologyService from '../../services/astrology/AstrologyService';
@@ -24,7 +25,7 @@ import { getProfileInfo, type ProfileInfoData } from '../../helpers/profile/prof
 import { ROUTES, type DashboardScreenProps } from '../../navigation/types';
 import { HoroscopeDescription } from './components/HoroscopeDescription';
 import { HoroscopeCard } from './components/HoroscopeCard';
-import { HOROSCOPE_CARDS, HoroscopeCardsCarousel } from './components/HoroscopeCardsCarousel';
+import { HoroscopeCardsCarousel, useHoroscopeCards } from './components/HoroscopeCardsCarousel';
 import { HoroscopeModal } from './components/HoroscopeModal';
 import { DashboardHeader } from './components/DashboardHeader';
 import { HoroscopeTabBar } from './components/HoroscopeTabBar';
@@ -61,9 +62,11 @@ const calculateProfileCompletion = (profileInfo: ProfileInfoData): number => {
 
 export const DashboardScreen = () => {
   const { theme, sizes } = useTheme();
+  const { t } = useTranslation();
   const insets = useSafeAreaInsets();
   const { setColors } = useSafeAreaColors();
   const navigation = useNavigation<DashboardScreenProps['navigation']>();
+  const cards = useHoroscopeCards();
   const [activeTab, setActiveTab] = useState(1);
   const [horoscopes, setHoroscopes] = useState<StoredHoroscopes>({});
   const [loadingByCategory, setLoadingByCategory] = useState<
@@ -209,7 +212,7 @@ export const DashboardScreen = () => {
         return normalizedHoroscope;
       } catch (error) {
         const message =
-          error instanceof Error ? error.message : 'Не удалось получить гороскоп';
+          error instanceof Error ? error.message : t('screens.dashboard.horoscope.fetchError');
 
         if (isMountedRef.current) {
           setErrorsByCategory((prev) => ({ ...prev, [category]: message }));
@@ -222,7 +225,7 @@ export const DashboardScreen = () => {
         }
       }
     },
-    [],
+    [t],
   );
 
   useEffect(() => {
@@ -300,8 +303,8 @@ export const DashboardScreen = () => {
   }, [activeModalCategory, loadHoroscope]);
 
   const modalCard = useMemo(
-    () => HOROSCOPE_CARDS.find((card) => card.key === activeModalCategory) ?? null,
-    [activeModalCategory],
+    () => cards.find((card) => card.key === activeModalCategory) ?? null,
+    [activeModalCategory, cards],
   );
 
   const modalHoroscope = activeModalCategory
@@ -342,6 +345,7 @@ export const DashboardScreen = () => {
           }
         />
         <HoroscopeCardsCarousel
+          cards={cards}
           renderItem={renderCard}
           extraData={{
             horoscopes,

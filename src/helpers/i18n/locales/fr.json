@@ -22,6 +22,30 @@
     }
   },
   "logout": "Se déconnecter",
+  "navigation": {
+    "tabs": {
+      "dashboard": "Accueil",
+      "library": "Bibliothèque",
+      "chats": "Discussions",
+      "profile": "Profil"
+    }
+  },
+  "notifications": {
+    "profile": {
+      "updateSuccess": "Profil mis à jour",
+      "followError": "Impossible de mettre à jour l'abonnement",
+      "blockSuccess": "Utilisateur bloqué",
+      "reportSuccess": "Signalement envoyé",
+      "deleteRequestSent": "Demande envoyée",
+      "noChanges": "Aucun changement effectué",
+      "photoUploadSuccess": "Photo téléchargée",
+      "photoUploadError": "Échec du téléchargement de la photo",
+      "noPhotoToRemove": "Aucune photo à supprimer",
+      "invalidFilePath": "Chemin de fichier invalide",
+      "photoDeleteSuccess": "Photo supprimée",
+      "photoDeleteError": "Échec de la suppression de la photo"
+    }
+  },
   "common": {
     "cancel": "Annuler",
     "update": "Mettre à jour",
@@ -837,7 +861,7 @@
         "clearHistory": "Effacer l’historique du chat"
       }
     },
-    "docs": {
+  "docs": {
       "terms": {
         "title": "Conditions d’utilisation",
         "sections": {
@@ -902,6 +926,27 @@
             }
           }
         }
+      }
+    }
+  }
+  ,
+  "reports": {
+    "reasons": {
+      "user": {
+        "spamOrFraud": "Spam ou fraude",
+        "harassmentOrBullying": "Harcèlement ou intimidation",
+        "inappropriateContent": "Contenu inapproprié",
+        "fakeProfile": "Faux profil"
+      },
+      "post": {
+        "spamOrMisleading": "Spam ou contenu trompeur",
+        "hateOrDiscrimination": "Haine ou discrimination",
+        "violenceOrThreats": "Violence ou menaces",
+        "sexualContent": "Contenu sexuel",
+        "harassmentOrBullying": "Harcèlement ou intimidation"
+      },
+      "common": {
+        "other": "Autre"
       }
     }
   }

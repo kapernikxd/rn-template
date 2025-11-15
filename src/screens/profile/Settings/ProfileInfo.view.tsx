@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect } from 'react';
+import React, { FC, useCallback, useEffect, useMemo } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -76,7 +76,7 @@ export const ProfileInfoView: FC = () => {
   const onSubmit = handleSubmit(async (values) => {
     try {
       await saveProfileInfo(values);
-      uiStore.showSnackbar('Обновлено', 'success');
+      uiStore.showSnackbar(t('settings.editProfile.snackbar.updated'), 'success');
     } catch (error) {
       console.warn('Failed to save profile info', error);
     }
@@ -91,35 +91,47 @@ export const ProfileInfoView: FC = () => {
     }
   };
 
-  const genderOptions = [
-    { label: 'Мужской', value: 'male' },
-    { label: 'Женский', value: 'female' },
-  ];
+  const genderOptions = useMemo(
+    () => [
+      { label: t('settings.editProfile.options.gender.male'), value: 'male' },
+      { label: t('settings.editProfile.options.gender.female'), value: 'female' },
+    ],
+    [t],
+  );
 
-  const zodiacOptions = [
-    { label: 'Овен', value: 'aries' },
-    { label: 'Телец', value: 'taurus' },
-    { label: 'Близнецы', value: 'gemini' },
-    { label: 'Рак', value: 'cancer' },
-    { label: 'Лев', value: 'leo' },
-    { label: 'Дева', value: 'virgo' },
-    { label: 'Весы', value: 'libra' },
-    { label: 'Скорпион', value: 'scorpio' },
-    { label: 'Стрелец', value: 'sagittarius' },
-    { label: 'Козерог', value: 'capricorn' },
-    { label: 'Водолей', value: 'aquarius' },
-    { label: 'Рыбы', value: 'pisces' },
-  ];
+  const zodiacOptions = useMemo(
+    () => [
+      { label: t('common.zodiac.aries'), value: 'aries' },
+      { label: t('common.zodiac.taurus'), value: 'taurus' },
+      { label: t('common.zodiac.gemini'), value: 'gemini' },
+      { label: t('common.zodiac.cancer'), value: 'cancer' },
+      { label: t('common.zodiac.leo'), value: 'leo' },
+      { label: t('common.zodiac.virgo'), value: 'virgo' },
+      { label: t('common.zodiac.libra'), value: 'libra' },
+      { label: t('common.zodiac.scorpio'), value: 'scorpio' },
+      { label: t('common.zodiac.sagittarius'), value: 'sagittarius' },
+      { label: t('common.zodiac.capricorn'), value: 'capricorn' },
+      { label: t('common.zodiac.aquarius'), value: 'aquarius' },
+      { label: t('common.zodiac.pisces'), value: 'pisces' },
+    ],
+    [t],
+  );
 
-  const maritalStatusOptions = [
-    { label: 'Одинок', value: 'single' },
-    { label: 'В отношениях', value: 'in_relationship' },
-  ];
+  const maritalStatusOptions = useMemo(
+    () => [
+      { label: t('settings.editProfile.options.maritalStatus.single'), value: 'single' },
+      { label: t('settings.editProfile.options.maritalStatus.inRelationship'), value: 'in_relationship' },
+    ],
+    [t],
+  );
 
-  const hasChildrenOptions = [
-    { label: 'Нет', value: 'no' },
-    { label: 'Да', value: 'yes' },
-  ];
+  const hasChildrenOptions = useMemo(
+    () => [
+      { label: t('settings.editProfile.options.hasChildren.no'), value: 'no' },
+      { label: t('settings.editProfile.options.hasChildren.yes'), value: 'yes' },
+    ],
+    [t],
+  );
 
   return (
     <KeyboardAvoidingView
@@ -138,8 +150,8 @@ export const ProfileInfoView: FC = () => {
             <View style={styles.cardContent}>
               <TextInput
                 name="username"
-                label="Имя пользователя"
-                placeholder="Введите имя пользователя"
+                label={t('settings.editProfile.fields.username.label')}
+                placeholder={t('settings.editProfile.fields.username.placeholder')}
                 control={methods.control}
               />
 
@@ -147,8 +159,8 @@ export const ProfileInfoView: FC = () => {
 
               <Select
                 name="gender"
-                label="Пол"
-                placeholder="Выберите пол"
+                label={t('settings.editProfile.fields.gender.label')}
+                placeholder={t('settings.editProfile.fields.gender.placeholder')}
                 options={genderOptions}
                 control={methods.control}
               />
@@ -157,25 +169,25 @@ export const ProfileInfoView: FC = () => {
 
               <Select
                 name="zodiacSign"
-                label="Знак зодиака"
-                placeholder="Выберите знак зодиака"
+                label={t('settings.editProfile.fields.zodiacSign.label')}
+                placeholder={t('settings.editProfile.fields.zodiacSign.placeholder')}
                 options={zodiacOptions}
                 control={methods.control}
-                rules={{ required: 'Выберите знак зодиака' }}
+                rules={{ required: t('settings.editProfile.validation.zodiacSignRequired') }}
               />
 
               <Spacer size='md'/>
 
               <TextInput
                 name="age"
-                label="Возраст"
-                placeholder="Введите возраст"
+                label={t('settings.editProfile.fields.age.label')}
+                placeholder={t('settings.editProfile.fields.age.placeholder')}
                 control={methods.control}
                 keyboardType="number-pad"
                 rules={{
                   pattern: {
                     value: /^\d+$/,
-                    message: 'Возраст должен содержать только цифры',
+                    message: t('settings.editProfile.validation.ageDigits'),
                   },
                 }}
               />
@@ -184,8 +196,8 @@ export const ProfileInfoView: FC = () => {
 
               <Select
                 name="maritalStatus"
-                label="Семейное положение"
-                placeholder="Выберите семейное положение"
+                label={t('settings.editProfile.fields.maritalStatus.label')}
+                placeholder={t('settings.editProfile.fields.maritalStatus.placeholder')}
                 options={maritalStatusOptions}
                 control={methods.control}
               />
@@ -195,8 +207,8 @@ export const ProfileInfoView: FC = () => {
                   <Spacer size='md'/>
                   <TextInput
                     name="partnerName"
-                    label="Имя партнёра"
-                    placeholder="Введите имя партнёра"
+                    label={t('settings.editProfile.fields.partnerName.label')}
+                    placeholder={t('settings.editProfile.fields.partnerName.placeholder')}
                     control={methods.control}
                   />
                 </>
@@ -206,8 +218,8 @@ export const ProfileInfoView: FC = () => {
 
               <Select
                 name="hasChildren"
-                label="Есть ли дети"
-                placeholder="Выберите вариант"
+                label={t('settings.editProfile.fields.hasChildren.label')}
+                placeholder={t('settings.editProfile.fields.hasChildren.placeholder')}
                 options={hasChildrenOptions}
                 control={methods.control}
               />

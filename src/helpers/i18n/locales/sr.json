@@ -22,6 +22,30 @@
     }
   },
   "logout": "Odjava",
+  "navigation": {
+    "tabs": {
+      "dashboard": "Početna",
+      "library": "Biblioteka",
+      "chats": "Četovi",
+      "profile": "Profil"
+    }
+  },
+  "notifications": {
+    "profile": {
+      "updateSuccess": "Profil je ažuriran",
+      "followError": "Nije uspelo ažuriranje praćenja",
+      "blockSuccess": "Korisnik blokiran",
+      "reportSuccess": "Prijava poslata",
+      "deleteRequestSent": "Zahtev poslat",
+      "noChanges": "Nema promena",
+      "photoUploadSuccess": "Fotografija je otpremljena",
+      "photoUploadError": "Nije uspelo otpremanje fotografije",
+      "noPhotoToRemove": "Nema fotografije za uklanjanje",
+      "invalidFilePath": "Nevažeća putanja do datoteke",
+      "photoDeleteSuccess": "Fotografija je obrisana",
+      "photoDeleteError": "Nije uspelo brisanje fotografije"
+    }
+  },
   "common": {
     "cancel": "Otkaži",
     "update": "Ažuriraj",
@@ -837,7 +861,7 @@
         "clearHistory": "Obriši istoriju četa"
       }
     },
-    "docs": {
+  "docs": {
       "terms": {
         "title": "Uslovi korišćenja",
         "sections": {
@@ -902,6 +926,27 @@
             }
           }
         }
+      }
+    }
+  }
+  ,
+  "reports": {
+    "reasons": {
+      "user": {
+        "spamOrFraud": "Spam ili prevara",
+        "harassmentOrBullying": "Uznemiravanje ili zlostavljanje",
+        "inappropriateContent": "Neprimeren sadržaj",
+        "fakeProfile": "Lažni profil"
+      },
+      "post": {
+        "spamOrMisleading": "Spam ili obmanjujući sadržaj",
+        "hateOrDiscrimination": "Mržnja ili diskriminacija",
+        "violenceOrThreats": "Nasilje ili pretnje",
+        "sexualContent": "Seksualni sadržaj",
+        "harassmentOrBullying": "Uznemiravanje ili zlostavljanje"
+      },
+      "common": {
+        "other": "Drugo"
       }
     }
   }

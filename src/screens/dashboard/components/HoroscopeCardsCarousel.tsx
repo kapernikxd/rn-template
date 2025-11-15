@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   FlatList,
   ListRenderItem,
@@ -7,41 +7,70 @@ import {
 import { useTheme } from 'rn-vs-lb/theme';
 import { CARD_WIDTH } from '../DashboardScreen';
 import { HoroscopeCardData } from './HoroscopeCard';
+import { useTranslation } from 'react-i18next';
 
+type HoroscopeCardConfig = {
+  key: HoroscopeCardData['key'];
+  icon: HoroscopeCardData['icon'];
+  accent: string;
+  titleKey: string;
+  descriptionKey?: string;
+};
 
-export const HOROSCOPE_CARDS: HoroscopeCardData[] = [
+const CARD_CONFIG: HoroscopeCardConfig[] = [
   {
     key: 'career',
-    title: 'Карьера',
     icon: 'briefcase-variant-outline',
     accent: '#63B3FF',
+    titleKey: 'screens.dashboard.horoscope.cards.career.title',
+    descriptionKey: 'screens.dashboard.horoscope.cards.career.description',
   },
   {
     key: 'love',
-    title: 'Любовь',
     icon: 'heart-outline',
     accent: '#FF7AB8',
+    titleKey: 'screens.dashboard.horoscope.cards.love.title',
+    descriptionKey: 'screens.dashboard.horoscope.cards.love.description',
   },
   {
     key: 'health',
-    title: 'Здоровье',
     icon: 'heart-pulse',
     accent: '#7DE2AC',
+    titleKey: 'screens.dashboard.horoscope.cards.health.title',
+    descriptionKey: 'screens.dashboard.horoscope.cards.health.description',
   },
   {
     key: 'family',
-    title: 'Семья',
     icon: 'account-group-outline',
     accent: '#F7C977',
+    titleKey: 'screens.dashboard.horoscope.cards.family.title',
+    descriptionKey: 'screens.dashboard.horoscope.cards.family.description',
   },
 ];
 
+export const useHoroscopeCards = (): HoroscopeCardData[] => {
+  const { t } = useTranslation();
+
+  return useMemo(
+    () =>
+      CARD_CONFIG.map((card) => ({
+        key: card.key,
+        icon: card.icon,
+        accent: card.accent,
+        title: t(card.titleKey),
+        description: card.descriptionKey ? t(card.descriptionKey) : undefined,
+      })),
+    [t],
+  );
+};
+
 type HoroscopeCardsCarouselProps = {
+  cards: HoroscopeCardData[];
   renderItem: ListRenderItem<HoroscopeCardData>;
   extraData?: unknown;
 };
 
-export const HoroscopeCardsCarousel: React.FC<HoroscopeCardsCarouselProps> = ({ renderItem, extraData }) => {
+export const HoroscopeCardsCarousel: React.FC<HoroscopeCardsCarouselProps> = ({ cards, renderItem, extraData }) => {
   const { sizes } = useTheme();
   const gap = sizes.md as number;
   const horizontalPadding = sizes.xs as number;
@@ -60,7 +89,7 @@ export const HoroscopeCardsCarousel: React.FC<HoroscopeCardsCarouselProps> = ({ 
   return (
     <FlatList
       horizontal
-      data={HOROSCOPE_CARDS}
+      data={cards}
       keyExtractor={(item) => item.key}
       showsHorizontalScrollIndicator={false}
       contentContainerStyle={{ paddingHorizontal: horizontalPadding }}

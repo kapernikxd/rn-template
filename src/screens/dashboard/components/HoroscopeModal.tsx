@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from 'rn-vs-lb/theme';
+import { useTranslation } from 'react-i18next';
 import { getTodayTitle, splitHoroscopeIntoParagraphs } from './HoroscopeDescription';
 
 type HoroscopeModalProps = {
@@ -34,6 +35,7 @@ export const HoroscopeModal: React.FC<HoroscopeModalProps> = ({
     onRetry,
 }) => {
     const { theme, typography, sizes } = useTheme();
+    const { t } = useTranslation();
 
     const styles = useMemo(
         () =>
@@ -134,12 +136,12 @@ export const HoroscopeModal: React.FC<HoroscopeModalProps> = ({
                         showsVerticalScrollIndicator={false}
                     >
                         <View style={styles.header}>
-                            <Text style={styles.title}>{title || 'Гороскоп'}</Text>
+                            <Text style={styles.title}>{title || t('screens.dashboard.horoscope.modal.defaultTitle')}</Text>
                             <Pressable
                                 onPress={onClose}
                                 style={styles.closeButton}
                                 accessibilityRole="button"
-                                accessibilityLabel="Закрыть гороскоп"
+                                accessibilityLabel={t('screens.dashboard.horoscope.modal.closeAccessibility')}
                                 hitSlop={8}
                             >
                                 <Feather name="x" size={20} color={theme.title} />
@@ -152,14 +154,14 @@ export const HoroscopeModal: React.FC<HoroscopeModalProps> = ({
                         {isLoading ? (
                             <View style={styles.loadingContainer}>
                                 <ActivityIndicator color={theme.title} />
-                                <Text style={styles.helperText}>Готовим гороскоп...</Text>
+                                <Text style={styles.helperText}>{t('screens.dashboard.horoscope.loading')}</Text>
                             </View>
                         ) : errorMessage ? (
                             <View style={styles.messageContainer}>
-                                <Text style={styles.errorText}>Не удалось загрузить гороскоп.</Text>
+                                <Text style={styles.errorText}>{t('screens.dashboard.horoscope.errorTitle')}</Text>
                                 <Text style={styles.helperText}>{errorMessage}</Text>
                                 <Pressable onPress={onRetry} style={styles.retryButton}>
-                                    <Text style={styles.retryText}>Попробовать снова</Text>
+                                    <Text style={styles.retryText}>{t('screens.dashboard.horoscope.retry')}</Text>
                                 </Pressable>
                             </View>
                         ) : paragraphs.length > 0 ? (
@@ -172,7 +174,7 @@ export const HoroscopeModal: React.FC<HoroscopeModalProps> = ({
                             </View>
                         ) : (
                             <Text style={styles.helperText}>
-                                Пока нет гороскопа для этой категории на сегодня.
+                                {t('screens.dashboard.horoscope.modal.emptyState')}
                             </Text>
                         )}
                     </ScrollView>

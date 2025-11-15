@@ -11,6 +11,7 @@ import { useTheme } from 'rn-vs-lb/theme';
 import type { HoroscopeCategory } from '../../../types/astrology';
 import { CARD_WIDTH } from '../DashboardScreen';
 import { splitHoroscopeIntoParagraphs } from './HoroscopeDescription';
+import { useTranslation } from 'react-i18next';
 
 type HoroscopeCardCategory = Exclude<HoroscopeCategory, 'general'>;
 
@@ -38,6 +39,7 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
   onPress,
 }) => {
   const { theme, typography, sizes } = useTheme();
+  const { t } = useTranslation();
 
   const previewText = useMemo(() => {
     const paragraphs = splitHoroscopeIntoParagraphs(content);
@@ -50,8 +52,14 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
   }, [content, item.description]);
 
   const statusLabel = useMemo(() => {
-    if (isLoading) return 'Обновляем прогноз...';
-  }, [isLoading, isUnlocked]);
+    if (isLoading) {
+      return t('screens.dashboard.horoscope.card.status.loading');
+    }
+
+    return isUnlocked
+      ? t('screens.dashboard.horoscope.card.status.unlocked')
+      : t('screens.dashboard.horoscope.card.status.locked');
+  }, [isLoading, isUnlocked, t]);
 
   const styles = useMemo(
     () =>
@@ -151,7 +159,7 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
       onPress={onPress}
       style={({ pressed }) => [styles.card, pressed && styles.cardPressed]}
       accessibilityRole="button"
-      accessibilityLabel={`Открыть гороскоп: ${item.title}`}
+      accessibilityLabel={t('screens.dashboard.horoscope.card.accessibility.open', { title: item.title })}
       hitSlop={8}
     >
       <View style={styles.accentStrip} />
@@ -201,7 +209,7 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
 
         {!isUnlocked && !isLoading && (
           <Text style={styles.footerHint} numberOfLines={1}>
-            Нажми, чтобы раскрыть подробный прогноз.
+            {t('screens.dashboard.horoscope.card.lockedHint')}
           </Text>
         )}
       </View>
