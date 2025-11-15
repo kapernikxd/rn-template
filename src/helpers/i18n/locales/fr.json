@@ -41,6 +41,20 @@
     "accessibility": {
       "back": "Retour",
       "share": "Partager"
+    },
+    "zodiac": {
+      "aries": "Bélier",
+      "taurus": "Taureau",
+      "gemini": "Gémeaux",
+      "cancer": "Cancer",
+      "leo": "Lion",
+      "virgo": "Vierge",
+      "libra": "Balance",
+      "scorpio": "Scorpion",
+      "sagittarius": "Sagittaire",
+      "capricorn": "Capricorne",
+      "aquarius": "Verseau",
+      "pisces": "Poissons"
     }
   },
   "auth": {
@@ -755,6 +769,18 @@
       }
     },
     "onboarding": {
+      "steps": {
+        "language": {
+          "title": "🌐 Choisissez votre langue",
+          "description": "Sélectionnez la langue de l’interface pour personnaliser votre expérience AI Pair."
+        },
+        "zodiac": {
+          "title": "✨ Quel est votre signe du zodiaque ?",
+          "description": "Nous l’utiliserons pour adapter horoscopes et recommandations rien que pour vous."
+        }
+      },
+      "stepCounter": "{{current}} sur {{total}}",
+      "back": "Retour",
       "slides": {
         "language": {
           "title": "🌐 Choisissez votre langue",

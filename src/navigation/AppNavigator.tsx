@@ -9,8 +9,8 @@ import { useRootStore, useStoreData } from '../store/StoreProvider';
 import { ScreenLoader, MainLayout } from '../components';
 import { TermsOfUseScreen } from '../screens/docs';
 import { AiAgentScreen, AiAgentCreateScreen, AiAgentEditScreen } from '../screens/aibot';
-// import Onboarding from '../screens/onboarding/Onboarding';
-// import { useOnboarding } from '../helpers/hooks/useOnboarding';
+import Onboarding from '../screens/onboarding/Onboarding';
+import { useOnboarding } from '../helpers/hooks/useOnboarding';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -28,27 +28,27 @@ export const AppNavigator = () => {
     [],
   );
 
-  // const {
-  //   ready: isOnboardingReady,
-  //   seen: hasSeenOnboarding,
-  //   markSeen: markOnboardingSeen,
-  // } = useOnboarding();
+  const {
+    ready: isOnboardingReady,
+    seen: hasSeenOnboarding,
+    markSeen: markOnboardingSeen,
+  } = useOnboarding();
 
-  // if (!hasAttemptedAutoLogin || !isOnboardingReady) {
-  //   return <ScreenLoader />;
-  // }
+  if (!hasAttemptedAutoLogin || !isOnboardingReady) {
+    return <ScreenLoader />;
+  }
 
-  // if (!hasSeenOnboarding) {
-  //   return (
-  //     <Onboarding
-  //       onFinish={() => {
-  //         markOnboardingSeen().catch((error) => {
-  //           console.error('Failed to mark onboarding as seen', error);
-  //         });
-  //       }}
-  //     />
-  //   );
-  // }
+  if (!hasSeenOnboarding) {
+    return (
+      <Onboarding
+        onFinish={() => {
+          markOnboardingSeen().catch((error) => {
+            console.error('Failed to mark onboarding as seen', error);
+          });
+        }}
+      />
+    );
+  }
 
   if (!hasAttemptedAutoLogin) {
     return <ScreenLoader />;
