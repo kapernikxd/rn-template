@@ -5,7 +5,9 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import {  MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemeType, SizesType, useTheme } from 'rn-vs-lb/theme';
 
@@ -18,13 +20,15 @@ import {
   saveHoroscopeForToday,
   type StoredHoroscopes,
 } from '../../helpers/astrology/horoscopeStorage';
-import { getProfileInfo } from '../../helpers/profile/profileInfoStorage';
+import { getProfileInfo, type ProfileInfoData } from '../../helpers/profile/profileInfoStorage';
+import { ROUTES, type DashboardScreenProps } from '../../navigation/types';
 import { HoroscopeDescription } from './components/HoroscopeDescription';
 import { HoroscopeCard } from './components/HoroscopeCard';
 import { HOROSCOPE_CARDS, HoroscopeCardsCarousel } from './components/HoroscopeCardsCarousel';
 import { HoroscopeModal } from './components/HoroscopeModal';
 import { DashboardHeader } from './components/DashboardHeader';
 import { HoroscopeTabBar } from './components/HoroscopeTabBar';
+import { ProfileCompletionBanner } from './components/ProfileCompletionBanner';
 
 type HoroscopeCardCategory = Exclude<HoroscopeCategory, 'general'>;
 
@@ -38,11 +42,28 @@ type HoroscopeCardData = {
 
 export const CARD_WIDTH = 280;
 
+const PROFILE_COMPLETION_THRESHOLD = 0.6;
+const PROFILE_BANNER_DISMISSED_STORAGE_KEY = 'profileCompletionBannerDismissed';
+
+const calculateProfileCompletion = (profileInfo: ProfileInfoData): number => {
+  const values = Object.values(profileInfo);
+  const totalFields = values.length;
+
+  if (totalFields === 0) {
+    return 0;
+  }
+
+  const filledFields = values.filter((value) => `${value ?? ''}`.trim().length > 0).length;
+
+  return Math.min(1, filledFields / totalFields);
+};
+
 
 export const DashboardScreen = () => {
   const { theme, sizes } = useTheme();
   const insets = useSafeAreaInsets();
   const { setColors } = useSafeAreaColors();
+  const navigation = useNavigation<DashboardScreenProps['navigation']>();
   const [activeTab, setActiveTab] = useState(1);
   const [horoscopes, setHoroscopes] = useState<StoredHoroscopes>({});
   const [loadingByCategory, setLoadingByCategory] = useState<
@@ -54,6 +75,8 @@ export const DashboardScreen = () => {
   const [activeModalCategory, setActiveModalCategory] = useState<
     HoroscopeCardCategory | null
   >(null);
+  const [profileCompletion, setProfileCompletion] = useState(0);
+  const [shouldShowProfileBanner, setShouldShowProfileBanner] = useState(false);
   const isMountedRef = useRef(true);
   const horoscopesRef = useRef<StoredHoroscopes>({});
 
@@ -77,6 +100,35 @@ export const DashboardScreen = () => {
       bottomColor: theme.background,
     });
   }, [setColors, theme.background]);
+
+  const evaluateProfileCompletion = useCallback(async () => {
+    try {
+      const [profileInfo, dismissedValue] = await Promise.all([
+        getProfileInfo(),
+        AsyncStorage.getItem(PROFILE_BANNER_DISMISSED_STORAGE_KEY),
+      ]);
+
+      if (!isMountedRef.current) {
+        return;
+      }
+
+      const completionRatio = calculateProfileCompletion(profileInfo);
+      const isDismissed = dismissedValue === 'true';
+
+      setProfileCompletion(completionRatio);
+      setShouldShowProfileBanner(!isDismissed && completionRatio < PROFILE_COMPLETION_THRESHOLD);
+    } catch (error) {
+      console.warn('Failed to evaluate profile completion state', error);
+    }
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      void evaluateProfileCompletion();
+
+      return () => {};
+    }, [evaluateProfileCompletion]),
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -192,6 +244,24 @@ export const DashboardScreen = () => {
     setActiveModalCategory(category);
   }, []);
 
+  const handleBannerPress = useCallback(() => {
+    navigation.navigate(ROUTES.ProfileTab, {
+      screen: ROUTES.ProfleSettings,
+    });
+  }, [navigation]);
+
+  const handleBannerDismiss = useCallback(() => {
+    if (!isMountedRef.current) {
+      return;
+    }
+
+    setShouldShowProfileBanner(false);
+
+    AsyncStorage.setItem(PROFILE_BANNER_DISMISSED_STORAGE_KEY, 'true').catch((error) => {
+      console.warn('Failed to persist profile banner dismissal', error);
+    });
+  }, []);
+
   useEffect(() => {
     if (!activeModalCategory) {
       return;
@@ -253,6 +323,13 @@ export const DashboardScreen = () => {
         contentContainerStyle={styles.scrollContent}
       >
         <DashboardHeader onPressFilters={handleOpenFilters} />
+        {shouldShowProfileBanner ? (
+          <ProfileCompletionBanner
+            completion={profileCompletion}
+            onPress={handleBannerPress}
+            onClose={handleBannerDismiss}
+          />
+        ) : null}
         {/* <HoroscopeTabBar activeIndex={activeTab} onChange={handleTabPress} /> */}
         <HoroscopeDescription
           horoscope={horoscopes.general}
