@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useCallback, useEffect } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -13,7 +13,7 @@ import { IOScrollView } from 'react-native-intersection-observer';
 import { Select, TextInput } from '../../../components/form';
 import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
 import { useTranslation } from 'react-i18next';
-import { usePortalNavigation } from '../../../helpers/hooks';
+import { useNavigation } from '@react-navigation/native';
 import {
   clearProfileInfo,
   createEmptyProfileInfo,
@@ -22,14 +22,21 @@ import {
 } from '../../../helpers/profile';
 import type { ProfileInfoData } from '../../../helpers/profile';
 import { useRootStore } from '../../../store/StoreProvider';
+import { ProfileNav } from '../../../navigation';
 
 export const ProfileInfoView: FC = () => {
   const { theme } = useTheme();
   const { setColors } = useSafeAreaColors();
-  const { goBack } = usePortalNavigation();
+  const navigation = useNavigation<ProfileNav>();
   const { t } = useTranslation();
   const styles = getStyles({ theme });
   const { uiStore } = useRootStore();
+
+  const handleBackPress = useCallback(() => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    }
+  }, [navigation]);
 
   // ✅ Локальный метод — здесь!
   const methods = useForm<ProfileInfoData>({
@@ -120,7 +127,7 @@ export const ProfileInfoView: FC = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <FormProvider {...methods}>
-        <HeaderDefault title={t('settings.editProfile.title')} onBackPress={goBack} />
+        <HeaderDefault title={t('settings.editProfile.title')} onBackPress={handleBackPress} />
 
         <IOScrollView style={{ flex: 1 }}>
           <CardContainer
