@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider, useTheme } from 'rn-vs-lb/theme';
-import { StoreProvider } from './src/store/StoreProvider';
+import { StoreProvider, useRootStore, useStoreData } from './src/store/StoreProvider';
 import { AppNavigator } from './src/navigation';
 import { Theme } from './src/constants/theme';
 import { Host } from 'react-native-portalize';
@@ -10,7 +10,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ForceUpdateWrapper } from './src/components/layouts/ForceUpdateWrapper';
 import { View, StyleSheet } from 'react-native';
 import { BottomAdBanner } from './src/components/ads/BottomAdBanner';
-import { ADS_ENABLED } from './src/constants/links';
 
 import './src/helpers/i18n';
 
@@ -38,15 +37,7 @@ export default function App() {
           <ThemeProvider theme={Theme}>
             <AppStatusBar />
             <StoreProvider>
-              <ForceUpdateWrapper>
-                <View style={styles.appContainer}>
-                  <View style={styles.navigatorContainer}>
-                    <AppNavigator />
-                  </View>
-                  {ADS_ENABLED ? <BottomAdBanner /> : null}
-                </View>
-                <CustomSnackbar />
-              </ForceUpdateWrapper>
+              <AppWithConfig />
             </StoreProvider>
           </ThemeProvider>
         </SafeAreaProvider>
@@ -54,6 +45,23 @@ export default function App() {
     </Host>
   );
 }
+
+const AppWithConfig = () => {
+  const { configStore } = useRootStore();
+  const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
+
+  return (
+    <ForceUpdateWrapper>
+      <View style={styles.appContainer}>
+        <View style={styles.navigatorContainer}>
+          <AppNavigator />
+        </View>
+        {adsEnabled ? <BottomAdBanner /> : null}
+      </View>
+      <CustomSnackbar />
+    </ForceUpdateWrapper>
+  );
+};
 
 const styles = StyleSheet.create({
   appContainer: {

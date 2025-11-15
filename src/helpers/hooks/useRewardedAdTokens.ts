@@ -3,21 +3,13 @@ import { InteractionManager, Platform } from "react-native";
 import { TestIds, useRewardedAd } from "react-native-google-mobile-ads";
 
 import { ensureTrackingTransparencyPermission } from "../../services/privacy/trackingTransparency";
-import { useRootStore } from "../../store/StoreProvider";
+import { useRootStore, useStoreData } from "../../store/StoreProvider";
 import {
   DEFAULT_TOKEN_BALANCE,
   addTokens,
   getTokenBalance,
 } from "../tokenStorage";
-import {
-  ANDROID_AD_UNIT_ID_REWARD,
-  IOS_AD_UNIT_ID_REWARD,
-  TOKEN_REWARD_AMOUNT,
-} from "../../constants/links";
-
-const REWARDED_AD_UNIT_ID = __DEV__
-  ? TestIds.REWARDED
-  : Platform.OS == "ios" ? IOS_AD_UNIT_ID_REWARD : ANDROID_AD_UNIT_ID_REWARD;
+const isIos = Platform.OS === "ios";
 
 type UseRewardedAdTokensResult = {
   balance: number;
@@ -33,14 +25,26 @@ export const useRewardedAdTokens = (
   options: UseRewardedAdTokensOptions = {},
 ): UseRewardedAdTokensResult => {
   const { onRewardEarned } = options;
-  const { uiStore } = useRootStore();
+  const { uiStore, configStore } = useRootStore();
+  const { adsConfig, rewardAmount } = useStoreData(configStore, (store) => ({
+    adsConfig: store.adsConfig,
+    rewardAmount: store.tokenRewardAmount,
+  }));
   const [balance, setBalance] = useState<number>(DEFAULT_TOKEN_BALANCE);
   const isMountedRef = useRef(false);
   const pendingShowTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingShowIntentRef = useRef(false);
 
+  const rewardedAdUnitId = useMemo(() => {
+    if (__DEV__) {
+      return TestIds.REWARDED;
+    }
+
+    return isIos ? adsConfig.IOS_AD_UNIT_ID_REWARD : adsConfig.ANDROID_AD_UNIT_ID_REWARD;
+  }, [adsConfig]);
+
   const { isLoaded, isClosed, isEarnedReward, load, show, error } = useRewardedAd(
-    REWARDED_AD_UNIT_ID,
+    rewardedAdUnitId,
     {
       requestNonPersonalizedAdsOnly: true,
     },
@@ -110,11 +114,11 @@ export const useRewardedAdTokens = (
     if (isEarnedReward) {
       const applyReward = async () => {
         try {
-          const updatedBalance = await addTokens(TOKEN_REWARD_AMOUNT);
+          const updatedBalance = await addTokens(rewardAmount);
           updateBalance(updatedBalance);
           onRewardEarned?.(updatedBalance);
 
-          const rewardMessage = `Награда получена! +${TOKEN_REWARD_AMOUNT} токенов.`;
+          const rewardMessage = `Награда получена! +${rewardAmount} токенов.`;
           uiStore.showSnackbar(rewardMessage, "success");
         } catch (storageError) {
           if (isMountedRef.current) {
@@ -125,7 +129,7 @@ export const useRewardedAdTokens = (
 
       void applyReward();
     }
-  }, [isEarnedReward, onRewardEarned, uiStore, updateBalance]);
+  }, [isEarnedReward, onRewardEarned, rewardAmount, uiStore, updateBalance]);
 
   useEffect(() => {
     if (error) {

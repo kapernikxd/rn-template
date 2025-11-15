@@ -5,6 +5,7 @@ import AuthService from "../../services/auth/AuthService";
 import {
     getAccessToken,
     getAuthUser,
+    getAnonymousUserId,
     getRefreshToken,
     removeAccessToken,
     removeAuthUser,
@@ -92,7 +93,7 @@ export class AuthStore {
     private async setAuthenticatedUser(
         user: AuthUser,
         accessToken: string,
-        options: { refreshToken?: string; provider?: AuthProvider | null } = {},
+        options: { refreshToken?: string; provider?: AuthProvider | null; localUserId?: string } = {},
     ) {
         const provider = options.provider ?? this.lastProvider ?? 'demo';
 
@@ -105,10 +106,11 @@ export class AuthStore {
 
         $api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
 
+        const localUserId = options.localUserId ?? user.id;
         const tasks: Promise<unknown>[] = [
             setAccessToken(accessToken),
             setAuthUser(user),
-            setLocalUserId(user.id),
+            setLocalUserId(localUserId),
         ];
 
         if (options.refreshToken) {
@@ -362,6 +364,13 @@ export class AuthStore {
         let didRestoreSession = false;
         let accessToken: string | null = null;
         let storedUser: AuthUser | null = null;
+        const attemptLoginByUserId = async () => {
+            const success = await this.loginWithStoredUserId();
+            if (success) {
+                didRestoreSession = true;
+            }
+            return success;
+        };
         try {
             [accessToken, storedUser] = await Promise.all([
                 getAccessToken(),
@@ -377,7 +386,7 @@ export class AuthStore {
             const refreshToken = await getRefreshToken();
             if (!refreshToken) {
                 await this.handleTokenRefreshFailure();
-                return false;
+                return await attemptLoginByUserId();
             }
 
             const { data } = await AuthService.refreshAccessTokenRequest(refreshToken);
@@ -395,6 +404,10 @@ export class AuthStore {
 
             if (shouldReset) {
                 await this.handleTokenRefreshFailure();
+                const loginSuccess = await attemptLoginByUserId();
+                if (loginSuccess) {
+                    return true;
+                }
             } else if (storedUser && accessToken) {
                 await this.setAuthenticatedUser(storedUser, accessToken);
                 didRestoreSession = true;
@@ -431,6 +444,26 @@ export class AuthStore {
         }
 
         return null;
+    }
+
+    private async loginWithStoredUserId(): Promise<boolean> {
+        try {
+            const userId = await getAnonymousUserId();
+            const { data } = await AuthService.loginByUserId(userId);
+
+            const normalizedUser = this.normalizeUser(data.user);
+
+            await this.setAuthenticatedUser(normalizedUser, data.accessToken, {
+                refreshToken: data.refreshToken,
+                provider: 'demo',
+                localUserId: userId,
+            });
+
+            return true;
+        } catch (error) {
+            console.warn("Failed to authenticate via stored userId", error);
+            return false;
+        }
     }
 
 }
