@@ -2,7 +2,7 @@
   "expo": {
     "name": "AiAstrology",
     "slug": "expoAiAstrology",
-    "version": "1.4.3",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -15,7 +15,7 @@
     "ios": {
       "usesAppleSignIn": true,
       "supportsTablet": true,
-      "bundleIdentifier": "com.kapernikrs.aipair",
+      "bundleIdentifier": "com.kapernikrs.aiastrology",
       "buildNumber": "1",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "We need access to your photo library so you can upload images to your profile and events.",
@@ -62,7 +62,7 @@
     ],
     "extra": {
       "eas": {
-        "projectId": "08a4b737-a378-4629-8a11-a5c2bcd62c3f"
+        "projectId": "d1def0ec-9920-48b9-9084-f37fabbd67e1"
       }
     }
   }
