@@ -6,7 +6,7 @@ import {
   View,
 } from 'react-native';
 import { CardContainer, HeaderDefault, Spacer, Button } from 'rn-vs-lb';
-import { ThemeType, useTheme } from 'rn-vs-lb/theme';
+import { SIZES, ThemeType, useTheme } from 'rn-vs-lb/theme';
 import { FormProvider, useForm } from 'react-hook-form';
 import { IOScrollView } from 'react-native-intersection-observer';
 
@@ -21,6 +21,7 @@ import {
   saveProfileInfo,
 } from '../../../helpers/profile';
 import type { ProfileInfoData } from '../../../helpers/profile';
+import { useRootStore } from '../../../store/StoreProvider';
 
 export const ProfileInfoView: FC = () => {
   const { theme } = useTheme();
@@ -28,6 +29,7 @@ export const ProfileInfoView: FC = () => {
   const { goBack } = usePortalNavigation();
   const { t } = useTranslation();
   const styles = getStyles({ theme });
+  const { uiStore } = useRootStore();
 
   // ✅ Локальный метод — здесь!
   const methods = useForm<ProfileInfoData>({
@@ -67,7 +69,7 @@ export const ProfileInfoView: FC = () => {
   const onSubmit = handleSubmit(async (values) => {
     try {
       await saveProfileInfo(values);
-      console.log('Profile info saved:', values);
+      uiStore.showSnackbar('Обновлено', 'success');
     } catch (error) {
       console.warn('Failed to save profile info', error);
     }
@@ -85,7 +87,6 @@ export const ProfileInfoView: FC = () => {
   const genderOptions = [
     { label: 'Мужской', value: 'male' },
     { label: 'Женский', value: 'female' },
-    { label: 'Другое', value: 'other' },
   ];
 
   const zodiacOptions = [
@@ -133,12 +134,9 @@ export const ProfileInfoView: FC = () => {
                 label="Имя пользователя"
                 placeholder="Введите имя пользователя"
                 control={methods.control}
-                rules={{
-                  required: 'Укажите имя пользователя',
-                }}
               />
 
-              <Spacer />
+              <Spacer size='md'/>
 
               <Select
                 name="gender"
@@ -146,10 +144,9 @@ export const ProfileInfoView: FC = () => {
                 placeholder="Выберите пол"
                 options={genderOptions}
                 control={methods.control}
-                rules={{ required: 'Укажите пол' }}
               />
 
-              <Spacer />
+              <Spacer size='md'/>
 
               <Select
                 name="zodiacSign"
@@ -160,7 +157,7 @@ export const ProfileInfoView: FC = () => {
                 rules={{ required: 'Выберите знак зодиака' }}
               />
 
-              <Spacer />
+              <Spacer size='md'/>
 
               <TextInput
                 name="age"
@@ -169,7 +166,6 @@ export const ProfileInfoView: FC = () => {
                 control={methods.control}
                 keyboardType="number-pad"
                 rules={{
-                  required: 'Укажите возраст',
                   pattern: {
                     value: /^\d+$/,
                     message: 'Возраст должен содержать только цифры',
@@ -177,7 +173,7 @@ export const ProfileInfoView: FC = () => {
                 }}
               />
 
-              <Spacer />
+              <Spacer size='md'/>
 
               <Select
                 name="maritalStatus"
@@ -185,23 +181,21 @@ export const ProfileInfoView: FC = () => {
                 placeholder="Выберите семейное положение"
                 options={maritalStatusOptions}
                 control={methods.control}
-                rules={{ required: 'Укажите семейное положение' }}
               />
 
               {maritalStatus === 'in_relationship' && (
                 <>
-                  <Spacer />
+                  <Spacer size='md'/>
                   <TextInput
                     name="partnerName"
                     label="Имя партнёра"
                     placeholder="Введите имя партнёра"
                     control={methods.control}
-                    rules={{ required: 'Укажите имя партнёра' }}
                   />
                 </>
               )}
 
-              <Spacer />
+              <Spacer size='md'/>
 
               <Select
                 name="hasChildren"
@@ -209,7 +203,6 @@ export const ProfileInfoView: FC = () => {
                 placeholder="Выберите вариант"
                 options={hasChildrenOptions}
                 control={methods.control}
-                rules={{ required: 'Укажите наличие детей' }}
               />
             </View>
 
@@ -232,16 +225,17 @@ const getStyles = ({ theme }: { theme: ThemeType }) =>
       padding: 0,
       marginVertical: 4,
       borderBottomWidth: 0,
+      paddingHorizontal: 0,
     },
     cardTitleContainer: {
       paddingTop: 0,
     },
     cardContent: {
-      marginHorizontal: 16,
+      marginHorizontal: SIZES.xxs,
       marginVertical: 16,
     },
     footer: {
-      paddingHorizontal: 16,
+      marginHorizontal: SIZES.xxs,
       paddingVertical: 8,
     },
   });
