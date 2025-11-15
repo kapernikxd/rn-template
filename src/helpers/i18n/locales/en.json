@@ -2,6 +2,21 @@
   "welcome": "Welcome",
   "login": "Sign In",
   "logout": "Sign Out",
+  "navigation": {
+    "chats": {
+      "title": "Chats",
+      "messagesTitle": "Messages"
+    },
+    "common": {
+      "back": "Back"
+    },
+    "tabs": {
+      "dashboard": "Home",
+      "library": "Library",
+      "chats": "Chats",
+      "profile": "Profile"
+    }
+  },
   "ads": {
     "rewardedCard": {
       "title": "My tokens",
@@ -175,6 +190,34 @@
       "title": "Edit Profile",
       "subtitle": "Fill in your personal information",
       "fields": {
+        "username": {
+          "label": "Username",
+          "placeholder": "Enter username"
+        },
+        "gender": {
+          "label": "Gender",
+          "placeholder": "Select gender"
+        },
+        "zodiacSign": {
+          "label": "Zodiac sign",
+          "placeholder": "Select zodiac sign"
+        },
+        "age": {
+          "label": "Age",
+          "placeholder": "Enter age"
+        },
+        "maritalStatus": {
+          "label": "Marital status",
+          "placeholder": "Select marital status"
+        },
+        "partnerName": {
+          "label": "Partner name",
+          "placeholder": "Enter partner name"
+        },
+        "hasChildren": {
+          "label": "Do you have children?",
+          "placeholder": "Select an option"
+        },
         "name": {
           "label": "First Name",
           "placeholder": "First name"
@@ -198,7 +241,26 @@
       },
       "validation": {
         "nameRequired": "Enter your first name!",
-        "lastnameRequired": "Enter your last name!"
+        "lastnameRequired": "Enter your last name!",
+        "zodiacSignRequired": "Select a zodiac sign",
+        "ageDigits": "Age must contain digits only"
+      },
+      "options": {
+        "gender": {
+          "male": "Male",
+          "female": "Female"
+        },
+        "maritalStatus": {
+          "single": "Single",
+          "inRelationship": "In a relationship"
+        },
+        "hasChildren": {
+          "no": "No",
+          "yes": "Yes"
+        }
+      },
+      "snackbar": {
+        "updated": "Profile updated"
       }
     },
     "account": {
@@ -308,6 +370,68 @@
         "modalDescription": "All your data, including your profile, events, and chat history, will be permanently deleted. This process is irreversible and will be completed within 24 hours. Are you sure you want to continue?",
         "requestSent": "Your request has been sent. The account will be deleted within 24 hours."
       }
+    }
+  },
+  "notifications": {
+    "aiBots": {
+      "mainPageError": "Failed to load the list of AI bots. Please try again later.",
+      "singleLoadError": "Failed to load the AI bot",
+      "myBotsError": "Failed to load your AI bots",
+      "subscriptionsError": "Failed to load AI bot subscriptions",
+      "followUpdateError": "Failed to update subscription status",
+      "createSuccess": "AI bot created",
+      "createError": "Failed to create AI bot",
+      "authRequired": "Please sign in",
+      "updateSuccess": "AI bot updated",
+      "updateError": "Failed to update AI bot",
+      "deleteSuccess": "AI bot deleted",
+      "subscriptionError": "Failed to update subscription",
+      "photosSaveSuccess": "Photos saved",
+      "photosSaveError": "Failed to upload photos",
+      "photosDeleteSuccess": "Photos deleted",
+      "photosDeleteError": "Failed to delete photos"
+    },
+    "profile": {
+      "updateSuccess": "Profile updated",
+      "followError": "Failed to update subscription",
+      "blockSuccess": "User blocked",
+      "reportSuccess": "Report sent",
+      "deleteRequestSent": "Request submitted",
+      "noChanges": "No changes made",
+      "photoUploadSuccess": "Photo uploaded",
+      "photoUploadError": "Failed to upload photo",
+      "noPhotoToRemove": "No photo to remove",
+      "invalidFilePath": "Invalid file path",
+      "photoDeleteSuccess": "Photo deleted",
+      "photoDeleteError": "Failed to delete photo"
+    }
+  },
+  "reports": {
+    "reasons": {
+      "user": {
+        "spamOrFraud": "Spam or fraud",
+        "harassmentOrBullying": "Harassment or bullying",
+        "inappropriateContent": "Inappropriate content",
+        "fakeProfile": "Fake profile"
+      },
+      "post": {
+        "spamOrMisleading": "Spam or misleading content",
+        "hateOrDiscrimination": "Hate or discrimination",
+        "violenceOrThreats": "Violence or threats",
+        "sexualContent": "Sexual content",
+        "harassmentOrBullying": "Harassment or bullying"
+      },
+      "common": {
+        "other": "Other"
+      }
+    }
+  },
+  "errors": {
+    "common": {
+      "generic": "Something went wrong. Please try again later."
+    },
+    "imageGeneration": {
+      "noImageSelected": "No image selected"
     }
   },
   "components": {
@@ -537,6 +661,13 @@
   },
   "screens": {
     "dashboard": {
+      "header": {
+        "title": "AiAstrology",
+        "subtitle": "Daily horoscope guidance",
+        "accessibility": {
+          "openFilters": "Open filters"
+        }
+      },
       "tabs": {
         "all": "All"
       },
@@ -551,6 +682,66 @@
           "closePreview": "Close preview"
         },
         "uploadPrompt": "Tap here to upload a photo you want to bring to life!"
+      },
+      "horoscope": {
+        "dateFormat": "dddd, D MMMM",
+        "loading": "Preparing your horoscope...",
+        "errorTitle": "Failed to load the horoscope.",
+        "retry": "Try again",
+        "retryAccessibility": "Try to fetch the horoscope again",
+        "emptyPlaceholder": "Your horoscope will appear here as soon as it's ready.",
+        "fetchError": "Unable to retrieve the horoscope",
+        "card": {
+          "status": {
+            "loading": "Updating forecast...",
+            "unlocked": "Ready",
+            "locked": "Locked"
+          },
+          "accessibility": {
+            "open": "Open horoscope: {{title}}"
+          },
+          "lockedHint": "Tap to unlock the full forecast."
+        },
+        "cards": {
+          "career": {
+            "title": "Career",
+            "description": "Insights to help you plan your professional steps."
+          },
+          "love": {
+            "title": "Love",
+            "description": "Focus on relationships and emotional balance."
+          },
+          "health": {
+            "title": "Health",
+            "description": "Tips to maintain energy and wellbeing."
+          },
+          "family": {
+            "title": "Family",
+            "description": "Guidance for home and close connections."
+          }
+        },
+        "tabs": {
+          "yesterday": "Yesterday",
+          "today": "Today",
+          "tomorrow": "Tomorrow",
+          "week": "This week",
+          "month": "This month"
+        },
+        "modal": {
+          "defaultTitle": "Horoscope",
+          "closeAccessibility": "Close horoscope",
+          "emptyState": "No horoscope for this category yet today."
+        }
+      },
+      "profileBanner": {
+        "title": "Make your horoscope personal",
+        "partial": "You've completed {{percentage}}% of your profile. Add a bit more for a sharper forecast.",
+        "initial": "Add some details about yourself to make the horoscope even more personal.",
+        "accessibility": {
+          "open": "Fill out your profile for a personal horoscope",
+          "close": "Hide profile completion hint"
+        },
+        "progressLabel": "Completed: {{percentage}}%"
       }
     },
     "library": {

@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from 'rn-vs-lb/theme';
+import { useTranslation } from 'react-i18next';
 
 
 type DashboardHeaderProps = {
@@ -15,6 +16,7 @@ type DashboardHeaderProps = {
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onPressFilters }) => {
   const { theme, typography, sizes } = useTheme();
+  const { t } = useTranslation();
 
   const styles = useMemo(
     () =>
@@ -53,14 +55,14 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onPressFilters
   return (
     <View style={styles.container}>
       <View style={styles.left}>
-        <Text style={styles.logo}>AiAstrology</Text>
-        <Text style={styles.subtitle}>Гороскоп на каждый день</Text>
+        <Text style={styles.logo}>{t('screens.dashboard.header.title')}</Text>
+        <Text style={styles.subtitle}>{t('screens.dashboard.header.subtitle')}</Text>
       </View>
       {/* <Pressable
         onPress={onPressFilters}
         style={styles.button}
         accessibilityRole="button"
-        accessibilityLabel="Открыть фильтры"
+        accessibilityLabel={t('screens.dashboard.header.accessibility.openFilters')}
         hitSlop={8}
       >
         <Feather name="sliders" size={20} color={theme.title} />

@@ -8,6 +8,7 @@ import type {
 } from "../../types/imageGeneration";
 import { getLocalUserId } from "../../helpers/storageHelper";
 import { BaseStore, type StoreListener } from "./BaseStore";
+import i18n from "../../helpers/i18n";
 
 export class ImageGenerationStore {
   private readonly baseStore = new BaseStore();
@@ -101,12 +102,12 @@ export class ImageGenerationStore {
       return error.message;
     }
 
-    return "Произошла ошибка. Попробуйте позже.";
+    return i18n.t('errors.common.generic');
   }
 
   async submitEditRequest(payload: EditImageRequestPayload): Promise<boolean> {
     if (!this.selectedImages.length) {
-      this.submitError = "Не выбрано изображение";
+      this.submitError = i18n.t('errors.imageGeneration.noImageSelected');
       this.notify();
       return false;
     }

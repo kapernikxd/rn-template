@@ -22,6 +22,30 @@
     }
   },
   "logout": "Esci",
+  "navigation": {
+    "tabs": {
+      "dashboard": "Home",
+      "library": "Biblioteca",
+      "chats": "Chat",
+      "profile": "Profilo"
+    }
+  },
+  "notifications": {
+    "profile": {
+      "updateSuccess": "Profilo aggiornato",
+      "followError": "Impossibile aggiornare l'abbonamento",
+      "blockSuccess": "Utente bloccato",
+      "reportSuccess": "Segnalazione inviata",
+      "deleteRequestSent": "Richiesta inviata",
+      "noChanges": "Nessuna modifica effettuata",
+      "photoUploadSuccess": "Foto caricata",
+      "photoUploadError": "Impossibile caricare la foto",
+      "noPhotoToRemove": "Nessuna foto da rimuovere",
+      "invalidFilePath": "Percorso file non valido",
+      "photoDeleteSuccess": "Foto eliminata",
+      "photoDeleteError": "Impossibile eliminare la foto"
+    }
+  },
   "common": {
     "cancel": "Annulla",
     "update": "Aggiorna",
@@ -837,7 +861,7 @@
         "clearHistory": "Cancella cronologia chat"
       }
     },
-    "docs": {
+  "docs": {
       "terms": {
         "title": "Termini d'uso",
         "sections": {
@@ -902,6 +926,27 @@
             }
           }
         }
+      }
+    }
+  }
+  ,
+  "reports": {
+    "reasons": {
+      "user": {
+        "spamOrFraud": "Spam o frode",
+        "harassmentOrBullying": "Molestie o bullismo",
+        "inappropriateContent": "Contenuto inappropriato",
+        "fakeProfile": "Profilo falso"
+      },
+      "post": {
+        "spamOrMisleading": "Spam o contenuto fuorviante",
+        "hateOrDiscrimination": "Odio o discriminazione",
+        "violenceOrThreats": "Violenza o minacce",
+        "sexualContent": "Contenuto sessuale",
+        "harassmentOrBullying": "Molestie o bullismo"
+      },
+      "common": {
+        "other": "Altro"
       }
     }
   }

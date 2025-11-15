@@ -5,15 +5,9 @@ import {
 } from 'react-native';
 import { useTheme } from 'rn-vs-lb/theme';
 import { TabBarAi as TabBar } from 'rn-vs-lb';
+import { useTranslation } from 'react-i18next';
 
-
-const tabs = [
-  { key: 'yesterday', label: 'Вчера' },
-  { key: 'today', label: 'Сегодня' },
-  { key: 'tomorrow', label: 'Завтра' },
-  { key: 'week', label: 'На неделю' },
-  { key: 'month', label: 'На месяц' },
-];
+const TAB_KEYS = ['yesterday', 'today', 'tomorrow', 'week', 'month'] as const;
 
 type HoroscopeTabBarProps = {
   activeIndex: number;
@@ -22,6 +16,7 @@ type HoroscopeTabBarProps = {
 
 export const HoroscopeTabBar: React.FC<HoroscopeTabBarProps> = ({ activeIndex, onChange }) => {
   const { theme, typography, sizes } = useTheme();
+  const { t } = useTranslation();
 
   const styles = useMemo(
     () =>
@@ -36,6 +31,15 @@ export const HoroscopeTabBar: React.FC<HoroscopeTabBarProps> = ({ activeIndex, o
         },
       }),
     [theme, typography, sizes],
+  );
+
+  const tabs = useMemo(
+    () =>
+      TAB_KEYS.map((key) => ({
+        key,
+        label: t(`screens.dashboard.horoscope.tabs.${key}`),
+      })),
+    [t],
   );
 
   return (

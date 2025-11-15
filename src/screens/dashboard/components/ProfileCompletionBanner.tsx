@@ -10,6 +10,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme, type ThemeType, type SizesType } from 'rn-vs-lb/theme';
 import type { TypographytType } from 'rn-vs-lb/theme/styles/styleSheet';
+import { useTranslation } from 'react-i18next';
 
 export type ProfileCompletionBannerProps = {
   completion: number;
@@ -95,6 +96,7 @@ export const ProfileCompletionBanner: React.FC<ProfileCompletionBannerProps> = (
   onClose,
 }) => {
   const { theme, sizes, typography } = useTheme();
+  const { t } = useTranslation();
   const styles = useMemo(() => createStyles({ theme, sizes, typography }), [
     theme,
     sizes,
@@ -105,9 +107,13 @@ export const ProfileCompletionBanner: React.FC<ProfileCompletionBannerProps> = (
   const percentage = Math.round(normalizedCompletion * 100);
   const progressWidth = percentage > 0 ? Math.max(percentage, 8) : 0;
 
-  const description = percentage > 0
-    ? `Вы заполнили ${percentage}% профиля. Добавьте ещё немного, чтобы прогноз стал точнее.`
-    : 'Добавьте немного информации о себе, чтобы гороскоп стал ещё более персональным.';
+  const description = useMemo(
+    () =>
+      percentage > 0
+        ? t('screens.dashboard.profileBanner.partial', { percentage })
+        : t('screens.dashboard.profileBanner.initial'),
+    [percentage, t],
+  );
 
   const handleClose = useCallback(
     (event: GestureResponderEvent) => {
@@ -121,7 +127,7 @@ export const ProfileCompletionBanner: React.FC<ProfileCompletionBannerProps> = (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel="Заполнить профиль для персонального гороскопа"
+      accessibilityLabel={t('screens.dashboard.profileBanner.accessibility.open')}
       style={({ pressed }) => [styles.pressable, pressed && styles.pressed]}
     >
       <LinearGradient
@@ -136,14 +142,14 @@ export const ProfileCompletionBanner: React.FC<ProfileCompletionBannerProps> = (
           </View>
 
           <View style={styles.textContainer}>
-            <Text style={styles.title}>Сделайте гороскоп персональным</Text>
+            <Text style={styles.title}>{t('screens.dashboard.profileBanner.title')}</Text>
             <Text style={styles.subtitle}>{description}</Text>
           </View>
 
           <Pressable
             onPress={handleClose}
             accessibilityRole="button"
-            accessibilityLabel="Скрыть подсказку о заполнении профиля"
+            accessibilityLabel={t('screens.dashboard.profileBanner.accessibility.close')}
             hitSlop={8}
             style={({ pressed }) => [styles.closeButton, pressed && styles.closeButtonPressed]}
           >
@@ -152,7 +158,9 @@ export const ProfileCompletionBanner: React.FC<ProfileCompletionBannerProps> = (
         </View>
 
         <View style={styles.progressContainer}>
-          <Text style={styles.progressLabel}>Готово: {percentage}%</Text>
+          <Text style={styles.progressLabel}>
+            {t('screens.dashboard.profileBanner.progressLabel', { percentage })}
+          </Text>
           <View style={styles.progressBar}>
             <View style={[styles.progressFill, { width: `${progressWidth}%` }]} />
           </View>

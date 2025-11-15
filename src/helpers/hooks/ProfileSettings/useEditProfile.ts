@@ -8,7 +8,7 @@ import { useRootStore } from '../../../store/StoreProvider';
 import { useImageCompressor, usePortalNavigation } from '../../../helpers/hooks';
 import { UpdateProfileProps } from '../../../types/profile';
 import { getUserAvatar } from '../../../helpers/utils/user';
-import { LARGE_FILE_ERROR } from '../../../constants';
+import { useTranslation } from 'react-i18next';
 
 type EditProfileFormValues = Pick<
   UpdateProfileProps,
@@ -30,6 +30,7 @@ export const useEditProfile = () => {
   const { profileStore, uiStore } = useRootStore();
   const { compressImage } = useImageCompressor();
   const { goBack } = usePortalNavigation();
+  const { t } = useTranslation();
 
   const [refreshing, setRefreshing] = useState(false);
   const [previewVisible, setPreviewVisible] = useState(false);
@@ -66,19 +67,19 @@ export const useEditProfile = () => {
         ) as Partial<EditProfileFormValues>;
 
         if (Object.keys(changedFields).length === 0) {
-          uiStore.showSnackbar('Ничего не изменилось', 'info');
+          uiStore.showSnackbar(t('notifications.profile.noChanges'), 'info');
           return;
         }
 
         await profileStore.updateProfile(changedFields as UpdateProfileProps);
-        uiStore.showSnackbar('Обновлено', 'success');
+        uiStore.showSnackbar(t('notifications.profile.updateSuccess'), 'success');
       } catch (e) {
-        uiStore.showSnackbar('Произошла ошибка', 'error');
+        uiStore.showSnackbar(t('errors.common.generic'), 'error');
       } finally {
         setIsSubmitting(false);
       }
     }),
-    [methods, initialValues, profileStore, uiStore],
+    [methods, initialValues, profileStore, t, uiStore],
   );
 
   const reset = useCallback(() => {
@@ -122,7 +123,7 @@ export const useEditProfile = () => {
 
       const MAX = 40 * 1024 * 1024;
       if (asset.fileSize && asset.fileSize > MAX) {
-        uiStore.showSnackbar(LARGE_FILE_ERROR, 'warning');
+        uiStore.showSnackbar(t('components.form.imageUploader.errors.largeFile'), 'warning');
         return;
       }
 
@@ -161,23 +162,23 @@ export const useEditProfile = () => {
 
       await profileStore.uploadProfilePhoto(formData);
       await profileStore.fetchMyProfile();
-      uiStore.showSnackbar('Фото успешно загружено', 'success');
+      uiStore.showSnackbar(t('notifications.profile.photoUploadSuccess'), 'success');
     } catch (error) {
       console.error('onPressSelect error:', error);
-      uiStore.showSnackbar('Не удалось загрузить фото', 'error');
+      uiStore.showSnackbar(t('notifications.profile.photoUploadError'), 'error');
     }
-  }, [compressImage, profileStore, uiStore]);
+  }, [compressImage, profileStore, t, uiStore]);
 
   const onPressRemove = useCallback(async () => {
     try {
       const fullPath = profileStore?.myProfile?.avatarFile;
       if (!fullPath) {
-        uiStore.showSnackbar('Нет фото для удаления', 'warning');
+        uiStore.showSnackbar(t('notifications.profile.noPhotoToRemove'), 'warning');
         return;
       }
       const fileName = fullPath.split('/').pop();
       if (!fileName) {
-        uiStore.showSnackbar('Неверный путь к файлу', 'error');
+        uiStore.showSnackbar(t('notifications.profile.invalidFilePath'), 'error');
         return;
       }
 
@@ -187,12 +188,12 @@ export const useEditProfile = () => {
       await profileStore.deleteProfilePhoto(fileName);
       await profileStore.fetchMyProfile();
 
-      uiStore.showSnackbar('Фото успешно удалено', 'success');
+      uiStore.showSnackbar(t('notifications.profile.photoDeleteSuccess'), 'success');
     } catch (error) {
       console.error('onPressRemove error:', error);
-      uiStore.showSnackbar('Не удалось удалить фото', 'error');
+      uiStore.showSnackbar(t('notifications.profile.photoDeleteError'), 'error');
     }
-  }, [profileStore, uiStore]);
+  }, [profileStore, t, uiStore]);
 
   useEffect(() => {
     onRefresh();

@@ -5,6 +5,7 @@ import { useLinkBuilder } from '@react-navigation/native';
 import { PlatformPressable } from '@react-navigation/elements';
 import { MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaInsetsContext, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
 
 import { ChatsStack } from './stacks/ChatsStack';
 import { DashboardStack } from './stacks/DashboardStack';
@@ -19,17 +20,17 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 
 type TabConfig = {
   name: keyof MainTabParamList;
-  label: string;
+  labelKey: string;
   icon: keyof typeof MaterialIcons.glyphMap;
   component: ComponentType;
   hidden?: boolean;
 };
 
 const TABS: TabConfig[] = [
-  { name: 'DashboardTab', label: 'Главная', icon: 'dashboard', component: DashboardStack },
-  { name: 'LibraryTab', label: 'Библиотека', icon: 'photo-library', component: LibraryStack, hidden: true },
-  { name: 'ChatsTab', label: 'Чаты', icon: 'chat-bubble-outline', component: ChatsStack, hidden: true },
-  { name: 'ProfileTab', label: 'Профиль', icon: 'settings', component: ProfileStack },
+  { name: 'DashboardTab', labelKey: 'navigation.tabs.dashboard', icon: 'dashboard', component: DashboardStack },
+  { name: 'LibraryTab', labelKey: 'navigation.tabs.library', icon: 'photo-library', component: LibraryStack, hidden: true },
+  { name: 'ChatsTab', labelKey: 'navigation.tabs.chats', icon: 'chat-bubble-outline', component: ChatsStack, hidden: true },
+  { name: 'ProfileTab', labelKey: 'navigation.tabs.profile', icon: 'settings', component: ProfileStack },
 ];
 
 type MainTabBarProps = BottomTabBarProps & {
@@ -46,6 +47,7 @@ const MainTabBar = ({ state, descriptors, navigation, insets, showLabels = true 
   const { buildHref } = useLinkBuilder();
   const isWeb = Platform.OS === 'web';
   const activeRouteName = state.routes[state.index]?.name;
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (activeRouteName === 'ChatsTab' && hasUserNewMessage) {
@@ -67,6 +69,8 @@ const MainTabBar = ({ state, descriptors, navigation, insets, showLabels = true 
       {state.routes.map((route, index) => {
         const tab = TABS.find(({ name }) => name === route.name);
         if (!tab || tab.hidden) return null;
+
+        const label = t(tab.labelKey);
 
         const isFocused = state.index === index;
         const iconColor = isFocused ? isDark ? theme.black : theme.white : theme.black;
@@ -117,7 +121,7 @@ const MainTabBar = ({ state, descriptors, navigation, insets, showLabels = true 
 
             {showLabels ? (
               <Text style={[styles.label, isFocused && [styles.labelActive, { color: theme.primaryLight }]]}>
-                {tab.label}
+                {label}
               </Text>
             ) : null}
           </View>
@@ -135,6 +139,7 @@ export const MainTabsNavigator = ({ showLabels = true }: MainTabsNavigatorProps)
   const insets = useSafeAreaInsets();
   const { configStore } = useRootStore();
   const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
+  const { t } = useTranslation();
 
   const tabBarScreenOptions = useMemo(
     () => ({
@@ -150,7 +155,12 @@ export const MainTabsNavigator = ({ showLabels = true }: MainTabsNavigatorProps)
         tabBar={(props) => <MainTabBar {...props} showLabels={showLabels} />}
       >
         {TABS.map((tab) => (
-          <Tab.Screen key={tab.name} name={tab.name} component={tab.component} options={{ title: tab.label }} />
+          <Tab.Screen
+            key={tab.name}
+            name={tab.name}
+            component={tab.component}
+            options={{ title: t(tab.labelKey) }}
+          />
         ))}
       </Tab.Navigator>
     </SafeAreaInsetsContext.Provider>
