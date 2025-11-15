@@ -219,7 +219,7 @@ const getStyles = ({
       minHeight: 56,
       borderRadius: sizes.md,
       borderWidth: 1,
-      borderColor: theme.divider,
+      borderColor: theme.border,
       backgroundColor: theme.card,
       justifyContent: 'center',
       alignItems: 'center',
