@@ -1,5 +1,5 @@
-import { FC, useCallback, useEffect } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { FC, useCallback, useEffect, useMemo } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import {
   CardContainer,
   ListItem,
@@ -8,7 +8,8 @@ import {
   ThemeSwitcher,
 } from 'rn-vs-lb';
 import { useTheme, ThemeType, SizesType, GlobalStyleSheetType, SIZES } from 'rn-vs-lb/theme';
-import { ADS_ENABLED, appVersion } from '../../constants/links';
+import { appVersion } from '../../constants/links';
+import * as Clipboard from 'expo-clipboard';
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { RewardedAdSettingsCard } from '../../components/ads/components/RewardedAdSettingsCard';
@@ -19,9 +20,10 @@ import { FontAwesome } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { ProfileNav, ROUTES } from '../../navigation';
 import { useNavigation } from '@react-navigation/native';
+import { useActions } from '../../helpers/hooks';
 
 type SettingsRoute =
-    | typeof ROUTES.ProfleSettings
+  | typeof ROUTES.ProfleSettings
 
 
 
@@ -30,11 +32,14 @@ export const SettingsScreen: FC = () => {
   const { setColors } = useSafeAreaColors();
   const { t } = useTranslation();
   const navigation = useNavigation<ProfileNav>();
+  const { handleShareAppLink } = useActions();
 
 
   const styles = getStyles({ globalStyleSheet, theme, sizes });
-  const rootStore = useRootStore();
-  const userId = useStoreData(rootStore.identityStore, (store) => store.userId);
+  const { uiStore, identityStore, configStore } = useRootStore();
+  const userId = useStoreData(identityStore, (store) => store.userId);
+  const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
+  const configUrls = useStoreData(configStore, (store) => store.urls);
 
 
   const navigateTo = useCallback(
@@ -48,17 +53,28 @@ export const SettingsScreen: FC = () => {
       topColor: theme.background,
       bottomColor: theme.background,
     });
-    void rootStore.identityStore.ensureUserId();
-  }, [rootStore.identityStore, setColors, theme.background]);
+    void identityStore.ensureUserId();
+  }, [identityStore, setColors, theme.background]);
 
 
   const PROFILE = [
     { icon: 'user-o', label: t('settings.section.userTitle'), action: navigateTo(ROUTES.ProfleSettings) },
   ];
 
-  const COPY_LINK = [
-    { icon: 'copy', label: t('settings.section.copyAppLink'), action: () => console.log('скопировано') },
-  ];
+
+    const COPY_LINK = useMemo(
+      () => [
+          { icon: 'copy', label: t('settings.section.copyAppLink'), action: handleShareAppLink },
+      ],
+      [handleShareAppLink, t],
+  );
+
+  const onCopy = async () => {
+    if (userId) {
+      await Clipboard.setStringAsync(userId);
+      uiStore.showSnackbar(t('common.copy'), 'success');
+    }
+  }
 
   return (
     <View style={styles.content}>
@@ -69,19 +85,22 @@ export const SettingsScreen: FC = () => {
             style={styles.section}
           >
             <View style={styles.cardWithoutH}>
-              <SettingsListItem
-                label={t('settings.section.userID')}
-                laberColor={theme.text}
-                value={userId ? truncateText(userId, 18) : '—'}
-                valueTone='muted'
-              />
+              <Pressable onPress={onCopy} style={styles.cardWithoutH}>
+                <SettingsListItem
+                  label={t('settings.section.userID')}
+                  laberColor={theme.text}
+                  value={userId ? truncateText(userId, 18) : '—'}
+                  valueTone='muted'
+                />
+              </Pressable>
+
               {PROFILE.map((item, index) => (
                 <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine />
               ))}
               <Spacer size='xxs' />
             </View>
           </SettingsSection>
-          {ADS_ENABLED &&
+          {adsEnabled &&
             <SettingsSection
               title={t('settings.section.adsTitle')}
               style={styles.section}

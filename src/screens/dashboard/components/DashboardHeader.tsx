@@ -56,7 +56,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onPressFilters
         <Text style={styles.logo}>AiAstrology</Text>
         <Text style={styles.subtitle}>Гороскоп на каждый день</Text>
       </View>
-      <Pressable
+      {/* <Pressable
         onPress={onPressFilters}
         style={styles.button}
         accessibilityRole="button"
@@ -64,7 +64,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onPressFilters
         hitSlop={8}
       >
         <Feather name="sliders" size={20} color={theme.title} />
-      </Pressable>
+      </Pressable> */}
     </View>
   );
 };

@@ -253,7 +253,7 @@ export const DashboardScreen = () => {
         contentContainerStyle={styles.scrollContent}
       >
         <DashboardHeader onPressFilters={handleOpenFilters} />
-        <HoroscopeTabBar activeIndex={activeTab} onChange={handleTabPress} />
+        {/* <HoroscopeTabBar activeIndex={activeTab} onChange={handleTabPress} /> */}
         <HoroscopeDescription
           horoscope={horoscopes.general}
           isLoading={Boolean(loadingByCategory.general)}
