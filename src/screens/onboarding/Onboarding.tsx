@@ -1,461 +1,274 @@
-import React, { useMemo, useRef, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated, Easing, Image } from "react-native";
-import Swiper from "react-native-swiper";
+import React, { useMemo, useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from 'rn-vs-lb/theme';
-import { SafeAreaView } from "react-native-safe-area-context";
-import { ONBOARDING_PHOTO_1, ONBOARDING_PHOTO_2, ONBOARDING_PHOTO_3, ONBOARDING_PHOTO_4 } from "../../helpers/utils/onboarding";
-import { useTranslation } from "react-i18next";
-import { LANGUAGE_OPTIONS, normalizeLanguageCode } from "../../constants/languages";
+import { useTranslation } from 'react-i18next';
 
-interface Slide {
-  key: SlideKey;
-  title: string;
-  description: string;
-  uri?: string;
-}
+import { LANGUAGE_OPTIONS, normalizeLanguageCode } from '../../constants/languages';
+import { ZODIAC_OPTIONS } from '../../constants/zodiac';
+import { mergeProfileInfo } from '../../helpers/profile/profileInfoStorage';
+import { setPreferredLanguage } from '../../helpers/i18n/languageStorage';
 
-type SlideKey = "language" | "welcome" | "memory" | "character" | "start";
-
-const SLIDE_CONFIG: Array<{ key: SlideKey; uri?: string }> = [
-  { key: "language" },
-  { key: "welcome", uri: ONBOARDING_PHOTO_1 },
-  { key: "memory", uri: ONBOARDING_PHOTO_2 },
-  { key: "character", uri: ONBOARDING_PHOTO_3 },
-  { key: "start", uri: ONBOARDING_PHOTO_4 },
-];
+type OnboardingStep = 'language' | 'zodiac';
 
 interface Props {
   onFinish: () => void;
 }
 
-const Onboarding: React.FC<Props> = ({ onFinish }) => {
-  const swiperRef = useRef<Swiper>(null);
-  const { typography, theme } = useTheme();
-  const { i18n, t } = useTranslation();
-  const { width, height } = Dimensions.get("window");
-  const styles = getStyles({ width, height, theme, typography });
+const STEPS: OnboardingStep[] = ['language', 'zodiac'];
 
-  const slides: Slide[] = useMemo(
-    () =>
-      SLIDE_CONFIG.map(({ key, uri }) => ({
-        key,
-        uri,
-        title: t(`screens.onboarding.slides.${key}.title`),
-        description: t(`screens.onboarding.slides.${key}.description`),
-      })),
-    [t],
-  );
+const Onboarding: React.FC<Props> = ({ onFinish }) => {
+  const { theme, typography, sizes } = useTheme();
+  const { t, i18n } = useTranslation();
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const resolvedLanguageCode =
     normalizeLanguageCode(i18n.resolvedLanguage) ??
     normalizeLanguageCode(i18n.language) ??
     LANGUAGE_OPTIONS[0].code;
-  const [selectedLanguage, setSelectedLanguage] = useState(resolvedLanguageCode);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(resolvedLanguageCode);
+  const [selectedZodiac, setSelectedZodiac] = useState<string | null>(null);
 
-  const handleNext = (index: number) => {
-    if (index === slides.length - 1) {
+  const styles = useMemo(
+    () => getStyles({ theme, sizes }),
+    [sizes, theme],
+  );
+
+  const step = STEPS[currentStepIndex];
+  const totalSteps = STEPS.length;
+
+  const stepTitle =
+    step === 'language'
+      ? t('screens.onboarding.steps.language.title')
+      : t('screens.onboarding.steps.zodiac.title');
+  const stepDescription =
+    step === 'language'
+      ? t('screens.onboarding.steps.language.description')
+      : t('screens.onboarding.steps.zodiac.description');
+
+  const isNextDisabled =
+    step === 'language'
+      ? !selectedLanguage
+      : !selectedZodiac || isSubmitting;
+
+  const handleLanguageSelect = (languageCode: string) => {
+    setSelectedLanguage(languageCode);
+    void i18n.changeLanguage(languageCode);
+  };
+
+  const handleNext = async () => {
+    if (step === 'language') {
+      setCurrentStepIndex(1);
+      return;
+    }
+
+    if (!selectedLanguage || !selectedZodiac || isSubmitting) {
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      await Promise.all([
+        setPreferredLanguage(selectedLanguage),
+        mergeProfileInfo({ zodiacSign: selectedZodiac }),
+      ]);
       onFinish();
-    } else {
-      swiperRef.current?.scrollBy(1, true);
+    } catch (error) {
+      console.warn('Failed to complete onboarding', error);
+      setIsSubmitting(false);
     }
   };
 
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const progress = useRef(new Animated.Value(0)).current;
-  const thumbScale = useRef(new Animated.Value(1)).current;
-
-  const totalSlides = slides.length;
-
-  const animateTo = (ratio: number) => {
-    Animated.parallel([
-      Animated.spring(progress, {
-        toValue: ratio,           // доля пройдённого пути
-        useNativeDriver: false,
-        bounciness: 10,
-        speed: 12,
-      }),
-      Animated.sequence([
-        Animated.timing(thumbScale, {
-          toValue: 1.15,
-          duration: 120,
-          easing: Easing.out(Easing.quad),
-          useNativeDriver: true,
-        }),
-        Animated.timing(thumbScale, {
-          toValue: 1,
-          duration: 160,
-          easing: Easing.inOut(Easing.quad),
-          useNativeDriver: true,
-        }),
-      ]),
-    ]).start();
-  };
-
-  const handleIndexChange = (i: number) => {
-    setCurrentIndex(i);
-    const ratio = (i + 1) / totalSlides;
-    animateTo(ratio);
+  const handleBack = () => {
+    if (currentStepIndex > 0) {
+      setCurrentStepIndex((index) => index - 1);
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Swiper
-        ref={swiperRef}
-        loop={false}
-        showsPagination
-        dot={<View style={styles.dot} />}
-        activeDot={<View style={styles.activeDot} />}
-        paginationStyle={styles.pagination}
-        onIndexChanged={handleIndexChange}
-        renderPagination={() => {
-          const widthAnim = progress.interpolate({
-            inputRange: [0, 1],
-            outputRange: ["0%", "100%"],
-          });
+      <View style={styles.header}>
+        <Text style={styles.stepCounter}>
+          {t('screens.onboarding.stepCounter', { current: currentStepIndex + 1, total: totalSteps })}
+        </Text>
+        <Text style={[typography.titleH3, styles.title]}>{stepTitle}</Text>
+        <Text style={[typography.body, styles.description]}>{stepDescription}</Text>
+      </View>
 
-          return (
-            <View style={styles.progressWrap}>
-              <Text style={styles.progressText}>
-                {currentIndex + 1} / {totalSlides}
-              </Text>
-
-              <View style={styles.progressBarBg}>
-                {/* Сегменты фона для визуального ритма */}
-                <View style={styles.segmentsRow}>
-                  {Array.from({ length: totalSlides }).map((_, i) => (
-                    <View key={i} style={styles.segment} />
-                  ))}
-                </View>
-
-                {/* Заполнение с анимацией ширины */}
-                <Animated.View style={[styles.progressBarFill, { width: widthAnim }]}>
-                  {/* Бегунок на конце заполнения */}
-                  <Animated.View style={[styles.thumb, { transform: [{ scale: thumbScale }] }]} />
-                </Animated.View>
-              </View>
-            </View>
-          );
-        }}
+      <ScrollView
+        style={styles.scroll}
+        contentContainerStyle={styles.content}
+        keyboardShouldPersistTaps="handled"
       >
-        {slides.map((slide, index) => (
-          <View
-            key={slide.key}
-            style={[styles.slide, slide.key === "language" && styles.languageSlide]}
-          >
-            {slide.key !== "language" && slide.uri ? (
-              <Image source={{ uri: slide.uri }} style={styles.illustration} />
-            ) : null}
+        {step === 'language' ? (
+          <View style={styles.optionsGrid}>
+            {LANGUAGE_OPTIONS.map((language) => {
+              const isSelected = language.code === selectedLanguage;
 
-            {slide.key === "language" ? (
-              <View style={styles.languageContent}>
-                <Text style={[typography.titleH3, styles.title]}>{slide.title}</Text>
-                <Text style={[typography.body, styles.description]}>{slide.description}</Text>
-
-                <View style={styles.languageList}>
-                  {LANGUAGE_OPTIONS.map((language) => {
-                    const isSelected = language.code === selectedLanguage;
-
-                    return (
-                      <TouchableOpacity
-                        key={language.code}
-                        accessibilityRole="button"
-                        onPress={() => {
-                          setSelectedLanguage(language.code);
-                          void i18n.changeLanguage(language.code);
-                        }}
-                        style={[styles.languageOption, isSelected && styles.languageOptionSelected]}
-                        activeOpacity={0.8}
-                      >
-                        <Text style={[styles.languageOptionLabel, isSelected && styles.languageOptionLabelSelected]}>
-                          {t(language.translationKey, { defaultValue: language.fallbackLabel })}
-                        </Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
-              </View>
-            ) : (
-              <View style={styles.content}>
-                <Text style={[typography.titleH3, styles.title]}>{slide.title}</Text>
-                <Text style={[typography.body, styles.description]}>{slide.description}</Text>
-              </View>
-            )}
-
-            {/* Футер с действиями */}
-            <View style={styles.footer}>
-              <TouchableOpacity
-                accessibilityRole="button"
-                onPress={onFinish}
-                style={styles.skipBtn}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-              >
-                <Text style={styles.skipText}>{t('screens.onboarding.skip')}</Text>
-              </TouchableOpacity>
-
-              <View style={styles.divider} />
-
-              <TouchableOpacity
-                accessibilityRole="button"
-                onPress={() => handleNext(index)}
-                style={styles.nextBtn}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-              >
-                <Text style={styles.nextText}>
-                  {index === slides.length - 1
-                    ? t('screens.onboarding.start')
-                    : t('screens.onboarding.next')}
-                </Text>
-              </TouchableOpacity>
-            </View>
+              return (
+                <TouchableOpacity
+                  key={language.code}
+                  style={[styles.option, isSelected && styles.optionSelected]}
+                  activeOpacity={0.8}
+                  onPress={() => handleLanguageSelect(language.code)}
+                >
+                  <Text
+                    style={[typography.body, styles.optionLabel, isSelected && styles.optionLabelSelected]}
+                  >
+                    {t(language.translationKey, { defaultValue: language.fallbackLabel })}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
-        ))}
-      </Swiper>
+        ) : (
+          <View style={styles.optionsGrid}>
+            {ZODIAC_OPTIONS.map((zodiac) => {
+              const isSelected = zodiac.value === selectedZodiac;
+
+              return (
+                <TouchableOpacity
+                  key={zodiac.value}
+                  style={[styles.option, isSelected && styles.optionSelected]}
+                  activeOpacity={0.8}
+                  onPress={() => setSelectedZodiac(zodiac.value)}
+                >
+                  <Text
+                    style={[typography.body, styles.optionLabel, isSelected && styles.optionLabelSelected]}
+                  >
+                    {t(zodiac.translationKey, { defaultValue: zodiac.fallbackLabel })}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        )}
+      </ScrollView>
+
+      <View style={styles.footer}>
+        {step === 'zodiac' ? (
+          <TouchableOpacity
+            onPress={handleBack}
+            style={styles.secondaryButton}
+            accessibilityRole="button"
+          >
+            <Text style={styles.secondaryButtonText}>{t('screens.onboarding.back')}</Text>
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.secondaryButtonPlaceholder} />
+        )}
+
+        <TouchableOpacity
+          onPress={handleNext}
+          disabled={isNextDisabled}
+          style={[styles.primaryButton, isNextDisabled && styles.primaryButtonDisabled]}
+          accessibilityRole="button"
+        >
+          <Text style={styles.primaryButtonText}>
+            {step === 'zodiac' ? t('screens.onboarding.start') : t('screens.onboarding.next')}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
 
 const getStyles = ({
-  width,
-  height,
   theme,
-  typography,
+  sizes,
 }: {
-  width: number;
-  height: number;
   theme: any;
-  typography: any;
+  sizes: any;
 }) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: theme?.background || "#fff",
+      backgroundColor: theme.background,
+      paddingHorizontal: sizes.lg,
+      paddingTop: sizes.lg,
+      paddingBottom: sizes.xl,
     },
-
-    // Прогресс над точками
-    progressWrap: {
-      position: "absolute",
-      width: "100%",
-      top: -28,
-      left: 0,
-      paddingHorizontal: 24,
+    header: {
+      gap: sizes.xs,
     },
-
-    progressText: {
-      textAlign: "center",
-      fontSize: 12,
-      color: theme?.greyText || "#8A8A8A",
-      marginBottom: 8,
+    stepCounter: {
+      color: theme.greyText,
+      fontSize: sizes.sm,
     },
-
-    progressBarBg: {
-      height: 12,
-      borderRadius: 999,
-      backgroundColor: (theme?.divider || "#E5E6EA") + "AA", // чуть плотнее
-      overflow: "hidden",
-      justifyContent: "center",
-    },
-
-    // тонкие сегменты по всей ширине фона
-    segmentsRow: {
-      ...StyleSheet.absoluteFillObject,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      paddingHorizontal: 6,
-    },
-    segment: {
-      width: 1,
-      height: 8,
-      backgroundColor: (theme?.divider || "#C9CBD3"),
-      opacity: 0.7,
-      borderRadius: 1,
-    },
-
-    progressBarFill: {
-      height: "100%",
-      backgroundColor: theme?.primary || "#6f2da8",
-      borderRadius: 999,
-      // лёгкое свечение
-      shadowColor: theme?.primary || "#6f2da8",
-      shadowOpacity: 0.35,
-      shadowRadius: 6,
-      shadowOffset: { width: 0, height: 2 },
-      elevation: 3,
-      alignItems: "flex-end",
-      justifyContent: "center",
-    },
-
-    // бегунок на конце заполнения
-    thumb: {
-      width: 16,
-      height: 16,
-      borderRadius: 16,
-      marginRight: 2,
-      backgroundColor: "#fff",
-      borderWidth: 2,
-      borderColor: theme?.primary || "#6f2da8",
-      // тень у бегунка
-      shadowColor: "#000",
-      shadowOpacity: 0.15,
-      shadowRadius: 6,
-      shadowOffset: { width: 0, height: 3 },
-      elevation: 4,
-    },
-
-    slide: {
-      flex: 1,
-      paddingTop: 24,
-      paddingBottom: 24,
-      paddingHorizontal: 20,
-      justifyContent: "space-between",
-    },
-
-    languageSlide: {
-      paddingTop: 40,
-    },
-
-    illustration: {
-      height: height * 0.58,
-      borderRadius: 24,
-      backgroundColor: theme?.card || "#F2F2F5",
-      alignItems: "center",
-      justifyContent: "center",
-      marginTop: 12,
-      shadowColor: "#000",
-      shadowOpacity: 0.08,
-      shadowRadius: 12,
-      shadowOffset: { width: 0, height: 6 },
-      elevation: 3,
-    },
-
-    emoji: {
-      fontSize: 56,
-    },
-
-    content: {
-      paddingHorizontal: 4,
-      marginTop: 8,
-    },
-
-    languageContent: {
-      flex: 1,
-      paddingHorizontal: 4,
-      justifyContent: "center",
-      alignItems: "stretch",
-    },
-
     title: {
-      textAlign: "center",
-      marginBottom: 10,
+      textAlign: 'left',
     },
-
     description: {
-      textAlign: "center",
-      lineHeight: 20,
-      color: theme?.greyText || "#6B6B6B",
+      color: theme.greyText,
     },
-
-    languageList: {
-      marginTop: 32,
-      gap: 12,
-      flexGrow: 1,
-      justifyContent: "center",
-      width: "100%",
-    },
-
-    languageOption: {
-      paddingVertical: 12,
-      paddingHorizontal: 16,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: theme?.divider || "#E1E1E6",
-      backgroundColor: theme?.card || "#fff",
-    },
-
-    languageOptionSelected: {
-      borderColor: theme?.primary || "#6f2da8",
-      backgroundColor: `${theme?.primary || "#6f2da8"}14`,
-    },
-
-    languageOptionLabel: {
-      textAlign: "center",
-      fontWeight: "500",
-      color: theme?.text || "#111111",
-    },
-
-    languageOptionLabelSelected: {
-      color: theme?.primary || "#6f2da8",
-    },
-
-    // Пагинация
-    pagination: {
-      bottom: 0
-      // bottom: height * 0.46, // под иллюстрацией
-    },
-    dot: {
-      width: 8,
-      height: 8,
-      borderRadius: 8,
-      marginHorizontal: 4,
-      backgroundColor: theme?.divider || "#E1E1E6",
-      opacity: 0.8,
-    },
-    activeDot: {
-      width: 20,
-      height: 8,
-      borderRadius: 8,
-      marginHorizontal: 4,
-      backgroundColor: theme?.primary || "#6f2da8",
-    },
-
-
-    footer: {
-      marginTop: 12,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      backgroundColor: theme?.card || "#fff",
-      borderRadius: 16,
-      paddingVertical: 8,
-      paddingHorizontal: 24,
-      shadowColor: "#000",
-      shadowOpacity: 0.06,
-      shadowRadius: 8,
-      shadowOffset: { width: 0, height: 4 },
-      elevation: 3,
-    },
-
-    skipBtn: {
-      paddingVertical: 6,
-      paddingHorizontal: 12,
-      borderRadius: 12,
-    },
-
-    skipText: {
-      fontSize: 15,
-      color: theme?.greyText || "#8A8A8A",
-    },
-
-    divider: {
+    scroll: {
       flex: 1,
+      marginTop: sizes.lg,
     },
-
-    nextBtn: {
-      backgroundColor: theme?.primary || "#6f2da8",
-      paddingVertical: 10,
-      paddingHorizontal: 24,
-      borderRadius: 12,
-      shadowColor: "#000",
-      shadowOpacity: 0.1,
-      shadowRadius: 6,
-      shadowOffset: { width: 0, height: 3 },
-      elevation: 2,
+    content: {
+      paddingBottom: sizes.lg,
     },
-
-    nextText: {
-      fontSize: 16,
-      fontWeight: "600",
-      color: "#fff",
+    optionsGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: sizes.sm,
+    },
+    option: {
+      flexBasis: '48%',
+      minHeight: 56,
+      borderRadius: sizes.md,
+      borderWidth: 1,
+      borderColor: theme.divider,
+      backgroundColor: theme.card,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: sizes.md,
+    },
+    optionSelected: {
+      borderColor: theme.primary,
+      backgroundColor: `${theme.primary}14`,
+    },
+    optionLabel: {
+      color: theme.text,
+      textAlign: 'center',
+    },
+    optionLabelSelected: {
+      color: theme.primary,
+      fontWeight: '600',
+    },
+    footer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginTop: sizes.lg,
+      gap: sizes.sm,
+    },
+    secondaryButton: {
+      paddingVertical: sizes.sm,
+      paddingHorizontal: sizes.lg,
+    },
+    secondaryButtonPlaceholder: {
+      width: 1,
+    },
+    secondaryButtonText: {
+      color: theme.greyText,
+    },
+    primaryButton: {
+      flex: 1,
+      borderRadius: sizes.md,
+      backgroundColor: theme.primary,
+      paddingVertical: sizes.sm,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    primaryButtonDisabled: {
+      backgroundColor: theme.disabled ?? theme.divider,
+    },
+    primaryButtonText: {
+      color: theme.background,
+      fontWeight: '600',
+      fontSize: sizes.md,
     },
   });
 

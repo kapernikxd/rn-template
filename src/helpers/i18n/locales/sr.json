@@ -41,6 +41,20 @@
     "accessibility": {
       "back": "Nazad",
       "share": "Podeli"
+    },
+    "zodiac": {
+      "aries": "Ovan",
+      "taurus": "Bik",
+      "gemini": "Blizanci",
+      "cancer": "Rak",
+      "leo": "Lav",
+      "virgo": "Devica",
+      "libra": "Vaga",
+      "scorpio": "Škorpija",
+      "sagittarius": "Strelac",
+      "capricorn": "Jarac",
+      "aquarius": "Vodolija",
+      "pisces": "Ribe"
     }
   },
   "auth": {
@@ -755,6 +769,18 @@
       }
     },
     "onboarding": {
+      "steps": {
+        "language": {
+          "title": "🌐 Izaberite jezik",
+          "description": "Odaberite jezik interfejsa kako bismo prilagodili iskustvo."
+        },
+        "zodiac": {
+          "title": "✨ Koji je vaš horoskopski znak?",
+          "description": "Iskoristićemo ga da pripremimo horoskope i preporuke samo za vas."
+        }
+      },
+      "stepCounter": "{{current}} od {{total}}",
+      "back": "Nazad",
       "slides": {
         "language": {
           "title": "🌐 Izaberite jezik",

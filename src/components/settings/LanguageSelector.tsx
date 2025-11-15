@@ -3,6 +3,7 @@ import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'reac
 import { useTranslation } from 'react-i18next';
 import { useTheme, ThemeType, SizesType, GlobalStyleSheetType } from 'rn-vs-lb/theme';
 import { LANGUAGE_OPTIONS, normalizeLanguageCode, LanguageOption } from '../../constants/languages';
+import { setPreferredLanguage } from '../../helpers/i18n/languageStorage';
 
 export const LanguageSelector: FC = () => {
   const { theme, sizes, globalStyleSheet } = useTheme();
@@ -22,11 +23,20 @@ export const LanguageSelector: FC = () => {
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
 
-  const handleLanguageSelect = (language: LanguageOption) => {
-    if (language.code !== resolvedLanguageCode) {
-      void i18n.changeLanguage(language.code);
+  const handleLanguageSelect = async (language: LanguageOption) => {
+    if (language.code === resolvedLanguageCode) {
+      closeModal();
+      return;
     }
-    closeModal();
+
+    try {
+      await setPreferredLanguage(language.code);
+      await i18n.changeLanguage(language.code);
+    } catch (error) {
+      console.warn('Failed to change language', error);
+    } finally {
+      closeModal();
+    }
   };
 
   return (
@@ -48,7 +58,9 @@ export const LanguageSelector: FC = () => {
                 return (
                   <TouchableOpacity
                     key={language.code}
-                    onPress={() => handleLanguageSelect(language)}
+                    onPress={() => {
+                      void handleLanguageSelect(language);
+                    }}
                     style={[styles.option, isSelected && styles.optionSelected]}
                     activeOpacity={0.8}
                   >

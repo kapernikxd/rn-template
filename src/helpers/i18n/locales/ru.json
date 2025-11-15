@@ -42,6 +42,20 @@
     "accessibility": {
       "back": "Назад",
       "share": "Поделиться"
+    },
+    "zodiac": {
+      "aries": "Овен",
+      "taurus": "Телец",
+      "gemini": "Близнецы",
+      "cancer": "Рак",
+      "leo": "Лев",
+      "virgo": "Дева",
+      "libra": "Весы",
+      "scorpio": "Скорпион",
+      "sagittarius": "Стрелец",
+      "capricorn": "Козерог",
+      "aquarius": "Водолей",
+      "pisces": "Рыбы"
     }
   },
   "auth": {
@@ -759,6 +773,18 @@
       }
     },
     "onboarding": {
+      "steps": {
+        "language": {
+          "title": "🌐 Выберите язык",
+          "description": "Укажите язык интерфейса, чтобы настроить приложение под себя."
+        },
+        "zodiac": {
+          "title": "✨ Какой у вас знак зодиака?",
+          "description": "Мы используем его, чтобы подобрать гороскопы и рекомендации специально для вас."
+        }
+      },
+      "stepCounter": "{{current}} из {{total}}",
+      "back": "Назад",
       "slides": {
         "language": {
           "title": "🌐 Выберите язык",
