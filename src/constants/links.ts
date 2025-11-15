@@ -13,8 +13,8 @@ export const API_URL = `${BASE_URL}api/`;
 
 export const EMAIL = "AiPairPro@yandex.com";
 
-export const SITE_NAME = "AiPair";
-export const CONFIG_APP_ID = "AiPair";
+export const SITE_NAME = "AiAstrology";
+export const CONFIG_APP_ID = "AiAstrology";
 
 export const APP_METRICA = "cf0be637-7531-49d5-bdab-fcb9590fe10c"; // AiPair
 

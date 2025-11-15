@@ -4,7 +4,7 @@ import {
   ListRenderItem,
   View,
 } from 'react-native';
-import { useTheme } from 'rn-vs-lb/theme';
+import { SIZES, useTheme } from 'rn-vs-lb/theme';
 import { CARD_WIDTH } from '../DashboardScreen';
 import { HoroscopeCardData } from './HoroscopeCard';
 import { useTranslation } from 'react-i18next';
@@ -92,7 +92,7 @@ export const HoroscopeCardsCarousel: React.FC<HoroscopeCardsCarouselProps> = ({ 
       data={cards}
       keyExtractor={(item) => item.key}
       showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{ paddingHorizontal: horizontalPadding }}
+      contentContainerStyle={{ paddingHorizontal: horizontalPadding, marginBottom: SIZES.md }}
       ItemSeparatorComponent={itemSeparator}
       renderItem={renderItem}
       extraData={extraData}

@@ -383,7 +383,7 @@ const createStyles = ({ theme, sizes, topInset }: CreateStylesParams) =>
     scrollContent: {
       gap: sizes.lg as number,
       paddingTop: 0,
-      paddingBottom: (sizes.xl as number) * 2,
+      paddingBottom: sizes.xl as number,
       paddingHorizontal: sizes.xxs as number,
     },
   });
