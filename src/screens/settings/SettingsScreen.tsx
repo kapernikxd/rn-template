@@ -1,231 +1,157 @@
-import { FC, useCallback, useEffect, useMemo } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import * as Clipboard from 'expo-clipboard';
-
-import { useNavigation } from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
+import { FC, useCallback, useEffect } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import {
-    CardContainer,
-    DeleteAccountButton,
-    HeaderDefault,
-    TelegramFeedbackLink,
-    ListItem,
-    ThemeSwitcher,
-    Spacer,
-    SettingsSection,
+  CardContainer,
+  ListItem,
+  Spacer,
+  SettingsSection,
+  ThemeSwitcher,
 } from 'rn-vs-lb';
-import { useTheme, ThemeType, SizesType, GlobalStyleSheetType } from 'rn-vs-lb/theme';
-import { appVersion } from '../../constants/links';
-import { useRootStore, useStoreData } from '../../store/StoreProvider';
-import { useActions, usePortalNavigation } from '../../helpers/hooks';
-import { ProfileNav, ROUTES } from '../../navigation/types';
+import { useTheme, ThemeType, SizesType, GlobalStyleSheetType, SIZES } from 'rn-vs-lb/theme';
+import { ADS_ENABLED, appVersion } from '../../constants/links';
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
+import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { RewardedAdSettingsCard } from '../../components/ads/components/RewardedAdSettingsCard';
-import SettingsListItem from '../../components/SettingsListItem';
-import LanguageSelector from '../../components/settings/LanguageSelector';
-import { FontAwesome } from '@expo/vector-icons';
+import { LanguageSelector } from '../../components/settings/LanguageSelector';
 import { truncateText } from '../../helpers/utils/common';
+import SettingsListItem from '../../components/SettingsListItem';
+import { FontAwesome } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { ProfileNav, ROUTES } from '../../navigation';
+import { useNavigation } from '@react-navigation/native';
 
 type SettingsRoute =
-    | typeof ROUTES.ProfileEdit
-    | typeof ROUTES.ProfileAccountSettings
-    | typeof ROUTES.ProfileChangePassword
-    | typeof ROUTES.ProfileSocialProfiles
-    | typeof ROUTES.ProfileNotificationSettings;
+    | typeof ROUTES.ProfleSettings
+
+
 
 export const SettingsScreen: FC = () => {
-    const { globalStyleSheet, theme, sizes, typography } = useTheme();
-    const { setColors } = useSafeAreaColors();
-    const styles = getStyles({ globalStyleSheet, theme, sizes });
-    const { t } = useTranslation();
+  const { globalStyleSheet, theme, sizes, typography } = useTheme();
+  const { setColors } = useSafeAreaColors();
+  const { t } = useTranslation();
+  const navigation = useNavigation<ProfileNav>();
 
-    const { authStore, profileStore, uiStore, identityStore, configStore } = useRootStore();
-    const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
-    const configUrls = useStoreData(configStore, (store) => store.urls);
-    const userId = useStoreData(identityStore, (store) => store.userId);
-    const { goBack, goToLogin } = usePortalNavigation();
-    const { handleShareAppLink } = useActions();
-    const navigation = useNavigation<ProfileNav>();
 
-    const handleLogOut = useCallback(async () => {
-        await authStore.logout();
-        goToLogin();
-    }, [authStore, goToLogin]);
+  const styles = getStyles({ globalStyleSheet, theme, sizes });
+  const rootStore = useRootStore();
+  const userId = useStoreData(rootStore.identityStore, (store) => store.userId);
 
-    const handleDeleteAccount = useCallback(async () => {
-        await profileStore.deleteAccount();
-        uiStore.showSnackbar(t('settings.deleteAccount.requestSent'), "success");
-    }, [profileStore, t, uiStore]);
 
-    const navigateTo = useCallback(
-        (screen: SettingsRoute) => () => navigation.navigate(screen),
-        [navigation],
-    );
+  const navigateTo = useCallback(
+    (screen: SettingsRoute) => () => navigation.navigate(screen),
+    [navigation],
+  );
 
-    const SETTING_LIST = useMemo(
-        () => [
-            { icon: 'user-o', label: t('settings.section.accountManagement.editProfile'), action: navigateTo(ROUTES.ProfileEdit) },
-            // { icon: 'gear', label: t('settings.account.accountSettings'), action: navigateTo(ROUTES.ProfileAccountSettings) },
-            { icon: 'key', label: t('settings.section.accountManagement.changePassword'), action: navigateTo(ROUTES.ProfileChangePassword) },
-            // { icon: 'group', label: t('settings.account.socialProfiles'), action: navigateTo(ROUTES.ProfileSocialProfiles) },
-            { icon: 'bell', label: t('settings.section.accountManagement.notifications'), action: navigateTo(ROUTES.ProfileNotificationSettings) },
-        ],
-        [navigateTo, t],
-    );
 
-    const COPY_LINK = useMemo(
-        () => [
-            { icon: 'copy', label: t('settings.section.copyAppLink'), action: handleShareAppLink },
-        ],
-        [handleShareAppLink, t],
-    );
+  useEffect(() => {
+    setColors({
+      topColor: theme.background,
+      bottomColor: theme.background,
+    });
+    void rootStore.identityStore.ensureUserId();
+  }, [rootStore.identityStore, setColors, theme.background]);
 
-    const LOGOUT = useMemo(
-        () => ({ icon: 'sign-out', label: t('logout'), action: () => handleLogOut() }),
-        [handleLogOut, t],
-    );
 
-    const onCopy = async () => {
-        if (userId) {
-            await Clipboard.setStringAsync(userId);
-            uiStore.showSnackbar(t('common.copy'), 'success');
-        }
-    }
+  const PROFILE = [
+    { icon: 'user-o', label: t('settings.section.userTitle'), action: navigateTo(ROUTES.ProfleSettings) },
+  ];
 
-    useEffect(() => {
-        if (!profileStore.myProfile?._id) {
-            profileStore.fetchMyProfile();
-        }
-    }, [profileStore, profileStore.myProfile?._id]);
+  const COPY_LINK = [
+    { icon: 'copy', label: t('settings.section.copyAppLink'), action: () => console.log('скопировано') },
+  ];
 
-    useEffect(() => {
-        setColors({
-            topColor: theme.white,
-            bottomColor: theme.white,
-        });
-        void identityStore.ensureUserId();
-    }, [theme, setColors, identityStore]);
+  return (
+    <View style={styles.content}>
+      <ScrollView contentContainerStyle={styles.body}>
+        <View style={styles.list}>
+          <SettingsSection
+            title={t('settings.section.userTitle')}
+            style={styles.section}
+          >
+            <View style={styles.cardWithoutH}>
+              <SettingsListItem
+                label={t('settings.section.userID')}
+                laberColor={theme.text}
+                value={userId ? truncateText(userId, 18) : '—'}
+                valueTone='muted'
+              />
+              {PROFILE.map((item, index) => (
+                <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine />
+              ))}
+              <Spacer size='xxs' />
+            </View>
+          </SettingsSection>
+          {ADS_ENABLED &&
+            <SettingsSection
+              title={t('settings.section.adsTitle')}
+              style={styles.section}
+            ><CardContainer style={styles.card}>
+                <RewardedAdSettingsCard style={{ padding: 0, backgroundColor: theme.card }} />
+              </CardContainer>
+            </SettingsSection>}
 
-    return (
-        <View style={styles.content}>
-            <HeaderDefault title={t('settings.title')} onBackPress={goBack} />
-            <ScrollView contentContainerStyle={styles.body}>
-                <View style={styles.list}>
 
-                    <Pressable onPress={onCopy} style={styles.cardWithoutH}>
-                        <SettingsListItem
-                            label={t('settings.section.userID')}
-                            laberColor={theme.text}
-                            value={userId ? truncateText(userId, 18) : '—'}
-                            valueTone='muted'
-                        />
-                    </Pressable>
-
-                    <CardContainer style={styles.card}>
-                        <View><Text style={styles.title}>{t('settings.section.accountManagement.title')}</Text></View>
-                        {SETTING_LIST.map((item, index) => (
-                            <ListItem big iconColor={theme.text} key={index} {...item} hideBottomLine />
-                        ))}
-                    </CardContainer>
-                    <CardContainer style={styles.card}>
-                        <View><Text style={styles.title}>{t('settings.component.theme.title')}</Text></View>
-                        <ThemeSwitcher lightModeLabel={t('settings.component.theme.light')} darkModeLabel={t('settings.component.theme.dark')} />
-                        <Spacer size='xs' />
-                        <SettingsListItem
-                            label={t('settings.component.language.title')}
-                            laberColor={theme.text}
-                            accessory={<LanguageSelector />}
-                            labelIcon={<FontAwesome color={theme.text} name="language" size={21} />}
-                            labelIconColor={theme.text}
-                        />
-                    </CardContainer>
-                    {adsEnabled ? <RewardedAdSettingsCard style={styles.card} /> : null}
-                    <CardContainer style={styles.card}>
-                        {COPY_LINK.map((item, index) => (
-                            <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine hideArrow />
-                        ))}
-                    </CardContainer>
-                    <View style={styles.logoutContainer}>
-                        <CardContainer style={styles.card}>
-                            <ListItem iconColor={theme.text} {...LOGOUT} hideBottomLine />
-                        </CardContainer>
-                    </View>
-                </View>
-                <Spacer size='xl' />
-                <Spacer size='xl' />
-                <View>
-                    <CardContainer style={styles.card}>
-                        <TelegramFeedbackLink
-                            title={t('settings.component.feedback.title')}
-                            subtitle={t('settings.component.feedback.subtitle')}
-                            unsupportedLinkMessage={t('settings.component.feedback.unsupported')}
-                            link={configUrls.TELEGRAM_URL}
-                        />
-                    </CardContainer>
-                    <CardContainer style={styles.card}>
-                        <DeleteAccountButton
-                            cancelButtonLabel={t('common.cancel')}
-                            confirmButtonLabel={t('common.confirm')}
-                            triggerLabel={t('settings.component.deleteAccount.title')}
-                            modalTitle={t('settings.component.deleteAccount.modalTitle')}
-                            modalDescription={t('settings.component.deleteAccount.modalDescription')}
-                            deleteAccount={handleDeleteAccount}
-                        />
-                    </CardContainer>
-                    <View style={styles.version}>
-                        <Text style={typography.body}>{t('settings.section.version', { version: appVersion })}</Text>
-                    </View>
-                </View>
-            </ScrollView>
+          <SettingsSection
+            title={t('settings.section.appTitle')}
+            style={styles.section}
+          ><CardContainer style={styles.card}>
+              <ThemeSwitcher lightModeLabel={t('settings.component.theme.light')} darkModeLabel={t('settings.component.theme.dark')} />
+              <Spacer size='xs' />
+              <SettingsListItem
+                label={t('settings.component.language.title')}
+                laberColor={theme.text}
+                accessory={<LanguageSelector />}
+                labelIcon={<FontAwesome color={theme.text} name="language" size={21} />}
+                labelIconColor={theme.text}
+              />
+              {COPY_LINK.map((item, index) => (
+                <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine hideArrow />
+              ))}
+            </CardContainer>
+          </SettingsSection>
         </View>
-    );
+        <Spacer size='xl' />
+        <Spacer size='xl' />
+        <View>
+          <View style={styles.version}>
+            <Text style={typography.body}>{t('settings.section.version', { version: appVersion })}</Text>
+          </View>
+        </View>
+      </ScrollView>
+    </View>
+  );
 }
 
 const getStyles = ({ sizes, globalStyleSheet, theme }: { theme: ThemeType, sizes: SizesType, globalStyleSheet: GlobalStyleSheetType }) => StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: theme.white
-    },
-    section: {
-        marginBottom: sizes.xxs,
-        paddingHorizontal: sizes.xs,
-    },
-    cardWithoutH: {
-        paddingHorizontal: sizes.sm,
-        paddingVertical: 0,
-        backgroundColor: theme.card,
-        marginTop: sizes.xxs,
-        marginBottom: sizes.xxs,
-        marginHorizontal: sizes.xs,
-        borderRadius: 8
-    },
-    content: {
-        backgroundColor: theme.background,
-        height: '100%'
-    },
-    body: {
-        flexGrow: 1,
-        justifyContent: 'space-between',
-    },
-    list: {
-        marginTop: 4,
-    },
-    card: {
-        marginHorizontal: 8,
-        marginVertical: 4,
-        borderRadius: 16,
-        borderBottomWidth: 0,
-        backgroundColor: theme.card,
-    },
-    title: {
-        marginLeft: sizes.xxs,
-        paddingVertical: sizes.xxs,
-        ...globalStyleSheet.descriptionCard,
-        color: theme.placeholder,
-    },
-    logoutContainer: {},
-    version: {
-        alignItems: 'center',
-        padding: sizes.xs,
-    },
+  content: {
+    paddingHorizontal: sizes.xxs,
+    backgroundColor: theme.background,
+    height: '100%'
+  },
+  section: {
+    marginBottom: sizes.lg,
+  },
+  body: {
+    flexGrow: 1,
+    justifyContent: 'space-between',
+  },
+  list: {
+    marginTop: 4,
+  },
+  card: {
+    marginHorizontal: 0,
+    marginVertical: 4,
+    borderRadius: 16,
+    borderBottomWidth: 0,
+    backgroundColor: theme.card,
+  },
+  cardWithoutH: {
+    paddingHorizontal: SIZES.xs,
+    paddingVertical: 0,
+  },
+  version: {
+    alignItems: 'center',
+    padding: sizes.xs,
+  },
 });
+
