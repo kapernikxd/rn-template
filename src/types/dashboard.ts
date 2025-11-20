@@ -4,4 +4,5 @@ export type DashboardExperience = HorizontalCard & {
   description: string;
   tokenCost: number;
   generationPrompt: string;
+  case: string;
 };
