@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import { isAxiosError } from 'axios';
 import { BaseStore, StoreListener } from './BaseStore';
+import i18n from '../../helpers/i18n';
 import type { RootStore } from '../rootStore';
 import aiBotDetailsService from '../../services/aibot/AiBotService';
 import { MAX_GALLERY_ITEMS, steps } from '../../helpers/data/agent-create';
@@ -281,7 +282,7 @@ export class AiBotStore {
       console.error("Failed to load AI bots for admin main page", error);
       runInAction(() => {
         this.mainPageBots = [];
-        this.mainPageBotsError = "Не удалось загрузить список ботов. Попробуйте обновить страницу позже.";
+        this.mainPageBotsError = i18n.t('notifications.aiBots.mainPageError');
       });
       this.notify();
     } finally {
@@ -307,7 +308,7 @@ export class AiBotStore {
         this.selectAiBot = null;
       });
       this.notify();
-      this.root.uiStore.showSnackbar('Не удалось загрузить AI-бота', 'error');
+      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.singleLoadError'), 'error');
       console.error("Failed to load AI bot", error);
     } finally {
       runInAction(() => {
@@ -370,7 +371,7 @@ export class AiBotStore {
         this.myBots = [];
       });
       this.notify();
-      this.root.uiStore.showSnackbar('Не удалось загрузить ваших AI-ботов', 'error');
+      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.myBotsError'), 'error');
       console.error("Failed to load my AI bots", error);
     } finally {
       runInAction(() => {
@@ -399,7 +400,7 @@ export class AiBotStore {
         this.subscribedBots = [];
       });
       this.notify();
-      this.root.uiStore.showSnackbar('Не удалось загрузить подписки на AI-ботов', 'error');
+      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.subscriptionsError'), 'error');
       console.error("Failed to load subscribed AI bots", error);
     } finally {
       runInAction(() => {
@@ -446,7 +447,7 @@ export class AiBotStore {
       });
       this.notify();
     } catch (error) {
-      this.root.uiStore.showSnackbar('Не удалось обновить статус подписки', 'error');
+      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.followUpdateError'), 'error');
       console.error('Failed to update follow status', error);
     }
   }
@@ -458,10 +459,10 @@ export class AiBotStore {
         this.myBots.push(data);
         this.notify();
       });
-      this.root.uiStore.showSnackbar('AI-бот создан', 'success');
+      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.createSuccess'), 'success');
       return data;
     } catch (error: unknown) {
-      this.root.uiStore.showSnackbar('Не удалось создать AI-бота', 'error');
+      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.createError'), 'error');
       throw error;
     }
   }
@@ -533,13 +534,13 @@ export class AiBotStore {
       });
       this.notify();
 
-      this.root.uiStore.showSnackbar('AI-бот создан', 'success');
+      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.createSuccess'), 'success');
     } catch (error: unknown) {
       const message = this.resolveErrorMessage(error);
 
       runInAction(() => {
         if(message.toLowerCase().includes("header missing")) {
-          this.creationError = 'Пожалуйста авторизуйтесь!';
+          this.creationError = i18n.t('notifications.aiBots.authRequired');
         }
         else {
           this.creationError = message;
@@ -547,7 +548,7 @@ export class AiBotStore {
       });
       this.notify();
 
-      this.root.uiStore.showSnackbar('Не удалось создать AI-бота', 'error');
+      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.createError'), 'error');
     } finally {
       runInAction(() => {
         this.isSubmitting = false;
@@ -649,12 +650,12 @@ export class AiBotStore {
           this.notify();
         });
 
-        this.root.uiStore.showSnackbar('AI-бот обновлён', 'success');
+        this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.updateSuccess'), 'success');
       }
 
       return updated as AiBotDTO | undefined;
     } catch (error) {
-      this.root.uiStore.showSnackbar('Не удалось обновить AI-бота', 'error');
+      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.updateError'), 'error');
       console.error('Failed to update AI agent', error);
       throw error;
     }
@@ -676,7 +677,7 @@ export class AiBotStore {
         this.botDetails = null;
         this.botPhotos = [];
         this.notify();
-        this.root.uiStore.showSnackbar('AI-бот удалён', 'success');
+        this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.deleteSuccess'), 'success');
       });
     } catch (error) {
       throw error;
@@ -698,7 +699,7 @@ export class AiBotStore {
       });
       this.notify();
     } catch (error) {
-      this.root.uiStore.showSnackbar('Не удалось обновить подписку', 'error');
+      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.subscriptionError'), 'error');
       console.error('Failed to fetch AI bot details', error);
     } finally {
       runInAction(() => {
@@ -719,7 +720,7 @@ export class AiBotStore {
         } as AiBotDTO;
       });
     } catch (e) {
-      this.root.uiStore.showSnackbar('Не удалось обновить подписку', 'error');
+      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.subscriptionError'), 'error');
     }
   }
 
@@ -732,9 +733,9 @@ export class AiBotStore {
         this.botPhotos = data.photos ?? [];
       });
       this.notify();
-      this.root.uiStore.showSnackbar('Фотографии сохранены', 'success');
+      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.photosSaveSuccess'), 'success');
     } catch (error) {
-      this.root.uiStore.showSnackbar('Не удалось загрузить фотографии', 'error');
+      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.photosSaveError'), 'error');
       console.error('Failed to upload AI bot photos', error);
     } finally {
       runInAction(() => {
@@ -754,9 +755,9 @@ export class AiBotStore {
         this.botPhotos = data.photos ?? [];
       });
       this.notify();
-      this.root.uiStore.showSnackbar('Фотографии удалены', 'success');
+      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.photosDeleteSuccess'), 'success');
     } catch (error) {
-      this.root.uiStore.showSnackbar('Не удалось удалить фотографии', 'error');
+      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.photosDeleteError'), 'error');
       console.error('Failed to delete AI bot photos', error);
     } finally {
       runInAction(() => {

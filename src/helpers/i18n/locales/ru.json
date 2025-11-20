@@ -22,6 +22,21 @@
     }
   },
   "logout": "Выйти",
+  "navigation": {
+    "chats": {
+      "title": "Чаты",
+      "messagesTitle": "Сообщения"
+    },
+    "common": {
+      "back": "Назад"
+    },
+    "tabs": {
+      "dashboard": "Главная",
+      "library": "Библиотека",
+      "chats": "Чаты",
+      "profile": "Профиль"
+    }
+  },
   "common": {
     "cancel": "Отменить",
     "update": "Обновить",
@@ -42,6 +57,20 @@
     "accessibility": {
       "back": "Назад",
       "share": "Поделиться"
+    },
+    "zodiac": {
+      "aries": "Овен",
+      "taurus": "Телец",
+      "gemini": "Близнецы",
+      "cancer": "Рак",
+      "leo": "Лев",
+      "virgo": "Дева",
+      "libra": "Весы",
+      "scorpio": "Скорпион",
+      "sagittarius": "Стрелец",
+      "capricorn": "Козерог",
+      "aquarius": "Водолей",
+      "pisces": "Рыбы"
     }
   },
   "auth": {
@@ -161,6 +190,34 @@
       "title": "Редактирование профиля",
       "subtitle": "Заполните личную информацию",
       "fields": {
+        "username": {
+          "label": "Имя пользователя",
+          "placeholder": "Введите имя пользователя"
+        },
+        "gender": {
+          "label": "Пол",
+          "placeholder": "Выберите пол"
+        },
+        "zodiacSign": {
+          "label": "Знак зодиака",
+          "placeholder": "Выберите знак зодиака"
+        },
+        "age": {
+          "label": "Возраст",
+          "placeholder": "Введите возраст"
+        },
+        "maritalStatus": {
+          "label": "Семейное положение",
+          "placeholder": "Выберите семейное положение"
+        },
+        "partnerName": {
+          "label": "Имя партнёра",
+          "placeholder": "Введите имя партнёра"
+        },
+        "hasChildren": {
+          "label": "Есть ли дети",
+          "placeholder": "Выберите вариант"
+        },
         "name": {
           "label": "Имя",
           "placeholder": "Имя"
@@ -184,7 +241,26 @@
       },
       "validation": {
         "nameRequired": "Введите имя!",
-        "lastnameRequired": "Введите фамилию!"
+        "lastnameRequired": "Введите фамилию!",
+        "zodiacSignRequired": "Выберите знак зодиака",
+        "ageDigits": "Возраст должен содержать только цифры"
+      },
+      "options": {
+        "gender": {
+          "male": "Мужской",
+          "female": "Женский"
+        },
+        "maritalStatus": {
+          "single": "Одинок",
+          "inRelationship": "В отношениях"
+        },
+        "hasChildren": {
+          "no": "Нет",
+          "yes": "Да"
+        }
+      },
+      "snackbar": {
+        "updated": "Профиль обновлён"
       }
     },
     "account": {
@@ -294,6 +370,68 @@
         "modalDescription": "Все ваши данные, включая профиль, события и историю чата, будут удалены без возможности восстановления. Этот процесс необратим и завершится в течение 24 часов. Вы уверены, что хотите продолжить?",
         "requestSent": "Ваш запрос отправлен. Аккаунт будет удалён в течение 24 часов."
       }
+    }
+  },
+  "notifications": {
+    "aiBots": {
+      "mainPageError": "Не удалось загрузить список ботов. Попробуйте позже.",
+      "singleLoadError": "Не удалось загрузить AI-бота",
+      "myBotsError": "Не удалось загрузить ваших AI-ботов",
+      "subscriptionsError": "Не удалось загрузить подписки на AI-ботов",
+      "followUpdateError": "Не удалось обновить статус подписки",
+      "createSuccess": "AI-бот создан",
+      "createError": "Не удалось создать AI-бота",
+      "authRequired": "Пожалуйста, авторизуйтесь",
+      "updateSuccess": "AI-бот обновлён",
+      "updateError": "Не удалось обновить AI-бота",
+      "deleteSuccess": "AI-бот удалён",
+      "subscriptionError": "Не удалось обновить подписку",
+      "photosSaveSuccess": "Фотографии сохранены",
+      "photosSaveError": "Не удалось загрузить фотографии",
+      "photosDeleteSuccess": "Фотографии удалены",
+      "photosDeleteError": "Не удалось удалить фотографии"
+    },
+    "profile": {
+      "updateSuccess": "Профиль обновлён",
+      "followError": "Не удалось обновить подписку",
+      "blockSuccess": "Пользователь заблокирован",
+      "reportSuccess": "Жалоба отправлена",
+      "deleteRequestSent": "Запрос отправлен",
+      "noChanges": "Ничего не изменилось",
+      "photoUploadSuccess": "Фото успешно загружено",
+      "photoUploadError": "Не удалось загрузить фото",
+      "noPhotoToRemove": "Нет фото для удаления",
+      "invalidFilePath": "Неверный путь к файлу",
+      "photoDeleteSuccess": "Фото успешно удалено",
+      "photoDeleteError": "Не удалось удалить фото"
+    }
+  },
+  "reports": {
+    "reasons": {
+      "user": {
+        "spamOrFraud": "Спам или мошенничество",
+        "harassmentOrBullying": "Преследование или запугивание",
+        "inappropriateContent": "Неприемлемый контент",
+        "fakeProfile": "Фейковый профиль"
+      },
+      "post": {
+        "spamOrMisleading": "Спам или вводящие в заблуждение материалы",
+        "hateOrDiscrimination": "Разжигание ненависти или дискриминация",
+        "violenceOrThreats": "Насилие или угрозы",
+        "sexualContent": "Материалы сексуального характера",
+        "harassmentOrBullying": "Преследование или запугивание"
+      },
+      "common": {
+        "other": "Другое"
+      }
+    }
+  },
+  "errors": {
+    "common": {
+      "generic": "Произошла ошибка. Попробуйте позже."
+    },
+    "imageGeneration": {
+      "noImageSelected": "Не выбрано изображение"
     }
   },
   "components": {
@@ -523,6 +661,13 @@
   },
   "screens": {
     "dashboard": {
+      "header": {
+        "title": "AiAstrology",
+        "subtitle": "Гороскоп на каждый день",
+        "accessibility": {
+          "openFilters": "Открыть фильтры"
+        }
+      },
       "tabs": {
         "all": "Все"
       },
@@ -537,6 +682,66 @@
           "closePreview": "Закрыть предпросмотр"
         },
         "uploadPrompt": "Нажмите здесь, чтобы загрузить фото, которое хотите оживить!"
+      },
+      "horoscope": {
+        "dateFormat": "dddd, D MMMM",
+        "loading": "Готовим ваш гороскоп...",
+        "errorTitle": "Не удалось загрузить гороскоп.",
+        "retry": "Попробовать снова",
+        "retryAccessibility": "Попробовать снова получить гороскоп",
+        "emptyPlaceholder": "Здесь появится ваш гороскоп, как только он будет готов.",
+        "fetchError": "Не удалось получить гороскоп",
+        "card": {
+          "status": {
+            "loading": "Обновляем прогноз...",
+            "unlocked": "Готово",
+            "locked": "Закрыто"
+          },
+          "accessibility": {
+            "open": "Открыть гороскоп: {{title}}"
+          },
+          "lockedHint": "Нажмите, чтобы увидеть полный прогноз."
+        },
+        "cards": {
+          "career": {
+            "title": "Карьера",
+            "description": "Подсказки для планирования профессиональных шагов."
+          },
+          "love": {
+            "title": "Любовь",
+            "description": "Фокус на отношениях и эмоциональном балансе."
+          },
+          "health": {
+            "title": "Здоровье",
+            "description": "Советы для поддержания энергии и здоровья."
+          },
+          "family": {
+            "title": "Семья",
+            "description": "Рекомендации для дома и близких."
+          }
+        },
+        "tabs": {
+          "yesterday": "Вчера",
+          "today": "Сегодня",
+          "tomorrow": "Завтра",
+          "week": "Неделя",
+          "month": "Месяц"
+        },
+        "modal": {
+          "defaultTitle": "Гороскоп",
+          "closeAccessibility": "Закрыть гороскоп",
+          "emptyState": "Пока нет гороскопа для этой категории на сегодня."
+        }
+      },
+      "profileBanner": {
+        "title": "Сделайте гороскоп персональным",
+        "partial": "Вы заполнили {{percentage}}% профиля. Добавьте ещё немного данных для более точного прогноза.",
+        "initial": "Добавьте немного информации о себе, чтобы гороскоп стал персональнее.",
+        "accessibility": {
+          "open": "Заполнить профиль для персонального гороскопа",
+          "close": "Скрыть подсказку о заполнении профиля"
+        },
+        "progressLabel": "Готово: {{percentage}}%"
       }
     },
     "library": {
@@ -759,6 +964,18 @@
       }
     },
     "onboarding": {
+      "steps": {
+        "language": {
+          "title": "🌐 Выберите язык",
+          "description": "Укажите язык интерфейса, чтобы настроить приложение под себя."
+        },
+        "zodiac": {
+          "title": "✨ Какой у вас знак зодиака?",
+          "description": "Мы используем его, чтобы подобрать гороскопы и рекомендации специально для вас."
+        }
+      },
+      "stepCounter": "{{current}} из {{total}}",
+      "back": "Назад",
       "slides": {
         "language": {
           "title": "🌐 Выберите язык",

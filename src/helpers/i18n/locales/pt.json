@@ -22,6 +22,30 @@
     }
   },
   "logout": "Sair",
+  "navigation": {
+    "tabs": {
+      "dashboard": "Início",
+      "library": "Biblioteca",
+      "chats": "Conversas",
+      "profile": "Perfil"
+    }
+  },
+  "notifications": {
+    "profile": {
+      "updateSuccess": "Perfil atualizado",
+      "followError": "Não foi possível atualizar a assinatura",
+      "blockSuccess": "Usuário bloqueado",
+      "reportSuccess": "Denúncia enviada",
+      "deleteRequestSent": "Solicitação enviada",
+      "noChanges": "Nenhuma alteração realizada",
+      "photoUploadSuccess": "Foto enviada",
+      "photoUploadError": "Não foi possível enviar a foto",
+      "noPhotoToRemove": "Nenhuma foto para remover",
+      "invalidFilePath": "Caminho de arquivo inválido",
+      "photoDeleteSuccess": "Foto excluída",
+      "photoDeleteError": "Não foi possível excluir a foto"
+    }
+  },
   "common": {
     "cancel": "Cancelar",
     "update": "Atualizar",
@@ -41,6 +65,20 @@
     "accessibility": {
       "back": "Voltar",
       "share": "Compartilhar"
+    },
+    "zodiac": {
+      "aries": "Áries",
+      "taurus": "Touro",
+      "gemini": "Gêmeos",
+      "cancer": "Câncer",
+      "leo": "Leão",
+      "virgo": "Virgem",
+      "libra": "Libra",
+      "scorpio": "Escorpião",
+      "sagittarius": "Sagitário",
+      "capricorn": "Capricórnio",
+      "aquarius": "Aquário",
+      "pisces": "Peixes"
     }
   },
   "auth": {
@@ -755,6 +793,18 @@
       }
     },
     "onboarding": {
+      "steps": {
+        "language": {
+          "title": "🌐 Escolha seu idioma",
+          "description": "Defina o idioma da interface para personalizar sua experiência com o AI Pair."
+        },
+        "zodiac": {
+          "title": "✨ Qual é o seu signo do zodíaco?",
+          "description": "Vamos usá-lo para ajustar horóscopos e recomendações feitos para você."
+        }
+      },
+      "stepCounter": "{{current}} de {{total}}",
+      "back": "Voltar",
       "slides": {
         "language": {
           "title": "🌐 Escolha seu idioma",
@@ -811,7 +861,7 @@
         "clearHistory": "Limpar histórico do chat"
       }
     },
-    "docs": {
+  "docs": {
       "terms": {
         "title": "Termos de Uso",
         "sections": {
@@ -876,6 +926,27 @@
             }
           }
         }
+      }
+    }
+  }
+  ,
+  "reports": {
+    "reasons": {
+      "user": {
+        "spamOrFraud": "Spam ou fraude",
+        "harassmentOrBullying": "Assédio ou intimidação",
+        "inappropriateContent": "Conteúdo impróprio",
+        "fakeProfile": "Perfil falso"
+      },
+      "post": {
+        "spamOrMisleading": "Spam ou conteúdo enganoso",
+        "hateOrDiscrimination": "Ódio ou discriminação",
+        "violenceOrThreats": "Violência ou ameaças",
+        "sexualContent": "Conteúdo sexual",
+        "harassmentOrBullying": "Assédio ou intimidação"
+      },
+      "common": {
+        "other": "Outro"
       }
     }
   }

@@ -1,5 +1,5 @@
-import { FC, useEffect } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { FC, useCallback, useEffect, useMemo } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import {
   CardContainer,
   ListItem,
@@ -8,7 +8,8 @@ import {
   ThemeSwitcher,
 } from 'rn-vs-lb';
 import { useTheme, ThemeType, SizesType, GlobalStyleSheetType, SIZES } from 'rn-vs-lb/theme';
-import { ADS_ENABLED, appVersion } from '../../constants/links';
+import { appVersion } from '../../constants/links';
+import * as Clipboard from 'expo-clipboard';
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { RewardedAdSettingsCard } from '../../components/ads/components/RewardedAdSettingsCard';
@@ -16,48 +17,74 @@ import { LanguageSelector } from '../../components/settings/LanguageSelector';
 import { truncateText } from '../../helpers/utils/common';
 import SettingsListItem from '../../components/SettingsListItem';
 import { FontAwesome } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
+import { ProfileNav } from '../../navigation';
+import { useNavigation } from '@react-navigation/native';
+import { useActions } from '../../helpers/hooks';
+
 
 
 export const SettingsScreen: FC = () => {
-  const { globalStyleSheet, theme, sizes, typography, isDark, toggleTheme } = useTheme();
+  const { globalStyleSheet, theme, sizes, typography } = useTheme();
   const { setColors } = useSafeAreaColors();
+  const { t } = useTranslation();
+  const navigation = useNavigation<ProfileNav>();
+  const { handleShareAppLink } = useActions();
+
+
   const styles = getStyles({ globalStyleSheet, theme, sizes });
-  const rootStore = useRootStore();
-  const userId = useStoreData(rootStore.identityStore, (store) => store.userId);
+  const { uiStore, identityStore, configStore } = useRootStore();
+  const userId = useStoreData(identityStore, (store) => store.userId);
+  const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
+  const configUrls = useStoreData(configStore, (store) => store.urls);
+
 
   useEffect(() => {
     setColors({
       topColor: theme.background,
       bottomColor: theme.background,
     });
-    void rootStore.identityStore.ensureUserId();
-  }, [rootStore.identityStore, setColors, theme.background]);
+    void identityStore.ensureUserId();
+  }, [identityStore, setColors, theme.background]);
 
-  const COPY_LINK = [
-    { icon: 'copy', label: 'Копировать ссылку на приложение', action: () => console.log('скопировано') },
-  ];
 
+    const COPY_LINK = useMemo(
+      () => [
+          { icon: 'copy', label: t('settings.section.copyAppLink'), action: handleShareAppLink },
+      ],
+      [handleShareAppLink, t],
+  );
+
+  const onCopy = async () => {
+    if (userId) {
+      await Clipboard.setStringAsync(userId);
+      uiStore.showSnackbar(t('common.copy'), 'success');
+    }
+  }
 
   return (
     <View style={styles.content}>
       <ScrollView contentContainerStyle={styles.body}>
         <View style={styles.list}>
           <SettingsSection
-            title={"   Пользователь"}
+            title={t('settings.section.userTitle')}
             style={styles.section}
           >
             <View style={styles.cardWithoutH}>
-              <SettingsListItem
-                label={'ID пользователя'}
-                laberColor={theme.text}
-                value={userId ? truncateText(userId, 18) : '—'}
-                valueTone='muted'
-              />
+              <Pressable onPress={onCopy} style={styles.cardWithoutH}>
+                <SettingsListItem
+                  label={t('settings.section.userID')}
+                  laberColor={theme.text}
+                  value={userId ? truncateText(userId, 18) : '—'}
+                  valueTone='muted'
+                />
+              </Pressable>
+              <Spacer size='xxs' />
             </View>
           </SettingsSection>
-          {ADS_ENABLED &&
+          {adsEnabled &&
             <SettingsSection
-              title={"   Реклама"}
+              title={t('settings.section.adsTitle')}
               style={styles.section}
             ><CardContainer style={styles.card}>
                 <RewardedAdSettingsCard style={{ padding: 0, backgroundColor: theme.card }} />
@@ -66,13 +93,13 @@ export const SettingsScreen: FC = () => {
 
 
           <SettingsSection
-            title={"   Приложение"}
+            title={t('settings.section.appTitle')}
             style={styles.section}
           ><CardContainer style={styles.card}>
-              <ThemeSwitcher lightModeLabel="Светлая тема" darkModeLabel="Тёмная тема" />
+              <ThemeSwitcher lightModeLabel={t('settings.component.theme.light')} darkModeLabel={t('settings.component.theme.dark')} />
               <Spacer size='xs' />
               <SettingsListItem
-                label={'Язык интерфейса'}
+                label={t('settings.component.language.title')}
                 laberColor={theme.text}
                 accessory={<LanguageSelector />}
                 labelIcon={<FontAwesome color={theme.text} name="language" size={21} />}
@@ -88,7 +115,7 @@ export const SettingsScreen: FC = () => {
         <Spacer size='xl' />
         <View>
           <View style={styles.version}>
-            <Text style={typography.body}>Версия {appVersion}</Text>
+            <Text style={typography.body}>{t('settings.section.version', { version: appVersion })}</Text>
           </View>
         </View>
       </ScrollView>

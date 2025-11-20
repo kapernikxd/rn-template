@@ -22,6 +22,30 @@
     }
   },
   "logout": "Odjava",
+  "navigation": {
+    "tabs": {
+      "dashboard": "Početna",
+      "library": "Biblioteka",
+      "chats": "Četovi",
+      "profile": "Profil"
+    }
+  },
+  "notifications": {
+    "profile": {
+      "updateSuccess": "Profil je ažuriran",
+      "followError": "Nije uspelo ažuriranje praćenja",
+      "blockSuccess": "Korisnik blokiran",
+      "reportSuccess": "Prijava poslata",
+      "deleteRequestSent": "Zahtev poslat",
+      "noChanges": "Nema promena",
+      "photoUploadSuccess": "Fotografija je otpremljena",
+      "photoUploadError": "Nije uspelo otpremanje fotografije",
+      "noPhotoToRemove": "Nema fotografije za uklanjanje",
+      "invalidFilePath": "Nevažeća putanja do datoteke",
+      "photoDeleteSuccess": "Fotografija je obrisana",
+      "photoDeleteError": "Nije uspelo brisanje fotografije"
+    }
+  },
   "common": {
     "cancel": "Otkaži",
     "update": "Ažuriraj",
@@ -41,6 +65,20 @@
     "accessibility": {
       "back": "Nazad",
       "share": "Podeli"
+    },
+    "zodiac": {
+      "aries": "Ovan",
+      "taurus": "Bik",
+      "gemini": "Blizanci",
+      "cancer": "Rak",
+      "leo": "Lav",
+      "virgo": "Devica",
+      "libra": "Vaga",
+      "scorpio": "Škorpija",
+      "sagittarius": "Strelac",
+      "capricorn": "Jarac",
+      "aquarius": "Vodolija",
+      "pisces": "Ribe"
     }
   },
   "auth": {
@@ -755,6 +793,18 @@
       }
     },
     "onboarding": {
+      "steps": {
+        "language": {
+          "title": "🌐 Izaberite jezik",
+          "description": "Odaberite jezik interfejsa kako bismo prilagodili iskustvo."
+        },
+        "zodiac": {
+          "title": "✨ Koji je vaš horoskopski znak?",
+          "description": "Iskoristićemo ga da pripremimo horoskope i preporuke samo za vas."
+        }
+      },
+      "stepCounter": "{{current}} od {{total}}",
+      "back": "Nazad",
       "slides": {
         "language": {
           "title": "🌐 Izaberite jezik",
@@ -811,7 +861,7 @@
         "clearHistory": "Obriši istoriju četa"
       }
     },
-    "docs": {
+  "docs": {
       "terms": {
         "title": "Uslovi korišćenja",
         "sections": {
@@ -876,6 +926,27 @@
             }
           }
         }
+      }
+    }
+  }
+  ,
+  "reports": {
+    "reasons": {
+      "user": {
+        "spamOrFraud": "Spam ili prevara",
+        "harassmentOrBullying": "Uznemiravanje ili zlostavljanje",
+        "inappropriateContent": "Neprimeren sadržaj",
+        "fakeProfile": "Lažni profil"
+      },
+      "post": {
+        "spamOrMisleading": "Spam ili obmanjujući sadržaj",
+        "hateOrDiscrimination": "Mržnja ili diskriminacija",
+        "violenceOrThreats": "Nasilje ili pretnje",
+        "sexualContent": "Seksualni sadržaj",
+        "harassmentOrBullying": "Uznemiravanje ili zlostavljanje"
+      },
+      "common": {
+        "other": "Drugo"
       }
     }
   }

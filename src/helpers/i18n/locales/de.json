@@ -22,6 +22,30 @@
     }
   },
   "logout": "Abmelden",
+  "navigation": {
+    "tabs": {
+      "dashboard": "Home",
+      "library": "Library",
+      "chats": "Chats",
+      "profile": "Profile"
+    }
+  },
+  "notifications": {
+    "profile": {
+      "updateSuccess": "Profile updated",
+      "followError": "Failed to update subscription",
+      "blockSuccess": "User blocked",
+      "reportSuccess": "Report sent",
+      "deleteRequestSent": "Request submitted",
+      "noChanges": "No changes made",
+      "photoUploadSuccess": "Photo uploaded",
+      "photoUploadError": "Failed to upload photo",
+      "noPhotoToRemove": "No photo to remove",
+      "invalidFilePath": "Invalid file path",
+      "photoDeleteSuccess": "Photo deleted",
+      "photoDeleteError": "Failed to delete photo"
+    }
+  },
   "common": {
     "cancel": "Abbrechen",
     "update": "Aktualisieren",
@@ -41,6 +65,20 @@
     "accessibility": {
       "back": "Zurück",
       "share": "Teilen"
+    },
+    "zodiac": {
+      "aries": "Widder",
+      "taurus": "Stier",
+      "gemini": "Zwillinge",
+      "cancer": "Krebs",
+      "leo": "Löwe",
+      "virgo": "Jungfrau",
+      "libra": "Waage",
+      "scorpio": "Skorpion",
+      "sagittarius": "Schütze",
+      "capricorn": "Steinbock",
+      "aquarius": "Wassermann",
+      "pisces": "Fische"
     }
   },
   "auth": {
@@ -755,6 +793,18 @@
       }
     },
     "onboarding": {
+      "steps": {
+        "language": {
+          "title": "🌐 Wähle deine Sprache",
+          "description": "Lege die Sprache der Oberfläche fest, um deine AI-Pair-Erfahrung anzupassen."
+        },
+        "zodiac": {
+          "title": "✨ Was ist dein Sternzeichen?",
+          "description": "Damit passen wir Horoskope und Empfehlungen speziell für dich an."
+        }
+      },
+      "stepCounter": "{{current}} von {{total}}",
+      "back": "Zurück",
       "slides": {
         "language": {
           "title": "🌐 Wähle deine Sprache",
@@ -811,7 +861,7 @@
         "clearHistory": "Chat-Verlauf löschen"
       }
     },
-    "docs": {
+  "docs": {
       "terms": {
         "title": "Nutzungsbedingungen",
         "sections": {
@@ -876,6 +926,27 @@
             }
           }
         }
+      }
+    }
+  }
+  ,
+  "reports": {
+    "reasons": {
+      "user": {
+        "spamOrFraud": "Spam or fraud",
+        "harassmentOrBullying": "Harassment or bullying",
+        "inappropriateContent": "Inappropriate content",
+        "fakeProfile": "Fake profile"
+      },
+      "post": {
+        "spamOrMisleading": "Spam or misleading content",
+        "hateOrDiscrimination": "Hate or discrimination",
+        "violenceOrThreats": "Violence or threats",
+        "sexualContent": "Sexual content",
+        "harassmentOrBullying": "Harassment or bullying"
+      },
+      "common": {
+        "other": "Other"
       }
     }
   }
