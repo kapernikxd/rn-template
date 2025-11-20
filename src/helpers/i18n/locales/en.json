@@ -1,0 +1,884 @@
+{
+  "welcome": "Welcome",
+  "login": "Sign In",
+  "logout": "Sign Out",
+  "ads": {
+    "rewardedCard": {
+      "title": "My tokens",
+      "balance": "{{count}} tokens",
+      "reward": "Claim reward",
+      "adReady": "Ad ready to play",
+      "adLoading": "Loading ad..."
+    },
+    "tokenBadge": {
+      "accessibility": {
+        "withLabel": "{{label}}: {{balance}}",
+        "balance": "Token balance: {{balance}}"
+      },
+      "adReady": "Ad ready to play",
+      "adLoading": "Ad is loading...",
+      "menuAccessibility": "Token menu",
+      "menuTitle": "Token balance",
+      "watchAd": "Watch an ad"
+    }
+  },
+  "common": {
+    "cancel": "Cancel",
+    "update": "Update",
+    "reset": "Reset",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "report": "Report",
+    "submit": "Submit",
+    "done": "Done",
+    "next": "Next",
+    "copy": "Copied",
+    "terms": {
+      "acceptPrefix": "I accept",
+      "link": "Terms of Use",
+      "error": "You must accept the Terms of Use to continue"
+    },
+    "accessibility": {
+      "back": "Go back",
+      "share": "Share"
+    }
+  },
+  "auth": {
+    "fields": {
+      "email": {
+        "label": "Email",
+        "placeholder": "Enter email",
+        "validation": {
+          "required": "Enter your email!",
+          "invalid": "Enter a valid email address!"
+        }
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "Enter password",
+        "validation": {
+          "required": "Enter your password!",
+          "minLength": "Password must be at least {{min}} characters long!"
+        }
+      },
+      "name": {
+        "label": "First name",
+        "placeholder": "First name",
+        "validation": {
+          "required": "Enter your first name!"
+        }
+      },
+      "lastname": {
+        "label": "Last name",
+        "placeholder": "Last name",
+        "validation": {
+          "required": "Enter your last name!"
+        }
+      },
+      "confirmPassword": {
+        "label": "Confirm password",
+        "placeholder": "Repeat password",
+        "validation": {
+          "required": "Confirm your password!",
+          "minLength": "Password must be at least {{min}} characters long!",
+          "mismatch": "Passwords do not match!"
+        }
+      }
+    },
+    "guard": {
+      "title": "Welcome",
+      "description": "Please sign in to continue.",
+      "button": "Sign in"
+    },
+    "login": {
+      "title": "Sign in",
+      "subtitle": "Enter your credentials to access your account",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign in",
+      "socialSignIn": "or sign in with",
+      "googleSignIn": "Sign in with Google",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Create account",
+      "errors": {
+        "noGoogleIdToken": "No Google idToken received.",
+        "noAppleIdentityToken": "No Apple identity token received."
+      }
+    },
+    "register": {
+      "title": "Create account",
+      "subtitle": "Enter your details to access your account and features",
+      "submit": "Sign up",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in"
+    },
+    "forgotPassword": {
+      "title": "Password recovery",
+      "subtitle": "Enter your email address to start recovery",
+      "submit": "Continue",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in"
+    },
+    "changePassword": {
+      "title": "Change password",
+      "subtitle": "Enter a new password to access your account",
+      "submit": "Confirm",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in"
+    },
+    "otp": {
+      "title": "Enter code",
+      "subtitle": "Enter the 9-digit code sent to your email",
+      "submit": "Continue",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in",
+      "validation": {
+        "required": "This field is required",
+        "invalidLength": "Enter a valid 9-character code!"
+      }
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "section": {
+      "accountManagement": {
+        "title": "Account Management",
+        "editProfile": "Edit Profile",
+        "changePassword": "Change Password",
+        "notifications": "Notifications"
+      },
+      "theme": {
+        "title": "Theme"
+      },
+      "userTitle": "User",
+      "adsTitle": "Ad",
+      "appTitle": "App",
+      "userID": "User ID",
+      "copyAppLink": "Copy App Link",
+      "version": "Version {{version}}"
+    },
+    "editProfile": {
+      "title": "Edit Profile",
+      "subtitle": "Fill in your personal information",
+      "fields": {
+        "name": {
+          "label": "First Name",
+          "placeholder": "First name"
+        },
+        "lastname": {
+          "label": "Last Name",
+          "placeholder": "Last name"
+        },
+        "profession": {
+          "label": "Profession",
+          "placeholder": "Your profession"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "placeholder": "Enter phone number"
+        },
+        "userBio": {
+          "label": "About Me",
+          "placeholder": "A short bio about you"
+        }
+      },
+      "validation": {
+        "nameRequired": "Enter your first name!",
+        "lastnameRequired": "Enter your last name!"
+      }
+    },
+    "account": {
+      "title": "Account Settings",
+      "subtitle": "Update your username and manage your account",
+      "fields": {
+        "username": {
+          "label": "Username",
+          "placeholder": "Enter username"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "Enter email"
+        }
+      }
+    },
+    "socialProfiles": {
+      "title": "Social Profiles",
+      "subtitle": "Add links to your profiles",
+      "fields": {
+        "facebook": {
+          "label": "Facebook",
+          "placeholder": "Enter username"
+        },
+        "instagram": {
+          "label": "Instagram",
+          "placeholder": "Enter username"
+        },
+        "vk": {
+          "label": "VK",
+          "placeholder": "Enter username"
+        },
+        "tg": {
+          "label": "Telegram",
+          "placeholder": "Enter username"
+        }
+      }
+    },
+    "changePassword": {
+      "title": "Change Password",
+      "subtitle": "Update your account password",
+      "fields": {
+        "oldPassword": {
+          "label": "Current Password",
+          "placeholder": "Enter current password"
+        },
+        "password": {
+          "label": "New Password",
+          "placeholder": "Enter new password"
+        },
+        "rePassword": {
+          "label": "Confirm Password",
+          "placeholder": "Repeat new password"
+        }
+      },
+      "validation": {
+        "oldPasswordRequired": "Enter your current password!",
+        "passwordRequired": "Enter a password!",
+        "confirmPasswordRequired": "Confirm your password!",
+        "passwordMinLength": "Password must be at least {{min}} characters long!",
+        "passwordsDoNotMatch": "Passwords do not match!"
+      }
+    },
+    "notifications": {
+      "title": "Notification Settings",
+      "subtitle": "Configure push notification preferences",
+      "pushToggleTitle": "Push Notifications",
+      "types": {
+        "likes": "Likes",
+        "followers": "Followers",
+        "groupMessages": "Group Messages",
+        "participants": "Participants",
+        "newPost": "Post Created/Updated",
+        "invites": "Post Invites",
+        "pollAnswers": "Poll Answers",
+        "pollInvites": "Poll Invites"
+      }
+    },
+    "component": {
+      "language": {
+        "title": "Interface Language",
+        "modalTitle": "Choose a Language",
+        "languages": {
+          "en": "English",
+          "ru": "Russian",
+          "sr": "Serbian",
+          "es": "Spanish",
+          "it": "Italian",
+          "de": "German",
+          "fr": "French",
+          "pt": "Portuguese"
+        }
+      },
+      "feedback": {
+        "title": "Feedback and Issues",
+        "subtitle": "Tap to contact us on Telegram",
+        "unsupported": "Unable to open Telegram URL"
+      },
+      "theme": {
+        "title": "Theme",
+        "light": "Light Theme",
+        "dark": "Dark Theme"
+      },
+      "deleteAccount": {
+        "title": "Delete Account",
+        "modalTitle": "Confirm Deletion",
+        "modalDescription": "All your data, including your profile, events, and chat history, will be permanently deleted. This process is irreversible and will be completed within 24 hours. Are you sure you want to continue?",
+        "requestSent": "Your request has been sent. The account will be deleted within 24 hours."
+      }
+    }
+  },
+  "components": {
+    "form": {
+      "autoCompletePicker": {
+        "placeholder": "Select..."
+      },
+      "textArea": {
+        "placeholder": "Enter text..."
+      },
+      "limitParticipate": {
+        "maxParticipantsLabel": "Maximum number of participants",
+        "validation": {
+          "required": "This field is required"
+        }
+      },
+      "multiSelect": {
+        "placeholder": "Select...",
+        "done": "Done"
+      },
+      "autoComplete": {
+        "placeholder": "Find a city..."
+      },
+      "imageUploader": {
+        "limitReached": "You can upload no more than {{count}} images",
+        "errors": {
+          "largeFile": "The image is too large (over 40 MB). Please choose a smaller file.",
+          "compressionFailed": "Failed to compress the image"
+        },
+        "upload": "Upload image",
+        "maxImages": "Maximum of {{count}} images"
+      },
+      "priceField": {
+        "priceToggle": "Price / Donation",
+        "donationToggle": "Donation",
+        "amountLabel": "Amount",
+        "validation": {
+          "required": "This field is required"
+        },
+        "currencyLabel": "Currency",
+        "currencyPlaceholder": "Select a currency",
+        "rangeLabel": "Range",
+        "rangePlaceholder": "Range",
+        "rangeOptions": {
+          "from": "From",
+          "to": "To"
+        }
+      },
+      "select": {
+        "placeholder": "Select an option..."
+      },
+      "searchInput": {
+        "placeholder": "Search..."
+      }
+    },
+    "infoBlocks": {
+      "accessType": {
+        "title": "What does each access type mean?",
+        "open": {
+          "title": "• Public access",
+          "description": "Any user can see the event and join it."
+        },
+        "followers": {
+          "title": "• Followers only",
+          "description": "Only users who follow you can see the event and join it."
+        },
+        "private": {
+          "title": "• Private",
+          "description": "The event is hidden. Only invited users can join."
+        }
+      },
+      "participantLimit": {
+        "description": "This field lets you set the maximum number of participants who can join the event. Once the limit is reached, new users cannot apply."
+      },
+      "participantsModeration": {
+        "description": "If moderation is enabled, users appear in the participant list but cannot access the chat until you approve them. Declined requests are removed automatically. After activation you can no longer disable moderation, and the toggle will be locked when editing the event."
+      },
+      "invitation": {
+        "title": "How invitations work",
+        "description1": "You can invite users to your event, but only those who follow you.",
+        "description2": {
+          "part1": "After you send an invitation, the user can",
+          "accept": "accept",
+          "connector": "or",
+          "decline": "decline",
+          "part2": "it."
+        },
+        "description3": "The response status is shown on this page."
+      },
+      "completedEvent": {
+        "title": "What happens after the event ends?",
+        "description1": {
+          "prefix": "Completed events are automatically",
+          "highlight": "deleted after {{count}} days",
+          "suffix": "together with all related data: chats, media, messages, and participants."
+        },
+        "description2": {
+          "prefix": "Chats become",
+          "highlight": "unavailable {{count}} days",
+          "suffix": "after the event ends."
+        }
+      },
+      "postModeration": {
+        "title": "What does each status mean?",
+        "statuses": {
+          "pending": {
+            "title": "• PENDING (under review)",
+            "description": "The post is waiting for moderation. It is visible only to the author.",
+            "name": "Pending"
+          },
+          "approved": {
+            "title": "• APPROVED (approved)",
+            "description": "The post passed moderation and is available to all users.",
+            "name": "Approved"
+          },
+          "rejected": {
+            "title": "• REJECTED (rejected)",
+            "description": "The post was rejected due to rule violations, inappropriate content, or failing quality standards.",
+            "name": "Rejected"
+          }
+        },
+        "currentStatusPrefix": "Your current status is",
+        "reasons": {
+          "image": "One of the images violates the rules. Please upload another one.",
+          "content": "The event description violates the rules. Please update the text."
+        }
+      },
+      "userModeration": {
+        "title": "What do profile statuses mean?",
+        "statuses": {
+          "pending": {
+            "title": "• PENDING (under review)",
+            "description": "Your profile is being reviewed. You can use the app, but you cannot publish content, create events, or interact with other users until it is approved.",
+            "name": "Pending"
+          },
+          "approved": {
+            "title": "• APPROVED (approved)",
+            "description": "Your profile is approved. You have full access to all features: posts, chats, creating and joining events.",
+            "name": "Approved"
+          },
+          "rejected": {
+            "title": "• REJECTED (rejected)",
+            "description": "Your profile was rejected due to community rule violations or insufficient/unsuitable information. You may need to make changes and resubmit for review.",
+            "name": "Rejected"
+          }
+        },
+        "currentStatusPrefix": "Your current status is",
+        "reasons": {
+          "image": "The photo violates the rules. Please upload another image.",
+          "content": "Profile information violates the rules. Update it to meet community standards."
+        }
+      },
+      "specialistCover": {
+        "title": "Why do you need a cover?",
+        "description1": "The cover is a large banner for the specialist page. It appears at the top of the public profile and helps showcase your services.",
+        "description2": "Choose an image that represents you: visitors will see it every time they open your specialist profile."
+      }
+    },
+    "aibot": {
+      "card": {
+        "defaultName": "AI agent"
+      },
+      "listSection": {
+        "empty": "Nothing here yet. Check back later!"
+      },
+      "placeCardList": {
+        "empty": "Nothing here yet. Check back later!",
+        "noDescription": "No description available"
+      },
+      "guestChat": {
+        "defaultBotName": "AI bot",
+        "inputPlaceholder": "Ask something...",
+        "limitLabel": "Messages left: {{remaining}} / {{limit}}",
+        "errors": {
+          "limitReached": "You have reached the daily limit. Please try again later.",
+          "sendFailed": "Couldn't send the message. Please try again."
+        }
+      }
+    },
+    "chat": {
+      "limitNotice": {
+        "message": "Message limit reached",
+        "adReady": "Ad ready to play",
+        "adLoading": "Ad is loading...",
+        "countdownWithValue": "Wait {{countdown}} or use tokens.",
+        "countdown": "Wait for the timer to finish or use tokens.",
+        "countdownShort": "Wait for the timer or use tokens",
+        "costLabel": "Unlock cost",
+        "costValue": "{{count}} tokens",
+        "balanceLabel": "Your balance",
+        "balanceValue": "Tokens: {{count}}",
+        "balanceUnavailable": "Unavailable",
+        "checking": "Checking…",
+        "unlockButton": "Continue for {{count}} tokens",
+        "watchAd": "Watch an ad",
+        "accessibility": {
+          "locked": "Locked"
+        },
+        "pillCost": "Cost: {{count}}",
+        "pillBalance": "Balance: {{count}}",
+        "pillBalanceUnavailable": "Balance unavailable",
+        "more": "More",
+        "refreshBalance": "Refresh balance",
+        "refreshBalanceDescription": "Request the latest tokens",
+        "whatAreTokens": "What are tokens?",
+        "whatAreTokensDescription": "How they work and where to get them",
+        "unavailableSuffix": "(unavailable)"
+      },
+      "swipeable": {
+        "deleteChatAccessibility": "Delete chat"
+      },
+      "header": {
+        "online": "Online",
+        "offline": "Offline",
+        "typing": "typing...",
+        "groupTyping": "{{user}} is typing..."
+      },
+      "messageItem": {
+        "deleted": "Message deleted"
+      }
+    },
+    "forceUpdate": {
+      "title": "Update required",
+      "description": "A new version of the app is available. Please update to continue.",
+      "button": "Update"
+    }
+  },
+  "screens": {
+    "dashboard": {
+      "tabs": {
+        "all": "All"
+      },
+      "heading": "AI companions",
+      "subheading": "Choose a bot to start a conversation or find inspiration. The team adds new characters and scenarios every day.",
+      "empty": {
+        "default": "AI bots will appear here soon. Try refreshing later."
+      },
+      "experience": {
+        "accessibility": {
+          "uploadPhoto": "Upload photo",
+          "closePreview": "Close preview"
+        },
+        "uploadPrompt": "Tap here to upload a photo you want to bring to life!"
+      }
+    },
+    "library": {
+      "title": "Gallery",
+      "pendingStatus_one": "Processing {{count}} image...",
+      "pendingStatus_other": "Processing {{count}} images...",
+      "refreshStatus": "Refresh status",
+      "empty": "Your processed images will appear here after completion."
+    },
+    "aibot": {
+      "profile": {
+        "deleteTitle": "Delete AI bot",
+        "deleteMessage": "Are you sure you want to delete this AI bot? This action cannot be undone.",
+        "actions": {
+          "follow": "Follow",
+          "unfollow": "Unfollow"
+        },
+        "reportTitle": "Report user",
+        "reportPlaceholder": "Additional details (optional)"
+      },
+      "hero": {
+        "badge": "AI agent",
+        "chatButton": "Go to chat"
+      },
+      "tabs": {
+        "info": "Info",
+        "gallery": "Gallery"
+      },
+      "info": {
+        "introTitle": "Introduction",
+        "introPlaceholder": "The creator hasn't added a description yet.",
+        "usefulnessTitle": "How it helps",
+        "usefulnessPlaceholder": "Usefulness isn't filled in yet.",
+        "creatorTitle": "Creator details",
+        "creatorLabel": "Creator",
+        "createdAtLabel": "Created"
+      },
+      "gallery": {
+        "empty": "The creator hasn't added photos yet."
+      },
+      "common": {
+        "categories": {
+          "обучение": "Education",
+          "английский": "English",
+          "для-прикола": "For fun",
+          "романтический": "Romantic",
+          "роли": "Roles",
+          "история": "History"
+        },
+        "errors": {
+          "openProfile": "Failed to open bot profile"
+        }
+      },
+      "create": {
+        "headerTitle": "Create AI agent",
+        "steps": {
+          "0": {
+            "title": "Character",
+            "description": "Avatar, name, and key info that form the first impression."
+          },
+          "1": {
+            "title": "Value",
+            "description": "Categories and benefits users get from talking to the agent."
+          },
+          "2": {
+            "title": "Personality",
+            "description": "Prompt, story, and greeting that define the communication style."
+          },
+          "3": {
+            "title": "Media",
+            "description": "Gallery of images that helps visualize the agent."
+          }
+        },
+        "identity": {
+          "title": "Personalization",
+          "description": "Add an image and basic information so users recognize your agent instantly.",
+          "avatar": {
+            "placeholder": "Upload",
+            "hint": "Use a square image at least 512×512 px."
+          },
+          "fields": {
+            "firstName": {
+              "label": "First name",
+              "placeholder": "Enter the agent's first name"
+            },
+            "lastName": {
+              "label": "Last name",
+              "placeholder": "Enter the agent's last name"
+            },
+            "profession": {
+              "label": "Profession or role",
+              "placeholder": "For example, marketer or teacher"
+            }
+          }
+        },
+        "focus": {
+          "title": "Value and audience",
+          "description": "Pick categories and describe how your agent is helpful.",
+          "categoriesTitle": "Categories",
+          "usefulnessTitle": "How will the agent help?",
+          "usefulnessPlaceholder": "Add a value point",
+          "usefulnessEmpty": "Add at least one value point."
+        },
+        "voice": {
+          "title": "Personality",
+          "description": "Describe the prompt, story, and welcome message of the agent.",
+          "fields": {
+            "prompt": {
+              "label": "System prompt",
+              "placeholder": "Describe behaviour and tone"
+            },
+            "description": {
+              "label": "Profile description",
+              "placeholder": "Explain what the agent does"
+            },
+            "intro": {
+              "label": "Welcome message",
+              "placeholder": "What will the agent say first?"
+            }
+          }
+        },
+        "media": {
+          "title": "Media kit",
+          "description": "Prepare visuals for the gallery. {{remaining}} of {{max}} slots remain.",
+          "upload": "Upload images",
+          "limitReached": "Image limit reached",
+          "empty": "You haven't added any images yet."
+        },
+        "completed": {
+          "title": "AI agent created!",
+          "subtitleWithName": "{{name}} {{lastname}} is ready to meet users.",
+          "subtitleDefault": "Your agent is ready to meet users.",
+          "openProfile": "Open profile",
+          "createAnother": "Create another"
+        },
+        "actions": {
+          "submit": "Create"
+        }
+      },
+      "edit": {
+        "headerTitle": "Edit AI agent",
+        "steps": {
+          "0": {
+            "title": "Basics",
+            "description": "Update the avatar and core information."
+          },
+          "1": {
+            "title": "Categories",
+            "description": "Adjust categories and the usefulness list."
+          },
+          "2": {
+            "title": "Voice",
+            "description": "Refresh the prompt, description, and greeting."
+          },
+          "3": {
+            "title": "Gallery",
+            "description": "Manage the gallery of images."
+          }
+        },
+        "identity": {
+          "title": "Basic details",
+          "description": "Update the avatar and key information.",
+          "avatar": {
+            "placeholder": "Change",
+            "hint": "Choose a new image or remove the current one."
+          },
+          "fields": {
+            "firstName": {
+              "label": "First name",
+              "placeholder": "Agent's first name"
+            },
+            "lastName": {
+              "label": "Last name",
+              "placeholder": "Agent's last name"
+            },
+            "profession": {
+              "label": "Profession",
+              "placeholder": "For example, designer"
+            }
+          }
+        },
+        "focus": {
+          "title": "Categories and value",
+          "description": "Pick directions and update the agent's usefulness.",
+          "categoriesTitle": "Categories",
+          "usefulnessTitle": "Agent value",
+          "usefulnessPlaceholder": "Add a new value",
+          "usefulnessEmpty": "Add at least one value point."
+        },
+        "voice": {
+          "title": "Voice and story",
+          "description": "Update the prompt, description, and greeting.",
+          "fields": {
+            "prompt": {
+              "label": "System prompt",
+              "placeholder": "Describe personality and tone"
+            },
+            "description": {
+              "label": "Profile description",
+              "placeholder": "Add more biographical details"
+            },
+            "intro": {
+              "label": "Welcome message",
+              "placeholder": "Message for the first contact"
+            }
+          }
+        },
+        "media": {
+          "title": "Gallery",
+          "description": "Manage gallery images. {{remaining}} of {{max}} slots remain.",
+          "upload": "Add images",
+          "limitReached": "Image limit reached",
+          "empty": "The agent has no images yet."
+        },
+        "actions": {
+          "save": "Save"
+        }
+      }
+    },
+    "onboarding": {
+      "slides": {
+        "language": {
+          "title": "🌐 Choose your language",
+          "description": "Select the interface language to personalize your AI Pair experience."
+        },
+        "welcome": {
+          "title": "✨ Welcome",
+          "description": "Your personal AI partner for conversations, ideas, and support."
+        },
+        "memory": {
+          "title": "🧠 It remembers what matters",
+          "description": "AI Pair remembers your context and learns from your stories."
+        },
+        "character": {
+          "title": "🎭 Shape the character",
+          "description": "Name, tone, goals—configure everything to your liking."
+        },
+        "start": {
+          "title": "🚀 Ready to begin?",
+          "description": "Meet your AI Pair and start the conversation."
+        }
+      },
+      "skip": "Skip",
+      "next": "Next",
+      "start": "Start"
+    },
+    "profile": {
+      "tabs": {
+        "myBots": "My bots",
+        "subscriptions": "Subscriptions"
+      },
+      "fallbackName": "Profile",
+      "featureSoon": "This feature will be available soon.",
+      "empty": {
+        "myBots": "You haven't created any AI bots yet. Create your first hero!",
+        "subscriptions": "You haven't subscribed to any AI bots yet."
+      },
+      "userBotsSection": {
+        "title": "User's AI bots",
+        "empty": "This user hasn't created any AI bots yet."
+      }
+    },
+    "chats": {
+      "fallbacks": {
+        "group": "Group",
+        "bot": "Bot"
+      },
+      "searchPlaceholder": "Search...",
+      "messages": {
+        "reply": "Reply",
+        "photoPlaceholder": "photo",
+        "placeholder": "Message",
+        "editing": "Editing",
+        "clearHistory": "Clear chat history"
+      }
+    },
+    "docs": {
+      "terms": {
+        "title": "Terms of Use",
+        "sections": {
+          "welcome": {
+            "title": "Welcome to {{siteName}}!",
+            "paragraph1": {
+              "prefix": "These Terms of Use (the “Terms”) govern access to and use of the {{siteName}} mobile app and the website ",
+              "suffix": " (together, the “Service”)."
+            },
+            "paragraph2": "By accessing or using the Service, you agree to these Terms.",
+            "paragraph3": "If you do not agree with the Terms, please do not use the Service."
+          },
+          "usage": {
+            "title": "1. Use of the Service",
+            "items": [
+              "Use the Service only in accordance with applicable law.",
+              "Do not use the Service for unlawful or unauthorized purposes.",
+              "Do not harass, abuse, or harm other users.",
+              "Do not compromise the security or integrity of the Service."
+            ]
+          },
+          "content": {
+            "title": "2. User content",
+            "paragraph1": "By providing content, you grant {{siteName}} a non-exclusive, worldwide, royalty-free license to use, store, display, and distribute it.",
+            "paragraph2": "You are responsible for the content you create and share."
+          },
+          "security": {
+            "title": "3. Account security",
+            "paragraph": "You are responsible for keeping your credentials confidential and for all activity under your account."
+          },
+          "privacy": {
+            "title": "4. Privacy",
+            "paragraph": {
+              "prefix": "Collection and use of personal data are governed by our ",
+              "suffix": "."
+            },
+            "linkLabel": "Privacy Policy"
+          },
+          "ip": {
+            "title": "5. Intellectual property",
+            "paragraph": "All rights to the Service (except for user content) belong to {{siteName}} and its licensors."
+          },
+          "termination": {
+            "title": "6. Termination",
+            "paragraph": "We may suspend or terminate your access to the Service at any time for any reason."
+          },
+          "changes": {
+            "title": "7. Changes to the Terms",
+            "paragraph": "We may update these Terms at any time. Continuing to use the Service after changes take effect means you accept the new Terms."
+          },
+          "moderation": {
+            "title": "8. Complaints and moderation",
+            "paragraph1": "{{siteName}} has zero tolerance for prohibited content, including hate speech, harassment, pornography, or illegal activity.",
+            "paragraph2": "Users can report inappropriate content directly in the app. We review all reports within 24 hours and take appropriate action.",
+            "paragraph3": "By using {{siteName}}, you agree to behave respectfully and follow these rules."
+          },
+          "contact": {
+            "title": "9. Contact us",
+            "paragraph": {
+              "prefix": "If you have questions about these Terms, contact us at ",
+              "suffix": "."
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,47 +1,46 @@
 import { FC, useMemo, useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useTheme, ThemeType, SizesType, GlobalStyleSheetType } from 'rn-vs-lb/theme';
-
-interface LanguageOption {
-  code: string;
-  label: string;
-}
-
-const LANGUAGE_OPTIONS: LanguageOption[] = [
-  { code: 'en', label: 'English' },
-  { code: 'ru', label: 'Русский' },
-  { code: 'sr', label: 'Srpski' },
-  { code: 'es', label: 'Español' },
-  { code: 'it', label: 'Italiano' },
-  { code: 'de', label: 'Deutsch' },
-  { code: 'fr', label: 'Français' },
-  { code: 'pt', label: 'Português' },
-];
+import { LANGUAGE_OPTIONS, normalizeLanguageCode, LanguageOption } from '../../constants/languages';
 
 export const LanguageSelector: FC = () => {
   const { theme, sizes, globalStyleSheet } = useTheme();
+  const { i18n, t } = useTranslation();
   const styles = useMemo(() => getStyles({ theme, sizes, globalStyleSheet }), [globalStyleSheet, sizes, theme]);
   const [isModalVisible, setModalVisible] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState<LanguageOption>(LANGUAGE_OPTIONS[0]);
+
+  const resolvedLanguageCode =
+    normalizeLanguageCode(i18n.resolvedLanguage) ??
+    normalizeLanguageCode(i18n.language) ??
+    LANGUAGE_OPTIONS[0].code;
+  const selectedLanguage = useMemo(
+    () => LANGUAGE_OPTIONS.find((language) => language.code === resolvedLanguageCode) ?? LANGUAGE_OPTIONS[0],
+    [resolvedLanguageCode],
+  );
 
   const openModal = () => setModalVisible(true);
   const closeModal = () => setModalVisible(false);
 
   const handleLanguageSelect = (language: LanguageOption) => {
-    setSelectedLanguage(language);
+    if (language.code !== resolvedLanguageCode) {
+      void i18n.changeLanguage(language.code);
+    }
     closeModal();
   };
 
   return (
     <>
       <TouchableOpacity style={styles.trigger} onPress={openModal} activeOpacity={0.8}>
-        <Text style={styles.triggerValue}>{selectedLanguage.label}</Text>
+        <Text style={styles.triggerValue}>
+          {t(selectedLanguage.translationKey, { defaultValue: selectedLanguage.fallbackLabel })}
+        </Text>
       </TouchableOpacity>
 
       <Modal transparent animationType='fade' visible={isModalVisible} onRequestClose={closeModal}>
         <Pressable style={styles.backdrop} onPress={closeModal}>
           <Pressable style={styles.modalContainer} onPress={(event) => event.stopPropagation()}>
-            <Text style={styles.modalTitle}>Выберите язык</Text>
+            <Text style={styles.modalTitle}>{t('settings.component.language.modalTitle')}</Text>
             <View style={styles.optionsContainer}>
               {LANGUAGE_OPTIONS.map((language) => {
                 const isSelected = language.code === selectedLanguage.code;
@@ -54,7 +53,7 @@ export const LanguageSelector: FC = () => {
                     activeOpacity={0.8}
                   >
                     <Text style={[styles.optionLabel, isSelected && styles.optionLabelSelected]}>
-                      {language.label}
+                      {t(language.translationKey, { defaultValue: language.fallbackLabel })}
                     </Text>
                   </TouchableOpacity>
                 );

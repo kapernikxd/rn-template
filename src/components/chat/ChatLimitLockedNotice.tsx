@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { useTheme, type SizesType } from 'rn-vs-lb/theme';
 import { useRewardedAdTokens } from '../../helpers/hooks/useRewardedAdTokens';
 
@@ -24,7 +25,7 @@ type Props = {
 };
 
 const ChatLimitLockedNotice = ({
-  message = 'Лимит сообщений исчерпан',
+  message,
   countdownText,
   tokenCost,
   tokenBalance,
@@ -33,7 +34,9 @@ const ChatLimitLockedNotice = ({
   onTokenBalanceRefresh,
 }: Props) => {
   const { theme, typography, sizes } = useTheme();
+  const { t } = useTranslation();
   const styles = useMemo(() => getStyles(sizes, theme), [sizes, theme]);
+  const resolvedMessage = message ?? t('components.chat.limitNotice.message');
 
   const handleRewardEarned = useCallback(
     (_: number) => void onTokenBalanceRefresh?.(),
@@ -42,6 +45,15 @@ const ChatLimitLockedNotice = ({
 
   const { balance: rewardedBalance, isAdLoaded, showRewardedAd } =
     useRewardedAdTokens({ onRewardEarned: handleRewardEarned });
+  const adStatusText = useMemo(
+    () =>
+      t(
+        isAdLoaded
+          ? 'components.chat.limitNotice.adReady'
+          : 'components.chat.limitNotice.adLoading',
+      ),
+    [isAdLoaded, t],
+  );
 
   const effectiveTokenBalance = useMemo(() => {
     if (tokenBalance === null) return rewardedBalance;
@@ -56,10 +68,11 @@ const ChatLimitLockedNotice = ({
   const openMenu = useCallback(() => {
     if (Platform.OS === 'ios') {
       const options = [
-        'Посмотреть рекламу' + (isAdLoaded ? '' : ' (недоступно)'),
-        'Обновить баланс',
-        'Что такое токены?',
-        'Отмена',
+        t('components.chat.limitNotice.watchAd') +
+          (isAdLoaded ? '' : ` ${t('components.chat.limitNotice.unavailableSuffix')}`),
+        t('components.chat.limitNotice.refreshBalance'),
+        t('components.chat.limitNotice.whatAreTokens'),
+        t('common.cancel'),
       ];
       const cancelButtonIndex = 3;
       ActionSheetIOS.showActionSheetWithOptions(
@@ -75,7 +88,12 @@ const ChatLimitLockedNotice = ({
     } else {
       setMenuVisible(true);
     }
-  }, [isAdLoaded, onTokenBalanceRefresh, showRewardedAd]);
+  }, [
+    isAdLoaded,
+    onTokenBalanceRefresh,
+    showRewardedAd,
+    t,
+  ]);
 
   const onWatchAd = useCallback(() => {
     if (isAdLoaded) {
@@ -94,9 +112,15 @@ const ChatLimitLockedNotice = ({
       <View style={[styles.card, { borderColor: theme.border, backgroundColor: theme.card }]}>
         {/* верх */}
         <View style={styles.topRow}>
-          <Text style={styles.lock} accessibilityRole="image" accessibilityLabel="Заблокировано">🔒</Text>
+          <Text
+            style={styles.lock}
+            accessibilityRole="image"
+            accessibilityLabel={t('components.chat.limitNotice.accessibility.locked')}
+          >
+            🔒
+          </Text>
           <Text style={[typography.bodySm, styles.title, { color: theme.title }]} numberOfLines={1}>
-            {message}
+            {resolvedMessage}
           </Text>
           <Pressable onPress={openMenu} hitSlop={8} style={styles.dotsBtn} accessibilityRole="button">
             <Ionicons name="ellipsis-horizontal" size={18} color={theme.text} />
@@ -104,15 +128,26 @@ const ChatLimitLockedNotice = ({
         </View>
 
         {/* подзаголовок */}
-        <Text style={[typography.caption, { color: theme.text }]} numberOfLines={1}>
-          {countdownText ? `Подождите ${countdownText} или используйте токены` : 'Подождите таймер или используйте токены'}
+        <Text style={[typography.body, { color: theme.text }]} numberOfLines={1}>
+          {countdownText
+            ? t('components.chat.limitNotice.countdownWithValue', { countdown: countdownText })
+            : t('components.chat.limitNotice.countdownShort')}
         </Text>
 
         {/* метрики */}
         <View style={styles.metricsRow}>
-          <Pill text={`Стоимость: ${tokenCost}`} borderColor={theme.primary} bgColor={theme.primary + '14'} textColor={theme.primary} />
           <Pill
-            text={hasBalance ? `Баланс: ${effectiveTokenBalance}` : 'Баланс недоступен'}
+            text={t('components.chat.limitNotice.pillCost', { count: tokenCost })}
+            borderColor={theme.primary}
+            bgColor={theme.primary + '14'}
+            textColor={theme.primary}
+          />
+          <Pill
+            text={
+              hasBalance
+                ? t('components.chat.limitNotice.pillBalance', { count: effectiveTokenBalance })
+                : t('components.chat.limitNotice.pillBalanceUnavailable')
+            }
             borderColor={theme.border}
             bgColor={theme.grey + '10'}
             textColor={theme.text}
@@ -133,11 +168,13 @@ const ChatLimitLockedNotice = ({
             {isUnlocking ? (
               <View style={styles.btnContent}>
                 <ActivityIndicator size="small" color={theme.white} />
-                <Text style={[typography.caption, styles.primaryText]}>Проверяем…</Text>
+                <Text style={[typography.body, styles.primaryText]}>
+                  {t('components.chat.limitNotice.checking')}
+                </Text>
               </View>
             ) : (
-              <Text style={[typography.caption, styles.primaryText]} numberOfLines={1}>
-                Разблокировать за {tokenCost}
+              <Text style={[typography.body, styles.primaryText]} numberOfLines={1}>
+                {t('components.chat.limitNotice.unlockButton', { count: tokenCost })}
               </Text>
             )}
           </Pressable>
@@ -151,8 +188,8 @@ const ChatLimitLockedNotice = ({
             accessibilityRole="button"
           >
             <Ionicons name="flash-outline" size={14} color={theme.primary} />
-            <Text style={[typography.caption, { color: theme.primary }]} numberOfLines={1}>
-              Ещё
+            <Text style={[typography.body, { color: theme.primary }]} numberOfLines={1}>
+              {t('components.chat.limitNotice.more')}
             </Text>
           </Pressable>
         </View>
@@ -169,8 +206,8 @@ const ChatLimitLockedNotice = ({
         <View style={[modalStyles.sheet, { backgroundColor: theme.card }]}>
           <SheetItem
             icon={<Ionicons name="play-circle-outline" size={18} color={isAdLoaded ? '#16a34a' : theme.greyText} />}
-            title="Посмотреть рекламу"
-            subtitle={isAdLoaded ? 'Готово к показу' : 'Загружается…'}
+            title={t('components.chat.limitNotice.watchAd')}
+            subtitle={adStatusText}
             disabled={!isAdLoaded}
             onPress={onWatchAd}
             typography={typography}
@@ -178,16 +215,16 @@ const ChatLimitLockedNotice = ({
           />
           <SheetItem
             icon={<Ionicons name="refresh-outline" size={18} color={theme.text} />}
-            title="Обновить баланс"
-            subtitle="Запросить актуальные токены"
+            title={t('components.chat.limitNotice.refreshBalance')}
+            subtitle={t('components.chat.limitNotice.refreshBalanceDescription')}
             onPress={onRefreshBalance}
             typography={typography}
             theme={theme}
           />
           <SheetItem
             icon={<Ionicons name="help-circle-outline" size={18} color={theme.text} />}
-            title="Что такое токены?"
-            subtitle="Как они работают и где получить"
+            title={t('components.chat.limitNotice.whatAreTokens')}
+            subtitle={t('components.chat.limitNotice.whatAreTokensDescription')}
             onPress={closeMenu}
             typography={typography}
             theme={theme}
@@ -248,7 +285,7 @@ const SheetItem = ({
         {title}
       </Text>
       {subtitle ? (
-        <Text style={[typography.caption, { color: theme.text }]} numberOfLines={1}>
+        <Text style={[typography.body, { color: theme.text }]} numberOfLines={1}>
           {subtitle}
         </Text>
       ) : null}

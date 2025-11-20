@@ -2,14 +2,11 @@ import Constants from 'expo-constants';
 
 export const isDev = process.env.NODE_ENV === "development";
 
-export const ADS_ENABLED = false;
-
 export const BASE_URL = isDev
   ? "http://192.168.0.20:5001/"
   : "https://aipair.pro/";
   
 
-export const TELEGRAM_URL = 'https://t.me/pllacesupport';
 export const DOMAIN = "https://AiPair.pro"
 export const API_URL = `${BASE_URL}api/`;
 
@@ -20,19 +17,32 @@ export const TERMS_OF_USE_URL = `${DOMAIN}/terms`;
 export const EMAIL = "AiPairPro@yandex.com";
 
 export const SITE_NAME = "AiPair";
+export const CONFIG_APP_ID = "AiPair";
+
+export const APP_METRICA = "cf0be637-7531-49d5-bdab-fcb9590fe10c"; // AiPair
+
+// export const APP_METRICA = "675c399d-a5fe-44b0-bcf8-42d33b7cbc7d"; // AiGena
 
 
 export const appVersion = Constants.expoConfig?.version || '1.0.0';
 
 export const GOOGLE_SIGN_IN_CLIENT_ID = '456854793341-f96jb6ks2q6pm18q9b5tmj869j4rb5mg.apps.googleusercontent.com' // из Google Cloud Console web
 
-export const ANDROID_AD_UNIT_ID_BANNER = 'ca-app-pub-8636022279548301/4326455527';
-export const ANDROID_AD_UNIT_ID_REWARD = 'ca-app-pub-8636022279548301~3808522726';
-
-export const IOS_AD_UNIT_ID_BANNER = 'ca-app-pub-8636022279548301/6952618865';
-export const IOS_AD_UNIT_ID_REWARD = 'ca-app-pub-8636022279548301/2882453863';
-
-export const TOKEN_REWARD_AMOUNT = 10;
 export const DEFAULT_TOKEN_BALANCE = 20;
 
-export const IS_DEV = false;
+export const DEFAULT_APP_VERSION_CONFIG = {
+  minVersion: "1.0.0",
+  latestVersion: "1.0.0",
+  iosStoreUrl: "https://apps.apple.com/us/app/pllace/id6746166742",
+  androidStoreUrl: "https://play.google.com/store/apps/details?id=com.kapernikrs.expopllace",
+};
+
+export const DEFAULT_ADS_CONFIG = {
+  ADS_ENABLED: true,
+  ANDROID_AD_UNIT_ID_BANNER: 'ca-app-pub-8636022279548301/8567360540',
+  ANDROID_AD_UNIT_ID_REWARD: 'ca-app-pub-8636022279548301/9133642229',
+  IOS_AD_UNIT_ID_BANNER: 'ca-app-pub-8636022279548301/7481186180',
+  IOS_AD_UNIT_ID_REWARD: 'ca-app-pub-8636022279548301/2111092392',
+  TOKEN_REWARD_AMOUNT: 10,
+};
+

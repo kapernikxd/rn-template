@@ -1,5 +1,6 @@
 import { memo, useMemo } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'rn-vs-lb/theme';
 
 import { AiBotCard, type AiBotCardEntity } from './AiBotCard';
@@ -19,10 +20,12 @@ const AiBotListSectionComponent = ({
   title,
   bots,
   isLoading = false,
-  emptyText = 'Здесь пока пусто. Возвращайтесь позже!',
+  emptyText,
   onBotPress,
 }: AiBotListSectionProps) => {
   const { theme, isDark } = useTheme();
+  const { t } = useTranslation();
+  const resolvedEmptyText = emptyText ?? t('components.aibot.listSection.empty');
 
   const containerStyle = useMemo(
     () => ({
@@ -59,7 +62,7 @@ const AiBotListSectionComponent = ({
           })}
         </ScrollView>
       ) : (
-        <Text style={[styles.emptyText, { color: theme.greyText }]}>{emptyText}</Text>
+        <Text style={[styles.emptyText, { color: theme.greyText }]}>{resolvedEmptyText}</Text>
       )}
     </View>
   );

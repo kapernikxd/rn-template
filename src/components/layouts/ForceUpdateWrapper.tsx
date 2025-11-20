@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
   ActivityIndicator,
@@ -8,16 +8,11 @@ import {
   Animated,
   Easing,
 } from 'react-native';
-import axios from 'axios';
-import { API_URL, appVersion } from '../../constants/links';
+import { useTranslation } from 'react-i18next';
+import { appVersion } from '../../constants/links';
 import { UpdateRequiredView } from 'rn-vs-lb';
-
-type VersionResponse = {
-  minVersion: string;
-  latestVersion: string;
-  iosStoreUrl: string;
-  androidStoreUrl: string;
-};
+import { useRootStore, useStoreData } from '../../store/StoreProvider';
+import type { AppVersionConfig } from '../../types/config';
 
 const compareVersions = (current: string, required: string): boolean => {
   const cur = current.split('.').map(Number);
@@ -34,10 +29,16 @@ type Props = { children: React.ReactNode };
 export const ForceUpdateWrapper: FC<Props> = ({ children }) => {
   const [shouldBlock, setShouldBlock] = useState(false);
   const [storeUrl, setStoreUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const { t } = useTranslation();
 
   const isMountedRef = useRef(true);
+  const { configStore } = useRootStore();
+  const { versionConfig, isInitialized, isLoading } = useStoreData(configStore, (store) => ({
+    versionConfig: store.appVersionConfig,
+    isInitialized: store.isInitialized,
+    isLoading: store.loading,
+  }));
 
   // наружная анимация передаётся в чистый компонент
   const anim = useRef(new Animated.Value(0)).current;
@@ -65,10 +66,17 @@ export const ForceUpdateWrapper: FC<Props> = ({ children }) => {
     if (isMountedRef.current) fn();
   }, []);
 
-  const checkVersion = useCallback(async () => {
-    try {
-      const resp = await axios.get<VersionResponse>(`${API_URL}auth/app-version`);
-      const { minVersion, iosStoreUrl, androidStoreUrl } = resp.data;
+  const updateVersionState = useCallback(
+    (config: AppVersionConfig | null) => {
+      if (!config) {
+        safe(() => {
+          setShouldBlock(false);
+          setStoreUrl(null);
+        });
+        return;
+      }
+
+      const { minVersion, iosStoreUrl, androidStoreUrl } = config;
       const outdated = compareVersions(appVersion, minVersion);
       safe(() => {
         if (outdated) {
@@ -79,29 +87,18 @@ export const ForceUpdateWrapper: FC<Props> = ({ children }) => {
           setStoreUrl(null);
         }
       });
-    } catch (e) {
-      console.error('Version check failed', e);
-      safe(() => {
-        setShouldBlock(false);
-        setStoreUrl(null);
-      });
-    }
-  }, [safe]);
-
-  const init = useCallback(async () => {
-    safe(() => setLoading(true));
-    await checkVersion();
-    safe(() => setLoading(false));
-  }, [checkVersion, safe]);
+    },
+    [safe],
+  );
 
   useEffect(() => {
     isMountedRef.current = true;
-    init();
+    updateVersionState(versionConfig ?? null);
     return () => {
       isMountedRef.current = false;
       stopAnimation();
     };
-  }, [init, stopAnimation]);
+  }, [stopAnimation, updateVersionState, versionConfig]);
 
   useEffect(() => {
     if (shouldBlock) startAnimation();
@@ -110,15 +107,29 @@ export const ForceUpdateWrapper: FC<Props> = ({ children }) => {
 
   const onRefresh = useCallback(async () => {
     safe(() => setRefreshing(true));
-    await checkVersion();
+    await configStore.fetchConfig();
     safe(() => setRefreshing(false));
-  }, [checkVersion, safe]);
+  }, [configStore, safe]);
 
   const onPressUpdate = useCallback(() => {
     if (storeUrl) Linking.openURL(storeUrl);
   }, [storeUrl]);
 
-  if (loading) {
+  useEffect(() => {
+    if (versionConfig) {
+      updateVersionState(versionConfig);
+    }
+  }, [updateVersionState, versionConfig]);
+
+  useEffect(() => {
+    if (!isInitialized && !isLoading) {
+      void configStore.ensureConfigLoaded();
+    }
+  }, [configStore, isInitialized, isLoading]);
+
+  const isInitialLoading = useMemo(() => !isInitialized || (isLoading && !versionConfig), [isInitialized, isLoading, versionConfig]);
+
+  if (isInitialLoading) {
     return (
       <View style={styles.center}>
         <ActivityIndicator size="large" />
@@ -133,8 +144,9 @@ export const ForceUpdateWrapper: FC<Props> = ({ children }) => {
         refreshing={refreshing}
         onRefresh={onRefresh}
         onPressUpdate={onPressUpdate}
-        title="Требуется обновление"
-        description="Доступна новая версия приложения. Пожалуйста, обновитесь, чтобы продолжить работу."
+        title={t('components.forceUpdate.title')}
+        description={t('components.forceUpdate.description')}
+        updateButtonText={t('components.forceUpdate.button')}
       />
     );
   }

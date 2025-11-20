@@ -11,6 +11,7 @@ import {
 import { ProfileSelfiesGalleryView } from "rn-vs-lb";
 import { type SizesType, type ThemeType, useTheme } from "rn-vs-lb/theme";
 import { useFocusEffect } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 import { useRootStore, useStoreData } from "../../store/StoreProvider";
 
@@ -18,6 +19,7 @@ const WINDOW_WIDTH = Dimensions.get("window").width;
 
 export const LibraryScreen = () => {
   const { theme, sizes, typography } = useTheme();
+  const { t } = useTranslation();
   const [isGalleryVisible, setIsGalleryVisible] = useState(false);
   const [initialIndex, setInitialIndex] = useState(0);
   const { imageGenerationStore } = useRootStore();
@@ -87,15 +89,17 @@ export const LibraryScreen = () => {
         />
       }
     >
-      <Text style={[typography.titleH4, { paddingHorizontal: 12, paddingVertical: 12 }]}>Галерея</Text>
+      <Text style={[typography.titleH4, { paddingHorizontal: 12, paddingVertical: 12 }]}>
+        {t('screens.library.title')}
+      </Text>
 
       {pendingCount > 0 ? (
         <View style={styles.pendingWrapper}>
-          <Text style={[typography.bodySm]}>
-            Обрабатывается {pendingCount} {pendingCount === 1 ? "изображение" : "изображения"}...
+          <Text style={[typography.bodySm, styles.pendingText]}>
+            {t('screens.library.pendingStatus', { count: pendingCount })}
           </Text>
           <Text onPress={handleSyncPending} style={[typography.bodySm, styles.syncLink]}>
-            Обновить статус
+            {t('screens.library.refreshStatus')}
           </Text>
         </View>
       ) : null}
@@ -119,7 +123,7 @@ export const LibraryScreen = () => {
               <ActivityIndicator color={theme.primary} />
             ) : (
               <Text style={[typography.body, styles.emptyStateText]}>
-                Здесь появятся ваши готовые изображения после обработки.
+                {t('screens.library.empty')}
               </Text>
             )}
           </View>
@@ -164,6 +168,9 @@ const createStyles = ({
       alignItems: "center",
       paddingHorizontal: sizes.xs as number,
       paddingBottom: sizes.sm as number,
+    },
+    pendingText: {
+      color: "rgba(255,255,255,0.72)",
     },
     syncLink: {
       color: theme.primary,

@@ -12,6 +12,12 @@ export default class AuthService {
     return $api.post("/auth/login", { email, password });
   }
 
+  static async loginByUserId(
+    userId: string
+  ): Promise<AxiosResponse<AuthResponseExtend, AuthRejection>> {
+    return $api.post("/auth/loginByUserId", { userId });
+  }
+
   static async loginByGoogleCode(
     credential: string
   ): Promise<AxiosResponse<AuthResponseExtend, AuthRejection>> {

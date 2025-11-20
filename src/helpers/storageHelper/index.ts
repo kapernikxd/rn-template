@@ -52,16 +52,28 @@ export const removeAuthUser = async () => removeItem(AUTH_USER);
 // Работа с ID пользователя
 const LOCAL_USER_ID_KEY = "userId";
 const DEVICE_USER_ID_PREFIX = "device-";
+const APP_GENERATED_USER_ID_PREFIX = "app-";
+const ANONYMOUS_USER_ID_KEY = "anonymousUserId";
 
 const sanitizeUserId = (value: string) => value.replace(/[^a-zA-Z0-9_-]/g, "");
 
 const withPrefix = (value: string) =>
     value.startsWith(DEVICE_USER_ID_PREFIX) ? value : `${DEVICE_USER_ID_PREFIX}${value}`;
 
+const isGeneratedUserId = (value: string) =>
+    value.startsWith(DEVICE_USER_ID_PREFIX) || value.startsWith(APP_GENERATED_USER_ID_PREFIX);
+
+const createFallbackUserId = () => `${APP_GENERATED_USER_ID_PREFIX}${uuid.v4()}`;
+
+const ensureGeneratedUserId = async (): Promise<string> => {
+    const deviceUserId = await deriveDeviceUserId();
+    return deviceUserId ?? createFallbackUserId();
+};
+
 const deriveDeviceUserId = async (): Promise<string | null> => {
     try {
         if (Platform.OS === "android") {
-            const androidId = await Application.getAndroidIdAsync();
+            const androidId = await Application.getAndroidId();
             if (androidId) {
                 const sanitized = sanitizeUserId(androidId);
                 if (sanitized) {
@@ -80,10 +92,15 @@ const deriveDeviceUserId = async (): Promise<string | null> => {
             }
         }
 
-        const [manufacturer, deviceType] = await Promise.all([
-            Device.getManufacturerAsync().catch(() => null),
-            Device.getDeviceTypeAsync().catch(() => null),
-        ]);
+        const manufacturer = Device.manufacturer ?? null; // string | null
+        let deviceType: number | null = null;
+        try {
+            // В некоторых версиях deviceType уже доступен синхронно
+            // (если нет — получаем асинхронно)
+            deviceType = (Device as any).deviceType ?? (await Device.getDeviceTypeAsync());
+        } catch {
+            deviceType = null;
+        }
 
         const fallbackParts = [
             manufacturer ?? Device.manufacturer ?? undefined,
@@ -107,22 +124,29 @@ const deriveDeviceUserId = async (): Promise<string | null> => {
 
 export const setLocalUserId = async (userId: string) => {
     const sanitized = sanitizeUserId(userId);
-    const valueToStore = sanitized || `app-${uuid.v4()}`;
+    const valueToStore = sanitized || createFallbackUserId();
     await removeLocalUserId();
     await setItem(LOCAL_USER_ID_KEY, valueToStore);
+
+    if (isGeneratedUserId(valueToStore)) {
+        await setItem(ANONYMOUS_USER_ID_KEY, valueToStore);
+    }
 };
 
 export const getLocalUserId = async (): Promise<string> => {
     try {
         const storedUserId = await getItem(LOCAL_USER_ID_KEY);
         if (storedUserId) {
+            if (isGeneratedUserId(storedUserId)) {
+                await setItem(ANONYMOUS_USER_ID_KEY, storedUserId);
+            }
             return storedUserId;
         }
 
-        const deviceUserId = await deriveDeviceUserId();
-        const newUserId = deviceUserId ?? `app-${uuid.v4()}`;
+        const newUserId = await ensureGeneratedUserId();
 
         await setItem(LOCAL_USER_ID_KEY, newUserId);
+        await setItem(ANONYMOUS_USER_ID_KEY, newUserId);
         return newUserId;
     } catch (e) {
         console.error("Error getting user ID:", e);
@@ -132,6 +156,17 @@ export const getLocalUserId = async (): Promise<string> => {
 
 export const removeLocalUserId = async () => {
     await removeItem(LOCAL_USER_ID_KEY);
+};
+
+export const getAnonymousUserId = async (): Promise<string> => {
+    const storedAnonymousUserId = await getItem(ANONYMOUS_USER_ID_KEY);
+    if (storedAnonymousUserId) {
+        return storedAnonymousUserId;
+    }
+
+    const newUserId = await ensureGeneratedUserId();
+    await setItem(ANONYMOUS_USER_ID_KEY, newUserId);
+    return newUserId;
 };
 
 // Работа с просмотренными событиями

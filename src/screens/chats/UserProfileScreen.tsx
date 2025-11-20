@@ -4,6 +4,7 @@ import { useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
 import { LoadingScreen, ProfileCard, ReportModal } from 'rn-vs-lb';
 import { useTheme } from 'rn-vs-lb/theme';
+import { useTranslation } from 'react-i18next';
 
 import { usePortalNavigation } from '../../helpers/hooks';
 import { getUserAvatar, getUserFullName } from '../../helpers/utils/user';
@@ -21,6 +22,7 @@ type UserProfileRoute = RouteProp<ProfileStackParamList, typeof ROUTES.UserProfi
 export const UserProfileScreen = () => {
   const route = useRoute<UserProfileRoute>();
   const { theme, typography } = useTheme();
+  const { t } = useTranslation();
   const { setColors } = useSafeAreaColors();
   const { goToProfile, goBack, canGoBack, goToAiBotProfile } = usePortalNavigation();
 
@@ -71,8 +73,8 @@ export const UserProfileScreen = () => {
   const displayName = useMemo(() => {
     const fullName = currentProfile ? getUserFullName(currentProfile) : '';
     const fallback = fullName.trim();
-    return fallback || 'Профиль';
-  }, [currentProfile]);
+    return fallback || t('screens.profile.fallbackName');
+  }, [currentProfile, t]);
 
   const imageUri = useMemo(() => {
     return getUserAvatar(currentProfile ?? ({} as ProfileDTO));
@@ -83,8 +85,8 @@ export const UserProfileScreen = () => {
   }, [currentProfile?.lastSeen]);
 
   const handleFeatureSoon = useCallback(() => {
-    uiStore.showSnackbar('Эта функция скоро будет доступна.', 'info');
-  }, [uiStore]);
+    uiStore.showSnackbar(t('screens.profile.featureSoon'), 'info');
+  }, [t, uiStore]);
 
   const handleFollowToggle = useCallback(() => {
     if (!userId) return;
@@ -120,11 +122,11 @@ export const UserProfileScreen = () => {
   const handleOpenBotProfile = useCallback((bot: AiBotCardEntity) => {
     const botId = getAiBotIdentifier(bot);
     if (!botId) {
-      uiStore.showSnackbar('Не удалось открыть профиль бота', 'error');
+      uiStore.showSnackbar(t('screens.aibot.common.errors.openProfile'), 'error');
       return;
     }
     goToAiBotProfile(botId);
-  }, [goToAiBotProfile, uiStore]);
+  }, [goToAiBotProfile, t, uiStore]);
 
   const handleRefresh = useCallback(async () => {
     if (!userId || isRefreshing) {
@@ -176,11 +178,13 @@ export const UserProfileScreen = () => {
           onOpenUserSheet={handleOpenReport}
         />
         <View style={styles.sectionsWrapper}>
-          <Text style={[typography.titleH6, styles.sectionTitle, { color: theme.title }]}>AI-боты пользователя</Text>
+          <Text style={[typography.titleH6, styles.sectionTitle, { color: theme.title }]}>
+            {t('screens.profile.userBotsSection.title')}
+          </Text>
           <AiBotPlaceCardList
             bots={userBots}
             isLoading={isBotsLoading}
-            emptyText="У пользователя пока нет созданных AI-ботов."
+            emptyText={t('screens.profile.userBotsSection.empty')}
             onBotPress={handleOpenBotProfile}
           />
         </View>

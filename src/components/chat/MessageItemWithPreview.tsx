@@ -1,6 +1,7 @@
 // components/Chat/MessageItem/MessageItemWithPreview.tsx
 import React, { FC, useCallback } from 'react';
 import { Linking } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { MessageItem } from 'rn-vs-lb';
 import type { MessageItemProps } from 'rn-vs-lb';
 import { useLinkPreview } from '../../helpers/hooks';
@@ -9,7 +10,8 @@ import { extractFirstUrl } from '../../helpers/utils/common';
 type Props = Omit<MessageItemProps, 'linkPreview' | 'linkPreviewLoading' | 'linkHandler'>;
 
 export const MessageItemWithPreview: FC<Props> = ({ item, onLongPress, ...rest }) => {
-  const deletedPlaceholder = 'Сообщение удалено';
+  const { t } = useTranslation();
+  const deletedPlaceholder = t('components.chat.messageItem.deleted');
   const rawItem = item as any;
   const isDeleted = rawItem?.status === 'deleted';
 

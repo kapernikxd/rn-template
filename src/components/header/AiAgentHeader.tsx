@@ -33,7 +33,7 @@ export const AiAgentHeader = memo((props: AiAgentHeaderProps) => {
     onBack,
     onShare,
     items,
-    menuPositionLeft = 210,
+    menuPositionLeft,
     menuPositionTop = 10,
     isDark = false,
     title,
@@ -92,7 +92,8 @@ export const AiAgentHeader = memo((props: AiAgentHeaderProps) => {
           )}
         </View>
       ) : (
-        <View style={[styles.sideSlotRight, styles.sideSlotRightPlaceholder]} />
+        null
+        // <View style={[styles.sideSlotRight, styles.sideSlotRightPlaceholder]} />
       )}
     </View>
 

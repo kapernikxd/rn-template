@@ -104,13 +104,13 @@ export class ChatStore {
 
   async pinMessage(message: MessageDTO) {
     if (this.isMessagePinned(message._id)) return;
-    if (this.pinnedMessages.length >= 5) {
-      this.root.uiStore.showSnackbar(
-        'Можно закрепить до 5 сообщений. Чтобы закрепить новое, сначала открепите одно из текущих.',
-        'info'
-      );
-      return;
-    }
+    // if (this.pinnedMessages.length >= 5) {
+    //   this.root.uiStore.showSnackbar(
+    //     'Можно закрепить до 5 сообщений. Чтобы закрепить новое, сначала открепите одно из текущих.',
+    //     'info'
+    //   );
+    //   return;
+    // }
 
     try {
       await this.chatService.pinMessage(message._id);

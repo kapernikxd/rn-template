@@ -4,77 +4,81 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { HeaderDefault } from 'rn-vs-lb';
 import { usePortalNavigation } from '../../helpers/hooks';
 import { DOMAIN, EMAIL, SITE_NAME } from '../../constants/links';
+import { useTranslation } from 'react-i18next';
 
 const TermsOfUseScreen = () => {
   const openLink = (url: string) => Linking.openURL(url);
   const { goBack } = usePortalNavigation();
+  const { t } = useTranslation();
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <HeaderDefault title='Условия использования' onBackPress={goBack} />
+      <HeaderDefault title={t('screens.docs.terms.title')} onBackPress={goBack} />
       <ScrollView contentContainerStyle={styles.container}>
-        <Section title={`Добро пожаловать в ${SITE_NAME}!`}>
+        <Section title={t('screens.docs.terms.sections.welcome.title', { siteName: SITE_NAME })}>
           <Text style={styles.paragraph}>
-            Настоящие Условия использования («Условия») регулируют доступ и использование мобильного приложения {SITE_NAME}, а также сайта<Text> </Text>
-            <Text style={styles.link} onPress={() => openLink(DOMAIN)}>{DOMAIN}</Text> (совместно — «Сервис»).
+            {t('screens.docs.terms.sections.welcome.paragraph1.prefix', { siteName: SITE_NAME })}
+            <Text style={styles.link} onPress={() => openLink(DOMAIN)}>{DOMAIN}</Text>
+            {t('screens.docs.terms.sections.welcome.paragraph1.suffix')}
           </Text>
-          <Text style={styles.paragraph}>Получая доступ к Сервису или используя его, вы подтверждаете своё согласие с этими Условиями.</Text>
-          <Text style={styles.paragraph}>Если вы не согласны с Условиями, пожалуйста, не используйте Сервис.</Text>
+          <Text style={styles.paragraph}>{t('screens.docs.terms.sections.welcome.paragraph2')}</Text>
+          <Text style={styles.paragraph}>{t('screens.docs.terms.sections.welcome.paragraph3')}</Text>
         </Section>
 
-        <Section title="1. Использование Сервиса">
-          <Bullet text="Используйте Сервис только в соответствии с применимым законодательством." />
-          <Bullet text="Не используйте Сервис для противоправных или несанкционированных целей." />
-          <Bullet text="Не преследуйте, не оскорбляйте и не причиняйте вред другим пользователям." />
-          <Bullet text="Не нарушайте безопасность или целостность Сервиса." />
+        <Section title={t('screens.docs.terms.sections.usage.title')}>
+          {t<string[]>('screens.docs.terms.sections.usage.items', { returnObjects: true }).map((item) => (
+            <Bullet key={item} text={item} />
+          ))}
         </Section>
 
-        <Section title="2. Пользовательский контент">
+        <Section title={t('screens.docs.terms.sections.content.title')}>
           <Text style={styles.paragraph}>
-            Предоставляя контент, вы даёте {SITE_NAME} неисключительную, действующую по всему миру и бесплатную лицензию на использование, хранение, отображение и распространение вашего контента.
+            {t('screens.docs.terms.sections.content.paragraph1', { siteName: SITE_NAME })}
           </Text>
-          <Text style={styles.paragraph}>Вы несёте ответственность за контент, который создаёте и распространяете.</Text>
+          <Text style={styles.paragraph}>{t('screens.docs.terms.sections.content.paragraph2')}</Text>
         </Section>
 
-        <Section title="3. Регистрация и безопасность аккаунта">
-          <Text style={styles.paragraph}>Вы несёте ответственность за сохранение конфиденциальности учётных данных и за все действия, совершённые в рамках вашего аккаунта.</Text>
+        <Section title={t('screens.docs.terms.sections.security.title')}>
+          <Text style={styles.paragraph}>{t('screens.docs.terms.sections.security.paragraph')}</Text>
         </Section>
 
-        <Section title="4. Конфиденциальность">
+        <Section title={t('screens.docs.terms.sections.privacy.title')}>
           <Text style={styles.paragraph}>
-            Сбор и использование персональных данных регулируются нашей
-            <Text style={styles.link} onPress={() => openLink(`${DOMAIN}/privacy-policy`)}> Политикой конфиденциальности</Text>.
-          </Text>
-        </Section>
-
-        <Section title="5. Интеллектуальная собственность">
-          <Text style={styles.paragraph}>Все права на Сервис (за исключением пользовательского контента) принадлежат {SITE_NAME} и его лицензиарам.</Text>
-        </Section>
-
-        <Section title="6. Прекращение доступа">
-          <Text style={styles.paragraph}>Мы можем приостановить или прекратить ваш доступ к Сервису в любое время и по любой причине.</Text>
-        </Section>
-
-        <Section title="7. Изменения Условий">
-          <Text style={styles.paragraph}>Мы можем обновлять эти Условия в любое время. Продолжение использования Сервиса после вступления изменений в силу означает принятие новых Условий.</Text>
-        </Section>
-
-        <Section title="8. Жалобы и модерация">
-          <Text style={styles.paragraph}>
-            В {SITE_NAME} действует нулевая терпимость к недопустимому контенту, включая, помимо прочего, язык вражды, домогательства, порнографию и любую незаконную деятельность.
-          </Text>
-          <Text style={styles.paragraph}>
-            Пользователи могут пожаловаться на неподходящий контент прямо в приложении. Мы рассматриваем все жалобы в течение 24 часов и принимаем соответствующие меры, включая удаление контента или блокировку ответственного пользователя.
-          </Text>
-          <Text style={styles.paragraph}>
-            Используя {SITE_NAME}, вы соглашаетесь вести себя уважительно и соблюдать эти правила.
+            {t('screens.docs.terms.sections.privacy.paragraph.prefix')}
+            <Text style={styles.link} onPress={() => openLink(`${DOMAIN}/privacy-policy`)}>
+              {t('screens.docs.terms.sections.privacy.linkLabel')}
+            </Text>
+            {t('screens.docs.terms.sections.privacy.paragraph.suffix')}
           </Text>
         </Section>
 
-        <Section title="9. Связь с нами">
+        <Section title={t('screens.docs.terms.sections.ip.title')}>
           <Text style={styles.paragraph}>
-            Если у вас есть вопросы по поводу этих Условий, свяжитесь с нами по адресу{' '}
-            <Text style={styles.link} onPress={() => Linking.openURL(`mailto:${EMAIL}`)}>{EMAIL}</Text>.
+            {t('screens.docs.terms.sections.ip.paragraph', { siteName: SITE_NAME })}
+          </Text>
+        </Section>
+
+        <Section title={t('screens.docs.terms.sections.termination.title')}>
+          <Text style={styles.paragraph}>{t('screens.docs.terms.sections.termination.paragraph')}</Text>
+        </Section>
+
+        <Section title={t('screens.docs.terms.sections.changes.title')}>
+          <Text style={styles.paragraph}>{t('screens.docs.terms.sections.changes.paragraph')}</Text>
+        </Section>
+
+        <Section title={t('screens.docs.terms.sections.moderation.title')}>
+          <Text style={styles.paragraph}>
+            {t('screens.docs.terms.sections.moderation.paragraph1', { siteName: SITE_NAME })}
+          </Text>
+          <Text style={styles.paragraph}>{t('screens.docs.terms.sections.moderation.paragraph2')}</Text>
+          <Text style={styles.paragraph}>{t('screens.docs.terms.sections.moderation.paragraph3', { siteName: SITE_NAME })}</Text>
+        </Section>
+
+        <Section title={t('screens.docs.terms.sections.contact.title')}>
+          <Text style={styles.paragraph}>
+            {t('screens.docs.terms.sections.contact.paragraph.prefix')}
+            <Text style={styles.link} onPress={() => Linking.openURL(`mailto:${EMAIL}`)}>{EMAIL}</Text>
+            {t('screens.docs.terms.sections.contact.paragraph.suffix')}
           </Text>
         </Section>
       </ScrollView>

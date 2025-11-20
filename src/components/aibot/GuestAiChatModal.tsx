@@ -1,6 +1,7 @@
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from 'rn-vs-lb/theme';
 import AiBotService from '../../services/aibot/AiBotService';
 import {
@@ -8,7 +9,7 @@ import {
   GuestAiBotMessageResponse,
   GuestChatMessage,
 } from '../../types/aiBot';
-import { GuestAiChatModalView, PureChatMessage as ChatMessage } from 'rn-vs-lb';
+import GuestAiChatModalView, { PureChatMessage as ChatMessage } from './GuestAiChatModalView';
 
 interface GuestAiChatModalProps {
   visible: boolean;
@@ -31,8 +32,17 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
   botName,
 }) => {
   const { theme, typography, sizes } = useTheme();
+  const { t } = useTranslation();
 
   const listRef = useRef<FlatList<ChatMessage>>(null);
+
+  const defaultBotName = t('components.aibot.guestChat.defaultBotName');
+  const inputPlaceholderText = t('components.aibot.guestChat.inputPlaceholder');
+  const limitLabel = useCallback(
+    (remaining: number, limitValue: number) =>
+      t('components.aibot.guestChat.limitLabel', { remaining, limit: limitValue }),
+    [t],
+  );
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [sessionId, setSessionId] = useState<string | undefined>();
@@ -108,7 +118,7 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
     if (!trimmed || isSending) return;
 
     if (remaining !== undefined && remaining <= 0) {
-      setError('Достигнут дневной лимит. Пожалуйста, попробуйте позже.');
+      setError(t('components.aibot.guestChat.errors.limitReached'));
       return;
     }
 
@@ -132,7 +142,7 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
       await handleResponse(data, nextHistory);
     } catch (sendError) {
       console.error('Failed to send guest AI message', sendError);
-      setError('Не удалось отправить сообщение. Попробуйте ещё раз.');
+      setError(t('components.aibot.guestChat.errors.sendFailed'));
       const revertedHistory = messages;
       setMessages(revertedHistory);
       await persistHistory(revertedHistory);
@@ -148,6 +158,7 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
     persistHistory,
     remaining,
     sessionId,
+    t,
   ]);
 
   useEffect(() => {
@@ -218,6 +229,9 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
       isSending={isSending}
       limit={limit}
       remaining={remaining}
+      defaultBotName={defaultBotName}
+      limitLabel={limitLabel}
+      inputPlaceholder={inputPlaceholderText}
       onChangeInput={setInputValue}
       onSend={handleSend}
       listRef={listRef}

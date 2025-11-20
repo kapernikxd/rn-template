@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Alert, RefreshControl, ScrollView, Share, View, useWindowDimensions } from "react-native";
+import { Alert, KeyboardAvoidingView, Platform, RefreshControl, ScrollView, Share, View, useWindowDimensions } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useTheme } from "rn-vs-lb/theme";
 import { ModalProfilePhoto, ReportModal, Spacer } from "rn-vs-lb";
@@ -11,9 +11,8 @@ import { getSmartTime } from "../../helpers/utils/date";
 import { ScreenLoader, TokenBadge } from "../../components";
 import { GuestAiChatModal } from "../../components/aibot/GuestAiChatModal";
 import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";
-import { useRootStore } from "../../store/StoreProvider";
+import { useRootStore, useStoreData } from "../../store/StoreProvider";
 import { usePortalNavigation } from "../../helpers/hooks";
-import { ADS_ENABLED } from "../../constants/links";
 import {
   AiAgentGallery,
   AiAgentHeader,
@@ -22,6 +21,9 @@ import {
   AiAgentTabBar,
 } from "./components";
 import { createAiAgentStyles } from "./styles";
+import { postReasonOptions, userReasonOptions } from "../../constants";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 
 
 type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.AiAgent>;
@@ -55,13 +57,18 @@ export const AiAgentScreen = ({ route }: Props) => {
   const { theme, sizes, typography, isDark } = useTheme();
   const { width } = useWindowDimensions();
   const { setColors } = useSafeAreaColors();
-  const { profileStore, aiBotStore } = useRootStore();
+  const { profileStore, aiBotStore, configStore } = useRootStore();
+  const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
+  const { t } = useTranslation();
 
   const [isReportVisible, setIsReportVisible] = useState(false);
   const [isGuestChatVisible, setIsGuestChatVisible] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isAvatarPreviewVisible, setIsAvatarPreviewVisible] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const insets = useSafeAreaInsets();
+  const bottomPadding = Math.max(insets.bottom, typeof sizes.xs === 'number' ? 55 : 0);
 
   useEffect(() => {
     setColors({
@@ -129,7 +136,7 @@ export const AiAgentScreen = ({ route }: Props) => {
   const handleCloseAvatarPreview = useCallback(() => {
     setIsAvatarPreviewVisible(false);
   }, []);
-  const noop = useCallback(() => {}, []);
+  const noop = useCallback(() => { }, []);
 
   useEffect(() => {
     if (!avatarUri && isAvatarPreviewVisible) {
@@ -163,12 +170,12 @@ export const AiAgentScreen = ({ route }: Props) => {
     }
 
     Alert.alert(
-      "Удалить AI-бота",
-      "Вы уверены, что хотите удалить этого AI-бота? Это действие нельзя отменить.",
+      t('screens.aibot.profile.deleteTitle'),
+      t('screens.aibot.profile.deleteMessage'),
       [
-        { text: "Отмена", style: "cancel" },
+        { text: t('common.cancel'), style: "cancel" },
         {
-          text: "Удалить",
+          text: t('common.delete'),
           style: "destructive",
           onPress: () => {
             void handleDeleteBot();
@@ -177,7 +184,7 @@ export const AiAgentScreen = ({ route }: Props) => {
       ],
       { cancelable: true },
     );
-  }, [aiBotId, handleDeleteBot, isDeleting]);
+  }, [aiBotId, handleDeleteBot, isDeleting, t]);
 
   const handleStartChatPress = useCallback(() => {
     if (isAuthenticated) {
@@ -210,28 +217,30 @@ export const AiAgentScreen = ({ route }: Props) => {
     const items: Array<{ label: string; icon: string; colorIcon: string; onPress: () => void }> = [];
     if (canEdit) {
       items.push({
-        label: 'Редактировать',
+        label: t('common.edit'),
         icon: 'create-outline',
         colorIcon: theme.black,
         onPress: handleEdit,
       });
       items.push({
-        label: 'Удалить',
+        label: t('common.delete'),
         icon: 'trash-outline',
         colorIcon: '#E63946',
         onPress: handleDeletePress,
       });
     }
     items.push({
-      label: 'Пожаловаться на пользователя',
+      label: t('common.report'),
       icon: 'megaphone-outline',
       colorIcon: '#E63946',
       onPress: handleOpenReport,
     });
     return items;
-  }, [aiBotId, canEdit, handleDeletePress, handleEdit, handleOpenReport, theme.black]);
+  }, [aiBotId, canEdit, handleDeletePress, handleEdit, handleOpenReport, t, theme.black]);
 
-  const followButtonTitle = isFollowing ? "Отписаться" : "Подписаться";
+  const followButtonTitle = isFollowing
+    ? t('screens.aibot.profile.actions.unfollow')
+    : t('screens.aibot.profile.actions.follow');
 
   const handleRefresh = useCallback(async () => {
     if (!aiBotId || isLoading || isRefreshing) {
@@ -254,7 +263,11 @@ export const AiAgentScreen = ({ route }: Props) => {
   }
 
   return (
-    <>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={bottomPadding}
+      style={{ flex: 1 }}
+    >
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
@@ -272,9 +285,10 @@ export const AiAgentScreen = ({ route }: Props) => {
           <AiAgentHeader
             theme={theme}
             onBack={onBack}
-            onShare={handleShare}
+            menuPositionLeft={160}
+            // onShare={handleShare}
             items={menuItems}
-            renderRight={ADS_ENABLED ? <TokenBadge iconSize={22} /> : null}
+            renderRight={adsEnabled ? <TokenBadge iconSize={22} /> : null}
           />
           <Spacer />
 
@@ -325,6 +339,12 @@ export const AiAgentScreen = ({ route }: Props) => {
         onClose={handleCloseReport}
         onSubmit={handleReportSubmit}
         type="user"
+        title={t('screens.aibot.profile.reportTitle')}
+        cancelText={t('common.cancel')}
+        submitText={t('common.submit')}
+        userReasons={userReasonOptions}
+        postReasons={postReasonOptions}
+        inputPlaceholder={t('screens.aibot.profile.reportPlaceholder')}
       />
       {aiBotId ? (
         <GuestAiChatModal
@@ -343,7 +363,7 @@ export const AiAgentScreen = ({ route }: Props) => {
           goToEditProfileSetting={noop}
         />
       ) : null}
-    </>
+    </KeyboardAvoidingView>
   );
 };
 

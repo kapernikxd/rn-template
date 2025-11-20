@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { getTokenBalance, subtractTokens } from '../../helpers/tokenStorage';
 import { SnackbarType } from '../../types/ui';
 import { formatDuration } from '../utils/time';
-import { ADS_ENABLED } from '../../constants/links';
+import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import {
   buildChatLimitStorageKey,
   loadChatLimitState,
@@ -83,7 +83,10 @@ export function useChatMessageLimit(
     [chatId, config],
   );
 
-  if (!ADS_ENABLED) {
+  const { configStore } = useRootStore();
+  const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
+
+  if (!adsEnabled) {
     return useAdsDisabledChatMessageLimit(config);
   }
 

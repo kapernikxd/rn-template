@@ -10,7 +10,7 @@ import { ChatsStack } from './stacks/ChatsStack';
 import { DashboardStack } from './stacks/DashboardStack';
 import { LibraryStack } from './stacks/LibraryStack';
 import { ProfileStack } from './stacks/ProfileStack';
-import type { MainTabParamList } from './types';
+import { ROUTES, type MainTabParamList } from './types';
 import { useTheme } from 'rn-vs-lb/theme';
 import { useRootStore, useStoreData } from '../store/StoreProvider';
 import { Dot } from 'rn-vs-lb';
@@ -39,7 +39,7 @@ type MainTabBarProps = BottomTabBarProps & {
 const ICON_SIZE = 44;
 const ICON_RADIUS = ICON_SIZE / 2;
 
-const MainTabBar = ({ state, descriptors, navigation, showLabels = true }: MainTabBarProps) => {
+const MainTabBar = ({ state, descriptors, navigation, insets, showLabels = true }: MainTabBarProps) => {
   const { theme, isDark } = useTheme();
   const { onlineStore } = useRootStore();
   const hasUserNewMessage = useStoreData(onlineStore, (store) => store.hasUnreadPrivate);
@@ -60,7 +60,7 @@ const MainTabBar = ({ state, descriptors, navigation, showLabels = true }: MainT
         {
           backgroundColor: theme.white,
           borderTopColor: theme.border,
-          paddingBottom: 0,
+          paddingBottom: insets.bottom,
         },
       ]}
     >
@@ -133,6 +133,8 @@ type MainTabsNavigatorProps = {
 
 export const MainTabsNavigator = ({ showLabels = true }: MainTabsNavigatorProps) => {
   const insets = useSafeAreaInsets();
+  const { configStore } = useRootStore();
+  const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
 
   const tabBarScreenOptions = useMemo(
     () => ({
@@ -142,7 +144,7 @@ export const MainTabsNavigator = ({ showLabels = true }: MainTabsNavigatorProps)
   );
 
   return (
-    <SafeAreaInsetsContext.Provider value={{ ...insets, bottom: 0 }}>
+    <SafeAreaInsetsContext.Provider value={{ ...insets, bottom: adsEnabled ? 5 : insets.bottom + 12 }}>
       <Tab.Navigator
         screenOptions={tabBarScreenOptions}
         tabBar={(props) => <MainTabBar {...props} showLabels={showLabels} />}

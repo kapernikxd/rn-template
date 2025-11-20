@@ -1,41 +1,27 @@
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated, Easing, Image } from "react-native";
 import Swiper from "react-native-swiper";
 import { useTheme } from 'rn-vs-lb/theme';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ONBOARDING_PHOTO_1, ONBOARDING_PHOTO_2, ONBOARDING_PHOTO_3, ONBOARDING_PHOTO_4 } from "../../helpers/utils/onboarding"
+import { ONBOARDING_PHOTO_1, ONBOARDING_PHOTO_2, ONBOARDING_PHOTO_3, ONBOARDING_PHOTO_4 } from "../../helpers/utils/onboarding";
+import { useTranslation } from "react-i18next";
+import { LANGUAGE_OPTIONS, normalizeLanguageCode } from "../../constants/languages";
 
 interface Slide {
+  key: SlideKey;
   title: string;
   description: string;
-  uri: string;
+  uri?: string;
 }
 
-const slides: Slide[] = [
-  {
-    uri: ONBOARDING_PHOTO_1,
-    title: "✨ Добро пожаловать",
-    description:
-      "Ваш личный AI-партнёр для разговоров, идей и поддержки.",
-  },
-  {
-    uri: ONBOARDING_PHOTO_2,
-    title: "🧠 Он запоминает важное",
-    description:
-      "AI Pair помнит ваш контекст и учится на ваших историях.",
-  },
-  {
-    uri: ONBOARDING_PHOTO_3,
-    title: "🎭 Создайте характер",
-    description:
-      "Имя, стиль общения, цели — настройте под себя.",
-  },
-  {
-    uri: ONBOARDING_PHOTO_4,
-    title: "🚀 Готовы начать?",
-    description:
-      "Познакомьтесь со своим AI Pair и начните диалог.",
-  },
+type SlideKey = "language" | "welcome" | "memory" | "character" | "start";
+
+const SLIDE_CONFIG: Array<{ key: SlideKey; uri?: string }> = [
+  { key: "language" },
+  { key: "welcome", uri: ONBOARDING_PHOTO_1 },
+  { key: "memory", uri: ONBOARDING_PHOTO_2 },
+  { key: "character", uri: ONBOARDING_PHOTO_3 },
+  { key: "start", uri: ONBOARDING_PHOTO_4 },
 ];
 
 interface Props {
@@ -45,8 +31,26 @@ interface Props {
 const Onboarding: React.FC<Props> = ({ onFinish }) => {
   const swiperRef = useRef<Swiper>(null);
   const { typography, theme } = useTheme();
+  const { i18n, t } = useTranslation();
   const { width, height } = Dimensions.get("window");
   const styles = getStyles({ width, height, theme, typography });
+
+  const slides: Slide[] = useMemo(
+    () =>
+      SLIDE_CONFIG.map(({ key, uri }) => ({
+        key,
+        uri,
+        title: t(`screens.onboarding.slides.${key}.title`),
+        description: t(`screens.onboarding.slides.${key}.description`),
+      })),
+    [t],
+  );
+
+  const resolvedLanguageCode =
+    normalizeLanguageCode(i18n.resolvedLanguage) ??
+    normalizeLanguageCode(i18n.language) ??
+    LANGUAGE_OPTIONS[0].code;
+  const [selectedLanguage, setSelectedLanguage] = useState(resolvedLanguageCode);
 
   const handleNext = (index: number) => {
     if (index === slides.length - 1) {
@@ -134,18 +138,48 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
         }}
       >
         {slides.map((slide, index) => (
-          <View key={index} style={styles.slide}>
-            {/* Иллюстрация-заглушка */}
-            <Image source={{ uri: slide.uri }} style={styles.illustration} />
-            {/* <View style={styles.illustration}>
-              <Text style={styles.emoji}>{slide.title.slice(0, 2).trim()}</Text>
-            </View> */}
+          <View
+            key={slide.key}
+            style={[styles.slide, slide.key === "language" && styles.languageSlide]}
+          >
+            {slide.key !== "language" && slide.uri ? (
+              <Image source={{ uri: slide.uri }} style={styles.illustration} />
+            ) : null}
 
-            {/* Контент */}
-            <View style={styles.content}>
-              <Text style={[typography.titleH3, styles.title]}>{slide.title}</Text>
-              <Text style={[typography.body, styles.description]}>{slide.description}</Text>
-            </View>
+            {slide.key === "language" ? (
+              <View style={styles.languageContent}>
+                <Text style={[typography.titleH3, styles.title]}>{slide.title}</Text>
+                <Text style={[typography.body, styles.description]}>{slide.description}</Text>
+
+                <View style={styles.languageList}>
+                  {LANGUAGE_OPTIONS.map((language) => {
+                    const isSelected = language.code === selectedLanguage;
+
+                    return (
+                      <TouchableOpacity
+                        key={language.code}
+                        accessibilityRole="button"
+                        onPress={() => {
+                          setSelectedLanguage(language.code);
+                          void i18n.changeLanguage(language.code);
+                        }}
+                        style={[styles.languageOption, isSelected && styles.languageOptionSelected]}
+                        activeOpacity={0.8}
+                      >
+                        <Text style={[styles.languageOptionLabel, isSelected && styles.languageOptionLabelSelected]}>
+                          {t(language.translationKey, { defaultValue: language.fallbackLabel })}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </View>
+            ) : (
+              <View style={styles.content}>
+                <Text style={[typography.titleH3, styles.title]}>{slide.title}</Text>
+                <Text style={[typography.body, styles.description]}>{slide.description}</Text>
+              </View>
+            )}
 
             {/* Футер с действиями */}
             <View style={styles.footer}>
@@ -155,7 +189,7 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
                 style={styles.skipBtn}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <Text style={styles.skipText}>Пропустить</Text>
+                <Text style={styles.skipText}>{t('screens.onboarding.skip')}</Text>
               </TouchableOpacity>
 
               <View style={styles.divider} />
@@ -167,7 +201,9 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
                 <Text style={styles.nextText}>
-                  {index === slides.length - 1 ? "Начать" : "Далее"}
+                  {index === slides.length - 1
+                    ? t('screens.onboarding.start')
+                    : t('screens.onboarding.next')}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -274,6 +310,10 @@ const getStyles = ({
       justifyContent: "space-between",
     },
 
+    languageSlide: {
+      paddingTop: 40,
+    },
+
     illustration: {
       height: height * 0.58,
       borderRadius: 24,
@@ -297,6 +337,13 @@ const getStyles = ({
       marginTop: 8,
     },
 
+    languageContent: {
+      flex: 1,
+      paddingHorizontal: 4,
+      justifyContent: "center",
+      alignItems: "stretch",
+    },
+
     title: {
       textAlign: "center",
       marginBottom: 10,
@@ -306,6 +353,38 @@ const getStyles = ({
       textAlign: "center",
       lineHeight: 20,
       color: theme?.greyText || "#6B6B6B",
+    },
+
+    languageList: {
+      marginTop: 32,
+      gap: 12,
+      flexGrow: 1,
+      justifyContent: "center",
+      width: "100%",
+    },
+
+    languageOption: {
+      paddingVertical: 12,
+      paddingHorizontal: 16,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: theme?.divider || "#E1E1E6",
+      backgroundColor: theme?.card || "#fff",
+    },
+
+    languageOptionSelected: {
+      borderColor: theme?.primary || "#6f2da8",
+      backgroundColor: `${theme?.primary || "#6f2da8"}14`,
+    },
+
+    languageOptionLabel: {
+      textAlign: "center",
+      fontWeight: "500",
+      color: theme?.text || "#111111",
+    },
+
+    languageOptionLabelSelected: {
+      color: theme?.primary || "#6f2da8",
     },
 
     // Пагинация

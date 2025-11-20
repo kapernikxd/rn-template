@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, TouchableOpacity, type StyleProp, type ViewStyle } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 import { useTheme } from "rn-vs-lb/theme";
 
 type BackButtonProps = {
@@ -18,7 +19,7 @@ const DEFAULT_ICON_SIZE = 22;
 
 export const BackButton: React.FC<BackButtonProps> = ({
   onPress,
-  accessibilityLabel = "Назад",
+  accessibilityLabel,
   style,
   iconColor,
   backgroundColor,
@@ -26,11 +27,13 @@ export const BackButton: React.FC<BackButtonProps> = ({
   size = DEFAULT_SIZE,
 }) => {
   const { theme, isDark } = useTheme();
+  const { t } = useTranslation();
+  const resolvedAccessibilityLabel = accessibilityLabel ?? t('common.accessibility.back');
 
   return (
     <TouchableOpacity
       accessibilityRole="button"
-      accessibilityLabel={accessibilityLabel}
+      accessibilityLabel={resolvedAccessibilityLabel}
       activeOpacity={0.7}
       onPress={onPress}
       style={[
