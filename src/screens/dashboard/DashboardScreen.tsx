@@ -1,153 +1,157 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import { ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SIZES, useTheme } from "rn-vs-lb/theme";
+import { useTranslation } from "react-i18next";
 
-import { HorizontalCardSection } from "rn-vs-lb";
-import { Spacer } from "rn-vs-lb";
+import { HorizontalCardSection, Spacer } from "rn-vs-lb";
 import { useSafeAreaColors } from "../../store/SafeAreaColorProvider";
 import { ROUTES, type DashboardNav } from "../../navigation/types";
 import type { DashboardExperience } from "../../types/dashboard";
-import { Theme } from "../../constants";
 import { POPULAR_HOMELESS, POPULAR_NEIGHBOR, POPULAR_PLUMBER, SITUATION_2, SITUATION_GOVNO, TRAVEL_GIZA, TRAVEL_LONDON, TRAVEL_PARIS } from "../../helpers/utils/cards";
 
-const HALLOWEEN_BACKGROUND = "#070C1F";
 
-const POPULAR_CARDS: DashboardExperience[] = [
+type LocalizedDashboardExperience = Omit<DashboardExperience, "title" | "description" | "generationPrompt"> & {
+  titleKey: string;
+  descriptionKey: string;
+  generationPromptKey: string;
+};
+
+type DashboardExperienceSection = {
+  titleKey: string;
+  cards: LocalizedDashboardExperience[];
+};
+
+const POPULAR_CARDS: LocalizedDashboardExperience[] = [
   {
     id: "popular-1",
-    title: "Розыгрыш с незваным гостем",
+    titleKey: "screens.dashboard.experience.cards.popular.prankGuest.title",
     image: {
       uri: POPULAR_HOMELESS,
     },
-    description: "Разыграйте близких неожиданным гостем у себя дома!",
+    descriptionKey: "screens.dashboard.experience.cards.popular.prankGuest.description",
     tokenCost: 10,
     case: "homeless",
-    generationPrompt:
-      "Помести модель на фото",
+    generationPromptKey: "screens.dashboard.experience.cards.popular.prankGuest.prompt",
   },
   {
     id: "popular-2",
-    title: "Сантехник",
+    titleKey: "screens.dashboard.experience.cards.popular.plumber.title",
     image: {
       uri: POPULAR_PLUMBER,
     },
-    description: "Разыграйте близких неожиданным гостем у себя дома!",
+    descriptionKey: "screens.dashboard.experience.cards.popular.plumber.description",
     tokenCost: 10,
     case: "plumber",
-    generationPrompt:
-      "Помести модель на фото",
+    generationPromptKey: "screens.dashboard.experience.cards.popular.plumber.prompt",
   },
   {
     id: "popular-3",
-    title: "Соседка",
+    titleKey: "screens.dashboard.experience.cards.popular.neighbor.title",
     image: {
       uri: POPULAR_NEIGHBOR,
     },
-    description: "Разыграйте близких неожиданным гостем у себя дома!",
+    descriptionKey: "screens.dashboard.experience.cards.popular.neighbor.description",
     tokenCost: 10,
     case: "neighbor",
-    generationPrompt:
-      "Помести модель на фото",
+    generationPromptKey: "screens.dashboard.experience.cards.popular.neighbor.prompt",
   },
 ];
 
-const TRAVEL_CARDS: DashboardExperience[] = [
+const TRAVEL_CARDS: LocalizedDashboardExperience[] = [
   {
     id: "horror-1",
-    title: "Париж",
+    titleKey: "screens.dashboard.experience.cards.travel.paris.title",
     image: {
-      uri: TRAVEL_PARIS
+      uri: TRAVEL_PARIS,
     },
-    description: "Поза с Эйфелевой башней в шикарном парижском стиле",
+    descriptionKey: "screens.dashboard.experience.cards.travel.paris.description",
     tokenCost: 10,
     case: "paris",
-    generationPrompt:
-      "Elegant travel photo in front of the Eiffel Tower at dusk, warm golden hour glow, fashionable Parisian outfit, cinematic skyline, soft bokeh",
+    generationPromptKey: "screens.dashboard.experience.cards.travel.paris.prompt",
   },
   {
     id: "horror-2",
-    title: "Лондон",
+    titleKey: "screens.dashboard.experience.cards.travel.london.title",
     image: {
-      uri: TRAVEL_LONDON
+      uri: TRAVEL_LONDON,
     },
-    description: "Встаньте рядом с Биг-Беном в классическом лондонском стиле",
+    descriptionKey: "screens.dashboard.experience.cards.travel.london.description",
     tokenCost: 10,
     case: "london",
-    generationPrompt:
-      "Moody London street scene near Big Ben on a rainy evening, wet cobblestones, trench coat and umbrella, misty lights, high realism",
+    generationPromptKey: "screens.dashboard.experience.cards.travel.london.prompt",
   },
   {
     id: "horror-3",
-    title: "Гиза",
+    titleKey: "screens.dashboard.experience.cards.travel.giza.title",
     image: {
-      uri: TRAVEL_GIZA
+      uri: TRAVEL_GIZA,
     },
-    description: "Запечатлей свои первые восхищённые мгновения на фоне вечных пирамид.",
+    descriptionKey: "screens.dashboard.experience.cards.travel.giza.description",
     tokenCost: 10,
     case: "giza",
-    generationPrompt:
-      "Sunrise desert scene at the Pyramids of Giza, warm sand tones, dramatic sky, subject posed heroically with ancient monuments in background",
+    generationPromptKey: "screens.dashboard.experience.cards.travel.giza.prompt",
   },
 ];
 
-const SITUATION_CARDS: DashboardExperience[] = [
+const SITUATION_CARDS: LocalizedDashboardExperience[] = [
   {
     id: "costume-1",
-    title: "Затопило",
+    titleKey: "screens.dashboard.experience.cards.situations.flooded.title",
     image: {
       uri: SITUATION_GOVNO,
     },
-    description: "Разыграйте близких неожиданной ситуацией!",
+    descriptionKey: "screens.dashboard.experience.cards.situations.flooded.description",
     tokenCost: 6,
     case: "flooded",
-    generationPrompt:
-      "Chaotic flooded apartment with water pouring from ceiling, floating household items, dynamic motion, cinematic lighting, high detail",
+    generationPromptKey: "screens.dashboard.experience.cards.situations.flooded.prompt",
   },
   {
     id: "costume-2",
-    title: 'Пришли цыгане',
+    titleKey: "screens.dashboard.experience.cards.situations.unexpectedGuests.title",
     image: {
       uri: SITUATION_2,
     },
-    description: "Разыграйте близких неожиданной ситуацией!",
+    descriptionKey: "screens.dashboard.experience.cards.situations.unexpectedGuests.description",
     tokenCost: 10,
     case: "beggars",
-    generationPrompt:
-      "Lively doorway scene with a colorful group of festive street performers offering fortune telling props, rich fabrics, warm lighting, playful energy",
+    generationPromptKey: "screens.dashboard.experience.cards.situations.unexpectedGuests.prompt",
   },
 ];
 
-
 const chatBackground = require("../../assets/ai-background.jpg");
-
 
 export const DashboardScreen = () => {
   const { typography, sizes, theme } = useTheme();
   const { setColors } = useSafeAreaColors();
-  const insets = useSafeAreaInsets();
   const navigation = useNavigation<DashboardNav>();
+  const { t } = useTranslation();
 
   useEffect(() => {
     setColors({
       topColor: theme.background,
       bottomColor: theme.background,
     });
-  }, [setColors]);
+  }, [setColors, theme.background]);
 
-  const sections = useMemo(
+  const sections = useMemo<DashboardExperienceSection[]>(
     () => [
-      { title: "Популярное", cards: POPULAR_CARDS },
-      { title: "Путешествия", cards: TRAVEL_CARDS },
-      { title: "Ситуации", cards: SITUATION_CARDS },
+      { titleKey: "screens.dashboard.experience.sections.popular", cards: POPULAR_CARDS },
+      { titleKey: "screens.dashboard.experience.sections.travel", cards: TRAVEL_CARDS },
+      { titleKey: "screens.dashboard.experience.sections.situations", cards: SITUATION_CARDS },
     ],
     [],
   );
 
-  const handleSeeAll = useCallback((_sectionTitle: string) => {
-    // TODO: integrate navigation to the full catalog
-  }, []);
+  const translateCard = useCallback(
+    (card: LocalizedDashboardExperience): DashboardExperience => ({
+      ...card,
+      title: t(card.titleKey),
+      description: t(card.descriptionKey),
+      generationPrompt: t(card.generationPromptKey),
+    }),
+    [t],
+  );
 
   const handleCardPress = useCallback(
     (card: DashboardExperience) => {
@@ -163,9 +167,9 @@ export const DashboardScreen = () => {
     >
       <ImageBackground source={chatBackground} style={styles.background}>
         <View style={[styles.header, { backgroundColor: theme.backgroundSemiTransparent }]}>
-          <Text style={[typography.titleH3, {color: 'white'}]}>Создай свое изображение</Text>
-          <Text style={[typography.body, {color: 'white'}]}>
-            Придумай идею, напиши промпт и получи готовое изображение
+          <Text style={[typography.titleH3, { color: "white" }]}>{t("screens.dashboard.experience.hero.title")}</Text>
+          <Text style={[typography.body, { color: "white" }]}>
+            {t("screens.dashboard.experience.hero.subtitle")}
           </Text>
         </View>
       </ImageBackground>
@@ -173,22 +177,25 @@ export const DashboardScreen = () => {
       <Spacer size="lg" />
 
       <View style={styles.content}>
+        {sections.map((section) => {
+          const translatedCards = section.cards.map(translateCard);
 
-        {sections.map((section) => (
-          <>
-            <HorizontalCardSection
-              key={section.title}
-              title={section.title}
-              cards={section.cards}
-              // onPressSeeAll={() => handleSeeAll(section.title)}
-              onPressCard={(card) => handleCardPress(card as DashboardExperience)}
-              style={styles.section}
-              contentContainerStyle={styles.sectionContent}
-            />
-            <Spacer size="md" />
-            <Spacer size="lg" />
-          </>
-        ))}
+          return (
+            <React.Fragment key={section.titleKey}>
+              <HorizontalCardSection
+                key={section.titleKey}
+                title={t(section.titleKey)}
+                cards={translatedCards}
+                // onPressSeeAll={() => handleSeeAll(section.title)}
+                onPressCard={(card) => handleCardPress(card as DashboardExperience)}
+                style={styles.section}
+                contentContainerStyle={styles.sectionContent}
+              />
+              <Spacer size="md" />
+              <Spacer size="lg" />
+            </React.Fragment>
+          );
+        })}
       </View>
     </ScrollView>
   );
@@ -199,7 +206,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    paddingHorizontal: SIZES.xxs as number
+    paddingHorizontal: SIZES.xxs as number,
   },
   background: {
     paddingVertical: 90,

@@ -681,7 +681,87 @@
           "uploadPhoto": "Upload photo",
           "closePreview": "Close preview"
         },
-        "uploadPrompt": "Tap here to upload a photo you want to bring to life!"
+        "uploadPrompt": "Tap here to upload a photo you want to bring to life!",
+        "hero": {
+          "title": "Create your own image",
+          "subtitle": "Come up with an idea, write a prompt, and get a ready-made picture"
+        },
+        "sections": {
+          "popular": "Popular",
+          "travel": "Travel",
+          "situations": "Situations"
+        },
+        "cards": {
+          "popular": {
+            "prankGuest": {
+              "title": "Prank with an unexpected guest",
+              "description": "Prank your loved ones with an unexpected visitor at home!",
+              "prompt": "Place the model into the photo"
+            },
+            "plumber": {
+              "title": "Plumber",
+              "description": "Prank your loved ones with an unexpected visitor at home!",
+              "prompt": "Place the model into the photo"
+            },
+            "neighbor": {
+              "title": "Neighbor",
+              "description": "Prank your loved ones with an unexpected visitor at home!",
+              "prompt": "Place the model into the photo"
+            }
+          },
+          "travel": {
+            "paris": {
+              "title": "Paris",
+              "description": "Pose with the Eiffel Tower in chic Parisian style",
+              "prompt": "Elegant travel photo in front of the Eiffel Tower at dusk, warm golden hour glow, fashionable Parisian outfit, cinematic skyline, soft bokeh"
+            },
+            "london": {
+              "title": "London",
+              "description": "Stand next to Big Ben in classic London style",
+              "prompt": "Moody London street scene near Big Ben on a rainy evening, wet cobblestones, trench coat and umbrella, misty lights, high realism"
+            },
+            "giza": {
+              "title": "Giza",
+              "description": "Capture your first awe-struck moments against the eternal pyramids.",
+              "prompt": "Sunrise desert scene at the Pyramids of Giza, warm sand tones, dramatic sky, subject posed heroically with ancient monuments in background"
+            }
+          },
+          "situations": {
+            "flooded": {
+              "title": "Flooded",
+              "description": "Prank your loved ones with an unexpected situation!",
+              "prompt": "Chaotic flooded apartment with water pouring from ceiling, floating household items, dynamic motion, cinematic lighting, high detail"
+            },
+            "unexpectedGuests": {
+              "title": "Unexpected guests",
+              "description": "Prank your loved ones with an unexpected situation!",
+              "prompt": "Lively doorway scene with a colorful group of festive street performers offering fortune telling props, rich fabrics, warm lighting, playful energy"
+            }
+          }
+        },
+        "details": {
+          "promptLabel": "Add your prompt (optional)",
+          "promptPlaceholder": "For example: add a blue sky and a bit of smoke",
+          "promptHelper": "Base style for this scene: {{description}}",
+          "removePhoto": "Remove photo",
+          "continue": "Continue",
+          "sending": "Sending...",
+          "additionalPromptPrefix": "Additional wishes:",
+          "alerts": {
+            "uploadTitle": "Upload a photo",
+            "uploadMessage": "Please add an image to process.",
+            "notEnoughTokensTitle": "Not enough tokens",
+            "notEnoughTokensMessage": "You don't have enough tokens to process. Top up and try again.",
+            "requestSentTitle": "Request sent",
+            "requestSentMessage": "We're processing your image. The result will appear in the library.",
+            "errorTitle": "Error",
+            "submitErrorFallback": "Failed to submit the request."
+          },
+          "errors": {
+            "balanceLoad": "Couldn't load token balance.",
+            "balanceUpdate": "Couldn't update token balance."
+          }
+        }
       },
       "horoscope": {
         "dateFormat": "dddd, D MMMM",
