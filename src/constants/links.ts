@@ -2,7 +2,7 @@ import Constants from 'expo-constants';
 
 export const isDev = process.env.NODE_ENV === "development";
 
-export const ADS_ENABLED = true;
+export const ADS_ENABLED = false;
 
 export const BASE_URL = isDev
   ? "http://192.168.0.20:5001/"
@@ -34,3 +34,5 @@ export const IOS_AD_UNIT_ID_REWARD = 'ca-app-pub-8636022279548301/2882453863';
 
 export const TOKEN_REWARD_AMOUNT = 10;
 export const DEFAULT_TOKEN_BALANCE = 20;
+
+export const IS_DEV = false;

@@ -49,6 +49,7 @@ export const SettingsScreen: FC = () => {
             <View style={styles.cardWithoutH}>
               <SettingsListItem
                 label={'ID пользователя'}
+                laberColor={theme.text}
                 value={userId ? truncateText(userId, 18) : '—'}
                 valueTone='muted'
               />
@@ -72,8 +73,10 @@ export const SettingsScreen: FC = () => {
               <Spacer size='xs' />
               <SettingsListItem
                 label={'Язык интерфейса'}
+                laberColor={theme.text}
                 accessory={<LanguageSelector />}
-                labelIcon={<FontAwesome name="language" size={21} />}
+                labelIcon={<FontAwesome color={theme.text} name="language" size={21} />}
+                labelIconColor={theme.text}
               />
               {COPY_LINK.map((item, index) => (
                 <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine hideArrow />

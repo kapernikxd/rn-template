@@ -13,6 +13,7 @@ const VALUE_TONE_MAP: Record<ValueTone, 'valueDefault' | 'valueMuted' | 'valuePr
 
 export interface SettingsListItemProps {
   label: string;
+  laberColor: string;
   description?: string;
   value?: string;
   valueTone?: ValueTone;
@@ -41,6 +42,7 @@ export interface SettingsListItemProps {
 
 const SettingsListItem: React.FC<SettingsListItemProps> = ({
   label,
+  laberColor,
   description,
   value,
   valueTone = 'default',
@@ -80,7 +82,7 @@ const SettingsListItem: React.FC<SettingsListItemProps> = ({
     <View style={[styles.labelBlock, description ? styles.textWithDescription : null]}>
       <View style={styles.labelRow}>
         {labelIconPosition === 'left' && renderLabelIcon()}
-        <Text style={[typography.titleH6Regular, styles.label ]} numberOfLines={1} ellipsizeMode="tail">
+        <Text style={[typography.titleH6Regular, styles.label, {color: laberColor} ]} numberOfLines={1} ellipsizeMode="tail">
           {label}
         </Text>
         {labelIconPosition === 'right' && renderLabelIcon()}

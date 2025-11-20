@@ -155,9 +155,9 @@ export const DashboardScreen = () => {
     >
       <ImageBackground source={chatBackground} style={styles.background}>
         <View style={[styles.header, { backgroundColor: theme.backgroundSemiTransparent }]}>
-          <Text style={[typography.titleH3, {color: 'white'}]}>Halloween Night</Text>
+          <Text style={[typography.titleH3, {color: 'white'}]}>Создай свое изображение</Text>
           <Text style={[typography.body, {color: 'white'}]}>
-            Grab some popcorn and stream the scariest scenes of the season.
+            Придумай идею, напиши промпт и получи готовое изображение
           </Text>
         </View>
       </ImageBackground>
