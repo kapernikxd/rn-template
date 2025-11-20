@@ -17,6 +17,7 @@ import { launchImageLibrary, type Asset } from "react-native-image-picker";
 
 import { useTheme } from "rn-vs-lb/theme";
 import { Spacer } from "rn-vs-lb";
+import { useTranslation } from "react-i18next";
 
 import { ExperiencePreviewHeader } from "./components/ExperiencePreviewHeader";
 import { ExperienceUploadCard } from "./components/ExperienceUploadCard";
@@ -35,6 +36,7 @@ export const DashboardDetailsScreen = () => {
   const { imageGenerationStore, uiStore } = useRootStore();
   const [customPrompt, setCustomPrompt] = useState("");
   const [tokenBalance, setTokenBalance] = useState<number | null>(null);
+  const { t } = useTranslation();
 
   const { selectedImage, isSubmitting } = useStoreData(
     imageGenerationStore,
@@ -52,10 +54,13 @@ export const DashboardDetailsScreen = () => {
     } catch (error) {
       console.warn("Failed to load token balance", error);
       setTokenBalance(null);
-      uiStore.showSnackbar("Не удалось получить баланс токенов.", "error");
+      uiStore.showSnackbar(
+        t("screens.dashboard.experience.details.errors.balanceLoad"),
+        "error",
+      );
       return null;
     }
-  }, [uiStore]);
+  }, [t, uiStore]);
 
   useFocusEffect(
     useCallback(() => {
@@ -107,8 +112,8 @@ export const DashboardDetailsScreen = () => {
   const handleContinue = useCallback(() => {
     if (!selectedImage) {
       Alert.alert(
-        "Загрузите фото",
-        "Пожалуйста, добавьте изображение, которое нужно обработать.",
+        t("screens.dashboard.experience.details.alerts.uploadTitle"),
+        t("screens.dashboard.experience.details.alerts.uploadMessage"),
       );
       return;
     }
@@ -122,16 +127,15 @@ export const DashboardDetailsScreen = () => {
 
       if (balance < card.tokenCost) {
         Alert.alert(
-          "Недостаточно токенов",
-          "У вас недостаточно токенов для обработки. Пополните баланс и попробуйте снова.",
+          t("screens.dashboard.experience.details.alerts.notEnoughTokensTitle"),
+          t("screens.dashboard.experience.details.alerts.notEnoughTokensMessage"),
         );
         return;
       }
 
       const trimmedPrompt = customPrompt.trim();
       const combinedPrompt = trimmedPrompt
-        ? `${card.generationPrompt}
-Дополнительные пожелания: ${trimmedPrompt}`
+        ? `${card.generationPrompt}\n${t("screens.dashboard.experience.details.additionalPromptPrefix")} ${trimmedPrompt}`
         : card.generationPrompt;
 
       const success = await imageGenerationStore.submitEditRequest({
@@ -144,16 +148,21 @@ export const DashboardDetailsScreen = () => {
           setTokenBalance(updatedBalance);
         } catch (error) {
           console.warn("Failed to subtract tokens", error);
-          uiStore.showSnackbar("Не удалось обновить баланс токенов.", "error");
+          uiStore.showSnackbar(
+            t("screens.dashboard.experience.details.errors.balanceUpdate"),
+            "error",
+          );
         }
         Alert.alert(
-          "Запрос отправлен",
-          "Мы начали обработку вашего изображения. Готовый результат появится в библиотеке.",
+          t("screens.dashboard.experience.details.alerts.requestSentTitle"),
+          t("screens.dashboard.experience.details.alerts.requestSentMessage"),
         );
         setCustomPrompt("");
       } else {
-        const message = imageGenerationStore.submitError ?? "Не удалось отправить запрос";
-        Alert.alert("Ошибка", message);
+        const message =
+          imageGenerationStore.submitError ??
+          t("screens.dashboard.experience.details.alerts.submitErrorFallback");
+        Alert.alert(t("screens.dashboard.experience.details.alerts.errorTitle"), message);
       }
     })();
   }, [
@@ -163,6 +172,8 @@ export const DashboardDetailsScreen = () => {
     imageGenerationStore,
     refreshTokenBalance,
     selectedImage,
+    t,
+    uiStore,
   ]);
 
   return (
@@ -182,12 +193,14 @@ export const DashboardDetailsScreen = () => {
 
         <View style={[styles.body, { paddingHorizontal: sizes.lg, paddingTop: sizes.lg }]}>
           <View style={[styles.promptCard, { padding: sizes.lg }]}>
-            <Text style={[typography.body, styles.promptLabel]}>Добавьте свой промпт (необязательно)</Text>
+            <Text style={[typography.body, styles.promptLabel]}>
+              {t("screens.dashboard.experience.details.promptLabel")}
+            </Text>
             <Spacer size="xs" />
             <TextInput
               value={customPrompt}
               onChangeText={setCustomPrompt}
-              placeholder="Например: добавь синее небо и немного дыма"
+              placeholder={t("screens.dashboard.experience.details.promptPlaceholder")}
               placeholderTextColor="rgba(255,255,255,0.4)"
               multiline
               style={[styles.promptInput, { minHeight: sizes.xl * 2 }]}
@@ -195,7 +208,7 @@ export const DashboardDetailsScreen = () => {
             />
             <Spacer size="xs" />
             <Text style={[typography.bodySm, styles.promptHelper]}>
-              Базовый стиль для этой сцены: {card.description}
+              {t("screens.dashboard.experience.details.promptHelper", { description: card.description })}
             </Text>
           </View>
 
@@ -210,7 +223,9 @@ export const DashboardDetailsScreen = () => {
               />
               <Spacer size="sm" />
               <Pressable onPress={handleRemoveImage} style={styles.removeButton}>
-                <Text style={[typography.bodySm, styles.removeButtonText]}>Удалить фото</Text>
+                <Text style={[typography.bodySm, styles.removeButtonText]}>
+                  {t("screens.dashboard.experience.details.removePhoto")}
+                </Text>
               </Pressable>
             </View>
           ) : null}
@@ -231,7 +246,9 @@ export const DashboardDetailsScreen = () => {
           disabled={continueDisabled}
         >
           <Text style={[typography.body, styles.continueText]}>
-            {isSubmitting ? "Отправка..." : "Продолжить"}
+            {isSubmitting
+              ? t("screens.dashboard.experience.details.sending")
+              : t("screens.dashboard.experience.details.continue")}
           </Text>
           <View style={styles.buttonRight}>
             <View style={[styles.tokenWrapper, { backgroundColor: theme.primary }]}>
