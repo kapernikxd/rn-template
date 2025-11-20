@@ -5,10 +5,10 @@ import { TestIds, useRewardedAd } from "react-native-google-mobile-ads";
 import { ensureTrackingTransparencyPermission } from "../../services/privacy/trackingTransparency";
 import { useRootStore, useStoreData } from "../../store/StoreProvider";
 import {
-  DEFAULT_TOKEN_BALANCE,
   addTokens,
   getTokenBalance,
 } from "../tokenStorage";
+import { DEFAULT_TOKEN_BALANCE } from "../../constants/links";
 const isIos = Platform.OS === "ios";
 
 type UseRewardedAdTokensResult = {
@@ -46,7 +46,7 @@ export const useRewardedAdTokens = (
   const { isLoaded, isClosed, isEarnedReward, load, show, error } = useRewardedAd(
     rewardedAdUnitId,
     {
-      requestNonPersonalizedAdsOnly: true,
+      requestNonPersonalizedAdsOnly: false,
     },
   );
 

@@ -76,7 +76,7 @@ export const BottomAdBanner = () => {
         unitId={bannerAdUnitId}
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
         requestOptions={{
-          requestNonPersonalizedAdsOnly: true,
+          requestNonPersonalizedAdsOnly: false,
         }}
         onAdLoaded={() => setAdLoaded(true)}
         onAdFailedToLoad={() => setAdLoaded(false)}

@@ -152,7 +152,7 @@ export const MainTabsNavigator = ({ showLabels = true }: MainTabsNavigatorProps)
   );
 
   return (
-    <SafeAreaInsetsContext.Provider value={{ ...insets, bottom: adsEnabled ? 0 : insets.bottom }}>
+    <SafeAreaInsetsContext.Provider value={{ ...insets, bottom: adsEnabled ? 5 : insets.bottom + 12 }}>
       <Tab.Navigator
         screenOptions={tabBarScreenOptions}
         tabBar={(props) => <MainTabBar {...props} showLabels={showLabels} />}
