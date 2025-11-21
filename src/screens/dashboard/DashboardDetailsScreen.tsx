@@ -33,7 +33,8 @@ export const DashboardDetailsScreen = () => {
   const { card } = route.params;
   const { typography, sizes, theme } = useTheme();
   const insets = useSafeAreaInsets();
-  const { imageGenerationStore, uiStore } = useRootStore();
+  const { imageGenerationStore, uiStore, configStore } = useRootStore();
+  const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
   const [customPrompt, setCustomPrompt] = useState("");
   const [tokenBalance, setTokenBalance] = useState<number | null>(null);
   const { t } = useTranslation();
@@ -59,6 +60,11 @@ export const DashboardDetailsScreen = () => {
   );
 
   const refreshTokenBalance = useCallback(async () => {
+    if (!adsEnabled) {
+      setTokenBalance(null);
+      return null;
+    }
+
     try {
       const balance = await getTokenBalance();
       setTokenBalance(balance);
@@ -72,15 +78,20 @@ export const DashboardDetailsScreen = () => {
       );
       return null;
     }
-  }, [t, uiStore]);
+  }, [adsEnabled, t, uiStore]);
 
   useFocusEffect(
     useCallback(() => {
-      void refreshTokenBalance();
-    }, [refreshTokenBalance]),
+      if (adsEnabled) {
+        void refreshTokenBalance();
+      } else {
+        setTokenBalance(null);
+      }
+    }, [adsEnabled, refreshTokenBalance]),
   );
 
-  const hasEnoughTokens = tokenBalance !== null && tokenBalance >= card.tokenCost;
+  const hasEnoughTokens =
+    !adsEnabled || (tokenBalance !== null && tokenBalance >= card.tokenCost);
 
   const continueDisabled = useMemo(
     () => !selectedImage || isSubmitting || !hasEnoughTokens,
@@ -131,18 +142,20 @@ export const DashboardDetailsScreen = () => {
     }
 
     void (async () => {
-      const balance = await refreshTokenBalance();
+      if (adsEnabled) {
+        const balance = await refreshTokenBalance();
 
-      if (balance === null) {
-        return;
-      }
+        if (balance === null) {
+          return;
+        }
 
-      if (balance < card.tokenCost) {
-        Alert.alert(
-          t("screens.dashboard.experience.details.alerts.notEnoughTokensTitle"),
-          t("screens.dashboard.experience.details.alerts.notEnoughTokensMessage"),
-        );
-        return;
+        if (balance < card.tokenCost) {
+          Alert.alert(
+            t("screens.dashboard.experience.details.alerts.notEnoughTokensTitle"),
+            t("screens.dashboard.experience.details.alerts.notEnoughTokensMessage"),
+          );
+          return;
+        }
       }
 
       const trimmedPrompt = customPrompt.trim();
@@ -156,15 +169,17 @@ export const DashboardDetailsScreen = () => {
       });
 
       if (success) {
-        try {
-          const updatedBalance = await subtractTokens(card.tokenCost);
-          setTokenBalance(updatedBalance);
-        } catch (error) {
-          console.warn("Failed to subtract tokens", error);
-          uiStore.showSnackbar(
-            t("screens.dashboard.experience.details.errors.balanceUpdate"),
-            "error",
-          );
+        if (adsEnabled) {
+          try {
+            const updatedBalance = await subtractTokens(card.tokenCost);
+            setTokenBalance(updatedBalance);
+          } catch (error) {
+            console.warn("Failed to subtract tokens", error);
+            uiStore.showSnackbar(
+              t("screens.dashboard.experience.details.errors.balanceUpdate"),
+              "error",
+            );
+          }
         }
         Alert.alert(
           t("screens.dashboard.experience.details.alerts.requestSentTitle"),
@@ -179,6 +194,7 @@ export const DashboardDetailsScreen = () => {
       }
     })();
   }, [
+    adsEnabled,
     localizedCard.generationPrompt,
     card.tokenCost,
     customPrompt,
