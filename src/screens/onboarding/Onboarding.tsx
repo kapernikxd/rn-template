@@ -1,11 +1,11 @@
-import React, { useMemo, useRef, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated, Easing, Image } from "react-native";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated, Easing } from "react-native";
 import Swiper from "react-native-swiper";
 import { useTheme } from 'rn-vs-lb/theme';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ONBOARDING_PHOTO_1, ONBOARDING_PHOTO_2, ONBOARDING_PHOTO_3, ONBOARDING_PHOTO_4 } from "../../helpers/utils/onboarding";
 import { useTranslation } from "react-i18next";
 import { LANGUAGE_OPTIONS, normalizeLanguageCode } from "../../constants/languages";
+import { setPreferredLanguage } from "../../helpers/i18n/languageStorage";
 
 interface Slide {
   key: SlideKey;
@@ -14,14 +14,10 @@ interface Slide {
   uri?: string;
 }
 
-type SlideKey = "language" | "welcome" | "memory" | "character" | "start";
+type SlideKey = "language";
 
 const SLIDE_CONFIG: Array<{ key: SlideKey; uri?: string }> = [
   { key: "language" },
-  { key: "welcome", uri: ONBOARDING_PHOTO_1 },
-  { key: "memory", uri: ONBOARDING_PHOTO_2 },
-  { key: "character", uri: ONBOARDING_PHOTO_3 },
-  { key: "start", uri: ONBOARDING_PHOTO_4 },
 ];
 
 interface Props {
@@ -52,9 +48,31 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
     LANGUAGE_OPTIONS[0].code;
   const [selectedLanguage, setSelectedLanguage] = useState(resolvedLanguageCode);
 
+  const handleLanguageSelect = useCallback(
+    async (languageCode: string) => {
+      setSelectedLanguage(languageCode);
+      try {
+        await i18n.changeLanguage(languageCode);
+        await setPreferredLanguage(languageCode);
+      } catch (error) {
+        console.warn('Failed to change language during onboarding', error);
+      }
+    },
+    [i18n],
+  );
+
+  const handleFinish = useCallback(async () => {
+    try {
+      await setPreferredLanguage(selectedLanguage);
+    } catch (error) {
+      console.warn('Failed to persist selected language', error);
+    }
+    onFinish();
+  }, [onFinish, selectedLanguage]);
+
   const handleNext = (index: number) => {
     if (index === slides.length - 1) {
-      onFinish();
+      void handleFinish();
     } else {
       swiperRef.current?.scrollBy(1, true);
     }
@@ -142,10 +160,6 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
             key={slide.key}
             style={[styles.slide, slide.key === "language" && styles.languageSlide]}
           >
-            {slide.key !== "language" && slide.uri ? (
-              <Image source={{ uri: slide.uri }} style={styles.illustration} />
-            ) : null}
-
             {slide.key === "language" ? (
               <View style={styles.languageContent}>
                 <Text style={[typography.titleH3, styles.title]}>{slide.title}</Text>
@@ -160,8 +174,7 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
                         key={language.code}
                         accessibilityRole="button"
                         onPress={() => {
-                          setSelectedLanguage(language.code);
-                          void i18n.changeLanguage(language.code);
+                          void handleLanguageSelect(language.code);
                         }}
                         style={[styles.languageOption, isSelected && styles.languageOptionSelected]}
                         activeOpacity={0.8}
@@ -185,26 +198,11 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
             <View style={styles.footer}>
               <TouchableOpacity
                 accessibilityRole="button"
-                onPress={onFinish}
-                style={styles.skipBtn}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-              >
-                <Text style={styles.skipText}>{t('screens.onboarding.skip')}</Text>
-              </TouchableOpacity>
-
-              <View style={styles.divider} />
-
-              <TouchableOpacity
-                accessibilityRole="button"
                 onPress={() => handleNext(index)}
                 style={styles.nextBtn}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
-                <Text style={styles.nextText}>
-                  {index === slides.length - 1
-                    ? t('screens.onboarding.start')
-                    : t('screens.onboarding.next')}
-                </Text>
+                <Text style={styles.nextText}>{t('screens.onboarding.start')}</Text>
               </TouchableOpacity>
             </View>
           </View>
