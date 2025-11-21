@@ -11,7 +11,10 @@ import type { DashboardExperience } from "../../types/dashboard";
 import { POPULAR_HOMELESS, POPULAR_NEIGHBOR, POPULAR_PLUMBER, SITUATION_2, SITUATION_GOVNO, TRAVEL_GIZA, TRAVEL_LONDON, TRAVEL_PARIS } from "../../helpers/utils/cards";
 
 
-type LocalizedDashboardExperience = Omit<DashboardExperience, "title" | "description" | "generationPrompt"> & {
+type LocalizedDashboardExperience = Omit<
+  DashboardExperience,
+  "title" | "description" | "generationPrompt" | "titleKey" | "descriptionKey" | "generationPromptKey"
+> & {
   titleKey: string;
   descriptionKey: string;
   generationPromptKey: string;
@@ -149,6 +152,9 @@ export const DashboardScreen = () => {
       title: t(card.titleKey),
       description: t(card.descriptionKey),
       generationPrompt: t(card.generationPromptKey),
+      titleKey: card.titleKey,
+      descriptionKey: card.descriptionKey,
+      generationPromptKey: card.generationPromptKey,
     }),
     [t],
   );

@@ -46,6 +46,18 @@ export const DashboardDetailsScreen = () => {
     }),
   );
 
+  const localizedCard = useMemo(
+    () => ({
+      ...card,
+      title: card.titleKey ? t(card.titleKey) : card.title,
+      description: card.descriptionKey ? t(card.descriptionKey) : card.description,
+      generationPrompt: card.generationPromptKey
+        ? t(card.generationPromptKey)
+        : card.generationPrompt,
+    }),
+    [card, t],
+  );
+
   const refreshTokenBalance = useCallback(async () => {
     try {
       const balance = await getTokenBalance();
@@ -135,8 +147,8 @@ export const DashboardDetailsScreen = () => {
 
       const trimmedPrompt = customPrompt.trim();
       const combinedPrompt = trimmedPrompt
-        ? `${card.generationPrompt}\n${t("screens.dashboard.experience.details.additionalPromptPrefix")} ${trimmedPrompt}`
-        : card.generationPrompt;
+        ? `${localizedCard.generationPrompt}\n${t("screens.dashboard.experience.details.additionalPromptPrefix")} ${trimmedPrompt}`
+        : localizedCard.generationPrompt;
 
       const success = await imageGenerationStore.submitEditRequest({
         prompt: trimmedPrompt,
@@ -167,7 +179,7 @@ export const DashboardDetailsScreen = () => {
       }
     })();
   }, [
-    card.generationPrompt,
+    localizedCard.generationPrompt,
     card.tokenCost,
     customPrompt,
     imageGenerationStore,
@@ -186,8 +198,8 @@ export const DashboardDetailsScreen = () => {
       >
         <ExperiencePreviewHeader
           image={card.image}
-          title={card.title}
-          description={card.description}
+          title={localizedCard.title}
+          description={localizedCard.description}
           onClose={handleClose}
           topInset={insets.top}
         />
@@ -209,7 +221,7 @@ export const DashboardDetailsScreen = () => {
             />
             <Spacer size="xs" />
             <Text style={[typography.bodySm, styles.promptHelper]}>
-              {t("screens.dashboard.experience.details.promptHelper", { description: card.description })}
+              {t("screens.dashboard.experience.details.promptHelper", { description: localizedCard.description })}
             </Text>
           </View>
 
