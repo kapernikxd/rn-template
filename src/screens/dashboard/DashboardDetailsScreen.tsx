@@ -280,14 +280,18 @@ export const DashboardDetailsScreen = () => {
               : t("screens.dashboard.experience.details.continue")}
           </Text>
           <View style={styles.buttonRight}>
-            <View style={[styles.tokenWrapper, { backgroundColor: theme.primary }]}>
-              <MaterialIcons
-                name="diamond"
-                size={18}
-                color={"white"}
-              />
-              <Text style={[typography.body, { color: "white", fontWeight: "bold" }]}>{card.tokenCost}</Text>
-            </View>
+            {adsEnabled ? (
+              <View style={[styles.tokenWrapper, { backgroundColor: theme.primary }]}>
+                <MaterialIcons
+                  name="diamond"
+                  size={18}
+                  color={"white"}
+                />
+                <Text style={[typography.body, { color: "white", fontWeight: "bold" }]}>
+                  {card.tokenCost}
+                </Text>
+              </View>
+            ) : null}
             {isSubmitting ? <ActivityIndicator color={"#121212"} /> : null}
           </View>
         </Pressable>
