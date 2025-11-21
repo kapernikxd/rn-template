@@ -5,4 +5,7 @@ export type DashboardExperience = HorizontalCard & {
   tokenCost: number;
   generationPrompt: string;
   case: string;
+  titleKey?: string;
+  descriptionKey?: string;
+  generationPromptKey?: string;
 };
