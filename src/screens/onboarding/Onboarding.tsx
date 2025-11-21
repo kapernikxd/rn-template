@@ -412,7 +412,7 @@ const getStyles = ({
       flexDirection: "row",
       alignItems: "center",
       justifyContent: "space-between",
-      backgroundColor: theme?.card || "#fff",
+      // backgroundColor: theme?.card || "#fff",
       borderRadius: 16,
       paddingVertical: 8,
       paddingHorizontal: 24,
@@ -446,14 +446,17 @@ const getStyles = ({
       shadowColor: "#000",
       shadowOpacity: 0.1,
       shadowRadius: 6,
+      textAlign: 'center',
       shadowOffset: { width: 0, height: 3 },
       elevation: 2,
+      width: "100%"
     },
 
     nextText: {
       fontSize: 16,
       fontWeight: "600",
       color: "#fff",
+      textAlign: 'center',
     },
   });
 

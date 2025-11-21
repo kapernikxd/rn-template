@@ -46,6 +46,7 @@ class ImageGenerationService {
     const formData = new FormData();
 
     formData.append("prompt", payload.prompt);
+    formData.append("case", payload.case);
 
     if (payload.imageSize) {
       formData.append("imageSize", payload.imageSize);

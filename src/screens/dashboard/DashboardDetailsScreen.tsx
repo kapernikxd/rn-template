@@ -139,7 +139,8 @@ export const DashboardDetailsScreen = () => {
         : card.generationPrompt;
 
       const success = await imageGenerationStore.submitEditRequest({
-        prompt: combinedPrompt,
+        prompt: trimmedPrompt,
+        case: card.case,
       });
 
       if (success) {
@@ -232,7 +233,7 @@ export const DashboardDetailsScreen = () => {
         </View>
       </ScrollView>
 
-      <View style={[styles.footer, { paddingHorizontal: sizes.lg, paddingBottom: insets.bottom + sizes.lg }]}>
+      <View style={[styles.footer, { paddingHorizontal: sizes.lg, paddingBottom: sizes.lg }]}>
         <Pressable
           onPress={handleContinue}
           style={[

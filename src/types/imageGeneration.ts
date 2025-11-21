@@ -41,6 +41,7 @@ export type ImageGenerationSubmissionResponse = {
 
 export type EditImageRequestPayload = {
   prompt: string;
+  case: string;
   imageSize?: FalImageSizeEnum;
   imageWidth?: number;
   imageHeight?: number;
