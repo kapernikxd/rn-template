@@ -13,6 +13,7 @@ import { Feather } from "@expo/vector-icons";
 import { useTheme } from "rn-vs-lb/theme";
 import { TokenBadge } from "../../../components";
 import { useTranslation } from "react-i18next";
+import { useRootStore, useStoreData } from "../../../store/StoreProvider";
 
 export type ExperiencePreviewHeaderProps = {
   image: ImageSourcePropType;
@@ -31,6 +32,8 @@ export const ExperiencePreviewHeader = ({
 }: ExperiencePreviewHeaderProps) => {
   const { typography, sizes, globalStyleSheet } = useTheme();
   const { t } = useTranslation();
+  const { configStore } = useRootStore();
+  const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
 
   return (
     <View style={styles.container}>
@@ -41,8 +44,8 @@ export const ExperiencePreviewHeader = ({
         />
 
         <View style={[styles.header, { paddingTop: sizes.md, paddingHorizontal: sizes.md }]}>
-          <View style={[globalStyleSheet.flexRowCenter, {gap: sizes.md}]}>
-            <TokenBadge />
+          <View style={[globalStyleSheet.flexRowCenter, { gap: sizes.md }]}>
+            {adsEnabled && <TokenBadge />}
             <Pressable
               onPress={onClose}
               accessibilityRole="button"

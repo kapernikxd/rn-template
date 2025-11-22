@@ -95,7 +95,7 @@ export const LibraryScreen = () => {
 
       {pendingCount > 0 ? (
         <View style={styles.pendingWrapper}>
-          <Text style={[typography.bodySm, styles.pendingText]}>
+          <Text style={[typography.bodySm]}>
             {t('screens.library.pendingStatus', { count: pendingCount })}
           </Text>
           <Text onPress={handleSyncPending} style={[typography.bodySm, styles.syncLink]}>
@@ -168,9 +168,6 @@ const createStyles = ({
       alignItems: "center",
       paddingHorizontal: sizes.xs as number,
       paddingBottom: sizes.sm as number,
-    },
-    pendingText: {
-      color: "rgba(255,255,255,0.72)",
     },
     syncLink: {
       color: theme.primary,

@@ -416,11 +416,11 @@ const getStyles = ({
       borderRadius: 16,
       paddingVertical: 8,
       paddingHorizontal: 24,
-      shadowColor: "#000",
-      shadowOpacity: 0.06,
-      shadowRadius: 8,
-      shadowOffset: { width: 0, height: 4 },
-      elevation: 3,
+      // shadowColor: "#000",
+      // shadowOpacity: 0.06,
+      // shadowRadius: 8,
+      // shadowOffset: { width: 0, height: 4 },
+      // elevation: 3,
     },
 
     skipBtn: {
