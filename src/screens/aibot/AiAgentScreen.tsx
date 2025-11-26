@@ -45,6 +45,7 @@ export const AiAgentScreen = ({ route }: Props) => {
     isChatLoading,
     isFollowing,
     disableFollowAction,
+    isCreator,
     onBack,
     handleToggleFollow,
     handleStartChat,
@@ -331,6 +332,9 @@ export const AiAgentScreen = ({ route }: Props) => {
             photos={botPhotos}
             galleryColumns={galleryColumns}
             galleryItemSize={galleryItemSize}
+            aiBotId={aiBotId}
+            adsEnabled={adsEnabled}
+            isCreator={isCreator}
           />
         )}
       </ScrollView>

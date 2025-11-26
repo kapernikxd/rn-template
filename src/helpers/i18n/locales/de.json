@@ -573,7 +573,12 @@
         "createdAtLabel": "Erstellt"
       },
       "gallery": {
-        "empty": "Der Ersteller hat noch keine Fotos hinzugefügt."
+        "empty": "Der Ersteller hat noch keine Fotos hinzugefügt.",
+        "locked": {
+          "title": "Anzeige erforderlich",
+          "cta": "Anzeige ansehen, um zu öffnen",
+          "success": "Bild freigeschaltet"
+        }
       },
       "common": {
         "categories": {

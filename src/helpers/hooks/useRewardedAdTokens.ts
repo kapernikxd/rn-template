@@ -19,12 +19,13 @@ type UseRewardedAdTokensResult = {
 
 type UseRewardedAdTokensOptions = {
   onRewardEarned?: (balance: number) => void;
+  shouldAwardTokens?: boolean;
 };
 
 export const useRewardedAdTokens = (
   options: UseRewardedAdTokensOptions = {},
 ): UseRewardedAdTokensResult => {
-  const { onRewardEarned } = options;
+  const { onRewardEarned, shouldAwardTokens = true } = options;
   const { uiStore, configStore } = useRootStore();
   const { adsConfig, rewardAmount } = useStoreData(configStore, (store) => ({
     adsConfig: store.adsConfig,
@@ -114,12 +115,17 @@ export const useRewardedAdTokens = (
     if (isEarnedReward) {
       const applyReward = async () => {
         try {
-          const updatedBalance = await addTokens(rewardAmount);
-          updateBalance(updatedBalance);
-          onRewardEarned?.(updatedBalance);
+          if (shouldAwardTokens) {
+            const updatedBalance = await addTokens(rewardAmount);
+            updateBalance(updatedBalance);
+            onRewardEarned?.(updatedBalance);
 
-          const rewardMessage = `Награда получена! +${rewardAmount} токенов.`;
-          uiStore.showSnackbar(rewardMessage, "success");
+            const rewardMessage = `Награда получена! +${rewardAmount} токенов.`;
+            uiStore.showSnackbar(rewardMessage, "success");
+            return;
+          }
+
+          onRewardEarned?.(balance);
         } catch (storageError) {
           if (isMountedRef.current) {
             uiStore.showSnackbar("Не удалось обновить баланс токенов.", "error");
@@ -129,7 +135,15 @@ export const useRewardedAdTokens = (
 
       void applyReward();
     }
-  }, [isEarnedReward, onRewardEarned, rewardAmount, uiStore, updateBalance]);
+  }, [
+    balance,
+    isEarnedReward,
+    onRewardEarned,
+    rewardAmount,
+    shouldAwardTokens,
+    uiStore,
+    updateBalance,
+  ]);
 
   useEffect(() => {
     if (error) {
