@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Modal,
   Pressable,
@@ -44,6 +44,7 @@ export const TokenBadge = memo(
     const styles = getStyles(theme);
     const { balance: storedBalance, isAdLoaded, showRewardedAd } = useRewardedAdTokens();
     const [isMenuVisible, setIsMenuVisible] = useState(false);
+    const [hasRequestedAd, setHasRequestedAd] = useState(false);
     const { t, i18n } = useTranslation();
 
     const currentBalance = useMemo(
@@ -72,9 +73,20 @@ export const TokenBadge = memo(
     }, []);
 
     const handleWatchAd = useCallback(() => {
-      closeMenu();
+      setHasRequestedAd(true);
       showRewardedAd();
-    }, [closeMenu, showRewardedAd]);
+
+      if (isAdLoaded) {
+        closeMenu();
+      }
+    }, [closeMenu, isAdLoaded, showRewardedAd]);
+
+    useEffect(() => {
+      if (hasRequestedAd && isAdLoaded) {
+        closeMenu();
+        setHasRequestedAd(false);
+      }
+    }, [closeMenu, hasRequestedAd, isAdLoaded]);
 
     return (
       <>
