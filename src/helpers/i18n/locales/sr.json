@@ -573,7 +573,12 @@
         "createdAtLabel": "Kreiran"
       },
       "gallery": {
-        "empty": "Kreator još nije dodao fotografije."
+        "empty": "Kreator još nije dodao fotografije.",
+        "locked": {
+          "title": "Potrebna je reklama",
+          "cta": "Pogledajte reklamu da biste videli",
+          "success": "Slika otključana"
+        }
       },
       "common": {
         "categories": {

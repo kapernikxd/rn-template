@@ -575,7 +575,12 @@
         "createdAtLabel": "Created"
       },
       "gallery": {
-        "empty": "The creator hasn't added photos yet."
+        "empty": "The creator hasn't added photos yet.",
+        "locked": {
+          "title": "Ad required",
+          "cta": "Watch an ad to view",
+          "success": "Image unlocked"
+        }
       },
       "common": {
         "categories": {

@@ -573,7 +573,12 @@
         "createdAtLabel": "Créé"
       },
       "gallery": {
-        "empty": "Le créateur n’a pas encore ajouté de photos."
+        "empty": "Le créateur n’a pas encore ajouté de photos.",
+        "locked": {
+          "title": "Publicité requise",
+          "cta": "Regardez une publicité pour voir",
+          "success": "Image déverrouillée"
+        }
       },
       "common": {
         "categories": {
