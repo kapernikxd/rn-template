@@ -126,6 +126,7 @@ export const AiAgentGallery = memo(
         if (!targetPhoto) return;
         void unlockPhoto(targetPhoto, pendingUnlockIndex);
       },
+      shouldAwardTokens: false,
     });
 
     const onOpenAt = useCallback(
