@@ -146,10 +146,21 @@ export const useRewardedAdTokens = (
   ]);
 
   useEffect(() => {
-    if (error) {
+    if (!error) {
+      return;
+    }
+
+    cancelPendingShow();
+
+    if (pendingShowIntentRef.current) {
+      uiStore.showSnackbar("Реклама загружается, попробуйте чуть позже.", "info");
+      pendingShowIntentRef.current = true;
+    } else {
       uiStore.showSnackbar("Не удалось загрузить рекламу. Попробуйте позже.", "error");
     }
-  }, [error, uiStore]);
+
+    load();
+  }, [cancelPendingShow, error, load, uiStore]);
 
   const handleFailedShow = useCallback(() => {
     pendingShowIntentRef.current = true;
