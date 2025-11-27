@@ -12,7 +12,7 @@ import { LARGE_FILE_ERROR } from '../../../constants';
 
 type EditProfileFormValues = Pick<
   UpdateProfileProps,
-  'name' | 'lastname' | 'profession' | 'phone' | 'userBio'
+  'name' | 'lastname' | 'profession' | 'phone' | 'userBio' | 'gender'
 >;
 
 function safeCreateDirectory(dir: Directory) {
@@ -43,8 +43,9 @@ export const useEditProfile = () => {
       profession: profileStore.myProfile?.profession,
       phone: profileStore.myProfile?.phone,
       userBio: profileStore.myProfile?.userBio,
+      gender: profileStore.myProfile?.gender,
     }),
-    [profileStore.myProfile?.name, profileStore.myProfile?.lastname, profileStore.myProfile?.profession, profileStore.myProfile?.phone, profileStore.myProfile?.userBio],
+    [profileStore.myProfile?.name, profileStore.myProfile?.lastname, profileStore.myProfile?.profession, profileStore.myProfile?.phone, profileStore.myProfile?.userBio, profileStore.myProfile?.gender],
   );
 
   const methods = useForm<EditProfileFormValues>({ defaultValues: initialValues });
@@ -88,6 +89,7 @@ export const useEditProfile = () => {
       profession: profileStore.myProfile?.profession,
       phone: profileStore.myProfile?.phone,
       userBio: profileStore.myProfile?.userBio,
+      gender: profileStore.myProfile?.gender,
     });
   }, [methods, profileStore.myProfile?.name, profileStore.myProfile?.lastname, profileStore.myProfile?.profession, profileStore.myProfile?.phone, profileStore.myProfile?.userBio]);
 

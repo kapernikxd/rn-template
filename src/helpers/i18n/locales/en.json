@@ -177,9 +177,19 @@
           "label": "Phone Number",
           "placeholder": "Enter phone number"
         },
+        "gender": {
+          "label": "Gender",
+          "placeholder": "Select gender"
+        },
         "userBio": {
           "label": "About Me",
           "placeholder": "A short bio about you"
+        }
+      },
+      "options": {
+        "gender": {
+          "male": "Male",
+          "female": "Female"
         }
       },
       "validation": {

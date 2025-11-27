@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -12,14 +12,15 @@ import { ThemeType, useTheme } from 'rn-vs-lb/theme';
 import { FormProvider, UseFormReturn } from 'react-hook-form';
 import { IOScrollView } from 'react-native-intersection-observer';
 
-import { TextArea, TextInput } from '../../../components/form';
+import { Select, TextArea, TextInput } from '../../../components/form';
 import { UpdateProfileProps } from '../../../types/profile';
 import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
 import { useTranslation } from 'react-i18next';
+import { genderOptions } from '../../../helpers/data/profile';
 
 type EditProfileFormValues = Pick<
   UpdateProfileProps,
-  'name' | 'lastname' | 'profession' | 'phone' | 'userBio'
+  'name' | 'lastname' | 'profession' | 'phone' | 'userBio' | 'gender'
 >;
 
 type EditProfileViewProps = {
@@ -59,6 +60,15 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
   const { setColors } = useSafeAreaColors();
   const styles = getStyles({ theme });
   const { t } = useTranslation();
+
+
+  const genderOptions = useMemo(
+    () => [
+      { label: t('settings.editProfile.options.gender.male'), value: 'male' },
+      { label: t('settings.editProfile.options.gender.female'), value: 'female' },
+    ],
+    [t],
+  );
 
   useEffect(() => {
     setColors({
@@ -126,6 +136,16 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
               />
               <Spacer />
 
+              <Select
+                name="gender"
+                label={t('settings.editProfile.fields.gender.label')}
+                placeholder={t('settings.editProfile.fields.gender.placeholder')}
+                options={genderOptions}
+                control={methods.control}
+              />
+
+              <Spacer size='md'/>
+
               <TextInput
                 name="profession"
                 label={t('settings.editProfile.fields.profession.label')}
@@ -135,14 +155,14 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
               />
               <Spacer />
 
-              <TextInput
+              {/* <TextInput
                 name="phone"
                 label={t('settings.editProfile.fields.phone.label')}
                 placeholder={t('settings.editProfile.fields.phone.placeholder')}
                 control={methods.control}
                 keyboardType="numeric"
               />
-              <Spacer />
+              <Spacer /> */}
 
               <TextArea
                 name="userBio"

@@ -177,9 +177,19 @@
           "label": "Номер телефона",
           "placeholder": "Введите номер телефона"
         },
+        "gender": {
+          "label": "Пол",
+          "placeholder": "Выберите пол"
+        },
         "userBio": {
           "label": "О себе",
           "placeholder": "Краткая информация о вас"
+        }
+      },
+      "options": {
+        "gender": {
+          "male": "Мужской",
+          "female": "Женский"
         }
       },
       "validation": {

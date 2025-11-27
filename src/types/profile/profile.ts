@@ -38,7 +38,7 @@ export type UpdateProfileProps = {
     vk?: string,
   }
   pushNotificationSettings?: PushNotificationSettings,
-  gender?: 'MALE' | 'FEMALE',
+  gender?: string  // 'MALE' | 'FEMALE',
 }
 
 export type TalkieStat = {
