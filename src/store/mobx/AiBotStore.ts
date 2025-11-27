@@ -21,6 +21,7 @@ export class AiBotStore {
     firstName: '',
     lastName: '',
     profession: '',
+    gender: '',
     prompt: '',
     description: '',
     intro: '',
@@ -122,6 +123,7 @@ export class AiBotStore {
           this.form.firstName.trim() &&
           this.form.lastName.trim() &&
           this.form.profession.trim() &&
+          this.form.gender.trim() &&
           (this.avatar !== null || this.avatarPreview !== null),
         );
       case 1:
@@ -210,6 +212,7 @@ export class AiBotStore {
       firstName: '',
       lastName: '',
       profession: '',
+      gender: '',
       prompt: '',
       description: '',
       intro: '',
@@ -471,6 +474,7 @@ export class AiBotStore {
     formData.append('name', this.form.firstName.trim());
     formData.append('lastname', this.form.lastName.trim());
     formData.append('profession', this.form.profession.trim());
+    formData.append('gender', this.form.gender.trim());
     const userBio = this.form.description.trim();
     if (userBio) {
       formData.append('userBio', userBio);

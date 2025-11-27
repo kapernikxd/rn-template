@@ -629,6 +629,10 @@
               "label": "Sobrenome",
               "placeholder": "Digite o sobrenome"
             },
+            "gender": {
+              "label": "Gênero",
+              "placeholder": "Selecione o gênero"
+            },
             "profession": {
               "label": "Profissão ou função",
               "placeholder": "Por exemplo, marketeiro ou professor"
@@ -714,6 +718,10 @@
             "lastName": {
               "label": "Sobrenome",
               "placeholder": "Sobrenome do agente"
+            },
+            "gender": {
+              "label": "Gênero",
+              "placeholder": "Selecione o gênero"
             },
             "profession": {
               "label": "Profissão",
