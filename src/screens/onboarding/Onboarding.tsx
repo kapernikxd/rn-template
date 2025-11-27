@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated, Easing, Image } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated, Easing, Image, Platform } from "react-native";
 import Swiper from "react-native-swiper";
 import { useTheme } from 'rn-vs-lb/theme';
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -7,6 +7,7 @@ import { ONBOARDING_PHOTO_1, ONBOARDING_PHOTO_2, ONBOARDING_PHOTO_3, ONBOARDING_
 import { useTranslation } from "react-i18next";
 import { LANGUAGE_OPTIONS, normalizeLanguageCode } from "../../constants/languages";
 import { setPreferredLanguage } from "../../helpers/i18n/languageStorage";
+import * as Notifications from "expo-notifications";
 
 interface Slide {
   key: SlideKey;
@@ -53,9 +54,37 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
     LANGUAGE_OPTIONS[0].code;
   const [selectedLanguage, setSelectedLanguage] = useState(resolvedLanguageCode);
 
+  const requestNotificationPermission = useCallback(async () => {
+    try {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync();
+      let finalStatus = existingStatus;
+
+      if (existingStatus !== "granted") {
+        const { status } = await Notifications.requestPermissionsAsync();
+        finalStatus = status;
+      }
+
+      if (finalStatus === "granted" && Platform.OS === "android") {
+        await Notifications.setNotificationChannelAsync("default", {
+          name: "default",
+          importance: Notifications.AndroidImportance.MAX,
+          vibrationPattern: [0, 250, 250, 250],
+          lightColor: "#FF231F7C",
+        });
+      }
+    } catch (error) {
+      console.error("Failed to request notification permission during onboarding", error);
+    }
+  }, []);
+
+  const handleFinish = useCallback(async () => {
+    await requestNotificationPermission();
+    onFinish();
+  }, [onFinish, requestNotificationPermission]);
+
   const handleNext = (index: number) => {
     if (index === slides.length - 1) {
-      onFinish();
+      void handleFinish();
     } else {
       swiperRef.current?.scrollBy(1, true);
     }
@@ -198,7 +227,7 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
             <View style={styles.footer}>
               <TouchableOpacity
                 accessibilityRole="button"
-                onPress={onFinish}
+                onPress={handleFinish}
                 style={styles.skipBtn}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
