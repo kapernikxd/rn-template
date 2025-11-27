@@ -35,6 +35,8 @@ export const useRewardedAdTokens = (
   const isMountedRef = useRef(false);
   const pendingShowTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingShowIntentRef = useRef(false);
+  const hasAppliedRewardRef = useRef(false);
+  const balanceRef = useRef(balance);
 
   const rewardedAdUnitId = useMemo(() => {
     if (__DEV__) {
@@ -66,6 +68,10 @@ export const useRewardedAdTokens = (
       pendingShowTimeoutRef.current = null;
     }
   }, []);
+
+  useEffect(() => {
+    balanceRef.current = balance;
+  }, [balance]);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -112,38 +118,40 @@ export const useRewardedAdTokens = (
   }, [isClosed, isLoaded, load]);
 
   useEffect(() => {
-    if (isEarnedReward) {
-      const applyReward = async () => {
-        try {
-          if (shouldAwardTokens) {
-            const updatedBalance = await addTokens(rewardAmount);
-            updateBalance(updatedBalance);
-            onRewardEarned?.(updatedBalance);
-
-            const rewardMessage = `Награда получена! +${rewardAmount} токенов.`;
-            uiStore.showSnackbar(rewardMessage, "success");
-            return;
-          }
-
-          onRewardEarned?.(balance);
-        } catch (storageError) {
-          if (isMountedRef.current) {
-            uiStore.showSnackbar("Не удалось обновить баланс токенов.", "error");
-          }
-        }
-      };
-
-      void applyReward();
+    if (!isEarnedReward) {
+      hasAppliedRewardRef.current = false;
+      return;
     }
-  }, [
-    balance,
-    isEarnedReward,
-    onRewardEarned,
-    rewardAmount,
-    shouldAwardTokens,
-    uiStore,
-    updateBalance,
-  ]);
+
+    if (hasAppliedRewardRef.current) {
+      return;
+    }
+
+    hasAppliedRewardRef.current = true;
+
+    const applyReward = async () => {
+      try {
+        if (shouldAwardTokens) {
+          const rewardValue = rewardAmount;
+          const updatedBalance = await addTokens(rewardValue);
+          updateBalance(updatedBalance);
+          onRewardEarned?.(updatedBalance);
+
+          const rewardMessage = `Награда получена! +${rewardValue} токенов.`;
+          uiStore.showSnackbar(rewardMessage, "success");
+          return;
+        }
+
+        onRewardEarned?.(balanceRef.current);
+      } catch (storageError) {
+        if (isMountedRef.current) {
+          uiStore.showSnackbar("Не удалось обновить баланс токенов.", "error");
+        }
+      }
+    };
+
+    void applyReward();
+  }, [isEarnedReward, onRewardEarned, rewardAmount, shouldAwardTokens, uiStore, updateBalance]);
 
   useEffect(() => {
     if (!error) {
