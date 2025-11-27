@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider, useTheme } from 'rn-vs-lb/theme';
@@ -11,7 +12,8 @@ import { ForceUpdateWrapper } from './src/components/layouts/ForceUpdateWrapper'
 import { View, StyleSheet } from 'react-native';
 import { BottomAdBanner } from './src/components/ads/BottomAdBanner';
 
-import './src/helpers/i18n';
+import i18n from './src/helpers/i18n';
+import { getPreferredLanguage } from './src/helpers/i18n/languageStorage';
 
 const AppStatusBar = () => {
   const { isDark, theme } = useTheme();
@@ -29,6 +31,30 @@ export default function App() {
   //   initAppMetrica();
   //   reportAppOpen();
   // }, []);
+
+  const [isLanguageReady, setIsLanguageReady] = useState(false);
+
+  useEffect(() => {
+    const initializeLanguage = async () => {
+      try {
+        const storedLanguage = await getPreferredLanguage();
+
+        if (storedLanguage) {
+          await i18n.changeLanguage(storedLanguage);
+        }
+      } catch (error) {
+        console.warn('Failed to initialize preferred language', error);
+      } finally {
+        setIsLanguageReady(true);
+      }
+    };
+
+    void initializeLanguage();
+  }, []);
+
+  if (!isLanguageReady) {
+    return null;
+  }
 
   return (
     <Host>
