@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated, Easing, Image } from "react-native";
 import Swiper from "react-native-swiper";
 import { useTheme } from 'rn-vs-lb/theme';
@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ONBOARDING_PHOTO_1, ONBOARDING_PHOTO_2, ONBOARDING_PHOTO_3, ONBOARDING_PHOTO_4 } from "../../helpers/utils/onboarding";
 import { useTranslation } from "react-i18next";
 import { LANGUAGE_OPTIONS, normalizeLanguageCode } from "../../constants/languages";
+import { setPreferredLanguage } from "../../helpers/i18n/languageStorage";
 
 interface Slide {
   key: SlideKey;
@@ -97,6 +98,19 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
     animateTo(ratio);
   };
 
+  const handleLanguageSelect = useCallback(
+    async (languageCode: string) => {
+      setSelectedLanguage(languageCode);
+      try {
+        await i18n.changeLanguage(languageCode);
+        await setPreferredLanguage(languageCode);
+      } catch (error) {
+        console.warn('Failed to change language during onboarding', error);
+      }
+    },
+    [i18n],
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <Swiper
@@ -160,8 +174,7 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
                         key={language.code}
                         accessibilityRole="button"
                         onPress={() => {
-                          setSelectedLanguage(language.code);
-                          void i18n.changeLanguage(language.code);
+                          void handleLanguageSelect(language.code);
                         }}
                         style={[styles.languageOption, isSelected && styles.languageOptionSelected]}
                         activeOpacity={0.8}
