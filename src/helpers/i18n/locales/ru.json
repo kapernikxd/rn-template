@@ -643,6 +643,10 @@
               "label": "Фамилия",
               "placeholder": "Введите фамилию"
             },
+            "gender": {
+              "label": "Пол",
+              "placeholder": "Выберите пол"
+            },
             "profession": {
               "label": "Профессия или роль",
               "placeholder": "Например, маркетолог или преподаватель"
@@ -728,6 +732,10 @@
             "lastName": {
               "label": "Фамилия",
               "placeholder": "Фамилия агента"
+            },
+            "gender": {
+              "label": "Пол",
+              "placeholder": "Выберите пол"
             },
             "profession": {
               "label": "Профессия",

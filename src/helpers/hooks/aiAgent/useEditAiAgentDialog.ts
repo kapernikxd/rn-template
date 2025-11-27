@@ -20,6 +20,7 @@ export interface EditAiAgentFormState {
   name: string;
   lastname: string;
   profession: string;
+  gender: string;
   userBio: string;
   aiPrompt: string;
   intro: string;
@@ -31,6 +32,7 @@ const INITIAL_FORM: EditAiAgentFormState = {
   name: "",
   lastname: "",
   profession: "",
+  gender: "",
   userBio: "",
   aiPrompt: "",
   intro: "",
@@ -43,7 +45,7 @@ const arraysEqual = (a: string[], b: string[]) =>
   a.length === b.length && a.every((item, i) => item === b[i]);
 
 export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, onClose: () => void) {
-  const { aiBotStore } = useRootStore();
+  const { aiBotStore, uiStore } = useRootStore();
 
   // store-derived
   const botDetails = useStoreData(aiBotStore, (s) => s.botDetails);
@@ -68,6 +70,7 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
       name: aiAgent.name ?? "",
       lastname: aiAgent.lastname ?? "",
       profession: aiAgent.profession ?? "",
+      gender: aiAgent.gender ?? "",
       userBio: aiAgent.userBio ?? "",
       aiPrompt: botDetails?.aiPrompt ?? aiAgent.aiPrompt ?? "",
       intro: botDetails?.intro ?? aiAgent.intro ?? "",
@@ -228,15 +231,21 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
       return;
     }
 
-    const hasAvatarUpdate = Boolean(avatarFile);
-    const payload: AiBotUpdatePayload = {};
-
     const normalizedName = formState.name.trim();
     const normalizedLastName = formState.lastname.trim();
     const normalizedProfession = formState.profession.trim();
+    const normalizedGender = formState.gender.trim();
     const normalizedBio = formState.userBio.trim();
     const normalizedPrompt = formState.aiPrompt.trim();
     const normalizedIntro = formState.intro.trim();
+
+    if (!normalizedProfession || !normalizedGender) {
+      uiStore.showSnackbar('Заполните профессию и пол', 'warning');
+      return;
+    }
+
+    const hasAvatarUpdate = Boolean(avatarFile);
+    const payload: AiBotUpdatePayload = {};
 
     const currentPrompt = botDetails?.aiPrompt ?? aiAgent.aiPrompt ?? "";
     const currentIntro = botDetails?.intro ?? aiAgent.intro ?? "";
@@ -246,6 +255,7 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
     if (normalizedName !== (aiAgent.name ?? "")) payload.name = normalizedName;
     if (normalizedLastName !== (aiAgent.lastname ?? "")) payload.lastname = normalizedLastName;
     if (normalizedProfession !== (aiAgent.profession ?? "")) payload.profession = normalizedProfession;
+    if (normalizedGender !== (aiAgent.gender ?? "")) payload.gender = normalizedGender;
     if (normalizedBio !== (aiAgent.userBio ?? "")) payload.userBio = normalizedBio;
     if (normalizedPrompt !== currentPrompt) payload.aiPrompt = normalizedPrompt;
     if (normalizedIntro !== currentIntro) {
@@ -270,7 +280,7 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
     } finally {
       setIsSubmitting(false);
     }
-  }, [aiAgent, onClose, avatarFile, formState, botDetails, aiBotStore]);
+  }, [aiAgent, onClose, avatarFile, formState, botDetails, aiBotStore, uiStore]);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     async (event) => {

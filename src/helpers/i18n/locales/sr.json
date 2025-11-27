@@ -629,6 +629,10 @@
               "label": "Prezime",
               "placeholder": "Unesite prezime"
             },
+            "gender": {
+              "label": "Pol",
+              "placeholder": "Izaberite pol"
+            },
             "profession": {
               "label": "Zanimanje ili uloga",
               "placeholder": "Na primer, marketar ili predavač"
@@ -714,6 +718,10 @@
             "lastName": {
               "label": "Prezime",
               "placeholder": "Prezime agenta"
+            },
+            "gender": {
+              "label": "Pol",
+              "placeholder": "Izaberite pol"
             },
             "profession": {
               "label": "Zanimanje",

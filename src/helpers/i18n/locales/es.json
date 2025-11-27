@@ -629,6 +629,10 @@
               "label": "Apellido",
               "placeholder": "Introduce el apellido"
             },
+            "gender": {
+              "label": "Género",
+              "placeholder": "Selecciona el género"
+            },
             "profession": {
               "label": "Profesión o rol",
               "placeholder": "Por ejemplo, marketer o profesor"
@@ -714,6 +718,10 @@
             "lastName": {
               "label": "Apellido",
               "placeholder": "Apellido del agente"
+            },
+            "gender": {
+              "label": "Género",
+              "placeholder": "Selecciona el género"
             },
             "profession": {
               "label": "Profesión",

@@ -5,6 +5,7 @@ export interface AiBotUpdatePayload {
   name?: string;
   lastname?: string;
   profession?: string;
+  gender?: string;
   userBio?: string;
   aiPrompt?: string;
   intro?: string;

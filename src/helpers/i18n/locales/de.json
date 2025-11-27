@@ -629,6 +629,10 @@
               "label": "Nachname",
               "placeholder": "Nachnamen eingeben"
             },
+            "gender": {
+              "label": "Geschlecht",
+              "placeholder": "Geschlecht auswählen"
+            },
             "profession": {
               "label": "Beruf oder Rolle",
               "placeholder": "Z. B. Marketer oder Dozent"
@@ -714,6 +718,10 @@
             "lastName": {
               "label": "Nachname",
               "placeholder": "Nachname des Agenten"
+            },
+            "gender": {
+              "label": "Geschlecht",
+              "placeholder": "Geschlecht auswählen"
             },
             "profession": {
               "label": "Beruf",

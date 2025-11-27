@@ -4,6 +4,7 @@ export type CreateAiAgentFormState = {
   firstName: string;
   lastName: string;
   profession: string;
+  gender: string;
   prompt: string;
   description: string;
   intro: string;

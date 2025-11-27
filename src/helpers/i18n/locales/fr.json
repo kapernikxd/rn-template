@@ -629,6 +629,10 @@
               "label": "Nom",
               "placeholder": "Entrez le nom"
             },
+            "gender": {
+              "label": "Genre",
+              "placeholder": "Sélectionnez le genre"
+            },
             "profession": {
               "label": "Profession ou rôle",
               "placeholder": "Par exemple, marketeur ou enseignant"
@@ -714,6 +718,10 @@
             "lastName": {
               "label": "Nom",
               "placeholder": "Nom de l’agent"
+            },
+            "gender": {
+              "label": "Genre",
+              "placeholder": "Sélectionnez le genre"
             },
             "profession": {
               "label": "Profession",
