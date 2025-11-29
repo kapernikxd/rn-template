@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated, Easing,
 import Swiper from "react-native-swiper";
 import { useTheme } from 'rn-vs-lb/theme';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ONBOARDING_PHOTO_1, ONBOARDING_PHOTO_2, ONBOARDING_PHOTO_3, ONBOARDING_PHOTO_4 } from "../../helpers/utils/onboarding";
+import { getOnboardingIllustrations } from "../../helpers/utils/onboarding";
 import { useTranslation } from "react-i18next";
 import { LANGUAGE_OPTIONS, normalizeLanguageCode } from "../../constants/languages";
 import { setPreferredLanguage } from "../../helpers/i18n/languageStorage";
@@ -18,12 +18,12 @@ interface Slide {
 
 type SlideKey = "language" | "welcome" | "memory" | "character" | "start";
 
-const SLIDE_CONFIG: Array<{ key: SlideKey; uri?: string }> = [
+const SLIDE_CONFIG: Array<{ key: SlideKey }> = [
   { key: "language" },
-  { key: "welcome", uri: ONBOARDING_PHOTO_1 },
-  { key: "memory", uri: ONBOARDING_PHOTO_2 },
-  { key: "character", uri: ONBOARDING_PHOTO_3 },
-  { key: "start", uri: ONBOARDING_PHOTO_4 },
+  { key: "welcome" },
+  { key: "memory" },
+  { key: "character" },
+  { key: "start" },
 ];
 
 interface Props {
@@ -37,22 +37,39 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
   const { width, height } = Dimensions.get("window");
   const styles = getStyles({ width, height, theme, typography });
 
-  const slides: Slide[] = useMemo(
-    () =>
-      SLIDE_CONFIG.map(({ key, uri }) => ({
-        key,
-        uri,
-        title: t(`screens.onboarding.slides.${key}.title`),
-        description: t(`screens.onboarding.slides.${key}.description`),
-      })),
-    [t],
-  );
-
   const resolvedLanguageCode =
     normalizeLanguageCode(i18n.resolvedLanguage) ??
     normalizeLanguageCode(i18n.language) ??
     LANGUAGE_OPTIONS[0].code;
-  const [selectedLanguage, setSelectedLanguage] = useState(resolvedLanguageCode);
+  const [selectedLanguage, setSelectedLanguage] = useState<string | null>(null);
+
+  const effectiveLanguageCode = selectedLanguage ?? resolvedLanguageCode;
+
+  const slideIllustrations = useMemo(
+    () => getOnboardingIllustrations(effectiveLanguageCode),
+    [effectiveLanguageCode],
+  );
+
+  const slideIllustrationsByKey: Partial<Record<SlideKey, string>> = useMemo(
+    () => ({
+      welcome: slideIllustrations.welcome,
+      memory: slideIllustrations.memory,
+      character: slideIllustrations.character,
+      start: slideIllustrations.start,
+    }),
+    [slideIllustrations],
+  );
+
+  const slides: Slide[] = useMemo(
+    () =>
+      SLIDE_CONFIG.map(({ key }) => ({
+        key,
+        uri: slideIllustrationsByKey[key],
+        title: t(`screens.onboarding.slides.${key}.title`),
+        description: t(`screens.onboarding.slides.${key}.description`),
+      })),
+    [slideIllustrationsByKey, t],
+  );
 
   const requestNotificationPermission = useCallback(async () => {
     try {
@@ -83,6 +100,13 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
   }, [onFinish, requestNotificationPermission]);
 
   const handleNext = (index: number) => {
+    const isLanguageSlide = slides[index]?.key === "language";
+    const isLanguageSelected = Boolean(selectedLanguage);
+
+    if (isLanguageSlide && !isLanguageSelected) {
+      return;
+    }
+
     if (index === slides.length - 1) {
       void handleFinish();
     } else {
@@ -146,6 +170,7 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
         ref={swiperRef}
         loop={false}
         showsPagination
+        scrollEnabled={currentIndex !== 0 || Boolean(selectedLanguage)}
         dot={<View style={styles.dot} />}
         activeDot={<View style={styles.activeDot} />}
         paginationStyle={styles.pagination}
@@ -228,10 +253,13 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
               <TouchableOpacity
                 accessibilityRole="button"
                 onPress={handleFinish}
-                style={styles.skipBtn}
+                style={[styles.skipBtn, slide.key === "language" && !selectedLanguage && styles.disabledBtn]}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                disabled={slide.key === "language" && !selectedLanguage}
               >
-                <Text style={styles.skipText}>{t('screens.onboarding.skip')}</Text>
+                <Text style={[styles.skipText, slide.key === "language" && !selectedLanguage && styles.disabledText]}>
+                  {t('screens.onboarding.skip')}
+                </Text>
               </TouchableOpacity>
 
               <View style={styles.divider} />
@@ -239,10 +267,11 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
               <TouchableOpacity
                 accessibilityRole="button"
                 onPress={() => handleNext(index)}
-                style={styles.nextBtn}
+                style={[styles.nextBtn, slide.key === "language" && !selectedLanguage && styles.disabledBtn]}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                disabled={slide.key === "language" && !selectedLanguage}
               >
-                <Text style={styles.nextText}>
+                <Text style={[styles.nextText, slide.key === "language" && !selectedLanguage && styles.disabledText]}>
                   {index === slides.length - 1
                     ? t('screens.onboarding.start')
                     : t('screens.onboarding.next')}
@@ -476,6 +505,14 @@ const getStyles = ({
     skipText: {
       fontSize: 15,
       color: theme?.greyText || "#8A8A8A",
+    },
+
+    disabledBtn: {
+      opacity: 0.5,
+    },
+
+    disabledText: {
+      color: theme?.divider || "#C9CBD3",
     },
 
     divider: {
