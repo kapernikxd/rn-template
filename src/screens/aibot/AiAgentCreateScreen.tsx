@@ -590,7 +590,7 @@ const createStyles = ({
       ...typography.bodySm,
       color: theme.text,
       marginBottom: 12,
-      fontWeight: '600',
+      fontWeight: '400',
     },
     avatarRow: {
       flexDirection: "row",
