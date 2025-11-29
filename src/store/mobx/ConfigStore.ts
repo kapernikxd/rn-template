@@ -1,4 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import { Platform } from "react-native";
 
 import { DEFAULT_ADS_CONFIG, DEFAULT_APP_VERSION_CONFIG } from "../../constants/links";
 import type { NormalizedAppConfig, AdsConfig, AppVersionConfig } from "../../types/config";
@@ -57,7 +58,13 @@ export class ConfigStore {
   }
 
   get adsEnabled(): boolean {
-    return this.adsConfig.ADS_ENABLED;
+    const { ADS_ENABLED, ADS_ENABLED_ANDROID, ADS_ENABLED_IOS } = this.adsConfig;
+
+    if (Platform.OS === "ios") {
+      return ADS_ENABLED_IOS ?? ADS_ENABLED;
+    }
+
+    return ADS_ENABLED_ANDROID ?? ADS_ENABLED;
   }
 
   get tokenRewardAmount(): number {

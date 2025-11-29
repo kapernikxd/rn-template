@@ -36,6 +36,8 @@ export const DEFAULT_APP_VERSION_CONFIG = {
 
 export const DEFAULT_ADS_CONFIG = {
   ADS_ENABLED: true,
+  ADS_ENABLED_ANDROID: undefined as boolean | undefined,
+  ADS_ENABLED_IOS: undefined as boolean | undefined,
   ANDROID_AD_UNIT_ID_BANNER: 'ca-app-pub-8636022279548301/8567360540',
   ANDROID_AD_UNIT_ID_REWARD: 'ca-app-pub-8636022279548301/9133642229',
   IOS_AD_UNIT_ID_BANNER: 'ca-app-pub-8636022279548301/7481186180',
