@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { StyleSheet, View } from 'react-native';
 
 import { MainTabsNavigator } from './MainTabsNavigator';
 import { AuthStack } from './stacks/AuthStack';
@@ -11,15 +12,17 @@ import { TermsOfUseScreen } from '../screens/docs';
 import { AiAgentScreen, AiAgentCreateScreen, AiAgentEditScreen } from '../screens/aibot';
 import Onboarding from '../screens/onboarding/Onboarding';
 import { useOnboarding } from '../helpers/hooks/useOnboarding';
+import { BottomAdBanner } from '../components/ads/BottomAdBanner';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export const AppNavigator = () => {
-  const { authStore } = useRootStore();
+  const { authStore, configStore } = useRootStore();
   const hasAttemptedAutoLogin = useStoreData(
     authStore,
     (store) => store.hasAttemptedAutoLogin,
   );
+  const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
 
   const screenOptions = useMemo(
     () => ({
@@ -51,39 +54,54 @@ export const AppNavigator = () => {
   }
 
   return (
-    <NavigationContainer>
-      <RootStack.Navigator initialRouteName={ROUTES.RootTabs} screenOptions={screenOptions}>
-        <RootStack.Screen name={ROUTES.RootTabs}>
-          {() => (
-            <MainLayout>
-              <MainTabsNavigator showLabels={false} />
-            </MainLayout>
-          )}
-        </RootStack.Screen>
-        <RootStack.Screen name={ROUTES.Auth} component={AuthStack} />
-        <RootStack.Screen name={ROUTES.TermsOfUse} component={TermsOfUseScreen} />
-        <RootStack.Screen name={ROUTES.AiAgent}>
-          {(props) => (
-            <MainLayout>
-              <AiAgentScreen {...props} />
-            </MainLayout>
-          )}
-        </RootStack.Screen>
-        <RootStack.Screen name={ROUTES.AiAgentCreate}>
-          {(props) => (
-            <MainLayout>
-              <AiAgentCreateScreen />
-            </MainLayout>
-          )}
-        </RootStack.Screen>
-        <RootStack.Screen name={ROUTES.AiAgentEdit}>
-          {(props) => (
-            <MainLayout>
-              <AiAgentEditScreen {...props} />
-            </MainLayout>
-          )}
-        </RootStack.Screen>
-      </RootStack.Navigator>
-    </NavigationContainer>
+    <View style={styles.appContainer}>
+      <View style={styles.navigatorContainer}>
+        <NavigationContainer>
+          <RootStack.Navigator initialRouteName={ROUTES.RootTabs} screenOptions={screenOptions}>
+            <RootStack.Screen name={ROUTES.RootTabs}>
+              {() => (
+                <MainLayout>
+                  <MainTabsNavigator showLabels={false} />
+                </MainLayout>
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen name={ROUTES.Auth} component={AuthStack} />
+            <RootStack.Screen name={ROUTES.TermsOfUse} component={TermsOfUseScreen} />
+            <RootStack.Screen name={ROUTES.AiAgent}>
+              {(props) => (
+                <MainLayout>
+                  <AiAgentScreen {...props} />
+                </MainLayout>
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen name={ROUTES.AiAgentCreate}>
+              {(props) => (
+                <MainLayout>
+                  <AiAgentCreateScreen />
+                </MainLayout>
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen name={ROUTES.AiAgentEdit}>
+              {(props) => (
+                <MainLayout>
+                  <AiAgentEditScreen {...props} />
+                </MainLayout>
+              )}
+            </RootStack.Screen>
+          </RootStack.Navigator>
+        </NavigationContainer>
+      </View>
+      {adsEnabled ? <BottomAdBanner /> : null}
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  appContainer: {
+    flex: 1,
+    justifyContent: 'space-between',
+  },
+  navigatorContainer: {
+    flex: 1,
+  },
+});
