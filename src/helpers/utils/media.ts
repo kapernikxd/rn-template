@@ -27,7 +27,7 @@ const downloadToCache = async (url: string): Promise<File | null> => {
     return await File.downloadFileAsync(finalUrl, targetFile);
   } catch (error) {
     console.warn('downloadToCache error', error);
-    Alert.alert('Ошибка', 'Не удалось обработать изображение');
+    Alert.alert('Ошибка', 'Failed to process image');
     return null;
   }
 };
@@ -36,7 +36,7 @@ export async function saveImageToPhotos(url: string) {
   try {
     const { status } = await MediaLibrary.requestPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Требуется разрешение', 'Необходимо разрешение на доступ к медиатеке');
+      Alert.alert('Требуется разрешение', 'Permission is required to access the media library.');
       return;
     }
 
@@ -45,7 +45,7 @@ export async function saveImageToPhotos(url: string) {
 
     try {
       await MediaLibrary.saveToLibraryAsync(downloaded.uri);
-      Alert.alert('Сохранено', 'Изображение сохранено в «Фото»');
+      Alert.alert('Сохранено', 'The image is saved to Photos.');
     } finally {
       try {
         downloaded.delete();
@@ -55,7 +55,7 @@ export async function saveImageToPhotos(url: string) {
     }
   } catch (e) {
     console.warn('saveImageToPhotos error', e);
-    Alert.alert('Ошибка', 'Не удалось сохранить изображение');
+    Alert.alert('Error', 'Failed to save image');
   }
 }
 
@@ -63,7 +63,7 @@ export async function shareImageFromUrl(url: string) {
   try {
     const isAvailable = await Sharing.isAvailableAsync();
     if (!isAvailable) {
-      Alert.alert('Обмен недоступен', 'Обмен недоступен на этом устройстве');
+      Alert.alert('Exchange not available', 'Exchange is not available on this device.');
       return;
     }
 
@@ -81,6 +81,6 @@ export async function shareImageFromUrl(url: string) {
     }
   } catch (e) {
     console.warn('shareImageFromUrl error', e);
-    Alert.alert('Ошибка', 'Не удалось поделиться изображением');
+    Alert.alert('Error', 'Failed to share image');
   }
 }

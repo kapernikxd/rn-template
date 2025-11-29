@@ -71,3 +71,5 @@ export const CATEGORIES: Category[] = [
 ]
 
 export const CATEGORIES$ = CATEGORIES.filter((tag) => tag.value !== ECategories.RESET)
+
+export type EAiCategories = 'Language' | 'Romantic' | 'Useful' | 'Scenario' | 'Fun';

@@ -1,4 +1,5 @@
 import { isAxiosError } from "axios";
+import i18n from "i18next";
 import { $api, registerTokenRefreshFailureHandler, registerTokenRefreshHandler } from "../../helpers";
 import { makeAutoObservable, runInAction } from "mobx";
 import AuthService from "../../services/auth/AuthService";
@@ -428,7 +429,7 @@ export class AuthStore {
         try {
             await AuthService.sendPushToken(token);
         } catch (e) {
-            console.warn("Ошибка при отправке пуш-токена", e);
+            console.warn(i18n.t('stores.auth.debug.sendPushTokenFailed'), e);
         }
     }
 

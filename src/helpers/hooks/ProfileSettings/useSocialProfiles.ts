@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 import { useRootStore } from '../../../store/StoreProvider';
 import { usePortalNavigation } from '../../../helpers/hooks';
@@ -14,6 +15,7 @@ type SocialProfilesForm = {
 export const useSocialProfiles = () => {
   const { profileStore, uiStore } = useRootStore();
   const { goBack } = usePortalNavigation();
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const defaultValues = useMemo(
@@ -39,14 +41,20 @@ export const useSocialProfiles = () => {
             ...data,
           },
         });
-        uiStore.showSnackbar('Обновлено', 'success');
+        uiStore.showSnackbar(
+          t('components.profile.socialProfiles.snackbar.updated'),
+          'success',
+        );
       } catch {
-        uiStore.showSnackbar('Произошла ошибка', 'error');
+        uiStore.showSnackbar(
+          t('components.profile.socialProfiles.snackbar.error'),
+          'error',
+        );
       } finally {
         setIsSubmitting(false);
       }
     }),
-    [methods, profileStore, uiStore],
+    [methods, profileStore, uiStore, t],
   );
 
   const reset = useCallback(() => {
@@ -70,4 +78,3 @@ export const useSocialProfiles = () => {
     isSubmitting,
   };
 };
-

@@ -1,27 +1,27 @@
 {
   "welcome": "Willkommen",
   "login": "Anmelden",
+  "logout": "Abmelden",
   "ads": {
     "rewardedCard": {
-      "title": "Meine Token",
-      "balance": "{{count}} Token",
+      "title": "Meine Tokens",
+      "balance": "{{count}} Tokens",
       "reward": "Belohnung erhalten",
-      "adReady": "Anzeige ist bereit zur Wiedergabe",
+      "adReady": "Anzeige ist abspielbereit",
       "adLoading": "Anzeige wird geladen..."
     },
     "tokenBadge": {
       "accessibility": {
         "withLabel": "{{label}}: {{balance}}",
-        "balance": "Token-Kontostand: {{balance}}"
+        "balance": "Token-Guthaben: {{balance}}"
       },
-      "adReady": "Anzeige ist bereit zur Wiedergabe",
+      "adReady": "Anzeige ist abspielbereit",
       "adLoading": "Anzeige wird geladen...",
       "menuAccessibility": "Token-Menü",
-      "menuTitle": "Token-Kontostand",
+      "menuTitle": "Token-Guthaben",
       "watchAd": "Anzeige ansehen"
     }
   },
-  "logout": "Abmelden",
   "common": {
     "cancel": "Abbrechen",
     "update": "Aktualisieren",
@@ -33,10 +33,11 @@
     "submit": "Senden",
     "done": "Fertig",
     "next": "Weiter",
+    "copy": "Kopiert",
     "terms": {
-      "acceptPrefix": "Ich akzeptiere die",
+      "acceptPrefix": "Ich akzeptiere",
       "link": "Nutzungsbedingungen",
-      "error": "Um fortzufahren, musst du die Nutzungsbedingungen akzeptieren"
+      "error": "Du musst die Nutzungsbedingungen akzeptieren, um fortzufahren"
     },
     "accessibility": {
       "back": "Zurück",
@@ -49,15 +50,15 @@
         "label": "E-Mail",
         "placeholder": "E-Mail eingeben",
         "validation": {
-          "required": "Bitte E-Mail eingeben!",
-          "invalid": "Ungültige E-Mail-Adresse!"
+          "required": "Gib deine E-Mail ein!",
+          "invalid": "Gib eine gültige E-Mail-Adresse ein!"
         }
       },
       "password": {
         "label": "Passwort",
         "placeholder": "Passwort eingeben",
         "validation": {
-          "required": "Bitte Passwort eingeben!",
+          "required": "Gib dein Passwort ein!",
           "minLength": "Das Passwort muss mindestens {{min}} Zeichen lang sein!"
         }
       },
@@ -65,21 +66,21 @@
         "label": "Vorname",
         "placeholder": "Vorname",
         "validation": {
-          "required": "Bitte Vornamen eingeben!"
+          "required": "Gib deinen Vornamen ein!"
         }
       },
       "lastname": {
         "label": "Nachname",
         "placeholder": "Nachname",
         "validation": {
-          "required": "Bitte Nachnamen eingeben!"
+          "required": "Gib deinen Nachnamen ein!"
         }
       },
       "confirmPassword": {
         "label": "Passwort bestätigen",
         "placeholder": "Passwort wiederholen",
         "validation": {
-          "required": "Bitte Passwort bestätigen!",
+          "required": "Bestätige dein Passwort!",
           "minLength": "Das Passwort muss mindestens {{min}} Zeichen lang sein!",
           "mismatch": "Passwörter stimmen nicht überein!"
         }
@@ -91,49 +92,49 @@
       "button": "Anmelden"
     },
     "login": {
-      "title": "Anmeldung",
-      "subtitle": "Gib deine Zugangsdaten ein, um auf dein Konto und Informationen zuzugreifen",
+      "title": "Anmelden",
+      "subtitle": "Gib deine Zugangsdaten ein, um auf dein Konto zuzugreifen",
       "forgotPassword": "Passwort vergessen?",
       "submit": "Anmelden",
       "socialSignIn": "oder melde dich an mit",
-      "googleSignIn": "Anmelden mit Google",
+      "googleSignIn": "Mit Google anmelden",
       "noAccount": "Noch kein Konto?",
-      "registerLink": "Registrieren",
+      "registerLink": "Konto erstellen",
       "errors": {
-        "noGoogleIdToken": "Kein Google-idToken vorhanden",
-        "noAppleIdentityToken": "Kein Apple-identityToken vorhanden"
+        "noGoogleIdToken": "Kein Google-idToken empfangen.",
+        "noAppleIdentityToken": "Kein Apple-Identity-Token empfangen."
       }
     },
     "register": {
       "title": "Konto erstellen",
-      "subtitle": "Gib deine Daten ein, um Zugriff auf Konto und Funktionen zu erhalten",
+      "subtitle": "Gib deine Daten ein, um auf dein Konto und die Funktionen zuzugreifen",
       "submit": "Registrieren",
-      "haveAccount": "Schon ein Konto?",
+      "haveAccount": "Du hast bereits ein Konto?",
       "loginLink": "Anmelden"
     },
     "forgotPassword": {
       "title": "Passwort wiederherstellen",
-      "subtitle": "Gib deine E-Mail ein, um die Wiederherstellung zu starten",
-      "submit": "Weiter",
-      "haveAccount": "Schon ein Konto?",
+      "subtitle": "Gib deine E-Mail-Adresse ein, um die Wiederherstellung zu starten",
+      "submit": "Fortfahren",
+      "haveAccount": "Du hast bereits ein Konto?",
       "loginLink": "Anmelden"
     },
     "changePassword": {
       "title": "Passwort ändern",
-      "subtitle": "Gib ein neues Passwort für den Kontozugriff ein",
+      "subtitle": "Gib ein neues Passwort ein, um auf dein Konto zuzugreifen",
       "submit": "Bestätigen",
-      "haveAccount": "Schon ein Konto?",
+      "haveAccount": "Du hast bereits ein Konto?",
       "loginLink": "Anmelden"
     },
     "otp": {
       "title": "Code eingeben",
       "subtitle": "Gib den 9-stelligen Code ein, der an deine E-Mail gesendet wurde",
-      "submit": "Weiter",
-      "haveAccount": "Schon ein Konto?",
+      "submit": "Fortfahren",
+      "haveAccount": "Du hast bereits ein Konto?",
       "loginLink": "Anmelden",
       "validation": {
-        "required": "Dieses Feld ausfüllen",
-        "invalidLength": "Bitte gültigen Code mit 9 Zeichen eingeben!"
+        "required": "Dieses Feld ist erforderlich",
+        "invalidLength": "Gib einen gültigen 9-stelligen Code ein!"
       }
     }
   },
@@ -147,15 +148,18 @@
         "notifications": "Benachrichtigungen"
       },
       "theme": {
-        "title": "Theme"
+        "title": "Design"
       },
+      "userTitle": "Benutzer",
+      "adsTitle": "Werbung",
+      "appTitle": "App",
       "userID": "Benutzer-ID",
       "copyAppLink": "App-Link kopieren",
       "version": "Version {{version}}"
     },
     "editProfile": {
       "title": "Profil bearbeiten",
-      "subtitle": "Fülle deine persönlichen Informationen aus",
+      "subtitle": "Fülle deine persönlichen Daten aus",
       "fields": {
         "name": {
           "label": "Vorname",
@@ -173,14 +177,24 @@
           "label": "Telefonnummer",
           "placeholder": "Telefonnummer eingeben"
         },
+        "gender": {
+          "label": "Geschlecht",
+          "placeholder": "Geschlecht auswählen"
+        },
         "userBio": {
           "label": "Über mich",
-          "placeholder": "Kurze Informationen über dich"
+          "placeholder": "Kurze Beschreibung über dich"
+        }
+      },
+      "options": {
+        "gender": {
+          "male": "Männlich",
+          "female": "Weiblich"
         }
       },
       "validation": {
-        "nameRequired": "Bitte Vornamen eingeben!",
-        "lastnameRequired": "Bitte Nachnamen eingeben!"
+        "nameRequired": "Gib deinen Vornamen ein!",
+        "lastnameRequired": "Gib deinen Nachnamen ein!"
       }
     },
     "account": {
@@ -221,11 +235,11 @@
     },
     "changePassword": {
       "title": "Passwort ändern",
-      "subtitle": "Ändere das Konto-Passwort",
+      "subtitle": "Aktualisiere das Passwort deines Kontos",
       "fields": {
         "oldPassword": {
           "label": "Aktuelles Passwort",
-          "placeholder": "Passwort eingeben"
+          "placeholder": "Aktuelles Passwort eingeben"
         },
         "password": {
           "label": "Neues Passwort",
@@ -237,16 +251,16 @@
         }
       },
       "validation": {
-        "oldPasswordRequired": "Bitte Passwort eingeben!",
-        "passwordRequired": "Bitte Passwort eingeben!",
-        "confirmPasswordRequired": "Bitte Passwort bestätigen!",
+        "oldPasswordRequired": "Gib dein aktuelles Passwort ein!",
+        "passwordRequired": "Gib ein Passwort ein!",
+        "confirmPasswordRequired": "Bestätige dein Passwort!",
         "passwordMinLength": "Das Passwort muss mindestens {{min}} Zeichen lang sein!",
         "passwordsDoNotMatch": "Passwörter stimmen nicht überein!"
       }
     },
     "notifications": {
       "title": "Benachrichtigungseinstellungen",
-      "subtitle": "Lege Regeln für Push-Benachrichtigungen fest",
+      "subtitle": "Konfiguriere deine Push-Benachrichtigungen",
       "pushToggleTitle": "Push-Benachrichtigungen",
       "types": {
         "likes": "Likes",
@@ -254,14 +268,14 @@
         "groupMessages": "Gruppennachrichten",
         "participants": "Teilnehmer",
         "newPost": "Beitrag erstellt/aktualisiert",
-        "invites": "Einladungen zum Beitrag",
+        "invites": "Einladungen zu Beiträgen",
         "pollAnswers": "Umfrageantworten",
-        "pollInvites": "Umfrageeinladungen"
+        "pollInvites": "Einladungen zu Umfragen"
       }
     },
     "component": {
       "language": {
-        "title": "Interface-Sprache",
+        "title": "Sprache der Oberfläche",
         "modalTitle": "Sprache auswählen",
         "languages": {
           "en": "Englisch",
@@ -275,19 +289,19 @@
         }
       },
       "feedback": {
-        "title": "Feedback und Fehler",
-        "subtitle": "Tippe, um uns auf Telegram zu schreiben",
-        "unsupported": "Telegram-URL kann nicht geöffnet werden"
+        "title": "Feedback und Probleme",
+        "subtitle": "Tippe, um uns auf Telegram zu kontaktieren",
+        "unsupported": "Telegram-URL konnte nicht geöffnet werden"
       },
       "theme": {
-        "title": "Theme",
-        "light": "Helles Theme",
-        "dark": "Dunkles Theme"
+        "title": "Design",
+        "light": "Helles Design",
+        "dark": "Dunkles Design"
       },
       "deleteAccount": {
         "title": "Konto löschen",
         "modalTitle": "Löschen bestätigen",
-        "modalDescription": "Alle deine Daten, einschließlich Profil, Events und Chat-Verlauf, werden dauerhaft gelöscht. Dieser Vorgang ist irreversibel und wird innerhalb von 24 Stunden abgeschlossen. Bist du sicher, dass du fortfahren möchtest?",
+        "modalDescription": "Alle deine Daten, einschließlich Profil, Events und Chatverlauf, werden dauerhaft gelöscht. Dieser Vorgang ist irreversibel und wird innerhalb von 24 Stunden abgeschlossen. Bist du sicher, dass du fortfahren möchtest?",
         "requestSent": "Deine Anfrage wurde gesendet. Das Konto wird innerhalb von 24 Stunden gelöscht."
       }
     }
@@ -301,9 +315,9 @@
         "placeholder": "Text eingeben..."
       },
       "limitParticipate": {
-        "maxParticipantsLabel": "Maximale Teilnehmerzahl",
+        "maxParticipantsLabel": "Maximale Anzahl der Teilnehmer",
         "validation": {
-          "required": "Pflichtfeld"
+          "required": "Dieses Feld ist erforderlich"
         }
       },
       "multiSelect": {
@@ -314,9 +328,9 @@
         "placeholder": "Stadt suchen..."
       },
       "imageUploader": {
-        "limitReached": "Es können maximal {{count}} Bilder hochgeladen werden",
+        "limitReached": "Du kannst nicht mehr als {{count}} Bilder hochladen",
         "errors": {
-          "largeFile": "Das Bild ist zu groß (über 40 MB). Bitte eine kleinere Datei wählen.",
+          "largeFile": "Das Bild ist zu groß (über 40 MB). Bitte wähle eine kleinere Datei.",
           "compressionFailed": "Bildkomprimierung fehlgeschlagen"
         },
         "upload": "Bild hochladen",
@@ -327,15 +341,15 @@
         "donationToggle": "Spende",
         "amountLabel": "Betrag",
         "validation": {
-          "required": "Pflichtfeld"
+          "required": "Dieses Feld ist erforderlich"
         },
         "currencyLabel": "Währung",
         "currencyPlaceholder": "Währung auswählen",
         "rangeLabel": "Bereich",
         "rangePlaceholder": "Bereich",
         "rangeOptions": {
-          "from": "von",
-          "to": "bis"
+          "from": "Von",
+          "to": "Bis"
         }
       },
       "select": {
@@ -349,29 +363,29 @@
       "accessType": {
         "title": "Was bedeutet jeder Zugriffstyp?",
         "open": {
-          "title": "• Offener Zugriff",
-          "description": "Jeder App-Nutzer kann das Event sehen und beitreten."
+          "title": "• Öffentlicher Zugriff",
+          "description": "Jeder Benutzer kann das Event sehen und daran teilnehmen."
         },
         "followers": {
-          "title": "• Für Follower",
-          "description": "Nur Nutzer, die dir folgen, sehen das Event und können beitreten."
+          "title": "• Nur Follower",
+          "description": "Nur Benutzer, die dir folgen, können das Event sehen und daran teilnehmen."
         },
         "private": {
           "title": "• Privat",
-          "description": "Das Event ist für alle verborgen. Nur eingeladene Nutzer können teilnehmen."
+          "description": "Das Event ist versteckt. Nur eingeladene Benutzer können teilnehmen."
         }
       },
       "participantLimit": {
-        "description": "Dieses Feld legt die maximale Anzahl an Teilnehmern fest, die dem Event beitreten können. Sobald das Limit erreicht ist, können sich neue Nutzer nicht mehr bewerben."
+        "description": "In diesem Feld kannst du die maximale Anzahl der Teilnehmer festlegen. Sobald das Limit erreicht ist, können neue Benutzer keine Anfrage mehr stellen."
       },
       "participantsModeration": {
-        "description": "Bei aktivierter Moderation erscheinen Nutzer in der Teilnehmerliste, erhalten jedoch keinen Chat-Zugang, bis du sie freigibst. Abgelehnte Anfragen werden automatisch gelöscht. Nach der Aktivierung kann die Moderation nicht mehr deaktiviert werden; beim Bearbeiten des Events ist der Schalter gesperrt."
+        "description": "Wenn die Moderation aktiviert ist, erscheinen Benutzer in der Teilnehmerliste, haben jedoch keinen Zugriff auf den Chat, bis du sie bestätigst. Abgelehnte Anfragen werden automatisch entfernt. Nach der Aktivierung kannst du die Moderation nicht mehr deaktivieren, und der Schalter ist beim Bearbeiten des Events gesperrt."
       },
       "invitation": {
-        "title": "Wie Einladungen funktionieren",
-        "description1": "Du kannst Nutzer zu deinem Event einladen, jedoch nur solche, die dir folgen.",
+        "title": "Wie funktionieren Einladungen?",
+        "description1": "Du kannst Benutzer zu deinem Event einladen, aber nur diejenigen, die dir folgen.",
         "description2": {
-          "part1": "Nach dem Senden kann der Nutzer die Einladung",
+          "part1": "Nachdem du eine Einladung gesendet hast, kann der Benutzer sie",
           "accept": "annehmen",
           "connector": "oder",
           "decline": "ablehnen",
@@ -382,14 +396,14 @@
       "completedEvent": {
         "title": "Was passiert nach dem Ende des Events?",
         "description1": {
-          "prefix": "Abgeschlossene Events werden",
-          "highlight": "nach {{count}} Tagen automatisch gelöscht",
-          "suffix": "– inklusive aller zugehörigen Daten: Chats, Medien, Nachrichten und Teilnehmerliste."
+          "prefix": "Abgeschlossene Events werden automatisch",
+          "highlight": "nach {{count}} Tagen gelöscht",
+          "suffix": "zusammen mit allen zugehörigen Daten: Chats, Medien, Nachrichten und Teilnehmern."
         },
         "description2": {
           "prefix": "Chats werden",
-          "highlight": "nach {{count}} Tagen unzugänglich",
-          "suffix": "nach Abschluss des Events."
+          "highlight": "{{count}} Tage nach dem Ende des Events",
+          "suffix": "nicht mehr verfügbar."
         }
       },
       "postModeration": {
@@ -397,105 +411,171 @@
         "statuses": {
           "pending": {
             "title": "• PENDING (in Prüfung)",
-            "description": "Der Beitrag wartet auf Prüfung durch einen Moderator. Er ist noch nicht für andere Nutzer sichtbar (außer für den Autor).",
+            "description": "Der Beitrag wartet auf Moderation. Er ist nur für den Autor sichtbar.",
             "name": "In Prüfung"
           },
           "approved": {
             "title": "• APPROVED (genehmigt)",
-            "description": "Der Beitrag wurde geprüft und genehmigt. Er ist für alle Nutzer sichtbar.",
+            "description": "Der Beitrag hat die Moderation bestanden und ist für alle Benutzer sichtbar.",
             "name": "Genehmigt"
           },
           "rejected": {
             "title": "• REJECTED (abgelehnt)",
-            "description": "Der Beitrag wurde wegen Regelverstoß, unangemessener Inhalte oder Nichterfüllung der Qualitätsstandards abgelehnt.",
+            "description": "Der Beitrag wurde wegen Regelverstoß, unpassendem Inhalt oder mangelnder Qualität abgelehnt.",
             "name": "Abgelehnt"
           }
         },
-        "currentStatusPrefix": "Dein aktueller Status —",
+        "currentStatusPrefix": "Dein aktueller Status ist",
         "reasons": {
-          "image": "Eines der Bilder verstößt gegen die Regeln. Bitte ein anderes hochladen.",
-          "content": "Die Event-Beschreibung verstößt gegen die Regeln. Bitte Text aktualisieren."
+          "image": "Eines der Bilder verstößt gegen die Regeln. Bitte lade ein anderes Bild hoch.",
+          "content": "Die Beschreibung des Events verstößt gegen die Regeln. Bitte aktualisiere den Text."
         }
       },
       "userModeration": {
-        "title": "Was bedeuten die Profil-Status?",
+        "title": "Was bedeuten die Profilstatus?",
         "statuses": {
           "pending": {
             "title": "• PENDING (in Prüfung)",
-            "description": "Dein Profil wird moderiert. Du kannst die App nutzen, aber keine Inhalte posten, Events erstellen oder mit anderen interagieren, bis es genehmigt ist.",
+            "description": "Dein Profil wird überprüft. Du kannst die App nutzen, aber keinen Inhalt veröffentlichen, keine Events erstellen und nicht mit anderen interagieren, bis das Profil genehmigt ist.",
             "name": "In Prüfung"
           },
           "approved": {
             "title": "• APPROVED (genehmigt)",
-            "description": "Dein Profil wurde genehmigt. Du hast vollen Zugriff auf alle Funktionen: Beiträge, Chats, Erstellen und Teilnehmen an Events.",
+            "description": "Dein Profil ist genehmigt. Du hast vollen Zugriff auf alle Funktionen: Beiträge, Chats, Erstellen und Teilnehmen an Events.",
             "name": "Genehmigt"
           },
           "rejected": {
             "title": "• REJECTED (abgelehnt)",
-            "description": "Dein Profil wurde aufgrund von Verstößen gegen die Community-Regeln oder unzureichenden/ungeeigneten Informationen abgelehnt. Möglicherweise musst du Änderungen vornehmen und erneut einreichen.",
+            "description": "Dein Profil wurde aufgrund von Regelverstößen oder unzureichenden/unpassenden Informationen abgelehnt. Möglicherweise musst du Änderungen vornehmen und erneut zur Prüfung einreichen.",
             "name": "Abgelehnt"
           }
         },
-        "currentStatusPrefix": "Dein aktueller Status —",
+        "currentStatusPrefix": "Dein aktueller Status ist",
         "reasons": {
-          "image": "Das Foto verstößt gegen die Regeln. Bitte ein anderes Bild hochladen.",
-          "content": "Profilinformationen verstoßen gegen die Regeln. Bitte Daten aktualisieren, um die Community-Standards zu erfüllen."
+          "image": "Das Foto verstößt gegen die Regeln. Bitte lade ein anderes Bild hoch.",
+          "content": "Die Profilinformationen verstoßen gegen die Regeln. Aktualisiere sie entsprechend den Community-Richtlinien."
         }
       },
       "specialistCover": {
-        "title": "Wozu dient das Titelbild?",
-        "description1": "Das Titelbild ist ein großer Banner für die Spezialisten-Seite. Es erscheint oben im öffentlichen Profil und hilft, deine Leistungen zu präsentieren.",
-        "description2": "Wähle ein Bild, das dich widerspiegelt: Besucher sehen es jedes Mal, wenn sie dein Spezialistenprofil öffnen."
+        "title": "Warum brauchst du ein Titelbild?",
+        "description1": "Das Titelbild ist ein großes Banner für die Spezialistenseite. Es erscheint oben im öffentlichen Profil und hilft, deine Services zu präsentieren.",
+        "description2": "Wähle ein Bild, das dich repräsentiert: Besucher sehen es jedes Mal, wenn sie dein Spezialistenprofil öffnen."
       }
     },
     "aibot": {
+      "profile": {
+        "highlights": {
+          "creatorInfoTitle": "Infos zum Ersteller",
+          "creatorLabel": "Ersteller",
+          "createdLabel": "Erstellt"
+        },
+        "debug": {
+          "startChatFailed": "Chat mit dem AI-Agenten konnte nicht gestartet werden"
+        }
+      },
+      "createPage": {
+        "debug": {
+          "selectedFileNotImage": "Die ausgewählte Datei ist kein unterstütztes Bildformat.",
+          "processAvatarFailed": "Avatarbild konnte nicht verarbeitet werden",
+          "skippedNonImageFile": "Nicht-Bild-Datei beim Hochladen der Galerie übersprungen: {{fileName}}",
+          "processGalleryImageFailed": "Galeriebild konnte nicht verarbeitet werden"
+        }
+      },
+      "editDialog": {
+        "debug": {
+          "objectUrlNotSupported": "Object-URLs werden in dieser Umgebung nicht unterstützt.",
+          "updateFailed": "AI-Agent konnte nicht aktualisiert werden"
+        },
+        "snackbar": {
+          "fillProfessionAndGender": "Bitte gib Beruf und Geschlecht an."
+        }
+      },
       "card": {
-        "defaultName": "KI-Agent"
+        "defaultName": "AI-Agent"
       },
       "listSection": {
-        "empty": "Hier ist noch nichts. Schau später wieder vorbei!"
+        "empty": "Hier gibt es noch nichts. Schau später wieder vorbei!"
       },
       "placeCardList": {
-        "empty": "Hier ist noch nichts. Schau später wieder vorbei!",
-        "noDescription": "Keine Beschreibung"
+        "empty": "Hier gibt es noch nichts. Schau später wieder vorbei!",
+        "noDescription": "Keine Beschreibung verfügbar"
+      },
+      "chatLimit": {
+        "debug": {
+          "syncStateFailed": "Chat-Limit-Status konnte nicht synchronisiert werden",
+          "loadTokenBalanceFailed": "Token-Guthaben konnte nicht geladen werden",
+          "unlockFailed": "Chat-Limit konnte nicht aufgehoben werden"
+        },
+        "snackbar": {
+          "resetSuccess": "Nachrichtenlimit wurde zurückgesetzt.",
+          "insufficientTokens": "Nicht genug Tokens zum Freischalten.",
+          "unlockError": "Der Chat konnte nicht freigeschaltet werden. Bitte versuche es später erneut.",
+          "cooldownWithTokens": "Nachrichtenlimit erreicht. Warte {{duration}} oder nutze Tokens, um fortzufahren.",
+          "cooldownNoTokens": "Nachrichtenlimit erreicht. Bitte warte, bis der Timer abgelaufen ist."
+        }
       },
       "guestChat": {
-        "defaultBotName": "KI-Bot",
+        "defaultBotName": "AI-Bot",
         "inputPlaceholder": "Frag etwas...",
         "limitLabel": "Verbleibende Nachrichten: {{remaining}} / {{limit}}",
         "errors": {
-          "limitReached": "Tageslimit erreicht. Bitte später erneut versuchen.",
-          "sendFailed": "Nachricht konnte nicht gesendet werden. Bitte erneut versuchen."
+          "limitReached": "Du hast dein Tageslimit erreicht. Bitte versuche es später erneut.",
+          "sendFailed": "Nachricht konnte nicht gesendet werden. Bitte versuche es noch einmal."
+        },
+        "debug": {
+          "persistHistoryFailed": "Gast-Chatverlauf konnte nicht gespeichert werden",
+          "persistSessionFailed": "Gast-Chat-Sitzung konnte nicht gespeichert werden",
+          "sendFailedLog": "Senden der Gast-AI-Nachricht ist fehlgeschlagen",
+          "parseHistoryFailed": "Gespeicherter Gast-Chatverlauf konnte nicht gelesen werden",
+          "loadDataFailed": "Daten des Gast-Chats konnten nicht geladen werden"
         }
       }
     },
     "chat": {
+      "messages": {
+        "title": {
+          "privateChat": "Privater Chat"
+        },
+        "debug": {
+          "scrollToPinnedFailed": "Scrollen zur angehefteten Nachricht fehlgeschlagen",
+          "deleteMessageFailed": "Nachricht konnte nicht gelöscht werden",
+          "clearHistoryFailed": "Chatverlauf konnte nicht gelöscht werden"
+        },
+        "snackbar": {
+          "reportSent": "Meldung gesendet.",
+          "messageDeleted": "Nachricht gelöscht.",
+          "deleteMessageFailed": "Nachricht konnte nicht gelöscht werden.",
+          "copied": "Kopiert.",
+          "historyCleared": "Chatverlauf gelöscht.",
+          "clearHistoryFailed": "Chatverlauf konnte nicht gelöscht werden."
+        }
+      },
       "limitNotice": {
         "message": "Nachrichtenlimit erreicht",
-        "adReady": "Anzeige ist bereit zur Wiedergabe",
-        "adLoading": "Anzeige wird geladen…",
-        "countdownWithValue": "Warte {{countdown}} oder benutze Token.",
-        "countdown": "Warte bis der Timer endet oder benutze Token.",
-        "countdownShort": "Warte den Timer ab oder benutze Token",
+        "adReady": "Anzeige ist abspielbereit",
+        "adLoading": "Anzeige wird geladen...",
+        "countdownWithValue": "Warte {{countdown}} oder nutze Tokens.",
+        "countdown": "Warte, bis der Timer abgelaufen ist, oder nutze Tokens.",
+        "countdownShort": "Warte den Timer ab oder nutze Tokens",
         "costLabel": "Freischaltkosten",
-        "costValue": "{{count}} Token",
-        "balanceLabel": "Dein Kontostand",
-        "balanceValue": "Token: {{count}}",
+        "costValue": "{{count}} Tokens",
+        "balanceLabel": "Dein Guthaben",
+        "balanceValue": "Tokens: {{count}}",
         "balanceUnavailable": "Nicht verfügbar",
         "checking": "Wird geprüft…",
-        "unlockButton": "Weiter für {{count}} Token",
+        "unlockButton": "Für {{count}} Tokens fortfahren",
         "watchAd": "Anzeige ansehen",
         "accessibility": {
           "locked": "Gesperrt"
         },
         "pillCost": "Kosten: {{count}}",
-        "pillBalance": "Kontostand: {{count}}",
-        "pillBalanceUnavailable": "Kontostand nicht verfügbar",
+        "pillBalance": "Guthaben: {{count}}",
+        "pillBalanceUnavailable": "Guthaben nicht verfügbar",
         "more": "Mehr",
-        "refreshBalance": "Kontostand aktualisieren",
-        "refreshBalanceDescription": "Aktuelle Token anfordern",
-        "whatAreTokens": "Was sind Token?",
-        "whatAreTokensDescription": "Wie sie funktionieren und wo man sie bekommt",
+        "refreshBalance": "Guthaben aktualisieren",
+        "refreshBalanceDescription": "Aktuelles Token-Guthaben abrufen",
+        "whatAreTokens": "Was sind Tokens?",
+        "whatAreTokensDescription": "Wie sie funktionieren und wo du sie bekommst",
         "unavailableSuffix": "(nicht verfügbar)"
       },
       "swipeable": {
@@ -504,17 +584,78 @@
       "header": {
         "online": "Online",
         "offline": "Offline",
-        "typing": "tippt...",
-        "groupTyping": "{{user}}: tippt..."
+        "typing": "schreibt...",
+        "groupTyping": "{{user}} schreibt..."
       },
       "messageItem": {
         "deleted": "Nachricht gelöscht"
+      },
+      "list": {
+        "debug": {
+          "deleteChatFailed": "Chat konnte nicht gelöscht werden"
+        },
+        "snackbar": {
+          "chatDeleted": "Chat gelöscht.",
+          "deleteChatFailed": "Chat konnte nicht gelöscht werden."
+        }
       }
     },
     "forceUpdate": {
-      "title": "Aktualisierung erforderlich",
-      "description": "Eine neue Version der App ist verfügbar. Bitte aktualisieren, um fortzufahren.",
+      "title": "Update erforderlich",
+      "description": "Eine neue Version der App ist verfügbar. Bitte aktualisiere, um fortzufahren.",
       "button": "Aktualisieren"
+    },
+    "account": {
+      "changePassword": {
+        "snackbar": {
+          "updated": "Passwort aktualisiert.",
+          "error": "Beim Ändern des Passworts ist ein Fehler aufgetreten."
+        }
+      },
+      "settings": {
+        "snackbar": {
+          "updated": "Erfolgreich aktualisiert.",
+          "error": "Es ist ein Fehler aufgetreten."
+        }
+      }
+    },
+    "profile": {
+      "edit": {
+        "snackbar": {
+          "noChanges": "Es wurde nichts geändert.",
+          "updated": "Profil aktualisiert.",
+          "error": "Beim Aktualisieren des Profils ist ein Fehler aufgetreten.",
+          "photoUploadSuccess": "Foto erfolgreich hochgeladen.",
+          "photoUploadError": "Foto konnte nicht hochgeladen werden.",
+          "noPhotoToRemove": "Es gibt kein Foto zum Entfernen.",
+          "invalidFilePath": "Ungültiger Dateipfad.",
+          "photoRemoveSuccess": "Foto erfolgreich entfernt.",
+          "photoRemoveError": "Foto konnte nicht entfernt werden."
+        },
+        "debug": {
+          "compressImageFailed": "compressImage fehlgeschlagen, ursprüngliches Bild wird verwendet",
+          "onPressSelectError": "Fehler in onPressSelect:",
+          "onPressRemoveError": "Fehler in onPressRemove:"
+        }
+      },
+      "socialProfiles": {
+        "snackbar": {
+          "updated": "Soziale Profile aktualisiert.",
+          "error": "Beim Aktualisieren der sozialen Profile ist ein Fehler aufgetreten."
+        }
+      }
+    },
+    "ads": {
+      "rewardedTokens": {
+        "snackbar": {
+          "balanceLoadError": "Token-Guthaben konnte nicht geladen werden.",
+          "rewardEarned": "Belohnung erhalten! +{{amount}} Tokens.",
+          "balanceUpdateError": "Token-Guthaben konnte nicht aktualisiert werden.",
+          "adLoading": "Anzeige wird geladen, bitte versuche es gleich noch einmal.",
+          "loadFailed": "Anzeige konnte nicht geladen werden. Bitte versuche es später erneut.",
+          "showFailed": "Anzeige konnte nicht angezeigt werden. Bitte versuche es später erneut."
+        }
+      }
     }
   },
   "screens": {
@@ -522,53 +663,51 @@
       "tabs": {
         "all": "Alle"
       },
-      "heading": "KI-Begleiter",
-      "subheading": "Wähle einen Bot, um ein Gespräch zu starten oder Inspiration zu finden. Das Team fügt täglich neue Charaktere und Gesprächsszenarien hinzu.",
+      "heading": "AI-Begleiter",
+      "subheading": "Wähle einen Bot, um ein Gespräch zu starten oder Inspiration zu finden. Das Team fügt jeden Tag neue Charaktere und Szenarien hinzu.",
       "empty": {
-        "default": "KI-Bots erscheinen hier in Kürze. Versuche es später erneut."
+        "default": "Hier werden bald AI-Bots angezeigt. Versuche später zu aktualisieren."
       },
       "experience": {
         "accessibility": {
           "uploadPhoto": "Foto hochladen",
           "closePreview": "Vorschau schließen"
         },
-        "uploadPrompt": "Tippe hier, um das Foto hochzuladen, das du zum Leben erwecken möchtest!"
+        "uploadPrompt": "Tippe hier, um ein Foto hochzuladen, das du zum Leben erwecken möchtest!"
       }
     },
     "library": {
       "title": "Galerie",
       "pendingStatus_one": "{{count}} Bild wird verarbeitet...",
-      "pendingStatus_few": "{{count}} Bilder werden verarbeitet...",
-      "pendingStatus_many": "{{count}} Bilder werden verarbeitet...",
       "pendingStatus_other": "{{count}} Bilder werden verarbeitet...",
       "refreshStatus": "Status aktualisieren",
-      "empty": "Deine verarbeiteten Bilder erscheinen hier."
+      "empty": "Deine verarbeiteten Bilder werden nach Abschluss hier angezeigt."
     },
     "aibot": {
       "profile": {
-        "deleteTitle": "KI-Bot löschen",
-        "deleteMessage": "Bist du sicher, dass du diesen KI-Bot löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.",
+        "deleteTitle": "AI-Bot löschen",
+        "deleteMessage": "Bist du sicher, dass du diesen AI-Bot löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.",
         "actions": {
           "follow": "Folgen",
-          "unfollow": "Nicht mehr folgen"
+          "unfollow": "Entfolgen"
         },
-        "reportTitle": "Nutzer melden",
+        "reportTitle": "Benutzer melden",
         "reportPlaceholder": "Zusätzliche Details (optional)"
       },
       "hero": {
-        "badge": "KI-Agent",
+        "badge": "AI-Agent",
         "chatButton": "Zum Chat"
       },
       "tabs": {
-        "info": "Informationen",
+        "info": "Info",
         "gallery": "Galerie"
       },
       "info": {
-        "introTitle": "Vorstellung",
+        "introTitle": "Einführung",
         "introPlaceholder": "Der Ersteller hat noch keine Beschreibung hinzugefügt.",
-        "usefulnessTitle": "Wobei er nützlich ist",
-        "usefulnessPlaceholder": "Nützlichkeit noch nicht ausgefüllt.",
-        "creatorTitle": "Informationen zum Ersteller",
+        "usefulnessTitle": "Wie er hilft",
+        "usefulnessPlaceholder": "Nützlichkeit ist noch nicht ausgefüllt.",
+        "creatorTitle": "Details zum Ersteller",
         "creatorLabel": "Ersteller",
         "createdAtLabel": "Erstellt"
       },
@@ -590,27 +729,27 @@
           "история": "Geschichte"
         },
         "errors": {
-          "openProfile": "Bot-Profil konnte nicht geöffnet werden"
+          "openProfile": "Botprofil konnte nicht geöffnet werden"
         }
       },
       "create": {
-        "headerTitle": "KI-Agent erstellen",
+        "headerTitle": "AI-Agent erstellen",
         "steps": {
           "0": {
             "title": "Charakter",
-            "description": "Avatar, Name und Basisinfos, die den ersten Eindruck prägen."
+            "description": "Avatar, Name und Kerndaten, die den ersten Eindruck formen."
           },
           "1": {
-            "title": "Mehrwert",
-            "description": "Kategorien und Nutzen, den der Nutzer aus dem Gespräch mit dem Agenten zieht."
+            "title": "Wert",
+            "description": "Kategorien und Nutzen, den Nutzer aus dem Gespräch mit dem Agenten ziehen."
           },
           "2": {
-            "title": "Charakterzug",
-            "description": "Prompt, Geschichte und Begrüßung, die den Gesprächsstil bestimmen."
+            "title": "Persönlichkeit",
+            "description": "Prompt, Geschichte und Begrüßung, die den Kommunikationsstil bestimmen."
           },
           "3": {
             "title": "Medien",
-            "description": "Bildergalerie, die hilft, den Agenten zu visualisieren."
+            "description": "Galerie mit Bildern, die den Agenten visualisieren."
           }
         },
         "identity": {
@@ -618,7 +757,7 @@
           "description": "Füge ein Bild und Basisinformationen hinzu, damit Nutzer deinen Agenten sofort erkennen.",
           "avatar": {
             "placeholder": "Hochladen",
-            "hint": "Empfohlen wird ein quadratisches Bild mit mindestens 512×512 px."
+            "hint": "Verwende ein quadratisches Bild mit mindestens 512×512 px."
           },
           "fields": {
             "firstName": {
@@ -627,7 +766,7 @@
             },
             "lastName": {
               "label": "Nachname",
-              "placeholder": "Nachnamen eingeben"
+              "placeholder": "Nachnamen des Agenten eingeben"
             },
             "gender": {
               "label": "Geschlecht",
@@ -635,47 +774,47 @@
             },
             "profession": {
               "label": "Beruf oder Rolle",
-              "placeholder": "Z. B. Marketer oder Dozent"
+              "placeholder": "Zum Beispiel: Marketer oder Lehrer"
             }
           }
         },
         "focus": {
-          "title": "Mehrwert und Zielgruppe",
-          "description": "Wähle Kategorien und formuliere, wobei dein Agent hilft.",
+          "title": "Wert und Zielgruppe",
+          "description": "Wähle Kategorien und beschreibe, wie dein Agent hilft.",
           "categoriesTitle": "Kategorien",
-          "usefulnessTitle": "Wobei wird der Agent nützlich sein?",
-          "usefulnessPlaceholder": "Mehrwert hinzufügen",
-          "usefulnessEmpty": "Füge mindestens einen Mehrwertpunkt hinzu."
+          "usefulnessTitle": "Wie hilft der Agent?",
+          "usefulnessPlaceholder": "Nutzenpunkt hinzufügen",
+          "usefulnessEmpty": "Füge mindestens einen Nutzenpunkt hinzu."
         },
         "voice": {
-          "title": "Charakter",
-          "description": "Beschreibe Charakter, Geschichte und Startnachricht des Agenten.",
+          "title": "Persönlichkeit",
+          "description": "Beschreibe Prompt, Geschichte und Willkommensnachricht des Agenten.",
           "fields": {
             "prompt": {
-              "label": "System-Prompt",
-              "placeholder": "Verhalten und Gesprächsstil beschreiben"
+              "label": "Systemprompt",
+              "placeholder": "Verhalten und Ton beschreiben"
             },
             "description": {
               "label": "Profilbeschreibung",
-              "placeholder": "Beschreibe, was der Agent macht"
+              "placeholder": "Erkläre, was der Agent macht"
             },
             "intro": {
               "label": "Begrüßungsnachricht",
-              "placeholder": "Was der Agent zu Beginn sagt"
+              "placeholder": "Was sagt der Agent zuerst?"
             }
           }
         },
         "media": {
-          "title": "Medien-Set",
-          "description": "Bereite visuelle Materialien für die Galerie vor. Verbleibend {{remaining}} von {{max}}.",
+          "title": "Mediakit",
+          "description": "Bereite Bilder für die Galerie vor. {{remaining}} von {{max}} Slots verbleiben.",
           "upload": "Bilder hochladen",
-          "limitReached": "Limit hochgeladener Bilder erreicht",
+          "limitReached": "Bildlimit erreicht",
           "empty": "Du hast noch keine Bilder hinzugefügt."
         },
         "completed": {
-          "title": "KI-Agent erstellt!",
-          "subtitleWithName": "{{name}} {{lastname}} ist bereit, Nutzer kennenzulernen.",
-          "subtitleDefault": "Dein Agent ist bereit, Nutzer kennenzulernen.",
+          "title": "AI-Agent erstellt!",
+          "subtitleWithName": "{{name}} {{lastname}} ist bereit, Nutzer zu treffen.",
+          "subtitleDefault": "Dein Agent ist bereit, Nutzer zu treffen.",
           "openProfile": "Profil öffnen",
           "createAnother": "Weiteren erstellen"
         },
@@ -684,15 +823,15 @@
         }
       },
       "edit": {
-        "headerTitle": "KI-Agent bearbeiten",
+        "headerTitle": "AI-Agent bearbeiten",
         "steps": {
           "0": {
-            "title": "Grunddaten",
+            "title": "Grundlagen",
             "description": "Avatar und Basisinformationen aktualisieren."
           },
           "1": {
             "title": "Kategorien",
-            "description": "Bereiche wählen und Nutzenliste aktualisieren."
+            "description": "Kategorien und Nutzenliste anpassen."
           },
           "2": {
             "title": "Stimme",
@@ -700,12 +839,12 @@
           },
           "3": {
             "title": "Galerie",
-            "description": "Bildergalerie verwalten."
+            "description": "Bilder der Galerie verwalten."
           }
         },
         "identity": {
-          "title": "Grunddaten",
-          "description": "Avatar und Basisinformationen des Agenten aktualisieren.",
+          "title": "Basisdaten",
+          "description": "Avatar und Kerndaten aktualisieren.",
           "avatar": {
             "placeholder": "Ändern",
             "hint": "Wähle ein neues Bild oder entferne das aktuelle."
@@ -725,29 +864,29 @@
             },
             "profession": {
               "label": "Beruf",
-              "placeholder": "Z. B. Designer"
+              "placeholder": "Zum Beispiel: Designer"
             }
           }
         },
         "focus": {
-          "title": "Kategorien und Mehrwert",
-          "description": "Bereiche auswählen und die Mehrwertliste des Agenten aktualisieren.",
+          "title": "Kategorien und Wert",
+          "description": "Richtungen auswählen und den Nutzen des Agenten aktualisieren.",
           "categoriesTitle": "Kategorien",
-          "usefulnessTitle": "Mehrwert des Agenten",
-          "usefulnessPlaceholder": "Neuen Punkt hinzufügen",
-          "usefulnessEmpty": "Füge mindestens einen Punkt hinzu."
+          "usefulnessTitle": "Wert des Agenten",
+          "usefulnessPlaceholder": "Neuen Nutzenpunkt hinzufügen",
+          "usefulnessEmpty": "Füge mindestens einen Nutzenpunkt hinzu."
         },
         "voice": {
           "title": "Stimme und Geschichte",
-          "description": "Prompt, Beschreibung und Begrüßung des Agenten aktualisieren.",
+          "description": "Prompt, Beschreibung und Begrüßung aktualisieren.",
           "fields": {
             "prompt": {
-              "label": "System-Prompt",
-              "placeholder": "Charakter und Stil beschreiben"
+              "label": "Systemprompt",
+              "placeholder": "Persönlichkeit und Ton beschreiben"
             },
             "description": {
               "label": "Profilbeschreibung",
-              "placeholder": "Biografie ergänzen"
+              "placeholder": "Mehr biografische Details hinzufügen"
             },
             "intro": {
               "label": "Begrüßungsnachricht",
@@ -757,9 +896,9 @@
         },
         "media": {
           "title": "Galerie",
-          "description": "Bildergalerie verwalten. Verbleibend {{remaining}} von {{max}}.",
+          "description": "Galeriebilder verwalten. {{remaining}} von {{max}} Slots verbleiben.",
           "upload": "Bilder hinzufügen",
-          "limitReached": "Bilderlimit erreicht",
+          "limitReached": "Bildlimit erreicht",
           "empty": "Der Agent hat noch keine Bilder."
         },
         "actions": {
@@ -770,24 +909,24 @@
     "onboarding": {
       "slides": {
         "language": {
-          "title": "🌐 Wähle deine Sprache",
-          "description": "Lege die Sprache der Oberfläche fest, um deine AI-Pair-Erfahrung anzupassen."
+          "title": "🌐 Sprache auswählen",
+          "description": "Wähle die Oberflächensprache, um dein AI-Pair-Erlebnis zu personalisieren."
         },
         "welcome": {
           "title": "✨ Willkommen",
-          "description": "Dein persönlicher KI-Partner für Gespräche, Ideen und Unterstützung."
+          "description": "Dein persönlicher AI-Partner für Gespräche, Ideen und Support."
         },
         "memory": {
-          "title": "🧠 Er merkt sich Wichtiges",
+          "title": "🧠 Merkt sich, was wichtig ist",
           "description": "AI Pair merkt sich deinen Kontext und lernt aus deinen Geschichten."
         },
         "character": {
-          "title": "🎭 Charakter erstellen",
-          "description": "Name, Gesprächsstil, Ziele — passe alles an dich an."
+          "title": "🎭 Charakter gestalten",
+          "description": "Name, Ton, Ziele – passe alles an deinen Stil an."
         },
         "start": {
-          "title": "🚀 Bereit zum Start?",
-          "description": "Lerne deinen AI Pair kennen und beginne den Dialog."
+          "title": "🚀 Bereit zu starten?",
+          "description": "Lerne dein AI Pair kennen und beginne das Gespräch."
         }
       },
       "skip": "Überspringen",
@@ -796,18 +935,18 @@
     },
     "profile": {
       "tabs": {
-        "myBots": "Meine",
-        "subscriptions": "Abos"
+        "myBots": "Meine Bots",
+        "subscriptions": "Abonnements"
       },
       "fallbackName": "Profil",
-      "featureSoon": "Diese Funktion ist bald verfügbar.",
+      "featureSoon": "Diese Funktion wird bald verfügbar sein.",
       "empty": {
-        "myBots": "Du hast noch keine KI-Bots erstellt. Erstelle deinen ersten Charakter!",
-        "subscriptions": "Du folgst noch keinem KI-Bot."
+        "myBots": "Du hast noch keine AI-Bots erstellt. Erstelle deinen ersten Charakter!",
+        "subscriptions": "Du hast noch keine AI-Bots abonniert."
       },
       "userBotsSection": {
-        "title": "KI-Bots des Nutzers",
-        "empty": "Der Nutzer hat noch keine KI-Bots erstellt."
+        "title": "AI-Bots des Benutzers",
+        "empty": "Dieser Benutzer hat noch keine AI-Bots erstellt."
       }
     },
     "chats": {
@@ -821,7 +960,7 @@
         "photoPlaceholder": "Foto",
         "placeholder": "Nachricht",
         "editing": "Bearbeiten",
-        "clearHistory": "Chat-Verlauf löschen"
+        "clearHistory": "Chatverlauf löschen"
       }
     },
     "docs": {
@@ -831,55 +970,55 @@
           "welcome": {
             "title": "Willkommen bei {{siteName}}!",
             "paragraph1": {
-              "prefix": "Diese Nutzungsbedingungen („Bedingungen“) regeln den Zugriff auf und die Nutzung der mobilen App {{siteName}} sowie der Website ",
+              "prefix": "Diese Nutzungsbedingungen (die „Bedingungen“) regeln den Zugriff auf und die Nutzung der {{siteName}}-Mobile-App und der Website ",
               "suffix": " (zusammen der „Service“)."
             },
-            "paragraph2": "Durch den Zugriff auf den Service oder dessen Nutzung bestätigst du dein Einverständnis mit diesen Bedingungen.",
-            "paragraph3": "Wenn du den Bedingungen nicht zustimmst, nutze den Service bitte nicht."
+            "paragraph2": "Durch den Zugriff auf den Service oder dessen Nutzung stimmst du diesen Bedingungen zu.",
+            "paragraph3": "Wenn du mit den Bedingungen nicht einverstanden bist, nutze den Service bitte nicht."
           },
           "usage": {
             "title": "1. Nutzung des Service",
             "items": [
-              "Nutze den Service nur im Einklang mit geltendem Recht.",
-              "Nutze den Service nicht für rechtswidrige oder unbefugte Zwecke.",
-              "Belästige, beleidige oder schade anderen Nutzern nicht.",
-              "Beeinträchtige nicht die Sicherheit oder Integrität des Service."
+              "Nutze den Service nur in Übereinstimmung mit geltendem Recht.",
+              "Nutze den Service nicht für illegale oder unautorisierte Zwecke.",
+              "Belästige, missbrauche oder verletze andere Nutzer nicht.",
+              "Gefährde nicht die Sicherheit oder Integrität des Service."
             ]
           },
           "content": {
             "title": "2. Nutzerinhalte",
-            "paragraph1": "Durch das Bereitstellen von Inhalten gewährst du {{siteName}} eine nicht ausschließliche, weltweite und kostenfreie Lizenz zur Nutzung, Speicherung, Anzeige und Verbreitung deiner Inhalte.",
-            "paragraph2": "Du bist für die von dir erstellten und verbreiteten Inhalte verantwortlich."
+            "paragraph1": "Durch das Bereitstellen von Inhalten gewährst du {{siteName}} eine nicht-exklusive, weltweite, gebührenfreie Lizenz zur Nutzung, Speicherung, Anzeige und Verteilung dieser Inhalte.",
+            "paragraph2": "Du bist für die Inhalte verantwortlich, die du erstellst und teilst."
           },
           "security": {
-            "title": "3. Registrierung und Kontosicherheit",
-            "paragraph": "Du bist für die Vertraulichkeit deiner Zugangsdaten und alle Handlungen in deinem Konto verantwortlich."
+            "title": "3. Kontosicherheit",
+            "paragraph": "Du bist für die Vertraulichkeit deiner Zugangsdaten und für alle Aktivitäten unter deinem Konto verantwortlich."
           },
           "privacy": {
             "title": "4. Datenschutz",
             "paragraph": {
-              "prefix": "Die Erhebung und Nutzung personenbezogener Daten unterliegt unserer ",
-              "suffix": "."
+              "prefix": "Die Erhebung und Nutzung personenbezogener Daten wird durch unsere ",
+              "suffix": " geregelt."
             },
             "linkLabel": "Datenschutzerklärung"
           },
           "ip": {
             "title": "5. Geistiges Eigentum",
-            "paragraph": "Alle Rechte am Service (ausgenommen Nutzerinhalte) gehören {{siteName}} und seinen Lizenzgebern."
+            "paragraph": "Alle Rechte am Service (mit Ausnahme von Nutzerinhalten) gehören {{siteName}} und seinen Lizenzgebern."
           },
           "termination": {
-            "title": "6. Beendigung des Zugangs",
-            "paragraph": "Wir können deinen Zugang zum Service jederzeit und aus beliebigem Grund aussetzen oder beenden."
+            "title": "6. Kündigung",
+            "paragraph": "Wir können deinen Zugriff auf den Service jederzeit und aus beliebigem Grund aussetzen oder beenden."
           },
           "changes": {
             "title": "7. Änderungen der Bedingungen",
-            "paragraph": "Wir können diese Bedingungen jederzeit aktualisieren. Die weitere Nutzung des Service nach Inkrafttreten der Änderungen gilt als Zustimmung zu den neuen Bedingungen."
+            "paragraph": "Wir können diese Bedingungen jederzeit aktualisieren. Wenn du den Service nach Inkrafttreten von Änderungen weiterhin nutzt, akzeptierst du die neuen Bedingungen."
           },
           "moderation": {
-            "title": "8. Meldungen und Moderation",
-            "paragraph1": "Bei {{siteName}} gilt Nulltoleranz gegenüber unzulässigen Inhalten, einschließlich Hassrede, Belästigung, Pornografie und jeglicher illegaler Aktivitäten.",
-            "paragraph2": "Nutzer können unangemessene Inhalte direkt in der App melden. Wir prüfen alle Meldungen innerhalb von 24 Stunden und ergreifen geeignete Maßnahmen, einschließlich Entfernen von Inhalten oder Sperren des verantwortlichen Nutzers.",
-            "paragraph3": "Durch die Nutzung von {{siteName}} erklärst du dich zu respektvollem Verhalten und zur Einhaltung dieser Regeln bereit."
+            "title": "8. Beschwerden und Moderation",
+            "paragraph1": "{{siteName}} hat eine Null-Toleranz-Politik gegenüber verbotenem Inhalt, einschließlich Hassrede, Belästigung, Pornografie oder illegaler Aktivitäten.",
+            "paragraph2": "Nutzer können unangemessene Inhalte direkt in der App melden. Wir prüfen alle Meldungen innerhalb von 24 Stunden und ergreifen geeignete Maßnahmen.",
+            "paragraph3": "Durch die Nutzung von {{siteName}} erklärst du dich einverstanden, dich respektvoll zu verhalten und diese Regeln zu befolgen."
           },
           "contact": {
             "title": "9. Kontakt",
@@ -890,6 +1029,69 @@
           }
         }
       }
+    }
+  },
+  "stores": {
+    "aiBot": {
+      "snackbar": {
+        "mainPageBotsError": "Die Liste der Bots konnte nicht geladen werden. Bitte versuche später, die Seite zu aktualisieren.",
+        "fetchAiBotError": "AI-Bot konnte nicht geladen werden.",
+        "fetchMyAiBotsError": "Deine AI-Bots konnten nicht geladen werden.",
+        "fetchSubscriptionsError": "Abonnements für AI-Bots konnten nicht geladen werden.",
+        "updateSubscriptionError": "Abonnementstatus konnte nicht aktualisiert werden.",
+        "createSuccess": "AI-Bot erstellt.",
+        "createFailed": "AI-Bot konnte nicht erstellt werden.",
+        "updateSuccess": "AI-Bot wurde aktualisiert.",
+        "updateFailed": "AI-Bot konnte nicht aktualisiert werden.",
+        "deleteSuccess": "AI-Bot wurde gelöscht.",
+        "renewSubscriptionFailed": "Abonnement konnte nicht verlängert werden.",
+        "photosSaved": "Fotos gespeichert.",
+        "photosSaveFailed": "Fotos konnten nicht hochgeladen werden.",
+        "photosDeleted": "Fotos gelöscht.",
+        "photosDeleteFailed": "Fotos konnten nicht gelöscht werden."
+      },
+      "creationError": {
+        "loginRequired": "Bitte melde dich an!"
+      },
+      "errors": {
+        "createAiAgent": "AI-Agent konnte nicht erstellt werden"
+      },
+      "debug": {
+        "fetchAiProfilesFailed": "Fehler beim Abrufen der AI-Profile",
+        "fetchMainPageBotsFailed": "AI-Bots für die Admin-Startseite konnten nicht geladen werden",
+        "fetchAiBotFailed": "AI-Bot konnte nicht geladen werden",
+        "fetchUserAiBotsFailed": "AI-Bots des Benutzers konnten nicht geladen werden",
+        "fetchMyAiBotsFailed": "Meine AI-Bots konnten nicht geladen werden",
+        "fetchSubscribedAiBotsFailed": "Abonnierte AI-Bots konnten nicht geladen werden",
+        "updateFollowFailed": "Folgestatus konnte nicht aktualisiert werden",
+        "updateAiBotFailed": "AI-Agent konnte nicht aktualisiert werden",
+        "fetchBotDetailsFailed": "Details des AI-Bots konnten nicht abgerufen werden",
+        "uploadPhotosFailed": "Fotos des AI-Bots konnten nicht hochgeladen werden",
+        "deletePhotosFailed": "Fotos des AI-Bots konnten nicht gelöscht werden"
+      }
+    },
+    "auth": {
+      "debug": {
+        "sendPushTokenFailed": "Push-Token konnte nicht gesendet werden"
+      }
+    },
+    "chat": {
+      "snackbar": {
+        "sendFailed": "Nachricht konnte nicht gesendet werden"
+      }
+    },
+    "imageGeneration": {
+      "errors": {
+        "generic": "Etwas ist schiefgelaufen. Bitte versuche es später erneut.",
+        "noImageSelected": "Kein Bild ausgewählt."
+      }
+    },
+    "profile": {
+      "updated": "Profil aktualisiert",
+      "followUpdateFailed": "Abonnement konnte nicht aktualisiert werden",
+      "userBlocked": "Benutzer wurde blockiert",
+      "reportSent": "Meldung gesendet",
+      "deleteAccountRequestSent": "Löschanfrage für das Konto wurde gesendet"
     }
   }
 }

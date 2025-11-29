@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { getTokenBalance, subtractTokens } from '../../helpers/tokenStorage';
 import { SnackbarType } from '../../types/ui';
@@ -73,6 +74,8 @@ export function useChatMessageLimit(
   chatId: string,
   partialConfig?: Partial<ChatMessageLimitConfig>,
 ) {
+  const { t } = useTranslation();
+
   const config = useMemo<ChatMessageLimitConfig>(
     () => ({ ...DEFAULT_CONFIG, ...partialConfig }),
     [partialConfig],
@@ -112,13 +115,16 @@ export function useChatMessageLimit(
         setState(latest);
         return latest;
       } catch (error) {
-        console.warn('Failed to sync chat limit state', error);
+        console.warn(
+          t('components.aibot.chatLimit.debug.syncStateFailed'),
+          error,
+        );
         const fallback = await resetChatLimitState(storageKey, config);
         setState(fallback);
         return fallback;
       }
     },
-    [config, storageKey],
+    [config, storageKey, t],
   );
 
   useEffect(() => {
@@ -144,11 +150,14 @@ export function useChatMessageLimit(
       setTokenBalance(balance);
       return balance;
     } catch (error) {
-      console.warn('Failed to load token balance', error);
+      console.warn(
+        t('components.aibot.chatLimit.debug.loadTokenBalanceFailed'),
+        error,
+      );
       setTokenBalance(null);
       return null;
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     void refreshTokenBalance();
@@ -239,12 +248,22 @@ export function useChatMessageLimit(
       await syncState({ remaining: config.messageLimit, cooldownUntil: null });
       return { ok: true, balance: updatedBalance };
     } catch (error) {
-      console.warn('Failed to unlock chat limit', error);
+      console.warn(
+        t('components.aibot.chatLimit.debug.unlockFailed'),
+        error,
+      );
       return { ok: false, reason: 'error', balance: tokenBalance };
     } finally {
       setIsUnlocking(false);
     }
-  }, [config.messageLimit, config.tokenCost, refreshTokenBalance, syncState, tokenBalance]);
+  }, [
+    config.messageLimit,
+    config.tokenCost,
+    refreshTokenBalance,
+    syncState,
+    tokenBalance,
+    t,
+  ]);
 
   const resetLimits = useCallback(async () => {
     await syncState({ remaining: config.messageLimit, cooldownUntil: null });
@@ -288,6 +307,7 @@ export function useChatMessageLimitController<TPayload = unknown>({
   showSnackbar,
   config,
 }: UseChatMessageLimitControllerParams<TPayload>) {
+  const { t } = useTranslation();
   const limit = useChatMessageLimit(chatId, config);
 
   const countdownText = useMemo(() => {
@@ -298,18 +318,27 @@ export function useChatMessageLimitController<TPayload = unknown>({
   const handleUnlock = useCallback(async () => {
     const result = await limit.unlockWithTokens();
     if (result.ok) {
-      showSnackbar('Лимит сообщений сброшен.', 'success');
+      showSnackbar(
+        t('components.aibot.chatLimit.snackbar.resetSuccess'),
+        'success',
+      );
       return result;
     }
 
     if (result.reason === 'insufficient_tokens') {
-      showSnackbar('Недостаточно токенов для разблокировки.', 'warning');
+      showSnackbar(
+        t('components.aibot.chatLimit.snackbar.insufficientTokens'),
+        'warning',
+      );
       return result;
     }
 
-    showSnackbar('Не удалось разблокировать чат. Попробуйте позже.', 'error');
+    showSnackbar(
+      t('components.aibot.chatLimit.snackbar.unlockError'),
+      'error',
+    );
     return result;
-  }, [limit, showSnackbar]);
+  }, [limit, showSnackbar, t]);
 
   const handleSubmit = useCallback<SubmitHandler<TPayload>>(
     async (payload) => {
@@ -317,12 +346,18 @@ export function useChatMessageLimitController<TPayload = unknown>({
         const check = await limit.ensureCanSend();
         if (!check.ok) {
           if (check.reason === 'cooldown' && check.cooldownMsRemaining > 0) {
+            const durationText = formatDuration(check.cooldownMsRemaining);
             showSnackbar(
-              `Лимит сообщений исчерпан. Подождите ${formatDuration(check.cooldownMsRemaining)} или используйте токены.`,
+              t('components.aibot.chatLimit.snackbar.cooldownWithTokens', {
+                duration: durationText,
+              }),
               'warning',
             );
           } else {
-            showSnackbar('Лимит сообщений исчерпан. Подождите окончания таймера.', 'warning');
+            showSnackbar(
+              t('components.aibot.chatLimit.snackbar.cooldownNoTokens'),
+              'warning',
+            );
           }
 
           return false;
@@ -336,7 +371,7 @@ export function useChatMessageLimitController<TPayload = unknown>({
 
       return sent;
     },
-    [isEditingMessage, limit, onSubmit, showSnackbar],
+    [isEditingMessage, limit, onSubmit, showSnackbar, t],
   );
 
   return {

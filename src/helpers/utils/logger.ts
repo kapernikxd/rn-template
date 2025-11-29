@@ -22,6 +22,6 @@ export async function logToServer(
       console.warn('❌ logToServer failed:', await res.text());
     }
   } catch (err) {
-    console.warn('❌ Ошибка при отправке лога:', err);
+    console.warn('❌ Error sending log:', err);
   }
 }

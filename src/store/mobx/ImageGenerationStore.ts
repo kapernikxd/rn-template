@@ -1,5 +1,6 @@
 import { isAxiosError } from "axios";
 import type { Asset } from "react-native-image-picker";
+import i18n from "i18next"; // ⬅️ добавили
 
 import imageGenerationService from "../../services/imageGeneration/ImageGenerationService";
 import type {
@@ -101,12 +102,14 @@ export class ImageGenerationStore {
       return error.message;
     }
 
-    return "Произошла ошибка. Попробуйте позже.";
+    // ⬇️ было: "Произошла ошибка. Попробуйте позже."
+    return i18n.t("stores.imageGeneration.errors.generic");
   }
 
   async submitEditRequest(payload: EditImageRequestPayload): Promise<boolean> {
     if (!this.selectedImages.length) {
-      this.submitError = "Не выбрано изображение";
+      // ⬇️ было: "Не выбрано изображение"
+      this.submitError = i18n.t("stores.imageGeneration.errors.noImageSelected");
       this.notify();
       return false;
     }
@@ -205,7 +208,7 @@ export class ImageGenerationStore {
     try {
       await this.fetchRequests();
     } catch (error) {
-      // Ошибка уже обработана в fetchRequests
+      // Error already handled in fetchRequests
     }
     await this.refreshPendingRequests();
   }

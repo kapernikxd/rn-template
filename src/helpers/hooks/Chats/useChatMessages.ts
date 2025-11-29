@@ -3,6 +3,7 @@ import { AppState, FlatList } from 'react-native';
 import { useFocusEffect, useRoute, type RouteProp } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import * as Clipboard from 'expo-clipboard';
+import { useTranslation } from 'react-i18next';
 
 import { useRootStore } from '../../../store/StoreProvider';
 import { generateMessagesWithDates } from '../../../helpers/utils/date';
@@ -45,6 +46,7 @@ export function useChatMessages() {
   const chatId = route.params.chatId;
 
   const { chatStore, authStore, uiStore, onlineStore } = useRootStore();
+  const { t } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -79,7 +81,8 @@ export function useChatMessages() {
   const users = chatStore?.selectedChat?.users?.filter(u => u?._id !== myId) ?? [];
   const lastReadMessageIdOpponent = chatStore?.lastReadedMessage?.lastReadedMessageId || null;
 
-  const chatTitle = getUserFullName(user!) ?? 'Private Chat';
+  const chatTitle =
+    getUserFullName(user!) ?? t('components.chat.messages.title.privateChat');
   const chatImg = getUserAvatar(user!);
   const isGroupChat = chatStore.isGroupChat;
 
@@ -204,11 +207,14 @@ export function useChatMessages() {
         try {
           flatListRef.current.scrollToIndex({ index, animated: true, viewPosition: 0.5 });
         } catch (e) {
-          console.warn('Failed to scroll to pinned message', e);
+          console.warn(
+            t('components.chat.messages.debug.scrollToPinnedFailed'),
+            e,
+          );
         }
       }
     },
-    [groupedMessages]
+    [groupedMessages, t]
   );
 
   const handleUnpinMessage = useCallback(
@@ -233,7 +239,10 @@ export function useChatMessages() {
     reportSelected: () => {
       if (!selectedMessage) return;
       chatStore.reportMessage(selectedMessage._id);
-      uiStore.showSnackbar('Жалоба отправлена', 'success');
+      uiStore.showSnackbar(
+        t('components.chat.messages.snackbar.reportSent'),
+        'success',
+      );
       setSelectedMessage(null);
       toggleMode();
     },
@@ -241,10 +250,19 @@ export function useChatMessages() {
       if (!selectedMessage) return;
       try {
         await chatStore.deleteMessage(selectedMessage._id);
-        uiStore.showSnackbar('Сообщение удалено', 'success');
+        uiStore.showSnackbar(
+          t('components.chat.messages.snackbar.messageDeleted'),
+          'success',
+        );
       } catch (error) {
-        console.error('Failed to delete message', error);
-        uiStore.showSnackbar('Не удалось удалить сообщение', 'error');
+        console.error(
+          t('components.chat.messages.debug.deleteMessageFailed'),
+          error,
+        );
+        uiStore.showSnackbar(
+          t('components.chat.messages.snackbar.deleteMessageFailed'),
+          'error',
+        );
       } finally {
         setSelectedMessage(null);
         setEditMode(false);
@@ -254,7 +272,10 @@ export function useChatMessages() {
       if (!selectedMessage?.content) return;
       await Clipboard.setStringAsync(selectedMessage.content);
       setSelectedMessage(null);
-      uiStore.showSnackbar('Скопировано', 'success');
+      uiStore.showSnackbar(
+        t('components.chat.messages.snackbar.copied'),
+        'success',
+      );
       toggleMode();
     },
     togglePinSelected: () => {
@@ -283,10 +304,19 @@ export function useChatMessages() {
       try {
         await chatStore.clearChatHistory(chatId);
         setSkip(0);
-        uiStore.showSnackbar('История чата очищена', 'success');
+        uiStore.showSnackbar(
+          t('components.chat.messages.snackbar.historyCleared'),
+          'success',
+        );
       } catch (error) {
-        console.error('Failed to clear chat history', error);
-        uiStore.showSnackbar('Не удалось очистить историю чата', 'error');
+        console.error(
+          t('components.chat.messages.debug.clearHistoryFailed'),
+          error,
+        );
+        uiStore.showSnackbar(
+          t('components.chat.messages.snackbar.clearHistoryFailed'),
+          'error',
+        );
       }
     },
   };

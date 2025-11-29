@@ -3,12 +3,12 @@ import { useForm } from 'react-hook-form';
 import { Directory, File, Paths } from 'expo-file-system';
 import uuid from 'react-native-uuid';
 import { launchImageLibrary } from 'react-native-image-picker';
+import { useTranslation } from 'react-i18next';
 
 import { useRootStore } from '../../../store/StoreProvider';
 import { useImageCompressor, usePortalNavigation } from '../../../helpers/hooks';
 import { UpdateProfileProps } from '../../../types/profile';
 import { getUserAvatar } from '../../../helpers/utils/user';
-import { LARGE_FILE_ERROR } from '../../../constants';
 
 type EditProfileFormValues = Pick<
   UpdateProfileProps,
@@ -30,6 +30,7 @@ export const useEditProfile = () => {
   const { profileStore, uiStore } = useRootStore();
   const { compressImage } = useImageCompressor();
   const { goBack } = usePortalNavigation();
+  const { t } = useTranslation();
 
   const [refreshing, setRefreshing] = useState(false);
   const [previewVisible, setPreviewVisible] = useState(false);
@@ -45,7 +46,14 @@ export const useEditProfile = () => {
       userBio: profileStore.myProfile?.userBio,
       gender: profileStore.myProfile?.gender,
     }),
-    [profileStore.myProfile?.name, profileStore.myProfile?.lastname, profileStore.myProfile?.profession, profileStore.myProfile?.phone, profileStore.myProfile?.userBio, profileStore.myProfile?.gender],
+    [
+      profileStore.myProfile?.name,
+      profileStore.myProfile?.lastname,
+      profileStore.myProfile?.profession,
+      profileStore.myProfile?.phone,
+      profileStore.myProfile?.userBio,
+      profileStore.myProfile?.gender,
+    ],
   );
 
   const methods = useForm<EditProfileFormValues>({ defaultValues: initialValues });
@@ -67,19 +75,28 @@ export const useEditProfile = () => {
         ) as Partial<EditProfileFormValues>;
 
         if (Object.keys(changedFields).length === 0) {
-          uiStore.showSnackbar('Ничего не изменилось', 'info');
+          uiStore.showSnackbar(
+            t('components.profile.edit.snackbar.noChanges'),
+            'info',
+          );
           return;
         }
 
         await profileStore.updateProfile(changedFields as UpdateProfileProps);
-        uiStore.showSnackbar('Обновлено', 'success');
+        uiStore.showSnackbar(
+          t('components.profile.edit.snackbar.updated'),
+          'success',
+        );
       } catch (e) {
-        uiStore.showSnackbar('Произошла ошибка', 'error');
+        uiStore.showSnackbar(
+          t('components.profile.edit.snackbar.error'),
+          'error',
+        );
       } finally {
         setIsSubmitting(false);
       }
     }),
-    [methods, initialValues, profileStore, uiStore],
+    [methods, initialValues, profileStore, uiStore, t],
   );
 
   const reset = useCallback(() => {
@@ -91,10 +108,20 @@ export const useEditProfile = () => {
       userBio: profileStore.myProfile?.userBio,
       gender: profileStore.myProfile?.gender,
     });
-  }, [methods, profileStore.myProfile?.name, profileStore.myProfile?.lastname, profileStore.myProfile?.profession, profileStore.myProfile?.phone, profileStore.myProfile?.userBio]);
+  }, [
+    methods,
+    profileStore.myProfile?.name,
+    profileStore.myProfile?.lastname,
+    profileStore.myProfile?.profession,
+    profileStore.myProfile?.phone,
+    profileStore.myProfile?.userBio,
+  ]);
 
   const imageUriFromStore = useMemo(
-    () => (profileStore.myProfile?.avatarFile ? getUserAvatar(profileStore.myProfile) : null),
+    () =>
+      profileStore.myProfile?.avatarFile
+        ? getUserAvatar(profileStore.myProfile)
+        : null,
     [profileStore.myProfile],
   );
 
@@ -124,7 +151,7 @@ export const useEditProfile = () => {
 
       const MAX = 40 * 1024 * 1024;
       if (asset.fileSize && asset.fileSize > MAX) {
-        uiStore.showSnackbar(LARGE_FILE_ERROR, 'warning');
+        uiStore.showSnackbar(t('components.form.imageUploader.errors.largeFile'), 'warning');
         return;
       }
 
@@ -143,9 +170,16 @@ export const useEditProfile = () => {
       if (asset.width && asset.height) {
         try {
           const compressedUri = await compressImage(asset.uri, asset.width, asset.height);
-          src = new File({ uri: compressedUri, name: fileName, type: asset.type || 'image/jpeg' } as any);
+          src = new File({
+            uri: compressedUri,
+            name: fileName,
+            type: asset.type || 'image/jpeg',
+          } as any);
         } catch (error) {
-          console.warn('compressImage failed, fallback to original', error);
+          console.warn(
+            t('components.profile.edit.debug.compressImageFailed'),
+            error,
+          );
         }
       }
 
@@ -163,23 +197,38 @@ export const useEditProfile = () => {
 
       await profileStore.uploadProfilePhoto(formData);
       await profileStore.fetchMyProfile();
-      uiStore.showSnackbar('Фото успешно загружено', 'success');
+      uiStore.showSnackbar(
+        t('components.profile.edit.snackbar.photoUploadSuccess'),
+        'success',
+      );
     } catch (error) {
-      console.error('onPressSelect error:', error);
-      uiStore.showSnackbar('Не удалось загрузить фото', 'error');
+      console.error(
+        t('components.profile.edit.debug.onPressSelectError'),
+        error,
+      );
+      uiStore.showSnackbar(
+        t('components.profile.edit.snackbar.photoUploadError'),
+        'error',
+      );
     }
-  }, [compressImage, profileStore, uiStore]);
+  }, [compressImage, profileStore, uiStore, t]);
 
   const onPressRemove = useCallback(async () => {
     try {
       const fullPath = profileStore?.myProfile?.avatarFile;
       if (!fullPath) {
-        uiStore.showSnackbar('Нет фото для удаления', 'warning');
+        uiStore.showSnackbar(
+          t('components.profile.edit.snackbar.noPhotoToRemove'),
+          'warning',
+        );
         return;
       }
       const fileName = fullPath.split('/').pop();
       if (!fileName) {
-        uiStore.showSnackbar('Неверный путь к файлу', 'error');
+        uiStore.showSnackbar(
+          t('components.profile.edit.snackbar.invalidFilePath'),
+          'error',
+        );
         return;
       }
 
@@ -189,12 +238,21 @@ export const useEditProfile = () => {
       await profileStore.deleteProfilePhoto(fileName);
       await profileStore.fetchMyProfile();
 
-      uiStore.showSnackbar('Фото успешно удалено', 'success');
+      uiStore.showSnackbar(
+        t('components.profile.edit.snackbar.photoRemoveSuccess'),
+        'success',
+      );
     } catch (error) {
-      console.error('onPressRemove error:', error);
-      uiStore.showSnackbar('Не удалось удалить фото', 'error');
+      console.error(
+        t('components.profile.edit.debug.onPressRemoveError'),
+        error,
+      );
+      uiStore.showSnackbar(
+        t('components.profile.edit.snackbar.photoRemoveError'),
+        'error',
+      );
     }
-  }, [profileStore, uiStore]);
+  }, [profileStore, uiStore, t]);
 
   useEffect(() => {
     onRefresh();
@@ -217,4 +275,3 @@ export const useEditProfile = () => {
     isSubmitting,
   };
 };
-

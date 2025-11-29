@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useRootStore, useStoreData } from "../../../store/StoreProvider";
 import { getUserFullName } from "../../utils/user";
 import { Highlight } from "../../../types/aiBot";
 import { usePortalNavigation } from "../useNavigation";
-
 
 export type ActiveTab = "info" | "gallery";
 
 export function useAiAgentProfile(aiBotId?: string) {
   const { goBack, goToChatMessages } = usePortalNavigation();
   const { aiBotStore, authStore, chatStore } = useRootStore();
+  const { t } = useTranslation();
   const isMdUp = true;
 
   // Stores
@@ -53,20 +54,20 @@ export function useAiAgentProfile(aiBotId?: string) {
     const creatorName = creator ? getUserFullName(creator) : "";
     return [
       {
-        title: "Creator Info",
+        title: t("components.aibot.profile.highlights.creatorInfoTitle"),
         lines: [
           {
-            label: "Creator",
+            label: t("components.aibot.profile.highlights.creatorLabel"),
             value: creatorName,
           },
           {
-            label: "Created",
+            label: t("components.aibot.profile.highlights.createdLabel"),
             value: `${aiBot.createdAt}`,
           },
         ],
       },
     ];
-  }, [aiBot]);
+  }, [aiBot, t]);
 
   const aiBotProfileId = aiBot?._id;
   const isFollowing = botDetails?.isFollowing ?? aiBot?.isFollowing ?? false;
@@ -81,7 +82,6 @@ export function useAiAgentProfile(aiBotId?: string) {
   useEffect(() => {
     if (!isCreator) setIsEditOpen(false);
   }, [isCreator]);
-
 
   const handleToggleFollow = useCallback(async () => {
     if (!aiBotProfileId || disableFollowAction) return;
@@ -111,34 +111,52 @@ export function useAiAgentProfile(aiBotId?: string) {
         goToChatMessages({ chatId });
       }
     } catch (e) {
-      console.error("Failed to start chat with AI agent:", e);
+      console.error(
+        t("components.aibot.profile.debug.startChatFailed"),
+        e,
+      );
     } finally {
       setIsChatLoading(false);
     }
-  }, [aiBotProfileId, chatStore, goToChatMessages, isAuthenticated, isChatLoading]);
+  }, [aiBotProfileId, chatStore, goToChatMessages, isAuthenticated, isChatLoading, t]);
 
   const handleAiAgentDeleted = useCallback(() => {
-    goBack()
-  }, []);
+    goBack();
+  }, [goBack]);
 
   const closeEditDialog = useCallback(() => setIsEditOpen(false), []);
 
   return {
     // stores + data
-    aiBot, isLoading, botDetails, botPhotos, botDetailsLoading,
+    aiBot,
+    isLoading,
+    botDetails,
+    botPhotos,
+    botDetailsLoading,
     // ui state
-    activeTab, setActiveTab,
-    isEditOpen, setIsEditOpen, closeEditDialog,
-    isFollowUpdating, isChatLoading,
+    activeTab,
+    setActiveTab,
+    isEditOpen,
+    setIsEditOpen,
+    closeEditDialog,
+    isFollowUpdating,
+    isChatLoading,
     // perms/flags
-    canEdit, isCreator, isFollowing, disableFollowAction,
+    canEdit,
+    isCreator,
+    isFollowing,
+    disableFollowAction,
     // computed
-    highlights, aiBotProfileId,
+    highlights,
+    aiBotProfileId,
     // env
     isMdUp,
     // auth
     isAuthenticated,
     // handlers
-    onBack: goBack, handleToggleFollow, handleStartChat, handleAiAgentDeleted,
+    onBack: goBack,
+    handleToggleFollow,
+    handleStartChat,
+    handleAiAgentDeleted,
   } as const;
 }

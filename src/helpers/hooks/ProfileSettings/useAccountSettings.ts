@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 import { useRootStore } from '../../../store/StoreProvider';
 import { usePortalNavigation } from '../../../helpers/hooks';
@@ -12,6 +13,8 @@ type AccountSettingsFormValues = {
 export const useAccountSettings = () => {
   const { profileStore, authStore, uiStore } = useRootStore();
   const { goBack } = usePortalNavigation();
+  const { t } = useTranslation();
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const methods = useForm<AccountSettingsFormValues>({
@@ -26,14 +29,20 @@ export const useAccountSettings = () => {
       setIsSubmitting(true);
       try {
         await profileStore.updateProfile({ username: data.username });
-        uiStore.showSnackbar('Обновлено', 'success');
+        uiStore.showSnackbar(
+          t('components.account.settings.snackbar.updated'),
+          'success'
+        );
       } catch {
-        uiStore.showSnackbar('Произошла ошибка', 'error');
+        uiStore.showSnackbar(
+          t('components.account.settings.snackbar.error'),
+          'error'
+        );
       } finally {
         setIsSubmitting(false);
       }
     }),
-    [methods, profileStore, uiStore],
+    [methods, profileStore, uiStore, t],
   );
 
   const reset = useCallback(() => {
@@ -59,4 +68,3 @@ export const useAccountSettings = () => {
     isSubmitting,
   };
 };
-

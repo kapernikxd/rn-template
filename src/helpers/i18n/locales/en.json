@@ -463,6 +463,33 @@
       }
     },
     "aibot": {
+      "profile": {
+        "highlights": {
+          "creatorInfoTitle": "Creator info",
+          "creatorLabel": "Creator",
+          "createdLabel": "Created"
+        },
+        "debug": {
+          "startChatFailed": "Failed to start chat with AI agent"
+        }
+      },
+      "createPage": {
+        "debug": {
+          "selectedFileNotImage": "Selected file is not a supported image format.",
+          "processAvatarFailed": "Failed to process avatar image",
+          "skippedNonImageFile": "Skipped non-image file in gallery upload: {{fileName}}",
+          "processGalleryImageFailed": "Failed to process gallery image"
+        }
+      },
+      "editDialog": {
+        "debug": {
+          "objectUrlNotSupported": "Object URLs are not supported in this environment.",
+          "updateFailed": "Failed to update AI agent"
+        },
+        "snackbar": {
+          "fillProfessionAndGender": "Please fill in the profession and gender."
+        }
+      },
       "card": {
         "defaultName": "AI agent"
       },
@@ -473,6 +500,20 @@
         "empty": "Nothing here yet. Check back later!",
         "noDescription": "No description available"
       },
+      "chatLimit": {
+        "debug": {
+          "syncStateFailed": "Failed to sync chat limit state",
+          "loadTokenBalanceFailed": "Failed to load token balance",
+          "unlockFailed": "Failed to unlock chat limit"
+        },
+        "snackbar": {
+          "resetSuccess": "Message limit has been reset.",
+          "insufficientTokens": "Not enough tokens to unlock.",
+          "unlockError": "Failed to unlock the chat. Please try again later.",
+          "cooldownWithTokens": "Message limit reached. Wait {{duration}} or use tokens to continue.",
+          "cooldownNoTokens": "Message limit reached. Please wait for the timer to finish."
+        }
+      },
       "guestChat": {
         "defaultBotName": "AI bot",
         "inputPlaceholder": "Ask something...",
@@ -480,10 +521,35 @@
         "errors": {
           "limitReached": "You have reached the daily limit. Please try again later.",
           "sendFailed": "Couldn't send the message. Please try again."
+        },
+        "debug": {
+          "persistHistoryFailed": "Failed to persist guest chat history",
+          "persistSessionFailed": "Failed to persist guest chat session",
+          "sendFailedLog": "Failed to send guest AI message",
+          "parseHistoryFailed": "Failed to parse stored guest chat history",
+          "loadDataFailed": "Failed to load guest chat data"
         }
       }
     },
     "chat": {
+      "messages": {
+        "title": {
+          "privateChat": "Private chat"
+        },
+        "debug": {
+          "scrollToPinnedFailed": "Failed to scroll to pinned message",
+          "deleteMessageFailed": "Failed to delete message",
+          "clearHistoryFailed": "Failed to clear chat history"
+        },
+        "snackbar": {
+          "reportSent": "Report sent.",
+          "messageDeleted": "Message deleted.",
+          "deleteMessageFailed": "Failed to delete the message.",
+          "copied": "Copied.",
+          "historyCleared": "Chat history cleared.",
+          "clearHistoryFailed": "Failed to clear chat history."
+        }
+      },
       "limitNotice": {
         "message": "Message limit reached",
         "adReady": "Ad ready to play",
@@ -523,12 +589,73 @@
       },
       "messageItem": {
         "deleted": "Message deleted"
+      },
+      "list": {
+        "debug": {
+          "deleteChatFailed": "Failed to delete chat"
+        },
+        "snackbar": {
+          "chatDeleted": "Chat deleted.",
+          "deleteChatFailed": "Failed to delete chat."
+        }
       }
     },
     "forceUpdate": {
       "title": "Update required",
       "description": "A new version of the app is available. Please update to continue.",
       "button": "Update"
+    },
+    "account": {
+      "changePassword": {
+        "snackbar": {
+          "updated": "Password updated.",
+          "error": "An error occurred while changing the password."
+        }
+      },
+      "settings": {
+        "snackbar": {
+          "updated": "Updated successfully.",
+          "error": "An error occurred."
+        }
+      }
+    },
+    "profile": {
+      "edit": {
+        "snackbar": {
+          "noChanges": "Nothing has changed.",
+          "updated": "Profile updated.",
+          "error": "An error occurred while updating the profile.",
+          "photoUploadSuccess": "Photo uploaded successfully.",
+          "photoUploadError": "Failed to upload the photo.",
+          "noPhotoToRemove": "There is no photo to remove.",
+          "invalidFilePath": "Invalid file path.",
+          "photoRemoveSuccess": "Photo removed successfully.",
+          "photoRemoveError": "Failed to remove the photo."
+        },
+        "debug": {
+          "compressImageFailed": "compressImage failed, falling back to original image",
+          "onPressSelectError": "onPressSelect error:",
+          "onPressRemoveError": "onPressRemove error:"
+        }
+      },
+      "socialProfiles": {
+        "snackbar": {
+          "updated": "Social profiles updated.",
+          "error": "An error occurred while updating social profiles."
+        }
+      }
+    },
+    "ads": {
+      "rewardedTokens": {
+        "snackbar": {
+          "balanceLoadError": "Failed to load token balance.",
+          "rewardEarned": "Reward received! +{{amount}} tokens.",
+          "balanceUpdateError": "Failed to update token balance.",
+          "adLoading": "Ad is loading, please try again shortly.",
+          "loadFailed": "Failed to load the ad. Please try again later.",
+          "showFailed": "Failed to show the ad. Please try again later."
+        }
+      }
     }
   },
   "screens": {
@@ -902,6 +1029,69 @@
           }
         }
       }
+    }
+  },
+  "stores": {
+    "aiBot": {
+      "snackbar": {
+        "mainPageBotsError": "Failed to load the list of bots. Please try refreshing the page later.",
+        "fetchAiBotError": "Failed to load AI bot.",
+        "fetchMyAiBotsError": "Failed to load your AI bots.",
+        "fetchSubscriptionsError": "Failed to load AI bot subscriptions.",
+        "updateSubscriptionError": "Failed to update subscription status.",
+        "createSuccess": "AI bot created.",
+        "createFailed": "Failed to create AI bot.",
+        "updateSuccess": "The AI bot has been updated.",
+        "updateFailed": "Failed to update AI bot.",
+        "deleteSuccess": "The AI bot has been removed.",
+        "renewSubscriptionFailed": "Failed to renew your subscription.",
+        "photosSaved": "Photos saved.",
+        "photosSaveFailed": "Failed to upload photos.",
+        "photosDeleted": "Photos deleted.",
+        "photosDeleteFailed": "Failed to delete photos."
+      },
+      "creationError": {
+        "loginRequired": "Please log in!"
+      },
+      "errors": {
+        "createAiAgent": "Failed to create AI agent"
+      },
+      "debug": {
+        "fetchAiProfilesFailed": "Error fetching AI profiles",
+        "fetchMainPageBotsFailed": "Failed to load AI bots for admin main page",
+        "fetchAiBotFailed": "Failed to load AI bot",
+        "fetchUserAiBotsFailed": "Failed to load user AI bots",
+        "fetchMyAiBotsFailed": "Failed to load my AI bots",
+        "fetchSubscribedAiBotsFailed": "Failed to load subscribed AI bots",
+        "updateFollowFailed": "Failed to update follow status",
+        "updateAiBotFailed": "Failed to update AI agent",
+        "fetchBotDetailsFailed": "Failed to fetch AI bot details",
+        "uploadPhotosFailed": "Failed to upload AI bot photos",
+        "deletePhotosFailed": "Failed to delete AI bot photos"
+      }
+    },
+    "auth": {
+      "debug": {
+        "sendPushTokenFailed": "Failed to send push token"
+      }
+    },
+    "chat": {
+      "snackbar": {
+        "sendFailed": "Failed to send message"
+      }
+    },
+    "imageGeneration": {
+      "errors": {
+        "generic": "Something went wrong. Please try again later.",
+        "noImageSelected": "No image selected."
+      }
+    },
+    "profile": {
+      "updated": "Profile updated",
+      "followUpdateFailed": "Failed to update subscription",
+      "userBlocked": "User has been blocked",
+      "reportSent": "Report submitted",
+      "deleteAccountRequestSent": "Deletion request sent"
     }
   }
 }

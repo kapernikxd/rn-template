@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 import { useRootStore } from '../../../store/StoreProvider';
 import { usePortalNavigation } from '../../../helpers/hooks';
@@ -13,6 +14,7 @@ type ChangePasswordForm = {
 export const useChangePassword = () => {
   const { profileStore, uiStore } = useRootStore();
   const { goBack } = usePortalNavigation();
+  const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const methods = useForm<ChangePasswordForm>();
@@ -21,8 +23,16 @@ export const useChangePassword = () => {
     methods.handleSubmit(async data => {
       setIsSubmitting(true);
       try {
-        await profileStore.changePassword({ oldPassword: data.oldPassword, password: data.password });
-        uiStore.showSnackbar('Обновлено', 'success');
+        await profileStore.changePassword({
+          oldPassword: data.oldPassword,
+          password: data.password,
+        });
+
+        uiStore.showSnackbar(
+          t('components.account.changePassword.snackbar.updated'),
+          'success'
+        );
+
       } catch (errors: any) {
         if (errors && typeof errors === 'object') {
           Object.entries(errors).forEach(([field, message]) => {
@@ -32,12 +42,17 @@ export const useChangePassword = () => {
             });
           });
         }
-        uiStore.showSnackbar('Произошла ошибка', 'error');
+
+        uiStore.showSnackbar(
+          t('components.account.changePassword.snackbar.error'),
+          'error'
+        );
+
       } finally {
         setIsSubmitting(false);
       }
     }),
-    [methods, profileStore, uiStore],
+    [methods, profileStore, uiStore, t],
   );
 
   const reset = useCallback(() => {
@@ -52,4 +67,3 @@ export const useChangePassword = () => {
     isSubmitting,
   };
 };
-

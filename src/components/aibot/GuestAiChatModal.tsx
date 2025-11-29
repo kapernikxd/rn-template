@@ -66,10 +66,13 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
       try {
         await AsyncStorage.setItem(historyStorageKey, JSON.stringify(history));
       } catch (storageError) {
-        console.warn('Failed to persist guest chat history', storageError);
+        console.warn(
+          t('components.aibot.guestChat.debug.persistHistoryFailed'),
+          storageError,
+        );
       }
     },
-    [historyStorageKey]
+    [historyStorageKey, t],
   );
 
   const persistSession = useCallback(
@@ -81,10 +84,13 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
           await AsyncStorage.removeItem(sessionStorageKey);
         }
       } catch (storageError) {
-        console.warn('Failed to persist guest chat session', storageError);
+        console.warn(
+          t('components.aibot.guestChat.debug.persistSessionFailed'),
+          storageError,
+        );
       }
     },
-    [sessionStorageKey]
+    [sessionStorageKey, t],
   );
 
   const handleResponse = useCallback(
@@ -110,7 +116,7 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
       if (data.limit !== undefined) setLimit(data.limit);
       if (data.remainingRequests !== undefined) setRemaining(data.remainingRequests);
     },
-    [persistHistory, persistSession, scrollToEnd, sessionId]
+    [persistHistory, persistSession, scrollToEnd, sessionId],
   );
 
   const handleSend = useCallback(async () => {
@@ -141,7 +147,10 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
       const { data } = await AiBotService.sendGuestMessage(botId, payload);
       await handleResponse(data, nextHistory);
     } catch (sendError) {
-      console.error('Failed to send guest AI message', sendError);
+      console.error(
+        t('components.aibot.guestChat.debug.sendFailedLog'),
+        sendError,
+      );
       setError(t('components.aibot.guestChat.errors.sendFailed'));
       const revertedHistory = messages;
       setMessages(revertedHistory);
@@ -187,7 +196,10 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
             const parsed: ChatMessage[] = JSON.parse(storedHistory);
             setMessages(parsed);
           } catch (parseError) {
-            console.warn('Failed to parse stored guest chat history', parseError);
+            console.warn(
+              t('components.aibot.guestChat.debug.parseHistoryFailed'),
+              parseError,
+            );
             setMessages([]);
           }
         } else {
@@ -197,7 +209,10 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
         if (storedSession) setSessionId(storedSession);
         else setSessionId(undefined);
       } catch (errorLoading) {
-        console.warn('Failed to load guest chat data', errorLoading);
+        console.warn(
+          t('components.aibot.guestChat.debug.loadDataFailed'),
+          errorLoading,
+        );
         setMessages([]);
         setSessionId(undefined);
       } finally {
@@ -212,7 +227,7 @@ export const GuestAiChatModal: FC<GuestAiChatModalProps> = ({
       setError(null);
       setInputValue('');
     };
-  }, [historyStorageKey, sessionStorageKey, scrollToEnd, visible]);
+  }, [historyStorageKey, sessionStorageKey, scrollToEnd, visible, t]);
 
   useEffect(() => {
     if (visible) scrollToEnd();

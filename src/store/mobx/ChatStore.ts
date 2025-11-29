@@ -1,4 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import i18n from "i18next";
 import ChatService from "../../services/chat/ChatService";
 import * as ImagePicker from 'expo-image-picker';
 import { RootStore } from "../rootStore";
@@ -233,7 +234,7 @@ export class ChatStore {
 
       return (response?.data?.chats ?? []).map((chat: ChatDTO) => chat._id);
     } catch (err) {
-      console.error("Ошибка при получении чатов:", err);
+      console.error("Error fetching chats:", err);
       return [];
     } finally {
       // снимаем флаг только если это актуальный запрос
@@ -282,7 +283,7 @@ export class ChatStore {
         }
       });
     } catch (err) {
-      console.error("Ошибка при получении чата:", err);
+      console.error("Error fetching chat:", err);
     }
   }
 
@@ -292,7 +293,7 @@ export class ChatStore {
       const { data } = await this.chatService.hasUnreadMessages();
       this.root.onlineStore.setUnreadStatus(data);
     } catch (err) {
-      console.error("Ошибка при получени непрочитанных:", err);
+      console.error("Error fetching unread status:", err);
     } finally {
       runInAction(() => {
         this.isApiCheckedNewMessages = true;
@@ -320,7 +321,7 @@ export class ChatStore {
         this.updatePinnedFromMessages();
       });
     } catch (err) {
-      console.error("Ошибка при получении сообщений:", err);
+      console.error("Error fetching messages:", err);
     }
   }
 
@@ -359,8 +360,11 @@ export class ChatStore {
         this.messages.push(messageData as any);
       });
     } catch (err) {
-      this.root.uiStore.showSnackbar('Не удалось отправить сообщение', 'error');
-      console.error("Ошибка при отправке сообщения:", err);
+      this.root.uiStore.showSnackbar(
+        i18n.t("stores.chat.snackbar.sendFailed"), // ⬅️ локализовано
+        "error"
+      );
+      console.error("Error sending message:", err); // ⬅️ было по-русски
     }
   }
 
@@ -377,7 +381,7 @@ export class ChatStore {
         }
       });
     } catch (err) {
-      console.error("Ошибка при редактировании сообщения:", err);
+      console.error("Error editing message:", err);
     }
   }
 
@@ -397,7 +401,7 @@ export class ChatStore {
         this.updatePinnedFromMessages();
       });
     } catch (err) {
-      console.error("Ошибка при удалении сообщения:", err);
+      console.error("Error deleting message:", err);
       throw err;
     }
   }
@@ -423,7 +427,7 @@ export class ChatStore {
         }
       });
     } catch (err) {
-      console.error("Ошибка при очистке истории чата:", err);
+      console.error("Error clearing chat history:", err);
       throw err;
     }
   }
@@ -433,7 +437,7 @@ export class ChatStore {
       await this.chatService.deleteChat(chatId);
       this.removeChat(chatId);
     } catch (err) {
-      console.error("Ошибка при удалении чата:", err);
+      console.error("Error deleting chat:", err);
       throw err;
     }
   }
@@ -496,11 +500,11 @@ export class ChatStore {
 
       const mergedChat = existingChat
         ? {
-            ...existingChat,
-            ...updatedChat,
-            latestMessage: updatedChat.latestMessage ?? existingChat.latestMessage,
-            unread,
-          }
+          ...existingChat,
+          ...updatedChat,
+          latestMessage: updatedChat.latestMessage ?? existingChat.latestMessage,
+          unread,
+        }
         : { ...updatedChat, unread };
 
       const remainingChats = this.chats.filter(chat => chat._id !== updatedChat._id);
@@ -578,7 +582,7 @@ export class ChatStore {
       });
 
     } catch (err) {
-      console.error("Ошибка при пометке сообщений как прочитанных:", err);
+      console.error("Error marking messages as read:", err);
     }
   }
 

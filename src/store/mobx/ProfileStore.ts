@@ -7,12 +7,13 @@ import { isAxiosError } from "axios";
 import { MyProfileDTO, ProfileDTO, UserDTO } from "../../types";
 import { ProfileFormErrorResponse, ProfilesFilterParams, UpdateProfileProps, UsersFilterParams } from "../../types/profile";
 import { ChangePasswordProps } from "../../types/auth";
-
+import i18n from "i18next"; // ⬅️ добавили
 
 export class ProfileStore {
   private readonly baseStore = new BaseStore();
   readonly subscribe: (listener: StoreListener) => () => void;
   private root: RootStore;
+
   /** Профиль текущего пользователя */
   myProfile: MyProfileDTO = {} as MyProfileDTO;
   /** Просматриваемый профиль (например, другого пользователя) */
@@ -152,7 +153,6 @@ export class ProfileStore {
           this.profiles = [...this.profiles, ...data.profiles];
         }
         this.hasMoreProfiles = data.hasMore; // Флаг, есть ли еще данные
-        // this.profiles = data;
       });
     } catch (error) {
       console.error("Error fetching profiles", error);
@@ -209,7 +209,10 @@ export class ProfileStore {
         Object.assign(this.myProfile, data.user);
       });
       this.notify();
-      this.root.uiStore.showSnackbar('Обновлено', 'success');
+      this.root.uiStore.showSnackbar(
+        i18n.t("stores.profile.updated"), // было 'Обновлено'
+        "success",
+      );
     } catch (error) {
       console.error("Error updating profile", error);
     }
@@ -252,7 +255,10 @@ export class ProfileStore {
       });
       this.notify();
     } catch (error) {
-      this.root.uiStore.showSnackbar('Не удалось обновить подписку', 'error');
+      this.root.uiStore.showSnackbar(
+        i18n.t("stores.profile.followUpdateFailed"), // было 'Не удалось обновить подписку'
+        "error",
+      );
     }
   }
 
@@ -368,7 +374,10 @@ export class ProfileStore {
   async blockUser(data: { reason?: string, details?: string, targetId: string }) {
     try {
       await this.profileService.blockUser(data);
-      this.root.uiStore.showSnackbar('Пользователь заблокирован', 'success');
+      this.root.uiStore.showSnackbar(
+        i18n.t("stores.profile.userBlocked"), // было 'Пользователь заблокирован'
+        "success",
+      );
     } catch (error) {
       console.error(error);
       throw error;
@@ -378,7 +387,10 @@ export class ProfileStore {
   async reportUser(data: { reason?: string; details?: string; targetId: string }) {
     try {
       await this.profileService.reportUser(data);
-      this.root.uiStore.showSnackbar('Жалоба отправлена', 'success');
+      this.root.uiStore.showSnackbar(
+        i18n.t("stores.profile.reportSent"), // было 'Жалоба отправлена'
+        "success",
+      );
       return true;
     } catch (error) {
       console.error("Failed to report user", error);
@@ -389,7 +401,10 @@ export class ProfileStore {
   async reportAiBot(data: { reason?: string; details?: string; targetId: string }) {
     try {
       await this.profileService.reportAiBot(data);
-      this.root.uiStore.showSnackbar('Жалоба отправлена', 'success');
+      this.root.uiStore.showSnackbar(
+        i18n.t("stores.profile.reportSent"), // было 'Жалоба отправлена'
+        "success",
+      );
       return true;
     } catch (error) {
       console.error("Failed to report AI agent", error);
@@ -400,7 +415,10 @@ export class ProfileStore {
   async deleteAccount() {
     try {
       await this.profileService.deleteAccount();
-      this.root.uiStore.showSnackbar('Запрос отправлен', 'success');
+      this.root.uiStore.showSnackbar(
+        i18n.t("stores.profile.deleteAccountRequestSent"), // было 'Запрос отправлен'
+        "success",
+      );
     } catch (error) {
       console.error(error);
     }
