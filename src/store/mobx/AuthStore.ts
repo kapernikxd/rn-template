@@ -246,6 +246,10 @@ export class AuthStore {
         }
     }
 
+    async loginWithClientId() {
+        return this.loginWithStoredUserId();
+    }
+
     async logout() {
         try {
             await AuthService.logout();
