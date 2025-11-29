@@ -7,6 +7,8 @@ export type AppVersionConfig = {
 
 export type AdsConfig = {
   ADS_ENABLED: boolean;
+  ADS_ENABLED_ANDROID?: boolean;
+  ADS_ENABLED_IOS?: boolean;
   ANDROID_AD_UNIT_ID_BANNER: string;
   ANDROID_AD_UNIT_ID_REWARD: string;
   IOS_AD_UNIT_ID_BANNER: string;
