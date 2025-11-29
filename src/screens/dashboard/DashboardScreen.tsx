@@ -35,30 +35,44 @@ export const DashboardScreen = () => {
     });
   }, [theme, setColors]);
 
+  const normalizeCategory = useCallback((category: string) => category.trim().toLowerCase().replace(/\s+/g, '-'), []);
+
+  const getCategoryLabel = useCallback(
+    (categoryKey: string, fallback: string) => {
+      const key = `screens.aibot.common.categories.${categoryKey}`;
+      const translated = t(key);
+      return translated === key ? capitalizeFirstLetter(fallback) : translated;
+    },
+    [t],
+  );
+
   const categories = useMemo(() => {
-    const uniqueCategories = new Set<string>();
+    const uniqueCategories = new Map<string, string>();
 
     bots.forEach((bot) => {
       bot.details?.categories?.forEach((category) => {
-        const normalizedCategory = category?.trim();
-        if (normalizedCategory) {
-          uniqueCategories.add(normalizedCategory);
+        const trimmedCategory = category?.trim();
+        if (trimmedCategory) {
+          const normalizedCategory = normalizeCategory(trimmedCategory);
+          if (!uniqueCategories.has(normalizedCategory)) {
+            uniqueCategories.set(normalizedCategory, trimmedCategory);
+          }
         }
       });
     });
 
-    return Array.from(uniqueCategories);
-  }, [bots]);
+    return Array.from(uniqueCategories.entries()).map(([key, original]) => ({ key, original }));
+  }, [bots, normalizeCategory]);
 
   const tabs = useMemo(
     () => [
       { key: 'all', label: t('screens.dashboard.tabs.all') },
-      ...categories.map((category) => ({
-        key: category,
-        label: capitalizeFirstLetter(category),
+      ...categories.map(({ key, original }) => ({
+        key,
+        label: getCategoryLabel(key, original),
       })),
     ],
-    [categories, t],
+    [categories, getCategoryLabel, t],
   );
 
   useEffect(() => {
@@ -75,9 +89,11 @@ export const DashboardScreen = () => {
     }
 
     return bots.filter((bot) =>
-      bot.details?.categories?.some((category) => category?.trim() === activeTab.key),
+      bot.details?.categories?.some((category) =>
+        category ? normalizeCategory(category) === activeTab.key : false,
+      ),
     );
-  }, [activeTab, bots]);
+  }, [activeTab, bots, normalizeCategory]);
 
   useEffect(() => {
     if (!bots.length && !isLoading) {

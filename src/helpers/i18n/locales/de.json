@@ -692,7 +692,18 @@
           "unfollow": "Entfolgen"
         },
         "reportTitle": "Benutzer melden",
-        "reportPlaceholder": "Zusätzliche Details (optional)"
+        "reportPlaceholder": "Zusätzliche Details (optional)",
+        "reportReasons": {
+          "spam": "Spam oder Betrug",
+          "harassment": "Belästigung oder Einschüchterung",
+          "inappropriateContent": "Unangemessene Inhalte",
+          "fakeProfile": "Gefälschtes Profil",
+          "postSpam": "Spam oder irreführende Inhalte",
+          "hate": "Hassrede oder Diskriminierung",
+          "violence": "Gewalt oder Drohungen",
+          "sexual": "Sexuelle Inhalte",
+          "other": "Andere"
+        }
       },
       "hero": {
         "badge": "AI-Agent",
@@ -726,7 +737,12 @@
           "для-прикола": "Zum Spaß",
           "романтический": "Romantisch",
           "роли": "Rollen",
-          "история": "Geschichte"
+          "история": "Geschichte",
+          "language": "Sprache",
+          "romantic": "Romantisch",
+          "useful": "Nützlich",
+          "scenario": "Szenario",
+          "fun": "Spaß"
         },
         "errors": {
           "openProfile": "Botprofil konnte nicht geöffnet werden"

@@ -213,6 +213,26 @@ export const AiAgentScreen = ({ route }: Props) => {
     [aiBotId, profileStore],
   );
 
+  const translatedUserReasons = useMemo(
+    () =>
+      userReasonOptions.map((reason) => {
+        const key = `screens.aibot.profile.reportReasons.${reason}`;
+        const translated = t(key);
+        return translated === key ? reason : translated;
+      }),
+    [t],
+  );
+
+  const translatedPostReasons = useMemo(
+    () =>
+      postReasonOptions.map((reason) => {
+        const key = `screens.aibot.profile.reportReasons.${reason}`;
+        const translated = t(key);
+        return translated === key ? reason : translated;
+      }),
+    [t],
+  );
+
   const menuItems = useMemo(() => {
     if (!aiBotId) return [];
     const items: Array<{ label: string; icon: string; colorIcon: string; onPress: () => void }> = [];
@@ -346,8 +366,8 @@ export const AiAgentScreen = ({ route }: Props) => {
         title={t('screens.aibot.profile.reportTitle')}
         cancelText={t('common.cancel')}
         submitText={t('common.submit')}
-        userReasons={userReasonOptions}
-        postReasons={postReasonOptions}
+        userReasons={translatedUserReasons}
+        postReasons={translatedPostReasons}
         inputPlaceholder={t('screens.aibot.profile.reportPlaceholder')}
       />
       {aiBotId ? (
