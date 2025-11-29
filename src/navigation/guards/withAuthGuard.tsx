@@ -38,22 +38,26 @@ export function withAuthGuard<P extends { route?: { params?: Record<string, unkn
 
     const isAuthenticated = useStoreData(authStore, (s) => s.isAuthenticated);
     const hasAttemptedAutoLogin = useStoreData(authStore, (s) => s.hasAttemptedAutoLogin);
+    const redirect = getRedirectFromProps(props, options?.redirect);
+
+    const handleLoginPress = async () => {
+      const isAuthorized = await authStore.loginWithClientId();
+      if (!isAuthorized) {
+        goToLogin(redirect);
+      }
+    };
 
     if (!hasAttemptedAutoLogin) {
       return <ScreenLoader />;
     }
 
     if (!isAuthenticated) {
-      // ВАЖНО: redirect — только сериализуемые данные
-      const redirect = getRedirectFromProps(props, options?.redirect);
-
-      // ВАЖНО: лямбда, чтобы в goToLogin не попал PressEvent из onPress
       return (
         <NoAuth
           title={t('auth.guard.title')}
           description={t('auth.guard.description')}
           buttonText={t('auth.guard.button')}
-          onPress={() => goToLogin(redirect)}
+          onPress={handleLoginPress}
         />
       );
     }
