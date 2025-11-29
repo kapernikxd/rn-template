@@ -692,7 +692,18 @@
           "unfollow": "Smetti di seguire"
         },
         "reportTitle": "Segnala utente",
-        "reportPlaceholder": "Dettagli aggiuntivi (facoltativo)"
+        "reportPlaceholder": "Dettagli aggiuntivi (facoltativo)",
+        "reportReasons": {
+          "spam": "Spam o frode",
+          "harassment": "Molestie o intimidazioni",
+          "inappropriateContent": "Contenuto inappropriato",
+          "fakeProfile": "Profilo falso",
+          "postSpam": "Spam o materiali fuorvianti",
+          "hate": "Incitamento all'odio o discriminazione",
+          "violence": "Violenza o minacce",
+          "sexual": "Contenuto sessuale",
+          "other": "Altro"
+        }
       },
       "hero": {
         "badge": "Agente IA",
@@ -726,7 +737,12 @@
           "для-прикола": "Per divertimento",
           "романтический": "Romantico",
           "роли": "Ruoli",
-          "история": "Storia"
+          "история": "Storia",
+          "language": "Lingua",
+          "romantic": "Romantico",
+          "useful": "Utile",
+          "scenario": "Scenario",
+          "fun": "Divertimento"
         },
         "errors": {
           "openProfile": "Impossibile aprire il profilo del bot"
