@@ -34,7 +34,7 @@ export const AiAgentGallery = memo(
     isCreator,
   }: AiAgentGalleryProps) => {
     const [visible, setVisible] = useState(false);
-    const [index, setIndex] = useState(0);
+    const [selectedPhoto, setSelectedPhoto] = useState<string | null>(null);
     const [viewerId, setViewerId] = useState<string | null>(null);
     const [unlockedPhotos, setUnlockedPhotos] = useState<string[]>([]);
     const [pendingUnlockIndex, setPendingUnlockIndex] = useState<number | null>(null);
@@ -109,7 +109,7 @@ export const AiAgentGallery = memo(
         }
 
         if (typeof indexToOpen === "number") {
-          setIndex(indexToOpen);
+          setSelectedPhoto(photoUri);
           setVisible(true);
         }
 
@@ -132,7 +132,7 @@ export const AiAgentGallery = memo(
     const onOpenAt = useCallback(
       (i: number) => {
         if (!shouldBlur || unlockedPhotos.includes(photos[i])) {
-          setIndex(i);
+          setSelectedPhoto(photos[i]);
           setVisible(true);
           return;
         }
@@ -143,7 +143,10 @@ export const AiAgentGallery = memo(
       [photos, shouldBlur, showRewardedAd, unlockedPhotos],
     );
 
-    const onClose = useCallback(() => setVisible(false), []);
+    const onClose = useCallback(() => {
+      setVisible(false);
+      setSelectedPhoto(null);
+    }, []);
 
     const styles = useMemo(
       () => getStyles(theme, sizes, typography, isDark),
@@ -208,8 +211,8 @@ export const AiAgentGallery = memo(
 
         <GalleryModal
           visible={visible}
-          images={photos}
-          initialIndex={index}
+          images={selectedPhoto ? [selectedPhoto] : []}
+          initialIndex={0}
           onRequestClose={onClose}
         />
       </View>
