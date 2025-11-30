@@ -2,7 +2,8 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { Platform } from "react-native";
 
 import { DEFAULT_ADS_CONFIG, DEFAULT_APP_VERSION_CONFIG } from "../../constants/links";
-import type { NormalizedAppConfig, AdsConfig, AppVersionConfig } from "../../types/config";
+import { DEFAULT_CHAT_LIMIT_CONFIG } from "../../constants/ads";
+import type { NormalizedAppConfig, AdsConfig, AppVersionConfig, ChatLimitConfig } from "../../types/config";
 import { AppConfigService } from "../../services/config/AppConfigService";
 import { BaseStore, type StoreListener } from "./BaseStore";
 import { RootStore } from "../rootStore";
@@ -15,6 +16,7 @@ export class ConfigStore {
   private config: NormalizedAppConfig = {
     appVer: { ...DEFAULT_APP_VERSION_CONFIG },
     ads: { ...DEFAULT_ADS_CONFIG },
+    chatLimit: { ...DEFAULT_CHAT_LIMIT_CONFIG },
     urls: {},
   };
 
@@ -57,6 +59,10 @@ export class ConfigStore {
     return this.config.ads;
   }
 
+  get chatLimitConfig(): ChatLimitConfig {
+    return this.config.chatLimit;
+  }
+
   get adsEnabled(): boolean {
     const { ADS_ENABLED, ADS_ENABLED_ANDROID, ADS_ENABLED_IOS } = this.adsConfig;
 
@@ -82,6 +88,7 @@ export class ConfigStore {
         this.config = {
           appVer: { ...DEFAULT_APP_VERSION_CONFIG, ...response.appVer },
           ads: { ...DEFAULT_ADS_CONFIG, ...(response.ads ?? {}) },
+          chatLimit: { ...DEFAULT_CHAT_LIMIT_CONFIG, ...(response.chatLimit ?? {}) },
           urls: { ...(response.urls ?? {}) }
         };
         this.loading = false;
