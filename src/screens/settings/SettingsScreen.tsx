@@ -66,7 +66,7 @@ export const SettingsScreen: FC = () => {
         () => [
             { icon: 'user-o', label: t('settings.section.accountManagement.editProfile'), action: navigateTo(ROUTES.ProfileEdit) },
             // { icon: 'gear', label: t('settings.account.accountSettings'), action: navigateTo(ROUTES.ProfileAccountSettings) },
-            { icon: 'key', label: t('settings.section.accountManagement.changePassword'), action: navigateTo(ROUTES.ProfileChangePassword) },
+            // { icon: 'key', label: t('settings.section.accountManagement.changePassword'), action: navigateTo(ROUTES.ProfileChangePassword) },
             // { icon: 'group', label: t('settings.account.socialProfiles'), action: navigateTo(ROUTES.ProfileSocialProfiles) },
             { icon: 'bell', label: t('settings.section.accountManagement.notifications'), action: navigateTo(ROUTES.ProfileNotificationSettings) },
         ],

@@ -46,7 +46,7 @@ export const ChatMessagesScreen: FC = observer(() => {
   const { setColors } = useSafeAreaColors();
   const styles = getStyles({ theme, sizes, commonStyles });
   const insets = useSafeAreaInsets();
-  const bottomPadding = Math.max(insets.bottom, typeof sizes.xs === 'number' ? 55 : 0);
+  const bottomPadding = Math.max(insets.bottom, typeof sizes.xs === 'number' ? Platform.OS ? 61 : 55 : 0);
   const { t } = useTranslation();
 
   const route = useRoute<RouteProp<ChatsStackParamList, 'ChatMessages'>>();
