@@ -556,6 +556,7 @@ const createStyles = ({
     },
     stepContainer: {
       paddingHorizontal: sizes.xs as number,
+      width: "103%",
     },
     card: {
       backgroundColor: isDark ? theme.card : theme.white,
