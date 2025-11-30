@@ -308,7 +308,7 @@ export const ChatMessagesScreen: FC = observer(() => {
               <View style={styles.limitLockContainer}>
                 <ChatLimitLockedNotice
                   countdownText={countdownText}
-                  tokenCost={CHAT_LIMIT_CONFIG.tokenCost}
+                  tokenCost={chatLimitConfig.tokenCost}
                   tokenBalance={tokenBalance}
                   onUnlock={handleUnlock}
                   isUnlocking={isUnlocking}

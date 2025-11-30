@@ -30,18 +30,18 @@ export const DEFAULT_TOKEN_BALANCE = 20;
 export const DEFAULT_APP_VERSION_CONFIG = {
   minVersion: "1.0.0",
   latestVersion: "1.0.0",
-  iosStoreUrl: "https://apps.apple.com/us/app/pllace/id6746166742",
-  androidStoreUrl: "https://play.google.com/store/apps/details?id=com.kapernikrs.expopllace",
+  iosStoreUrl: "https://apps.apple.com/us/app/aipair-pro/id6752875167",
+  androidStoreUrl: "https://play.google.com/store/apps/details?id=com.kapernikrs.aipair",
 };
 
 export const DEFAULT_ADS_CONFIG = {
   ADS_ENABLED: true,
   ADS_ENABLED_ANDROID: undefined as boolean | undefined,
   ADS_ENABLED_IOS: undefined as boolean | undefined,
-  ANDROID_AD_UNIT_ID_BANNER: 'ca-app-pub-8636022279548301/8567360540',
-  ANDROID_AD_UNIT_ID_REWARD: 'ca-app-pub-8636022279548301/9133642229',
-  IOS_AD_UNIT_ID_BANNER: 'ca-app-pub-8636022279548301/7481186180',
-  IOS_AD_UNIT_ID_REWARD: 'ca-app-pub-8636022279548301/2111092392',
+  ANDROID_AD_UNIT_ID_BANNER: 'ca-app-pub-8636022279548301/5540058713',
+  ANDROID_AD_UNIT_ID_REWARD: 'ca-app-pub-8636022279548301/4226977046',
+  IOS_AD_UNIT_ID_BANNER: 'ca-app-pub-8636022279548301/7340209636',
+  IOS_AD_UNIT_ID_REWARD: 'ca-app-pub-8636022279548301/8569423021',
   TOKEN_REWARD_AMOUNT: 10,
 };
 
