@@ -5,6 +5,13 @@ export type AppVersionConfig = {
   androidStoreUrl: string;
 };
 
+export type ChatLimitConfig = {
+  messageLimit: number;
+  cooldownMs: number;
+  tokenCost: number;
+  scope?: 'chat' | 'global';
+};
+
 export type AdsConfig = {
   ADS_ENABLED: boolean;
   ADS_ENABLED_ANDROID?: boolean;
@@ -19,11 +26,13 @@ export type AdsConfig = {
 export type AppConfigResponse = {
   appVer: Partial<AppVersionConfig>;
   ads?: Partial<AdsConfig>;
+  chatLimit?: Partial<ChatLimitConfig>;
   urls?: any;
 };
 
 export type NormalizedAppConfig = {
   appVer: AppVersionConfig;
   ads: AdsConfig;
+  chatLimit: ChatLimitConfig;
   urls?: any;
 };

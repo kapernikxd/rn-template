@@ -32,11 +32,10 @@ import { useChatMessages } from '../../helpers/hooks/Chats/useChatMessages';
 import MessageItemWithPreview from '../../components/chat/MessageItemWithPreview';
 import { HeaderEdit } from '../../components/chat/HeaderEdit';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRootStore } from '../../store/StoreProvider';
+import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { useChatMessageLimitController } from '../../helpers/aiChat/useChatMessageLimit';
 import type { ChatsStackParamList } from '../../navigation';
 import ChatLimitLockedNotice from '../../components/chat/ChatLimitLockedNotice';
-import { CHAT_LIMIT_CONFIG } from '../../constants';
 import { useTranslation } from 'react-i18next';
 
 const chatBackground = require('../../assets/chat-background.png');
@@ -52,7 +51,8 @@ export const ChatMessagesScreen: FC = observer(() => {
   const route = useRoute<RouteProp<ChatsStackParamList, 'ChatMessages'>>();
   const chatId = route.params.chatId;
 
-  const { uiStore } = useRootStore();
+  const { uiStore, configStore } = useRootStore();
+  const chatLimitConfig = useStoreData(configStore, (store) => store.chatLimitConfig);
 
   const { goBack, goToAiBotProfile } = usePortalNavigation();
 
@@ -110,7 +110,7 @@ export const ChatMessagesScreen: FC = observer(() => {
     onSubmit: handleSubmitFromInput,
     isEditingMessage,
     showSnackbar: (message, type) => uiStore.showSnackbar(message, type),
-    config: CHAT_LIMIT_CONFIG,
+    config: chatLimitConfig,
   });
 
   useEffect(() => {
