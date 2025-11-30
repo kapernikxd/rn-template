@@ -81,6 +81,16 @@ const MainTabBar = ({ state, descriptors, navigation, insets, showLabels = true 
             return;
           }
 
+          if (route.name === ROUTES.DashboardTab) {
+            navigation.navigate(route.name as never, { screen: ROUTES.Dashboard } as never);
+            return;
+          }
+
+          if (route.name === ROUTES.CreateBotTab) {
+            navigation.navigate(route.name as never, { screen: ROUTES.CreateBotTab } as never);
+            return;
+          }
+
           if (!isFocused) {
             navigation.navigate(route.name as never, route.params as never);
           }
