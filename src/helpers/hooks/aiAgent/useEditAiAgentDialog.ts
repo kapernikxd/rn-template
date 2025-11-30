@@ -41,6 +41,7 @@ const INITIAL_FORM: EditAiAgentFormState = {
 };
 
 const normalized = (v: string) => v.trim().toLowerCase();
+const normalizeGenderValue = (value?: string) => value?.trim().toLowerCase() ?? "";
 const arraysEqual = (a: string[], b: string[]) =>
   a.length === b.length && a.every((item, i) => item === b[i]);
 
@@ -71,7 +72,7 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
       name: aiAgent.name ?? "",
       lastname: aiAgent.lastname ?? "",
       profession: aiAgent.profession ?? "",
-      gender: aiAgent.gender ?? "",
+      gender: normalizeGenderValue(aiAgent.gender),
       userBio: aiAgent.userBio ?? "",
       aiPrompt: botDetails?.aiPrompt ?? aiAgent.aiPrompt ?? "",
       intro: botDetails?.intro ?? aiAgent.intro ?? "",
@@ -237,7 +238,7 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
     const normalizedName = formState.name.trim();
     const normalizedLastName = formState.lastname.trim();
     const normalizedProfession = formState.profession.trim();
-    const normalizedGender = formState.gender.trim();
+    const normalizedGender = normalizeGenderValue(formState.gender);
     const normalizedBio = formState.userBio.trim();
     const normalizedPrompt = formState.aiPrompt.trim();
     const normalizedIntro = formState.intro.trim();
@@ -261,7 +262,8 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
     if (normalizedName !== (aiAgent.name ?? "")) payload.name = normalizedName;
     if (normalizedLastName !== (aiAgent.lastname ?? "")) payload.lastname = normalizedLastName;
     if (normalizedProfession !== (aiAgent.profession ?? "")) payload.profession = normalizedProfession;
-    if (normalizedGender !== (aiAgent.gender ?? "")) payload.gender = normalizedGender;
+    const currentGender = normalizeGenderValue(aiAgent.gender);
+    if (normalizedGender !== currentGender) payload.gender = normalizedGender;
     if (normalizedBio !== (aiAgent.userBio ?? "")) payload.userBio = normalizedBio;
     if (normalizedPrompt !== currentPrompt) payload.aiPrompt = normalizedPrompt;
     if (normalizedIntro !== currentIntro) {
