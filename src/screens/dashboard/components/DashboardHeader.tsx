@@ -1,19 +1,22 @@
 import React, { useMemo } from 'react';
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import { StyleSheet, Text, View } from 'react-native';
 import { useTheme } from 'rn-vs-lb/theme';
 import { useTranslation } from 'react-i18next';
+import { TokenBadge } from '../../../components';
 
 type DashboardHeaderProps = {
   onPressFilters?: () => void;
+  adsEnabled?: boolean;
+  tokenBalance?: number | null;
+  onBalanceChange?: (balance: number) => void;
 };
 
-export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onPressFilters }) => {
+export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
+  adsEnabled,
+  tokenBalance,
+  onBalanceChange,
+  onPressFilters,
+}) => {
   const { theme, typography, sizes } = useTheme();
   const { t } = useTranslation();
 
@@ -60,13 +63,9 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onPressFilters
           ...typography.bodySm,
           color: theme.greyText,
         },
-        button: {
-          width: 40,
-          height: 40,
-          borderRadius: 20,
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: theme.card,
+        right: {
+          minWidth: 40,
+          alignItems: 'flex-end',
         },
       }),
     [theme, typography, sizes],
@@ -85,16 +84,11 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onPressFilters
         </Text>
       </View>
 
-      {/* Если захочешь включить фильтры — просто раскомментируй */}
-      {/* <Pressable
-        onPress={onPressFilters}
-        style={styles.button}
-        accessibilityRole="button"
-        accessibilityLabel={t('screens.dashboard.header.accessibility.openFilters')}
-        hitSlop={8}
-      >
-        <Feather name="sliders" size={20} color={theme.title} />
-      </Pressable> */}
+      <View style={styles.right}>
+        {adsEnabled ? (
+          <TokenBadge balance={tokenBalance ?? undefined} onBalanceChange={onBalanceChange} />
+        ) : null}
+      </View>
     </View>
   );
 };

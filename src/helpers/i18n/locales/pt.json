@@ -661,12 +661,14 @@
           "status": {
             "loading": "Atualizando previsão...",
             "unlocked": "Pronto",
-            "locked": "Bloqueado"
+            "locked": "Bloqueado",
+            "cost": "{{cost}} rubis"
           },
           "accessibility": {
             "open": "Abrir horóscopo: {{title}}"
           },
-          "lockedHint": "Toque para desbloquear a previsão completa."
+          "lockedHint": "Toque para desbloquear a previsão completa.",
+          "lockedHintWithCost": "Gaste {{cost}} rubis para desbloquear."
         },
         "cards": {
           "career": {

@@ -30,6 +30,8 @@ import { HoroscopeModal } from './components/HoroscopeModal';
 import { DashboardHeader } from './components/DashboardHeader';
 import { HoroscopeTabBar } from './components/HoroscopeTabBar';
 import { ProfileCompletionBanner } from './components/ProfileCompletionBanner';
+import { useRootStore, useStoreData } from '../../store/StoreProvider';
+import { getTokenBalance, subtractTokens } from '../../helpers/tokenStorage';
 
 type HoroscopeCardCategory = Exclude<HoroscopeCategory, 'general'>;
 
@@ -45,6 +47,7 @@ export const CARD_WIDTH = 280;
 
 const PROFILE_COMPLETION_THRESHOLD = 0.6;
 const PROFILE_BANNER_DISMISSED_STORAGE_KEY = 'profileCompletionBannerDismissed';
+const CARD_UNLOCK_COST = 5;
 
 const calculateProfileCompletion = (profileInfo: ProfileInfoData): number => {
   const values = Object.values(profileInfo);
@@ -65,8 +68,10 @@ export const DashboardScreen = () => {
   const { t, i18n } = useTranslation();
   const insets = useSafeAreaInsets();
   const { setColors } = useSafeAreaColors();
+  const { uiStore, configStore } = useRootStore();
   const navigation = useNavigation<DashboardScreenProps['navigation']>();
   const cards = useHoroscopeCards();
+  const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
   const [activeTab, setActiveTab] = useState(1);
   const [horoscopes, setHoroscopes] = useState<StoredHoroscopes>({});
   const [loadingByCategory, setLoadingByCategory] = useState<
@@ -80,6 +85,7 @@ export const DashboardScreen = () => {
   >(null);
   const [profileCompletion, setProfileCompletion] = useState(0);
   const [shouldShowProfileBanner, setShouldShowProfileBanner] = useState(false);
+  const [tokenBalance, setTokenBalance] = useState<number | null>(null);
   const isMountedRef = useRef(true);
   const horoscopesRef = useRef<StoredHoroscopes>({});
 
@@ -154,6 +160,25 @@ export const DashboardScreen = () => {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (!adsEnabled) {
+      setTokenBalance(null);
+      return;
+    }
+
+    const loadBalance = async () => {
+      try {
+        const balance = await getTokenBalance();
+        setTokenBalance(balance);
+      } catch (error) {
+        console.warn('Failed to load token balance', error);
+        uiStore.showSnackbar('Не удалось получить баланс токенов.', 'error');
+      }
+    };
+
+    void loadBalance();
+  }, [adsEnabled, uiStore]);
 
   const loadHoroscope = useCallback(
     async (category: HoroscopeCategory, { force = false }: { force?: boolean } = {}) => {
@@ -247,9 +272,32 @@ export const DashboardScreen = () => {
     setActiveTab(index);
   }, []);
 
-  const handleCardPress = useCallback((category: HoroscopeCardCategory) => {
-    setActiveModalCategory(category);
-  }, []);
+  const handleCardPress = useCallback(
+    async (category: HoroscopeCardCategory) => {
+      if (!adsEnabled) {
+        setActiveModalCategory(category);
+        return;
+      }
+
+      try {
+        const balance = await getTokenBalance();
+        setTokenBalance(balance);
+
+        if (balance < CARD_UNLOCK_COST) {
+          uiStore.showSnackbar('Недостаточно токенов для открытия карточки.', 'warning');
+          return;
+        }
+
+        const updatedBalance = await subtractTokens(CARD_UNLOCK_COST);
+        setTokenBalance(updatedBalance);
+        setActiveModalCategory(category);
+      } catch (error) {
+        console.warn('Failed to spend tokens for card', error);
+        uiStore.showSnackbar('Не удалось списать токены. Попробуйте позже.', 'error');
+      }
+    },
+    [adsEnabled, uiStore],
+  );
 
   const handleBannerPress = useCallback(() => {
     navigation.navigate(ROUTES.ProfileTab, {
@@ -286,10 +334,12 @@ export const DashboardScreen = () => {
         content={horoscopes[item.key]}
         isLoading={Boolean(loadingByCategory[item.key])}
         isUnlocked={Boolean(horoscopes[item.key])}
+        adsEnabled={adsEnabled}
+        unlockCost={CARD_UNLOCK_COST}
         onPress={() => handleCardPress(item.key)}
       />
     ),
-    [handleCardPress, horoscopes, loadingByCategory],
+    [adsEnabled, handleCardPress, horoscopes, loadingByCategory],
   );
 
   const closeModal = useCallback(() => {
@@ -329,7 +379,12 @@ export const DashboardScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        <DashboardHeader onPressFilters={handleOpenFilters} />
+        <DashboardHeader
+          onPressFilters={handleOpenFilters}
+          adsEnabled={adsEnabled}
+          tokenBalance={tokenBalance}
+          onBalanceChange={setTokenBalance}
+        />
         {shouldShowProfileBanner ? (
           <ProfileCompletionBanner
             completion={profileCompletion}
@@ -354,6 +409,7 @@ export const DashboardScreen = () => {
           extraData={{
             horoscopes,
             loadingByCategory,
+            adsEnabled,
           }}
         />
       </ScrollView>

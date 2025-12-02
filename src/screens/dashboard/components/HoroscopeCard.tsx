@@ -28,6 +28,8 @@ type HoroscopeCardProps = {
   content?: string;
   isLoading: boolean;
   isUnlocked: boolean;
+  adsEnabled: boolean;
+  unlockCost?: number;
   onPress: () => void;
 };
 
@@ -36,10 +38,14 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
   content,
   isLoading,
   isUnlocked,
+  adsEnabled,
+  unlockCost = 5,
   onPress,
 }) => {
   const { theme, typography, sizes } = useTheme();
   const { t } = useTranslation();
+
+  const shouldShowCost = adsEnabled && !isUnlocked && !isLoading;
 
   const previewText = useMemo(() => {
     const paragraphs = splitHoroscopeIntoParagraphs(content);
@@ -56,10 +62,22 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
       return t('screens.dashboard.horoscope.card.status.loading');
     }
 
+    if (shouldShowCost) {
+      return t('screens.dashboard.horoscope.card.status.cost', { cost: unlockCost });
+    }
+
     return isUnlocked
       ? t('screens.dashboard.horoscope.card.status.unlocked')
       : t('screens.dashboard.horoscope.card.status.locked');
-  }, [isLoading, isUnlocked, t]);
+  }, [isLoading, isUnlocked, shouldShowCost, t, unlockCost]);
+
+  const footerHint = useMemo(() => {
+    if (shouldShowCost) {
+      return t('screens.dashboard.horoscope.card.lockedHintWithCost', { cost: unlockCost });
+    }
+
+    return t('screens.dashboard.horoscope.card.lockedHint');
+  }, [shouldShowCost, t, unlockCost]);
 
   const styles = useMemo(
     () =>
@@ -182,6 +200,12 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
           <View style={styles.statusWrapper}>
             {isLoading ? (
               <ActivityIndicator size="small" color={theme.greyText} />
+            ) : shouldShowCost ? (
+              <MaterialCommunityIcons
+                name="diamond-stone"
+                size={18}
+                color={item.accent}
+              />
             ) : (
               <Feather
                 name={isUnlocked ? 'unlock' : 'lock'}
@@ -209,7 +233,7 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
 
         {!isUnlocked && !isLoading && (
           <Text style={styles.footerHint} numberOfLines={1}>
-            {t('screens.dashboard.horoscope.card.lockedHint')}
+            {footerHint}
           </Text>
         )}
       </View>
