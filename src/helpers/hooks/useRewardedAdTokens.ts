@@ -1,14 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { InteractionManager, Platform } from "react-native";
 import { TestIds, useRewardedAd } from "react-native-google-mobile-ads";
+import { useTranslation } from "react-i18next";
 
 import { ensureTrackingTransparencyPermission } from "../../services/privacy/trackingTransparency";
 import { useRootStore, useStoreData } from "../../store/StoreProvider";
 import {
-  DEFAULT_TOKEN_BALANCE,
   addTokens,
   getTokenBalance,
 } from "../tokenStorage";
+import { DEFAULT_TOKEN_BALANCE } from "../../constants/links";
+
 const isIos = Platform.OS === "ios";
 
 type UseRewardedAdTokensResult = {
@@ -19,21 +21,27 @@ type UseRewardedAdTokensResult = {
 
 type UseRewardedAdTokensOptions = {
   onRewardEarned?: (balance: number) => void;
+  shouldAwardTokens?: boolean;
 };
 
 export const useRewardedAdTokens = (
   options: UseRewardedAdTokensOptions = {},
 ): UseRewardedAdTokensResult => {
-  const { onRewardEarned } = options;
+  const { onRewardEarned, shouldAwardTokens = true } = options;
   const { uiStore, configStore } = useRootStore();
+  const { t } = useTranslation();
+
   const { adsConfig, rewardAmount } = useStoreData(configStore, (store) => ({
     adsConfig: store.adsConfig,
     rewardAmount: store.tokenRewardAmount,
   }));
+
   const [balance, setBalance] = useState<number>(DEFAULT_TOKEN_BALANCE);
   const isMountedRef = useRef(false);
   const pendingShowTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingShowIntentRef = useRef(false);
+  const hasAppliedRewardRef = useRef(false);
+  const balanceRef = useRef(balance);
 
   const rewardedAdUnitId = useMemo(() => {
     if (__DEV__) {
@@ -46,7 +54,7 @@ export const useRewardedAdTokens = (
   const { isLoaded, isClosed, isEarnedReward, load, show, error } = useRewardedAd(
     rewardedAdUnitId,
     {
-      requestNonPersonalizedAdsOnly: true,
+      requestNonPersonalizedAdsOnly: false,
     },
   );
 
@@ -67,6 +75,10 @@ export const useRewardedAdTokens = (
   }, []);
 
   useEffect(() => {
+    balanceRef.current = balance;
+  }, [balance]);
+
+  useEffect(() => {
     isMountedRef.current = true;
 
     return () => {
@@ -82,7 +94,10 @@ export const useRewardedAdTokens = (
         updateBalance(storedBalance);
       } catch (storageError) {
         if (isMountedRef.current) {
-          uiStore.showSnackbar("Не удалось получить баланс токенов.", "error");
+          uiStore.showSnackbar(
+            t("components.ads.rewardedTokens.snackbar.balanceLoadError"),
+            "error",
+          );
         }
       }
 
@@ -102,7 +117,7 @@ export const useRewardedAdTokens = (
     };
 
     void loadBalanceAndAd();
-  }, [isLoaded, load, uiStore, updateBalance]);
+  }, [isLoaded, load, uiStore, updateBalance, t]);
 
   useEffect(() => {
     if (isClosed && !isLoaded) {
@@ -111,37 +126,88 @@ export const useRewardedAdTokens = (
   }, [isClosed, isLoaded, load]);
 
   useEffect(() => {
-    if (isEarnedReward) {
-      const applyReward = async () => {
-        try {
-          const updatedBalance = await addTokens(rewardAmount);
+    if (!isEarnedReward) {
+      hasAppliedRewardRef.current = false;
+      return;
+    }
+
+    if (hasAppliedRewardRef.current) {
+      return;
+    }
+
+    hasAppliedRewardRef.current = true;
+
+    const applyReward = async () => {
+      try {
+        if (shouldAwardTokens) {
+          const rewardValue = rewardAmount;
+          const updatedBalance = await addTokens(rewardValue);
           updateBalance(updatedBalance);
           onRewardEarned?.(updatedBalance);
 
-          const rewardMessage = `Награда получена! +${rewardAmount} токенов.`;
-          uiStore.showSnackbar(rewardMessage, "success");
-        } catch (storageError) {
-          if (isMountedRef.current) {
-            uiStore.showSnackbar("Не удалось обновить баланс токенов.", "error");
-          }
-        }
-      };
+          uiStore.showSnackbar(
+            t("components.ads.rewardedTokens.snackbar.rewardEarned", {
+              amount: rewardValue,
+            }),
+            "success",
+          );
 
-      void applyReward();
-    }
-  }, [isEarnedReward, onRewardEarned, rewardAmount, uiStore, updateBalance]);
+          return;
+        }
+
+        onRewardEarned?.(balanceRef.current);
+      } catch (storageError) {
+        if (isMountedRef.current) {
+          uiStore.showSnackbar(
+            t("components.ads.rewardedTokens.snackbar.balanceUpdateError"),
+            "error",
+          );
+        }
+      }
+    };
+
+    void applyReward();
+  }, [
+    isEarnedReward,
+    onRewardEarned,
+    rewardAmount,
+    shouldAwardTokens,
+    uiStore,
+    updateBalance,
+    t,
+  ]);
 
   useEffect(() => {
-    if (error) {
-      uiStore.showSnackbar("Не удалось загрузить рекламу. Попробуйте позже.", "error");
+    if (!error) {
+      return;
     }
-  }, [error, uiStore]);
+
+    cancelPendingShow();
+
+    if (pendingShowIntentRef.current) {
+      uiStore.showSnackbar(
+        t("components.ads.rewardedTokens.snackbar.adLoading"),
+        "info",
+      );
+      pendingShowIntentRef.current = true;
+    } else {
+      uiStore.showSnackbar(
+        t("components.ads.rewardedTokens.snackbar.loadFailed"),
+        "error",
+      );
+    }
+
+    load();
+  }, [cancelPendingShow, error, load, uiStore, t]);
 
   const handleFailedShow = useCallback(() => {
     pendingShowIntentRef.current = true;
-    uiStore.showSnackbar("Не удалось показать рекламу. Попробуйте позже.", "error");
+    uiStore.showSnackbar(
+      t("components.ads.rewardedTokens.snackbar.showFailed"),
+      "error",
+    );
     load();
-  }, [load, uiStore]);
+  }, [load, uiStore, t]);
 
   const scheduleShow = useCallback(() => {
     if (pendingShowTimeoutRef.current) {
@@ -179,13 +245,16 @@ export const useRewardedAdTokens = (
     pendingShowIntentRef.current = true;
 
     if (!isLoaded) {
-      uiStore.showSnackbar("Реклама загружается, попробуйте чуть позже.", "info");
+      uiStore.showSnackbar(
+        t("components.ads.rewardedTokens.snackbar.adLoading"),
+        "info",
+      );
       load();
       return;
     }
 
     scheduleShow();
-  }, [isLoaded, load, scheduleShow, uiStore]);
+  }, [isLoaded, load, scheduleShow, uiStore, t]);
 
   useEffect(() => {
     if (isLoaded && pendingShowIntentRef.current) {

@@ -662,7 +662,7 @@
             "loading": "Aggiornamento previsione...",
             "unlocked": "Pronto",
             "locked": "Bloccato",
-            "cost": "{{cost}} rubini"
+            "cost": "{{cost}}"
           },
           "accessibility": {
             "open": "Apri oroscopo: {{title}}"

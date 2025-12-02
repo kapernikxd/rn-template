@@ -662,7 +662,7 @@
             "loading": "Mise à jour du pronostic...",
             "unlocked": "Prêt",
             "locked": "Verrouillé",
-            "cost": "{{cost}} rubis"
+            "cost": "{{cost}}"
           },
           "accessibility": {
             "open": "Ouvrir l’horoscope : {{title}}"

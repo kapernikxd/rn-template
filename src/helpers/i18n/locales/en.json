@@ -696,7 +696,7 @@
             "loading": "Updating forecast...",
             "unlocked": "Ready",
             "locked": "Locked",
-            "cost": "{{cost}} rubies"
+            "cost": "{{cost}}"
           },
           "accessibility": {
             "open": "Open horoscope: {{title}}"

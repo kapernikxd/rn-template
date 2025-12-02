@@ -662,7 +662,7 @@
             "loading": "Prognose wird aktualisiert...",
             "unlocked": "Bereit",
             "locked": "Gesperrt",
-            "cost": "{{cost}} Rubine"
+            "cost": "{{cost}}"
           },
           "accessibility": {
             "open": "Horoskop öffnen: {{title}}"

@@ -696,7 +696,7 @@
             "loading": "Обновляем прогноз...",
             "unlocked": "Готово",
             "locked": "Закрыто",
-            "cost": "{{cost}} рубинов"
+            "cost": "{{cost}}"
           },
           "accessibility": {
             "open": "Открыть гороскоп: {{title}}"

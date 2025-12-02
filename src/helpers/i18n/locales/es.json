@@ -662,7 +662,7 @@
             "loading": "Actualizando pronóstico...",
             "unlocked": "Listo",
             "locked": "Bloqueado",
-            "cost": "{{cost}} rubíes"
+            "cost": "{{cost}}"
           },
           "accessibility": {
             "open": "Abrir horóscopo: {{title}}"

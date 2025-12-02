@@ -662,7 +662,7 @@
             "loading": "Ažuriranje prognoze...",
             "unlocked": "Spremno",
             "locked": "Zaključano",
-            "cost": "{{cost}} рубина"
+            "cost": "{{cost}}"
           },
           "accessibility": {
             "open": "Otvori horoskop: {{title}}"
