@@ -49,14 +49,22 @@ export const TokenBadge = memo(
     const [pendingShowAfterClose, setPendingShowAfterClose] = useState(false);
     const { t, i18n } = useTranslation();
 
-    const currentBalance = useMemo(
-      () => (typeof balance === "number" ? balance : storedBalance),
-      [balance, storedBalance],
-    );
+  const currentBalance = useMemo(
+    () => (typeof balance === "number" ? balance : storedBalance),
+    [balance, storedBalance],
+  );
 
-    useEffect(() => {
-      onBalanceChange?.(currentBalance);
-    }, [currentBalance, onBalanceChange]);
+  useEffect(() => {
+    onBalanceChange?.(currentBalance);
+  }, [currentBalance, onBalanceChange]);
+
+  useEffect(() => {
+    if (typeof balance !== "number" || balance === storedBalance) {
+      return;
+    }
+
+    onBalanceChange?.(storedBalance);
+  }, [balance, storedBalance, onBalanceChange]);
 
     const locale = i18n.language || "en";
     const formattedBalance = useMemo(
