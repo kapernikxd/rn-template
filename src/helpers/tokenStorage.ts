@@ -3,6 +3,28 @@ import { DEFAULT_TOKEN_BALANCE } from '../constants/links';
 
 const TOKEN_BALANCE_STORAGE_KEY = 'app.tokens.balance';
 
+type TokenBalanceListener = (balance: number) => void;
+
+const listeners = new Set<TokenBalanceListener>();
+
+const notifyListeners = (balance: number) => {
+    listeners.forEach((listener) => {
+        try {
+            listener(balance);
+        } catch {
+            // Ignore listener errors to avoid breaking balance updates
+        }
+    });
+};
+
+export const addTokenBalanceListener = (listener: TokenBalanceListener) => {
+    listeners.add(listener);
+
+    return () => {
+        listeners.delete(listener);
+    };
+};
+
 const sanitizeTokenAmount = (value: number) => {
     if (Number.isNaN(value) || !Number.isFinite(value)) {
         return DEFAULT_TOKEN_BALANCE;
@@ -38,6 +60,8 @@ export const setTokenBalance = async (amount: number): Promise<number> => {
 
     try {
         await AsyncStorage.setItem(TOKEN_BALANCE_STORAGE_KEY, sanitizedAmount.toString());
+        notifyListeners(sanitizedAmount);
+
         return sanitizedAmount;
     } catch (error) {
         throw new Error('Failed to update token balance');
