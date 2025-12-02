@@ -661,12 +661,14 @@
           "status": {
             "loading": "Prognose wird aktualisiert...",
             "unlocked": "Bereit",
-            "locked": "Gesperrt"
+            "locked": "Gesperrt",
+            "cost": "{{cost}} Rubine"
           },
           "accessibility": {
             "open": "Horoskop öffnen: {{title}}"
           },
-          "lockedHint": "Tippe, um die vollständige Prognose freizuschalten."
+          "lockedHint": "Tippe, um die vollständige Prognose freizuschalten.",
+          "lockedHintWithCost": "Geben Sie {{cost}} Rubine aus, um zu öffnen."
         },
         "cards": {
           "career": {

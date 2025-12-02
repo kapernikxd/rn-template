@@ -661,12 +661,14 @@
           "status": {
             "loading": "Mise à jour du pronostic...",
             "unlocked": "Prêt",
-            "locked": "Verrouillé"
+            "locked": "Verrouillé",
+            "cost": "{{cost}} rubis"
           },
           "accessibility": {
             "open": "Ouvrir l’horoscope : {{title}}"
           },
-          "lockedHint": "Appuyez pour débloquer le pronostic complet."
+          "lockedHint": "Appuyez pour débloquer le pronostic complet.",
+          "lockedHintWithCost": "Dépensez {{cost}} rubis pour déverrouiller."
         },
         "cards": {
           "career": {

@@ -695,12 +695,14 @@
           "status": {
             "loading": "Updating forecast...",
             "unlocked": "Ready",
-            "locked": "Locked"
+            "locked": "Locked",
+            "cost": "{{cost}} rubies"
           },
           "accessibility": {
             "open": "Open horoscope: {{title}}"
           },
-          "lockedHint": "Tap to unlock the full forecast."
+          "lockedHint": "Tap to unlock the full forecast.",
+          "lockedHintWithCost": "Spend {{cost}} rubies to unlock."
         },
         "cards": {
           "career": {

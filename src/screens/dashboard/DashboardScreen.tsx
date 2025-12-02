@@ -334,10 +334,12 @@ export const DashboardScreen = () => {
         content={horoscopes[item.key]}
         isLoading={Boolean(loadingByCategory[item.key])}
         isUnlocked={Boolean(horoscopes[item.key])}
+        adsEnabled={adsEnabled}
+        unlockCost={CARD_UNLOCK_COST}
         onPress={() => handleCardPress(item.key)}
       />
     ),
-    [handleCardPress, horoscopes, loadingByCategory],
+    [adsEnabled, handleCardPress, horoscopes, loadingByCategory],
   );
 
   const closeModal = useCallback(() => {
@@ -407,6 +409,7 @@ export const DashboardScreen = () => {
           extraData={{
             horoscopes,
             loadingByCategory,
+            adsEnabled,
           }}
         />
       </ScrollView>

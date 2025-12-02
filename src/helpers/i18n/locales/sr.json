@@ -661,12 +661,14 @@
           "status": {
             "loading": "Ažuriranje prognoze...",
             "unlocked": "Spremno",
-            "locked": "Zaključano"
+            "locked": "Zaključano",
+            "cost": "{{cost}} рубина"
           },
           "accessibility": {
             "open": "Otvori horoskop: {{title}}"
           },
-          "lockedHint": "Tapni da otključaš celu prognozu."
+          "lockedHint": "Tapni da otključaš celu prognozu.",
+          "lockedHintWithCost": "Potroši {{cost}} рубина da otključaš."
         },
         "cards": {
           "career": {
