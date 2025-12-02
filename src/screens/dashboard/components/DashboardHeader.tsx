@@ -9,7 +9,6 @@ import { Feather } from '@expo/vector-icons';
 import { useTheme } from 'rn-vs-lb/theme';
 import { useTranslation } from 'react-i18next';
 
-
 type DashboardHeaderProps = {
   onPressFilters?: () => void;
 };
@@ -27,11 +26,39 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onPressFilters
           justifyContent: 'space-between',
           paddingHorizontal: sizes.xs as number,
         },
-        logo: {
-          letterSpacing: 1,
-          fontWeight: '700',
+        left: {
+          gap: sizes.xs as number,
+        },
+        logoWrapper: {
+          flexDirection: 'row',
+          alignItems: 'center',
+        },
+        ai: {
           fontSize: 24,
+          fontWeight: '900',
+          color: theme.primary,
+          marginRight: 4,
+          letterSpacing: 0.5,
+          textShadowColor: 'rgba(0,0,0,0.25)',
+          textShadowOffset: { width: 0, height: 1 },
+          textShadowRadius: 3,
+        },
+        logoText: {
+          fontSize: 24,
+          fontWeight: '700',
           color: theme.title,
+          letterSpacing: 0.5,
+        },
+        moon: {
+          fontSize: 22,
+          marginLeft: 4,
+          textShadowColor: 'rgba(0,0,0,0.22)',
+          textShadowOffset: { width: 0, height: 1 },
+          textShadowRadius: 3,
+        },
+        subtitle: {
+          ...typography.bodySm,
+          color: theme.greyText,
         },
         button: {
           width: 40,
@@ -41,13 +68,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onPressFilters
           justifyContent: 'center',
           backgroundColor: theme.card,
         },
-        subtitle: {
-          ...typography.bodySm,
-          color: theme.greyText,
-        },
-        left: {
-          gap: sizes.xs as number,
-        },
       }),
     [theme, typography, sizes],
   );
@@ -55,9 +75,17 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ onPressFilters
   return (
     <View style={styles.container}>
       <View style={styles.left}>
-        <Text style={styles.logo}>{t('screens.dashboard.header.title')}</Text>
-        <Text style={styles.subtitle}>{t('screens.dashboard.header.subtitle')}</Text>
+        <View style={styles.logoWrapper}>
+          <Text style={styles.ai}>AI</Text>
+          <Text style={styles.logoText}>Astrology</Text>
+          <Text style={styles.moon}> 🌙</Text>
+        </View>
+        <Text style={styles.subtitle}>
+          {t('screens.dashboard.header.subtitle')}
+        </Text>
       </View>
+
+      {/* Если захочешь включить фильтры — просто раскомментируй */}
       {/* <Pressable
         onPress={onPressFilters}
         style={styles.button}
