@@ -44,7 +44,16 @@ export const TokenBadge = memo(
   }: TokenBadgeProps) => {
     const { theme } = useTheme();
     const styles = getStyles(theme);
-    const { balance: storedBalance, isAdLoaded, showRewardedAd } = useRewardedAdTokens();
+    const handleRewardEarned = useCallback(
+      (updatedBalance: number) => {
+        onBalanceChange?.(updatedBalance);
+      },
+      [onBalanceChange],
+    );
+
+    const { balance: storedBalance, isAdLoaded, showRewardedAd } = useRewardedAdTokens({
+      onRewardEarned: handleRewardEarned,
+    });
     const [isMenuVisible, setIsMenuVisible] = useState(false);
     const [pendingShowAfterClose, setPendingShowAfterClose] = useState(false);
     const { t, i18n } = useTranslation();
