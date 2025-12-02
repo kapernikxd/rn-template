@@ -79,6 +79,7 @@ export const SettingsScreen: FC = () => {
   return (
     <View style={styles.content}>
       <ScrollView contentContainerStyle={styles.body}>
+        <Spacer size='xxs'/>
         <View style={styles.list}>
           <SettingsSection
             title={t('settings.section.userTitle')}

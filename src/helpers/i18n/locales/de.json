@@ -1,6 +1,7 @@
 {
   "welcome": "Willkommen",
   "login": "Anmelden",
+  "logout": "Abmelden",
   "ads": {
     "rewardedCard": {
       "title": "Meine Token",
@@ -21,7 +22,6 @@
       "watchAd": "Anzeige ansehen"
     }
   },
-  "logout": "Abmelden",
   "navigation": {
     "tabs": {
       "dashboard": "Home",
@@ -185,23 +185,54 @@
         "notifications": "Benachrichtigungen"
       },
       "theme": {
-        "title": "Theme"
+        "title": "Design"
       },
+      "userTitle": "Benutzer",
+      "adsTitle": "Werbung",
+      "appTitle": "App",
       "userID": "Benutzer-ID",
       "copyAppLink": "App-Link kopieren",
       "version": "Version {{version}}"
     },
     "editProfile": {
       "title": "Profil bearbeiten",
-      "subtitle": "Fülle deine persönlichen Informationen aus",
+      "subtitle": "Gib deine persönlichen Informationen ein",
       "fields": {
+        "username": {
+          "label": "Benutzername",
+          "placeholder": "Benutzername eingeben"
+        },
+        "gender": {
+          "label": "Geschlecht",
+          "placeholder": "Geschlecht auswählen"
+        },
+        "zodiacSign": {
+          "label": "Sternzeichen",
+          "placeholder": "Sternzeichen auswählen"
+        },
+        "age": {
+          "label": "Alter",
+          "placeholder": "Alter eingeben"
+        },
+        "maritalStatus": {
+          "label": "Familienstand",
+          "placeholder": "Option auswählen"
+        },
+        "partnerName": {
+          "label": "Name des Partners",
+          "placeholder": "Name des Partners eingeben"
+        },
+        "hasChildren": {
+          "label": "Hast du Kinder?",
+          "placeholder": "Option auswählen"
+        },
         "name": {
           "label": "Vorname",
-          "placeholder": "Vorname"
+          "placeholder": "Vorname eingeben"
         },
         "lastname": {
           "label": "Nachname",
-          "placeholder": "Nachname"
+          "placeholder": "Nachname eingeben"
         },
         "profession": {
           "label": "Beruf",
@@ -213,21 +244,40 @@
         },
         "userBio": {
           "label": "Über mich",
-          "placeholder": "Kurze Informationen über dich"
+          "placeholder": "Kurze Biografie"
         }
       },
       "validation": {
-        "nameRequired": "Bitte Vornamen eingeben!",
-        "lastnameRequired": "Bitte Nachnamen eingeben!"
+        "nameRequired": "Gib deinen Vornamen ein!",
+        "lastnameRequired": "Gib deinen Nachnamen ein!",
+        "zodiacSignRequired": "Wähle ein Sternzeichen aus",
+        "ageDigits": "Das Alter darf nur Ziffern enthalten"
+      },
+      "options": {
+        "gender": {
+          "male": "Männlich",
+          "female": "Weiblich"
+        },
+        "maritalStatus": {
+          "single": "Single",
+          "inRelationship": "In einer Beziehung"
+        },
+        "hasChildren": {
+          "no": "Nein",
+          "yes": "Ja"
+        }
+      },
+      "snackbar": {
+        "updated": "Profil aktualisiert"
       }
     },
     "account": {
       "title": "Kontoeinstellungen",
-      "subtitle": "Aktualisiere deinen Benutzernamen und verwalte dein Konto",
+      "subtitle": "Ändere deinen Benutzernamen und verwalte dein Konto",
       "fields": {
         "username": {
           "label": "Benutzername",
-          "placeholder": "Benutzernamen eingeben"
+          "placeholder": "Benutzername eingeben"
         },
         "email": {
           "label": "E-Mail",
@@ -241,29 +291,29 @@
       "fields": {
         "facebook": {
           "label": "Facebook",
-          "placeholder": "Benutzernamen eingeben"
+          "placeholder": "Benutzername eingeben"
         },
         "instagram": {
           "label": "Instagram",
-          "placeholder": "Benutzernamen eingeben"
+          "placeholder": "Benutzername eingeben"
         },
         "vk": {
           "label": "VK",
-          "placeholder": "Benutzernamen eingeben"
+          "placeholder": "Benutzername eingeben"
         },
         "tg": {
           "label": "Telegram",
-          "placeholder": "Benutzernamen eingeben"
+          "placeholder": "Benutzername eingeben"
         }
       }
     },
     "changePassword": {
       "title": "Passwort ändern",
-      "subtitle": "Ändere das Konto-Passwort",
+      "subtitle": "Aktualisiere dein Kontopasswort",
       "fields": {
         "oldPassword": {
           "label": "Aktuelles Passwort",
-          "placeholder": "Passwort eingeben"
+          "placeholder": "Aktuelles Passwort eingeben"
         },
         "password": {
           "label": "Neues Passwort",
@@ -275,16 +325,16 @@
         }
       },
       "validation": {
-        "oldPasswordRequired": "Bitte Passwort eingeben!",
-        "passwordRequired": "Bitte Passwort eingeben!",
-        "confirmPasswordRequired": "Bitte Passwort bestätigen!",
+        "oldPasswordRequired": "Gib dein aktuelles Passwort ein!",
+        "passwordRequired": "Gib ein Passwort ein!",
+        "confirmPasswordRequired": "Bestätige dein Passwort!",
         "passwordMinLength": "Das Passwort muss mindestens {{min}} Zeichen lang sein!",
-        "passwordsDoNotMatch": "Passwörter stimmen nicht überein!"
+        "passwordsDoNotMatch": "Die Passwörter stimmen nicht überein!"
       }
     },
     "notifications": {
       "title": "Benachrichtigungseinstellungen",
-      "subtitle": "Lege Regeln für Push-Benachrichtigungen fest",
+      "subtitle": "Konfiguriere Push-Benachrichtigungen",
       "pushToggleTitle": "Push-Benachrichtigungen",
       "types": {
         "likes": "Likes",
@@ -292,14 +342,14 @@
         "groupMessages": "Gruppennachrichten",
         "participants": "Teilnehmer",
         "newPost": "Beitrag erstellt/aktualisiert",
-        "invites": "Einladungen zum Beitrag",
+        "invites": "Einladungen",
         "pollAnswers": "Umfrageantworten",
         "pollInvites": "Umfrageeinladungen"
       }
     },
     "component": {
       "language": {
-        "title": "Interface-Sprache",
+        "title": "Sprache der Benutzeroberfläche",
         "modalTitle": "Sprache auswählen",
         "languages": {
           "en": "Englisch",
@@ -313,19 +363,19 @@
         }
       },
       "feedback": {
-        "title": "Feedback und Fehler",
-        "subtitle": "Tippe, um uns auf Telegram zu schreiben",
-        "unsupported": "Telegram-URL kann nicht geöffnet werden"
+        "title": "Feedback und Probleme",
+        "subtitle": "Tippen, um uns auf Telegram zu kontaktieren",
+        "unsupported": "Telegram-Link kann nicht geöffnet werden"
       },
       "theme": {
-        "title": "Theme",
-        "light": "Helles Theme",
-        "dark": "Dunkles Theme"
+        "title": "Design",
+        "light": "Helles Design",
+        "dark": "Dunkles Design"
       },
       "deleteAccount": {
         "title": "Konto löschen",
         "modalTitle": "Löschen bestätigen",
-        "modalDescription": "Alle deine Daten, einschließlich Profil, Events und Chat-Verlauf, werden dauerhaft gelöscht. Dieser Vorgang ist irreversibel und wird innerhalb von 24 Stunden abgeschlossen. Bist du sicher, dass du fortfahren möchtest?",
+        "modalDescription": "Alle deine Daten — Profil, Ereignisse und Chatverlauf — werden dauerhaft gelöscht. Dieser Vorgang ist unwiderruflich und wird innerhalb von 24 Stunden abgeschlossen. Bist du sicher, dass du fortfahren möchtest?",
         "requestSent": "Deine Anfrage wurde gesendet. Das Konto wird innerhalb von 24 Stunden gelöscht."
       }
     }
@@ -555,32 +605,117 @@
       "button": "Aktualisieren"
     }
   },
+  "reports": {
+    "reasons": {
+      "user": {
+        "spamOrFraud": "Spam or fraud",
+        "harassmentOrBullying": "Harassment or bullying",
+        "inappropriateContent": "Inappropriate content",
+        "fakeProfile": "Fake profile"
+      },
+      "post": {
+        "spamOrMisleading": "Spam or misleading content",
+        "hateOrDiscrimination": "Hate or discrimination",
+        "violenceOrThreats": "Violence or threats",
+        "sexualContent": "Sexual content",
+        "harassmentOrBullying": "Harassment or bullying"
+      },
+      "common": {
+        "other": "Other"
+      }
+    }
+  },
   "screens": {
     "dashboard": {
+      "header": {
+        "title": "AiAstrology",
+        "subtitle": "Tägliche astrologische Orientierung",
+        "accessibility": {
+          "openFilters": "Filter öffnen"
+        }
+      },
       "tabs": {
         "all": "Alle"
       },
       "heading": "KI-Begleiter",
-      "subheading": "Wähle einen Bot, um ein Gespräch zu starten oder Inspiration zu finden. Das Team fügt täglich neue Charaktere und Gesprächsszenarien hinzu.",
+      "subheading": "Wähle einen Bot, um ein Gespräch zu beginnen oder Inspiration zu finden. Das Team fügt täglich neue Charaktere und Szenarien hinzu.",
       "empty": {
-        "default": "KI-Bots erscheinen hier in Kürze. Versuche es später erneut."
+        "default": "Hier erscheinen bald KI-Bots. Versuche es später erneut."
       },
       "experience": {
         "accessibility": {
           "uploadPhoto": "Foto hochladen",
           "closePreview": "Vorschau schließen"
         },
-        "uploadPrompt": "Tippe hier, um das Foto hochzuladen, das du zum Leben erwecken möchtest!"
+        "uploadPrompt": "Tippe hier, um ein Foto hochzuladen, das du zum Leben erwecken möchtest!"
+      },
+      "horoscope": {
+        "dateFormat": "dddd, D. MMMM",
+        "loading": "Dein Horoskop wird vorbereitet...",
+        "errorTitle": "Horoskop konnte nicht geladen werden.",
+        "retry": "Erneut versuchen",
+        "retryAccessibility": "Erneut versuchen, das Horoskop abzurufen",
+        "emptyPlaceholder": "Dein Horoskop erscheint hier, sobald es bereit ist.",
+        "fetchError": "Horoskop konnte nicht abgerufen werden",
+        "card": {
+          "status": {
+            "loading": "Prognose wird aktualisiert...",
+            "unlocked": "Bereit",
+            "locked": "Gesperrt"
+          },
+          "accessibility": {
+            "open": "Horoskop öffnen: {{title}}"
+          },
+          "lockedHint": "Tippe, um die vollständige Prognose freizuschalten."
+        },
+        "cards": {
+          "career": {
+            "title": "Karriere",
+            "description": "Einblicke, die dir helfen, berufliche Schritte zu planen."
+          },
+          "love": {
+            "title": "Liebe",
+            "description": "Fokus auf Beziehungen und emotionales Gleichgewicht."
+          },
+          "health": {
+            "title": "Gesundheit",
+            "description": "Tipps für Energie, Wohlbefinden und gute Gewohnheiten."
+          },
+          "family": {
+            "title": "Familie",
+            "description": "Hinweise für Zuhause und enge Verbindungen."
+          }
+        },
+        "tabs": {
+          "yesterday": "Gestern",
+          "today": "Heute",
+          "tomorrow": "Morgen",
+          "week": "Diese Woche",
+          "month": "Dieser Monat"
+        },
+        "modal": {
+          "defaultTitle": "Horoskop",
+          "closeAccessibility": "Horoskop schließen",
+          "emptyState": "Für diese Kategorie gibt es heute noch kein Horoskop."
+        }
+      },
+      "profileBanner": {
+        "title": "Mach dein Horoskop persönlicher",
+        "partial": "Du hast {{percentage}}% deines Profils ausgefüllt. Füge noch etwas hinzu, um eine genauere Vorhersage zu erhalten.",
+        "initial": "Füge einige Details über dich hinzu, um das Horoskop persönlicher zu gestalten.",
+        "accessibility": {
+          "open": "Profil ausfüllen für ein persönliches Horoskop",
+          "close": "Profilhinweis ausblenden"
+        },
+        "progressLabel": "Abgeschlossen: {{percentage}}%"
       }
     },
     "library": {
       "title": "Galerie",
       "pendingStatus_one": "{{count}} Bild wird verarbeitet...",
-      "pendingStatus_few": "{{count}} Bilder werden verarbeitet...",
-      "pendingStatus_many": "{{count}} Bilder werden verarbeitet...",
       "pendingStatus_other": "{{count}} Bilder werden verarbeitet...",
       "refreshStatus": "Status aktualisieren",
-      "empty": "Deine verarbeiteten Bilder erscheinen hier."
+      "empty": "Deine verarbeiteten Bilder erscheinen hier, sobald sie fertig sind."
     },
     "aibot": {
       "profile": {
@@ -588,7 +723,7 @@
         "deleteMessage": "Bist du sicher, dass du diesen KI-Bot löschen möchtest? Diese Aktion kann nicht rückgängig gemacht werden.",
         "actions": {
           "follow": "Folgen",
-          "unfollow": "Nicht mehr folgen"
+          "unfollow": "Entfolgen"
         },
         "reportTitle": "Nutzer melden",
         "reportPlaceholder": "Zusätzliche Details (optional)"
@@ -598,17 +733,17 @@
         "chatButton": "Zum Chat"
       },
       "tabs": {
-        "info": "Informationen",
+        "info": "Info",
         "gallery": "Galerie"
       },
       "info": {
-        "introTitle": "Vorstellung",
+        "introTitle": "Einführung",
         "introPlaceholder": "Der Ersteller hat noch keine Beschreibung hinzugefügt.",
-        "usefulnessTitle": "Wobei er nützlich ist",
-        "usefulnessPlaceholder": "Nützlichkeit noch nicht ausgefüllt.",
+        "usefulnessTitle": "Wie er hilft",
+        "usefulnessPlaceholder": "Noch keine Nutzenbeschreibung vorhanden.",
         "creatorTitle": "Informationen zum Ersteller",
         "creatorLabel": "Ersteller",
-        "createdAtLabel": "Erstellt"
+        "createdAtLabel": "Erstellt am"
       },
       "gallery": {
         "empty": "Der Ersteller hat noch keine Fotos hinzugefügt."
@@ -631,27 +766,27 @@
         "steps": {
           "0": {
             "title": "Charakter",
-            "description": "Avatar, Name und Basisinfos, die den ersten Eindruck prägen."
+            "description": "Avatar, Name und Schlüsselinformationen, die den ersten Eindruck formen."
           },
           "1": {
-            "title": "Mehrwert",
-            "description": "Kategorien und Nutzen, den der Nutzer aus dem Gespräch mit dem Agenten zieht."
+            "title": "Wert",
+            "description": "Kategorien und Nutzen, den Nutzer aus dem Agenten erhalten."
           },
           "2": {
-            "title": "Charakterzug",
-            "description": "Prompt, Geschichte und Begrüßung, die den Gesprächsstil bestimmen."
+            "title": "Persönlichkeit",
+            "description": "Prompt, Geschichte und Begrüßung, die den Kommunikationsstil bestimmen."
           },
           "3": {
             "title": "Medien",
-            "description": "Bildergalerie, die hilft, den Agenten zu visualisieren."
+            "description": "Bildergalerie zur Visualisierung des Agenten."
           }
         },
         "identity": {
           "title": "Personalisierung",
-          "description": "Füge ein Bild und Basisinformationen hinzu, damit Nutzer deinen Agenten sofort erkennen.",
+          "description": "Füge ein Bild und grundlegende Daten hinzu, damit Nutzer deinen Agenten sofort erkennen.",
           "avatar": {
             "placeholder": "Hochladen",
-            "hint": "Empfohlen wird ein quadratisches Bild mit mindestens 512×512 px."
+            "hint": "Benutze ein quadratisches Bild mit mindestens 512×512 px."
           },
           "fields": {
             "firstName": {
@@ -660,51 +795,51 @@
             },
             "lastName": {
               "label": "Nachname",
-              "placeholder": "Nachnamen eingeben"
+              "placeholder": "Nachnamen des Agenten eingeben"
             },
             "profession": {
               "label": "Beruf oder Rolle",
-              "placeholder": "Z. B. Marketer oder Dozent"
+              "placeholder": "Zum Beispiel: Marketer oder Lehrer"
             }
           }
         },
         "focus": {
-          "title": "Mehrwert und Zielgruppe",
-          "description": "Wähle Kategorien und formuliere, wobei dein Agent hilft.",
+          "title": "Wert und Zielgruppe",
+          "description": "Wähle Kategorien und beschreibe, wie dein Agent hilfreich ist.",
           "categoriesTitle": "Kategorien",
-          "usefulnessTitle": "Wobei wird der Agent nützlich sein?",
-          "usefulnessPlaceholder": "Mehrwert hinzufügen",
-          "usefulnessEmpty": "Füge mindestens einen Mehrwertpunkt hinzu."
+          "usefulnessTitle": "Wie hilft der Agent?",
+          "usefulnessPlaceholder": "Nutzenpunkt hinzufügen",
+          "usefulnessEmpty": "Füge mindestens einen Nutzenpunkt hinzu."
         },
         "voice": {
-          "title": "Charakter",
-          "description": "Beschreibe Charakter, Geschichte und Startnachricht des Agenten.",
+          "title": "Persönlichkeit",
+          "description": "Beschreibe Prompt, Geschichte und Begrüßungsnachricht des Agenten.",
           "fields": {
             "prompt": {
-              "label": "System-Prompt",
-              "placeholder": "Verhalten und Gesprächsstil beschreiben"
+              "label": "Systemprompt",
+              "placeholder": "Verhalten und Ton beschreiben"
             },
             "description": {
               "label": "Profilbeschreibung",
-              "placeholder": "Beschreibe, was der Agent macht"
+              "placeholder": "Erkläre, was der Agent tut"
             },
             "intro": {
-              "label": "Begrüßungsnachricht",
-              "placeholder": "Was der Agent zu Beginn sagt"
+              "label": "Begrüßung",
+              "placeholder": "Was sagt der Agent als Erstes?"
             }
           }
         },
         "media": {
-          "title": "Medien-Set",
-          "description": "Bereite visuelle Materialien für die Galerie vor. Verbleibend {{remaining}} von {{max}}.",
+          "title": "Medienkit",
+          "description": "Bereite die Galerie vor. {{remaining}} von {{max}} Slots verbleiben.",
           "upload": "Bilder hochladen",
-          "limitReached": "Limit hochgeladener Bilder erreicht",
+          "limitReached": "Bildlimit erreicht",
           "empty": "Du hast noch keine Bilder hinzugefügt."
         },
         "completed": {
           "title": "KI-Agent erstellt!",
-          "subtitleWithName": "{{name}} {{lastname}} ist bereit, Nutzer kennenzulernen.",
-          "subtitleDefault": "Dein Agent ist bereit, Nutzer kennenzulernen.",
+          "subtitleWithName": "{{name}} {{lastname}} ist bereit, Nutzer zu treffen.",
+          "subtitleDefault": "Dein Agent ist bereit, Nutzer zu treffen.",
           "openProfile": "Profil öffnen",
           "createAnother": "Weiteren erstellen"
         },
@@ -716,12 +851,12 @@
         "headerTitle": "KI-Agent bearbeiten",
         "steps": {
           "0": {
-            "title": "Grunddaten",
-            "description": "Avatar und Basisinformationen aktualisieren."
+            "title": "Grundlagen",
+            "description": "Avatar und grundlegende Informationen aktualisieren."
           },
           "1": {
             "title": "Kategorien",
-            "description": "Bereiche wählen und Nutzenliste aktualisieren."
+            "description": "Kategorien und Nutzenliste anpassen."
           },
           "2": {
             "title": "Stimme",
@@ -733,8 +868,8 @@
           }
         },
         "identity": {
-          "title": "Grunddaten",
-          "description": "Avatar und Basisinformationen des Agenten aktualisieren.",
+          "title": "Basisdaten",
+          "description": "Avatar und Schlüsselinformationen aktualisieren.",
           "avatar": {
             "placeholder": "Ändern",
             "hint": "Wähle ein neues Bild oder entferne das aktuelle."
@@ -750,41 +885,41 @@
             },
             "profession": {
               "label": "Beruf",
-              "placeholder": "Z. B. Designer"
+              "placeholder": "Zum Beispiel: Designer"
             }
           }
         },
         "focus": {
-          "title": "Kategorien und Mehrwert",
-          "description": "Bereiche auswählen und die Mehrwertliste des Agenten aktualisieren.",
+          "title": "Kategorien und Wert",
+          "description": "Wähle Richtungen und aktualisiere die Nutzenpunkte.",
           "categoriesTitle": "Kategorien",
-          "usefulnessTitle": "Mehrwert des Agenten",
-          "usefulnessPlaceholder": "Neuen Punkt hinzufügen",
-          "usefulnessEmpty": "Füge mindestens einen Punkt hinzu."
+          "usefulnessTitle": "Wert des Agenten",
+          "usefulnessPlaceholder": "Neuen Nutzenpunkt hinzufügen",
+          "usefulnessEmpty": "Füge mindestens einen Nutzenpunkt hinzu."
         },
         "voice": {
           "title": "Stimme und Geschichte",
-          "description": "Prompt, Beschreibung und Begrüßung des Agenten aktualisieren.",
+          "description": "Prompt, Beschreibung und Begrüßung aktualisieren.",
           "fields": {
             "prompt": {
-              "label": "System-Prompt",
-              "placeholder": "Charakter und Stil beschreiben"
+              "label": "Systemprompt",
+              "placeholder": "Persönlichkeit und Ton beschreiben"
             },
             "description": {
               "label": "Profilbeschreibung",
-              "placeholder": "Biografie ergänzen"
+              "placeholder": "Weitere biografische Details hinzufügen"
             },
             "intro": {
-              "label": "Begrüßungsnachricht",
-              "placeholder": "Nachricht für den ersten Kontakt"
+              "label": "Begrüßung",
+              "placeholder": "Erste Nachricht für den Dialogstart"
             }
           }
         },
         "media": {
           "title": "Galerie",
-          "description": "Bildergalerie verwalten. Verbleibend {{remaining}} von {{max}}.",
+          "description": "Bilder verwalten. {{remaining}} von {{max}} Slots verbleiben.",
           "upload": "Bilder hinzufügen",
-          "limitReached": "Bilderlimit erreicht",
+          "limitReached": "Bildlimit erreicht",
           "empty": "Der Agent hat noch keine Bilder."
         },
         "actions": {
@@ -796,11 +931,11 @@
       "steps": {
         "language": {
           "title": "🌐 Wähle deine Sprache",
-          "description": "Lege die Sprache der Oberfläche fest, um deine AI-Pair-Erfahrung anzupassen."
+          "description": "Wähle die Sprache der Benutzeroberfläche, um dein AI-Pair-Erlebnis zu personalisieren."
         },
         "zodiac": {
           "title": "✨ Was ist dein Sternzeichen?",
-          "description": "Damit passen wir Horoskope und Empfehlungen speziell für dich an."
+          "description": "Wir verwenden es, um Horoskope und Empfehlungen für dich anzupassen."
         }
       },
       "stepCounter": "{{current}} von {{total}}",
@@ -808,23 +943,23 @@
       "slides": {
         "language": {
           "title": "🌐 Wähle deine Sprache",
-          "description": "Lege die Sprache der Oberfläche fest, um deine AI-Pair-Erfahrung anzupassen."
+          "description": "Wähle die Sprache der Benutzeroberfläche für ein persönlicheres Erlebnis."
         },
         "welcome": {
           "title": "✨ Willkommen",
           "description": "Dein persönlicher KI-Partner für Gespräche, Ideen und Unterstützung."
         },
         "memory": {
-          "title": "🧠 Er merkt sich Wichtiges",
+          "title": "🧠 Er erinnert sich an das Wichtige",
           "description": "AI Pair merkt sich deinen Kontext und lernt aus deinen Geschichten."
         },
         "character": {
-          "title": "🎭 Charakter erstellen",
-          "description": "Name, Gesprächsstil, Ziele — passe alles an dich an."
+          "title": "🎭 Gestalte den Charakter",
+          "description": "Name, Ton, Ziele – konfiguriere alles nach deinem Geschmack."
         },
         "start": {
-          "title": "🚀 Bereit zum Start?",
-          "description": "Lerne deinen AI Pair kennen und beginne den Dialog."
+          "title": "🚀 Bereit zu beginnen?",
+          "description": "Triff deinen AI Pair und starte das Gespräch."
         }
       },
       "skip": "Überspringen",
@@ -833,18 +968,18 @@
     },
     "profile": {
       "tabs": {
-        "myBots": "Meine",
-        "subscriptions": "Abos"
+        "myBots": "Meine Bots",
+        "subscriptions": "Abonnements"
       },
       "fallbackName": "Profil",
-      "featureSoon": "Diese Funktion ist bald verfügbar.",
+      "featureSoon": "Diese Funktion wird bald verfügbar sein.",
       "empty": {
-        "myBots": "Du hast noch keine KI-Bots erstellt. Erstelle deinen ersten Charakter!",
-        "subscriptions": "Du folgst noch keinem KI-Bot."
+        "myBots": "Du hast noch keine KI-Bots erstellt. Erstelle deinen ersten!",
+        "subscriptions": "Du hast noch keine Bots abonniert."
       },
       "userBotsSection": {
         "title": "KI-Bots des Nutzers",
-        "empty": "Der Nutzer hat noch keine KI-Bots erstellt."
+        "empty": "Dieser Nutzer hat noch keine KI-Bots erstellt."
       }
     },
     "chats": {
@@ -852,71 +987,71 @@
         "group": "Gruppe",
         "bot": "Bot"
       },
-      "searchPlaceholder": "Suche...",
+      "searchPlaceholder": "Suchen...",
       "messages": {
         "reply": "Antworten",
         "photoPlaceholder": "Foto",
         "placeholder": "Nachricht",
         "editing": "Bearbeiten",
-        "clearHistory": "Chat-Verlauf löschen"
+        "clearHistory": "Chatverlauf löschen"
       }
     },
-  "docs": {
+    "docs": {
       "terms": {
         "title": "Nutzungsbedingungen",
         "sections": {
           "welcome": {
             "title": "Willkommen bei {{siteName}}!",
             "paragraph1": {
-              "prefix": "Diese Nutzungsbedingungen („Bedingungen“) regeln den Zugriff auf und die Nutzung der mobilen App {{siteName}} sowie der Website ",
+              "prefix": "Diese Nutzungsbedingungen (die „Bedingungen“) regeln den Zugang zur mobilen App und zur Website von {{siteName}} ",
               "suffix": " (zusammen der „Service“)."
             },
-            "paragraph2": "Durch den Zugriff auf den Service oder dessen Nutzung bestätigst du dein Einverständnis mit diesen Bedingungen.",
-            "paragraph3": "Wenn du den Bedingungen nicht zustimmst, nutze den Service bitte nicht."
+            "paragraph2": "Durch den Zugriff auf den Service oder dessen Nutzung stimmst du diesen Bedingungen zu.",
+            "paragraph3": "Wenn du nicht einverstanden bist, nutze den Service bitte nicht."
           },
           "usage": {
             "title": "1. Nutzung des Service",
             "items": [
-              "Nutze den Service nur im Einklang mit geltendem Recht.",
-              "Nutze den Service nicht für rechtswidrige oder unbefugte Zwecke.",
-              "Belästige, beleidige oder schade anderen Nutzern nicht.",
-              "Beeinträchtige nicht die Sicherheit oder Integrität des Service."
+              "Nutze den Service nur gemäß geltendem Recht.",
+              "Nutze den Service nicht für illegale oder unbefugte Zwecke.",
+              "Belästige, missbrauche oder schade anderen Nutzern nicht.",
+              "Gefährde nicht die Sicherheit oder Integrität des Service."
             ]
           },
           "content": {
             "title": "2. Nutzerinhalte",
-            "paragraph1": "Durch das Bereitstellen von Inhalten gewährst du {{siteName}} eine nicht ausschließliche, weltweite und kostenfreie Lizenz zur Nutzung, Speicherung, Anzeige und Verbreitung deiner Inhalte.",
-            "paragraph2": "Du bist für die von dir erstellten und verbreiteten Inhalte verantwortlich."
+            "paragraph1": "Durch das Bereitstellen von Inhalten gewährst du {{siteName}} eine nicht-exklusive, weltweite und gebührenfreie Lizenz zur Nutzung, Speicherung, Anzeige und Verbreitung.",
+            "paragraph2": "Du bist für die Inhalte verantwortlich, die du erstellst und teilst."
           },
           "security": {
-            "title": "3. Registrierung und Kontosicherheit",
-            "paragraph": "Du bist für die Vertraulichkeit deiner Zugangsdaten und alle Handlungen in deinem Konto verantwortlich."
+            "title": "3. Kontosicherheit",
+            "paragraph": "Du bist für die vertrauliche Aufbewahrung deiner Zugangsdaten und alle Aktivitäten in deinem Konto verantwortlich."
           },
           "privacy": {
             "title": "4. Datenschutz",
             "paragraph": {
-              "prefix": "Die Erhebung und Nutzung personenbezogener Daten unterliegt unserer ",
-              "suffix": "."
+              "prefix": "Die Erhebung und Nutzung personenbezogener Daten wird durch unsere ",
+              "suffix": " geregelt."
             },
-            "linkLabel": "Datenschutzerklärung"
+            "linkLabel": "Datenschutzrichtlinie"
           },
           "ip": {
             "title": "5. Geistiges Eigentum",
-            "paragraph": "Alle Rechte am Service (ausgenommen Nutzerinhalte) gehören {{siteName}} und seinen Lizenzgebern."
+            "paragraph": "Alle Rechte am Service (außer Nutzerinhalten) gehören {{siteName}} und seinen Lizenzgebern."
           },
           "termination": {
-            "title": "6. Beendigung des Zugangs",
+            "title": "6. Kündigung",
             "paragraph": "Wir können deinen Zugang zum Service jederzeit und aus beliebigem Grund aussetzen oder beenden."
           },
           "changes": {
             "title": "7. Änderungen der Bedingungen",
-            "paragraph": "Wir können diese Bedingungen jederzeit aktualisieren. Die weitere Nutzung des Service nach Inkrafttreten der Änderungen gilt als Zustimmung zu den neuen Bedingungen."
+            "paragraph": "Wir können diese Bedingungen jederzeit aktualisieren. Durch die weitere Nutzung des Service akzeptierst du die neuen Bedingungen."
           },
           "moderation": {
-            "title": "8. Meldungen und Moderation",
-            "paragraph1": "Bei {{siteName}} gilt Nulltoleranz gegenüber unzulässigen Inhalten, einschließlich Hassrede, Belästigung, Pornografie und jeglicher illegaler Aktivitäten.",
-            "paragraph2": "Nutzer können unangemessene Inhalte direkt in der App melden. Wir prüfen alle Meldungen innerhalb von 24 Stunden und ergreifen geeignete Maßnahmen, einschließlich Entfernen von Inhalten oder Sperren des verantwortlichen Nutzers.",
-            "paragraph3": "Durch die Nutzung von {{siteName}} erklärst du dich zu respektvollem Verhalten und zur Einhaltung dieser Regeln bereit."
+            "title": "8. Beschwerden und Moderation",
+            "paragraph1": "{{siteName}} toleriert keinerlei verbotene Inhalte, einschließlich Hassrede, Belästigung, Pornografie oder illegaler Aktivitäten.",
+            "paragraph2": "Nutzer können unangemessene Inhalte direkt in der App melden. Wir prüfen alle Meldungen innerhalb von 24 Stunden.",
+            "paragraph3": "Mit der Nutzung von {{siteName}} verpflichtest du dich zu respektvollem Verhalten."
           },
           "contact": {
             "title": "9. Kontakt",
@@ -926,27 +1061,6 @@
             }
           }
         }
-      }
-    }
-  }
-  ,
-  "reports": {
-    "reasons": {
-      "user": {
-        "spamOrFraud": "Spam or fraud",
-        "harassmentOrBullying": "Harassment or bullying",
-        "inappropriateContent": "Inappropriate content",
-        "fakeProfile": "Fake profile"
-      },
-      "post": {
-        "spamOrMisleading": "Spam or misleading content",
-        "hateOrDiscrimination": "Hate or discrimination",
-        "violenceOrThreats": "Violence or threats",
-        "sexualContent": "Sexual content",
-        "harassmentOrBullying": "Harassment or bullying"
-      },
-      "common": {
-        "other": "Other"
       }
     }
   }
