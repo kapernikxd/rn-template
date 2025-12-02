@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Modal,
   Platform,
@@ -28,6 +28,7 @@ type TokenBadgeProps = {
   valueStyle?: StyleProp<TextStyle>;
   iconColor?: string;
   iconSize?: number;
+  onBalanceChange?: (balance: number) => void;
 };
 
 export const TokenBadge = memo(
@@ -39,6 +40,7 @@ export const TokenBadge = memo(
     valueStyle,
     iconColor,
     iconSize = 18,
+    onBalanceChange,
   }: TokenBadgeProps) => {
     const { theme } = useTheme();
     const styles = getStyles(theme);
@@ -51,6 +53,10 @@ export const TokenBadge = memo(
       () => (typeof balance === "number" ? balance : storedBalance),
       [balance, storedBalance],
     );
+
+    useEffect(() => {
+      onBalanceChange?.(currentBalance);
+    }, [currentBalance, onBalanceChange]);
 
     const locale = i18n.language || "en";
     const formattedBalance = useMemo(
