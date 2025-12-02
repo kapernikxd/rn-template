@@ -62,7 +62,7 @@ const calculateProfileCompletion = (profileInfo: ProfileInfoData): number => {
 
 export const DashboardScreen = () => {
   const { theme, sizes } = useTheme();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const insets = useSafeAreaInsets();
   const { setColors } = useSafeAreaColors();
   const navigation = useNavigation<DashboardScreenProps['navigation']>();
@@ -195,7 +195,11 @@ export const DashboardScreen = () => {
 
       try {
         const profileInfo = await getProfileInfo();
-        const response = await astrologyService.generateHoroscope(category, profileInfo);
+        const response = await astrologyService.generateHoroscope(
+          category,
+          profileInfo,
+          i18n.language,
+        );
         const normalizedHoroscope =
           typeof response.horoscope === 'string' ? response.horoscope.trim() : '';
 
@@ -225,7 +229,7 @@ export const DashboardScreen = () => {
         }
       }
     },
-    [t],
+    [i18n.language, t],
   );
 
   useEffect(() => {
