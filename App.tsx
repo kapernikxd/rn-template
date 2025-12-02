@@ -1,17 +1,17 @@
+import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider, useTheme } from 'rn-vs-lb/theme';
-import { StoreProvider, useRootStore, useStoreData } from './src/store/StoreProvider';
+import { StoreProvider } from './src/store/StoreProvider';
 import { AppNavigator } from './src/navigation';
 import { Theme } from './src/constants/theme';
 import { Host } from 'react-native-portalize';
 import CustomSnackbar from './src/components/CustomSnackbar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ForceUpdateWrapper } from './src/components/layouts/ForceUpdateWrapper';
-import { View, StyleSheet } from 'react-native';
-import { BottomAdBanner } from './src/components/ads/BottomAdBanner';
 
-import './src/helpers/i18n';
+import i18n from './src/helpers/i18n';
+import { getPreferredLanguage } from './src/helpers/i18n/languageStorage';
 
 const AppStatusBar = () => {
   const { isDark, theme } = useTheme();
@@ -30,6 +30,30 @@ export default function App() {
   //   reportAppOpen();
   // }, []);
 
+  const [isLanguageReady, setIsLanguageReady] = useState(false);
+
+  useEffect(() => {
+    const initializeLanguage = async () => {
+      try {
+        const storedLanguage = await getPreferredLanguage();
+
+        if (storedLanguage) {
+          await i18n.changeLanguage(storedLanguage);
+        }
+      } catch (error) {
+        console.warn('Failed to initialize preferred language', error);
+      } finally {
+        setIsLanguageReady(true);
+      }
+    };
+
+    void initializeLanguage();
+  }, []);
+
+  if (!isLanguageReady) {
+    return null;
+  }
+
   return (
     <Host>
       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -47,28 +71,10 @@ export default function App() {
 }
 
 const AppWithConfig = () => {
-  const { configStore } = useRootStore();
-  const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
-
   return (
     <ForceUpdateWrapper>
-      <View style={styles.appContainer}>
-        <View style={styles.navigatorContainer}>
-          <AppNavigator />
-        </View>
-        {adsEnabled ? <BottomAdBanner /> : null}
-      </View>
+      <AppNavigator />
       <CustomSnackbar />
     </ForceUpdateWrapper>
   );
 };
-
-const styles = StyleSheet.create({
-  appContainer: {
-    flex: 1,
-    justifyContent: 'space-between',
-  },
-  navigatorContainer: {
-    flex: 1,
-  },
-});

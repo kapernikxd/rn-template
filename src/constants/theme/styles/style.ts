@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { FontsType, ThemeType } from '../theme';
+import { FontsType, ThemeType } from 'rn-vs-lb/theme';
 
 /**
     COMMON COMPONENT STYLES

@@ -1,6 +1,7 @@
 import React, { memo, useCallback, useMemo, useState } from "react";
 import {
   Modal,
+  Platform,
   Pressable,
   StyleProp,
   StyleSheet,
@@ -20,7 +21,6 @@ const formatTokens = (value: number, locale: string) =>
   Number.isFinite(value) ? value.toLocaleString(locale) : String(value);
 
 type TokenBadgeProps = {
-  /** Текущее количество токенов. Если не передано — загружается из AsyncStorage. */
   balance?: number;
   label?: string;
   style?: StyleProp<ViewStyle>;
@@ -44,6 +44,7 @@ export const TokenBadge = memo(
     const styles = getStyles(theme);
     const { balance: storedBalance, isAdLoaded, showRewardedAd } = useRewardedAdTokens();
     const [isMenuVisible, setIsMenuVisible] = useState(false);
+    const [pendingShowAfterClose, setPendingShowAfterClose] = useState(false);
     const { t, i18n } = useTranslation();
 
     const currentBalance = useMemo(
@@ -58,10 +59,17 @@ export const TokenBadge = memo(
     );
 
     const accessibilityLabelText = label
-      ? t('ads.tokenBadge.accessibility.withLabel', { label, balance: formattedBalance })
-      : t('ads.tokenBadge.accessibility.balance', { balance: formattedBalance });
+      ? t("ads.tokenBadge.accessibility.withLabel", {
+          label,
+          balance: formattedBalance,
+        })
+      : t("ads.tokenBadge.accessibility.balance", {
+          balance: formattedBalance,
+        });
 
-    const menuStatusText = t(isAdLoaded ? 'ads.tokenBadge.adReady' : 'ads.tokenBadge.adLoading');
+    const menuStatusText = t(
+      isAdLoaded ? "ads.tokenBadge.adReady" : "ads.tokenBadge.adLoading",
+    );
 
     const openMenu = useCallback(() => {
       setIsMenuVisible(true);
@@ -72,9 +80,24 @@ export const TokenBadge = memo(
     }, []);
 
     const handleWatchAd = useCallback(() => {
+      if (!isAdLoaded) {
+        // просто игнорим клик или можешь тут показать тост
+        return;
+      }
+
+      // 1) Закрываем модалку
       closeMenu();
-      showRewardedAd();
-    }, [closeMenu, showRewardedAd]);
+
+      // 2) Ставим флаг, что после закрытия надо показать рекламу
+      setPendingShowAfterClose(true);
+
+      // 3) Через небольшой таймаут (особенно важно для iOS) вызываем показ
+      const delay = Platform.OS === "ios" ? 350 : 0;
+      setTimeout(() => {
+        setPendingShowAfterClose(false);
+        showRewardedAd();
+      }, delay);
+    }, [closeMenu, isAdLoaded, showRewardedAd]);
 
     return (
       <>
@@ -97,26 +120,42 @@ export const TokenBadge = memo(
                 {label}
               </Text>
             )}
-            <Text style={[styles.value, { color: theme.title }, valueStyle]} numberOfLines={1}>
+            <Text
+              style={[styles.value, { color: theme.title }, valueStyle]}
+              numberOfLines={1}
+            >
               {formattedBalance}
             </Text>
           </View>
         </TouchableOpacity>
 
-        <Modal transparent visible={isMenuVisible} animationType="fade" onRequestClose={closeMenu}>
+        <Modal
+          transparent
+          visible={isMenuVisible}
+          animationType="fade"
+          onRequestClose={closeMenu}
+        >
           <Pressable style={styles.menuBackdrop} onPress={closeMenu}>
             <Pressable
               style={styles.menuContainer}
               onPress={(event) => event.stopPropagation()}
-              accessibilityLabel={t('ads.tokenBadge.menuAccessibility')}
+              accessibilityLabel={t("ads.tokenBadge.menuAccessibility")}
             >
-              <Text style={[styles.menuTitle, { color: theme.text }]}>{t('ads.tokenBadge.menuTitle')}</Text>
-              <Text style={[styles.menuValue, { color: theme.title }]}>{formattedBalance}</Text>
+              <Text style={[styles.menuTitle, { color: theme.text }]}>
+                {t("ads.tokenBadge.menuTitle")}
+              </Text>
+              <Text style={[styles.menuValue, { color: theme.title }]}>
+                {formattedBalance}
+              </Text>
 
               <TouchableOpacity
-                style={[styles.menuButton, !isAdLoaded && styles.menuButtonDisabled]}
+                style={[
+                  styles.menuButton,
+                  !isAdLoaded && styles.menuButtonDisabled,
+                ]}
                 activeOpacity={0.85}
                 onPress={handleWatchAd}
+                disabled={!isAdLoaded || pendingShowAfterClose}
               >
                 <MaterialIcons
                   name="ondemand-video"
@@ -125,10 +164,16 @@ export const TokenBadge = memo(
                   style={styles.menuButtonIcon}
                 />
                 <View style={styles.menuButtonTextWrapper}>
-                  <Text style={[styles.menuButtonText, { color: theme.title }]}>
-                    {t('ads.tokenBadge.watchAd')}
+                  <Text
+                    style={[styles.menuButtonText, { color: theme.title }]}
+                    numberOfLines={1}
+                  >
+                    {t("ads.tokenBadge.watchAd")}
                   </Text>
-                  <Text style={[styles.menuButtonSubtext, { color: theme.text }]}>
+                  <Text
+                    style={[styles.menuButtonSubtext, { color: theme.text }]}
+                    numberOfLines={2}
+                  >
                     {menuStatusText}
                   </Text>
                 </View>
@@ -203,7 +248,7 @@ const getStyles = (theme: ThemeType) =>
       marginTop: 20,
     },
     menuButtonDisabled: {
-      opacity: 0.7,
+      opacity: 0.5,
     },
     menuButtonIcon: {
       marginRight: 12,

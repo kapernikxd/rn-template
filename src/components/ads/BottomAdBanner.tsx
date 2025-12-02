@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
 import mobileAds, {
   BannerAd,
@@ -17,6 +17,7 @@ const isMobilePlatform = Platform.OS === 'ios' || Platform.OS === 'android';
 export const BottomAdBanner = () => {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
+  const [adLoaded, setAdLoaded] = useState(false);
   const { configStore } = useRootStore();
   const adsConfig = useStoreData(configStore, (store) => store.adsConfig);
 
@@ -67,7 +68,7 @@ export const BottomAdBanner = () => {
         styles.container,
         {
           backgroundColor: theme.background,
-          paddingBottom: insets.bottom,
+          paddingBottom: adLoaded ? 0 : insets.bottom,
         },
       ]}
     >
@@ -75,8 +76,10 @@ export const BottomAdBanner = () => {
         unitId={bannerAdUnitId}
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
         requestOptions={{
-          requestNonPersonalizedAdsOnly: true,
+          requestNonPersonalizedAdsOnly: false,
         }}
+        onAdLoaded={() => setAdLoaded(true)}
+        onAdFailedToLoad={() => setAdLoaded(false)}
       />
     </View>
   );

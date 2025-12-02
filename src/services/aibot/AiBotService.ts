@@ -1,6 +1,8 @@
 import { AxiosResponse } from "axios";
+import i18n from "../../helpers/i18n";
 import $api from "../../helpers/http";
 
+import { LANGUAGE_OPTIONS, normalizeLanguageCode } from "../../constants/languages";
 import { AiBotDTO, AiBotMainPageBot, ProfileDTO, UserDTO } from "../../types";
 import { getQueriedUrl, QueryParams } from "../../helpers/queryStringHelper";
 import { AiBotPhotoResponse, AiBotReportPayload, AiBotUpdatePayload, GuestAiBotMessagePayload, GuestAiBotMessageResponse } from "../../types/aiBot";
@@ -8,8 +10,16 @@ import { ProfilesFilterParams } from "../../types/profile/profile";
 
 
 class AiBotDetailsService {
-  public async fetchAiBotsForMainPage(): Promise<AxiosResponse<AiBotMainPageBot[]>> {
-    return $api.get("/profile/ai-bots/fetchAiBotsForMainPage");
+  private getLanguageParam(languageCode?: string): string {
+    return (
+      normalizeLanguageCode(languageCode ?? i18n.language ?? i18n.resolvedLanguage) ??
+      LANGUAGE_OPTIONS[0].code
+    );
+  }
+
+  public async fetchAiBotsForMainPage(languageCode?: string): Promise<AxiosResponse<AiBotMainPageBot[]>> {
+    const lang = this.getLanguageParam(languageCode);
+    return $api.get("/profile/ai-bots/fetchAiBotsForMainPage", { params: { lang } });
   }
   /**
    * Получить список созданных AI-ботов.
@@ -18,8 +28,9 @@ class AiBotDetailsService {
     return $api.get(getQueriedUrl({ url: "/profile/ai-bots/all", query: params as QueryParams }));
   }
 
-  public async getAiBotById(botId: string): Promise<AxiosResponse<AiBotDTO>> {
-    return $api.get(`/profile/ai-bots/${botId}`);
+  public async getAiBotById(botId: string, languageCode?: string): Promise<AxiosResponse<AiBotDTO>> {
+    const lang = this.getLanguageParam(languageCode);
+    return $api.get(`/profile/ai-bots/${botId}`, { params: { lang } });
   }
 
   public async getAiBotsByCreator(creatorId: string): Promise<AxiosResponse<AiBotDTO[]>> {
@@ -76,8 +87,9 @@ class AiBotDetailsService {
   /**
    * Получить фотографии для AI-бота.
    */
-  public async getAiBotDetails(id: string): Promise<AxiosResponse<AiBotPhotoResponse>> {
-    return $api.get(`/profile/ai-bots/${id}/details`);
+  public async getAiBotDetails(id: string, languageCode?: string): Promise<AxiosResponse<AiBotPhotoResponse>> {
+    const lang = this.getLanguageParam(languageCode);
+    return $api.get(`/profile/ai-bots/${id}/details`, { params: { lang } });
   }
 
   /**
