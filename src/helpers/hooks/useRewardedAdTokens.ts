@@ -7,6 +7,7 @@ import { ensureTrackingTransparencyPermission } from "../../services/privacy/tra
 import { useRootStore, useStoreData } from "../../store/StoreProvider";
 import {
   addTokens,
+  addTokenBalanceListener,
   getTokenBalance,
 } from "../tokenStorage";
 import { DEFAULT_TOKEN_BALANCE } from "../../constants/links";
@@ -81,11 +82,14 @@ export const useRewardedAdTokens = (
   useEffect(() => {
     isMountedRef.current = true;
 
+    const unsubscribeFromBalanceUpdates = addTokenBalanceListener(updateBalance);
+
     return () => {
       isMountedRef.current = false;
       cancelPendingShow();
+      unsubscribeFromBalanceUpdates();
     };
-  }, [cancelPendingShow]);
+  }, [cancelPendingShow, updateBalance]);
 
   useEffect(() => {
     const loadBalanceAndAd = async () => {
