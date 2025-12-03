@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  Linking,
   ListRenderItem,
   Modal,
   ScrollView,
@@ -372,17 +373,27 @@ export const DashboardScreen = () => {
     setIsRequestingNotifications(true);
 
     try {
-      const token = await registerForPushNotificationsAsync();
+      const { token, status, canAskAgain } = await registerForPushNotificationsAsync();
 
-      if (token) {
+      if (!token) {
+        if (status !== 'granted' && !canAskAgain) {
+          await Linking.openSettings();
+        }
+        return;
+      }
+
+      if (status === 'granted') {
         await authStore.sendPushToken(token);
+
+        if (isMountedRef.current) {
+          setShouldPromptNotifications(false);
+        }
       }
     } catch (error) {
       console.warn('Failed to enable notifications from dashboard prompt', error);
     } finally {
       if (isMountedRef.current) {
         setIsRequestingNotifications(false);
-        setShouldPromptNotifications(false);
       }
     }
   }, [authStore, isRequestingNotifications, registerForPushNotificationsAsync]);

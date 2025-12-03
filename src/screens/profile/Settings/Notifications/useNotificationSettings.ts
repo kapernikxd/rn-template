@@ -39,7 +39,7 @@ export const useNotificationSettings = () => {
     const granted = status === 'granted';
     setHasPermission(granted);
     if (granted && !expoPushToken) {
-      const token = await registerForPushNotificationsAsync();
+      const { token } = await registerForPushNotificationsAsync();
       if (token) {
         await authStore.sendPushToken(token);
       }
@@ -59,7 +59,7 @@ export const useNotificationSettings = () => {
         const granted = status === 'granted';
         setHasPermission(granted);
         if (granted) {
-          const token = await registerForPushNotificationsAsync();
+          const { token } = await registerForPushNotificationsAsync();
           if (token) {
             await authStore.sendPushToken(token);
           }
@@ -80,7 +80,7 @@ export const useNotificationSettings = () => {
           pushNotificationSettings: data,
         });
         if (hasPermission) {
-          const token = await registerForPushNotificationsAsync();
+          const { token } = await registerForPushNotificationsAsync();
           if (token) {
             await authStore.sendPushToken(token);
           }

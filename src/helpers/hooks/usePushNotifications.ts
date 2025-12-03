@@ -13,7 +13,11 @@ export const usePushNotifications = (
   options: { autoRegister?: boolean } = { autoRegister: true },
 ):
   PushNotificationState & {
-    registerForPushNotificationsAsync: () => Promise<string | undefined>;
+    registerForPushNotificationsAsync: () => Promise<{
+      token?: string;
+      status: Notifications.PermissionStatus;
+      canAskAgain: boolean;
+    }>;
   } => {
   const [expoPushToken, setExpoPushToken] = useState<string | undefined>();
   const [notification, setNotification] = useState<Notifications.Notification | undefined>();
@@ -31,19 +35,22 @@ export const usePushNotifications = (
     // }
 
     // Разрешения
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    const { status: existingStatus, canAskAgain: canRequestPermission } =
+      await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
+    let canAskAgain = canRequestPermission;
 
-    if (existingStatus !== "granted") {
-      const { status } = await Notifications.requestPermissionsAsync({
+    if (existingStatus !== "granted" && canRequestPermission) {
+      const { status, canAskAgain: canRequestAgain } = await Notifications.requestPermissionsAsync({
         // iOS: можно добавить provisional: true, если нужно тихое разрешение
       });
       finalStatus = status;
+      canAskAgain = canRequestAgain;
     }
 
     if (finalStatus !== "granted") {
       console.warn("Failed to get permission for push notifications");
-      return;
+      return { token: undefined, status: finalStatus, canAskAgain };
     }
 
     // Проектный ID
@@ -51,16 +58,16 @@ export const usePushNotifications = (
       Constants.easConfig?.projectId ?? Constants.expoConfig?.extra?.eas?.projectId;
     if (!projectId) {
       console.warn("No EAS projectId configured. Set it in app.json/app.config.ts");
-      return;
+      return { token: undefined, status: finalStatus, canAskAgain };
     }
 
     try {
       const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
       setExpoPushToken(tokenData.data);
-      return tokenData.data;
+      return { token: tokenData.data, status: finalStatus, canAskAgain };
     } catch (err) {
       console.error("getExpoPushTokenAsync error:", err);
-      return;
+      return { token: undefined, status: finalStatus, canAskAgain };
     }
   }, []);
 
