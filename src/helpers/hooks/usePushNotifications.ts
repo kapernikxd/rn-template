@@ -9,9 +9,14 @@ export interface PushNotificationState {
   notification?: Notifications.Notification;
 }
 
-export const usePushNotifications = (): PushNotificationState & {
+export const usePushNotifications = (
+  options?: {
+    autoRegister?: boolean;
+  },
+): PushNotificationState & {
   registerForPushNotificationsAsync: () => Promise<string | undefined>;
 } => {
+  const { autoRegister = true } = options ?? {};
   const [expoPushToken, setExpoPushToken] = useState<string | undefined>();
   const [notification, setNotification] = useState<Notifications.Notification | undefined>();
 
@@ -85,7 +90,9 @@ export const usePushNotifications = (): PushNotificationState & {
     // init
     (async () => {
       await configureNotificationChannel();
-      await registerForPushNotificationsAsync();
+      if (autoRegister) {
+        await registerForPushNotificationsAsync();
+      }
     })();
 
     // слушатель входящих уведомлений
@@ -96,7 +103,7 @@ export const usePushNotifications = (): PushNotificationState & {
     return () => {
       notificationListener.current?.remove();
     };
-  }, [registerForPushNotificationsAsync, configureNotificationChannel]);
+  }, [registerForPushNotificationsAsync, configureNotificationChannel, autoRegister]);
 
   useEffect(() => {
     const subscription = AppState.addEventListener("change", async (state) => {
