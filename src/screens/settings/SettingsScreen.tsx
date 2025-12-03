@@ -24,6 +24,7 @@ import { useActions } from '../../helpers/hooks';
 
 type SettingsRoute =
   | typeof ROUTES.ProfleSettings
+  | typeof ROUTES.ProfileNotificationSettings;
 
 
 
@@ -59,6 +60,7 @@ export const SettingsScreen: FC = () => {
 
   const PROFILE = [
     { icon: 'user-o', label: t('settings.section.userTitle'), action: navigateTo(ROUTES.ProfleSettings) },
+    { icon: 'bell', label: t('settings.section.accountManagement.notifications'), action: navigateTo(ROUTES.ProfileNotificationSettings) },
   ];
 
 
@@ -96,7 +98,10 @@ export const SettingsScreen: FC = () => {
               </Pressable>
 
               {PROFILE.map((item, index) => (
+                <>
                 <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine />
+                <Spacer size='xxs' />
+                </>
               ))}
               <Spacer size='xxs' />
             </View>
