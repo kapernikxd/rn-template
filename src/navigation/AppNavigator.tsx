@@ -12,6 +12,7 @@ import { TermsOfUseScreen } from '../screens/docs';
 import { AiAgentScreen, AiAgentCreateScreen, AiAgentEditScreen } from '../screens/aibot';
 import Onboarding from '../screens/onboarding/Onboarding';
 import { useOnboarding } from '../helpers/hooks/useOnboarding';
+import { markNotificationPromptPending } from '../helpers/notifications/notificationPromptStorage';
 import { BottomAdBanner } from '../components/ads/BottomAdBanner';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
@@ -45,6 +46,9 @@ export const AppNavigator = () => {
     return (
       <Onboarding
         onFinish={() => {
+          markNotificationPromptPending().catch((error) => {
+            console.warn('Failed to schedule notification prompt', error);
+          });
           markOnboardingSeen().catch((error) => {
             console.error('Failed to mark onboarding as seen', error);
           });
@@ -56,38 +60,38 @@ export const AppNavigator = () => {
     <View style={styles.appContainer}>
       <View style={styles.navigatorContainer}>
         <NavigationContainer>
-      <RootStack.Navigator initialRouteName={ROUTES.RootTabs} screenOptions={screenOptions}>
-        <RootStack.Screen name={ROUTES.RootTabs}>
-          {() => (
-            <MainLayout>
-              <MainTabsNavigator showLabels={false} />
-            </MainLayout>
-          )}
-        </RootStack.Screen>
-        <RootStack.Screen name={ROUTES.Auth} component={AuthStack} />
-        <RootStack.Screen name={ROUTES.TermsOfUse} component={TermsOfUseScreen} />
-        <RootStack.Screen name={ROUTES.AiAgent}>
-          {(props) => (
-            <MainLayout>
-              <AiAgentScreen {...props} />
-            </MainLayout>
-          )}
-        </RootStack.Screen>
-        <RootStack.Screen name={ROUTES.AiAgentCreate}>
-          {(props) => (
-            <MainLayout>
-              <AiAgentCreateScreen />
-            </MainLayout>
-          )}
-        </RootStack.Screen>
-        <RootStack.Screen name={ROUTES.AiAgentEdit}>
-          {(props) => (
-            <MainLayout>
-              <AiAgentEditScreen {...props} />
-            </MainLayout>
-          )}
-        </RootStack.Screen>
-      </RootStack.Navigator>
+          <RootStack.Navigator initialRouteName={ROUTES.RootTabs} screenOptions={screenOptions}>
+            <RootStack.Screen name={ROUTES.RootTabs}>
+              {() => (
+                <MainLayout>
+                  <MainTabsNavigator showLabels={false} />
+                </MainLayout>
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen name={ROUTES.Auth} component={AuthStack} />
+            <RootStack.Screen name={ROUTES.TermsOfUse} component={TermsOfUseScreen} />
+            <RootStack.Screen name={ROUTES.AiAgent}>
+              {(props) => (
+                <MainLayout>
+                  <AiAgentScreen {...props} />
+                </MainLayout>
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen name={ROUTES.AiAgentCreate}>
+              {(props) => (
+                <MainLayout>
+                  <AiAgentCreateScreen />
+                </MainLayout>
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen name={ROUTES.AiAgentEdit}>
+              {(props) => (
+                <MainLayout>
+                  <AiAgentEditScreen {...props} />
+                </MainLayout>
+              )}
+            </RootStack.Screen>
+          </RootStack.Navigator>
         </NavigationContainer>
       </View>
       {adsEnabled ? <BottomAdBanner /> : null}
