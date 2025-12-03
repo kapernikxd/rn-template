@@ -11,6 +11,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemeType, SizesType, useTheme } from 'rn-vs-lb/theme';
 import { useTranslation } from 'react-i18next';
+import * as Notifications from 'expo-notifications';
 
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 import astrologyService from '../../services/astrology/AstrologyService';
@@ -23,6 +24,7 @@ import {
 } from '../../helpers/astrology/horoscopeStorage';
 import { getProfileInfo, type ProfileInfoData } from '../../helpers/profile/profileInfoStorage';
 import { ROUTES, type DashboardScreenProps } from '../../navigation/types';
+import { usePushNotifications } from '../../helpers/hooks';
 import { HoroscopeDescription } from './components/HoroscopeDescription';
 import { HoroscopeCard } from './components/HoroscopeCard';
 import { HoroscopeCardsCarousel, useHoroscopeCards } from './components/HoroscopeCardsCarousel';
@@ -48,6 +50,7 @@ export const CARD_WIDTH = 280;
 const PROFILE_COMPLETION_THRESHOLD = 0.6;
 const PROFILE_BANNER_DISMISSED_STORAGE_KEY = 'profileCompletionBannerDismissed';
 const CARD_UNLOCK_COST = 5;
+const PUSH_PERMISSION_PROMPTED_STORAGE_KEY = 'pushPermissionPrompted';
 
 const calculateProfileCompletion = (profileInfo: ProfileInfoData): number => {
   const values = Object.values(profileInfo);
@@ -68,10 +71,13 @@ export const DashboardScreen = () => {
   const { t, i18n } = useTranslation();
   const insets = useSafeAreaInsets();
   const { setColors } = useSafeAreaColors();
-  const { uiStore, configStore } = useRootStore();
+  const { uiStore, configStore, authStore } = useRootStore();
   const navigation = useNavigation<DashboardScreenProps['navigation']>();
   const cards = useHoroscopeCards();
   const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
+  const { expoPushToken, registerForPushNotificationsAsync } = usePushNotifications({
+    autoRegister: false,
+  });
   const [activeTab, setActiveTab] = useState(1);
   const [horoscopes, setHoroscopes] = useState<StoredHoroscopes>({});
   const [loadingByCategory, setLoadingByCategory] = useState<
@@ -92,6 +98,41 @@ export const DashboardScreen = () => {
   const handleOpenFilters = useCallback(() => {
     console.log('filters');
   }, []);
+
+  const requestPushPermission = useCallback(async () => {
+    try {
+      const permissionStatus = await Notifications.getPermissionsAsync();
+
+      if (permissionStatus.status === 'granted') {
+        if (!expoPushToken) {
+          const token = await registerForPushNotificationsAsync();
+          if (token) {
+            await authStore.sendPushToken(token);
+          }
+        }
+
+        return;
+      }
+
+      const isPrompted = await AsyncStorage.getItem(PUSH_PERMISSION_PROMPTED_STORAGE_KEY);
+
+      if (isPrompted === 'true' || !permissionStatus.canAskAgain) {
+        return;
+      }
+
+      const { status } = await Notifications.requestPermissionsAsync();
+      await AsyncStorage.setItem(PUSH_PERMISSION_PROMPTED_STORAGE_KEY, 'true');
+
+      if (status === 'granted') {
+        const token = await registerForPushNotificationsAsync();
+        if (token) {
+          await authStore.sendPushToken(token);
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to request push permissions on dashboard', error);
+    }
+  }, [authStore, expoPushToken, registerForPushNotificationsAsync]);
 
   useEffect(() => {
     return () => {
@@ -134,9 +175,10 @@ export const DashboardScreen = () => {
   useFocusEffect(
     useCallback(() => {
       void evaluateProfileCompletion();
+      void requestPushPermission();
 
       return () => {};
-    }, [evaluateProfileCompletion]),
+    }, [evaluateProfileCompletion, requestPushPermission]),
   );
 
   useEffect(() => {
