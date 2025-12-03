@@ -9,11 +9,16 @@ export interface PushNotificationState {
   notification?: Notifications.Notification;
 }
 
-export const usePushNotifications = (): PushNotificationState & {
-  registerForPushNotificationsAsync: () => Promise<string | undefined>;
-} => {
+export const usePushNotifications = (
+  options: { autoRegister?: boolean } = { autoRegister: true },
+):
+  PushNotificationState & {
+    registerForPushNotificationsAsync: () => Promise<string | undefined>;
+  } => {
   const [expoPushToken, setExpoPushToken] = useState<string | undefined>();
   const [notification, setNotification] = useState<Notifications.Notification | undefined>();
+
+  const { autoRegister = true } = options;
 
   // ✅ актуальный тип
   const notificationListener = useRef<Notifications.Subscription | null>(null);
@@ -85,7 +90,10 @@ export const usePushNotifications = (): PushNotificationState & {
     // init
     (async () => {
       await configureNotificationChannel();
-      await registerForPushNotificationsAsync();
+
+      if (autoRegister) {
+        await registerForPushNotificationsAsync();
+      }
     })();
 
     // слушатель входящих уведомлений
@@ -96,9 +104,13 @@ export const usePushNotifications = (): PushNotificationState & {
     return () => {
       notificationListener.current?.remove();
     };
-  }, [registerForPushNotificationsAsync, configureNotificationChannel]);
+  }, [registerForPushNotificationsAsync, configureNotificationChannel, autoRegister]);
 
   useEffect(() => {
+    if (!autoRegister) {
+      return;
+    }
+
     const subscription = AppState.addEventListener("change", async (state) => {
       if (state === "active") {
         const { status } = await Notifications.getPermissionsAsync();
@@ -109,7 +121,7 @@ export const usePushNotifications = (): PushNotificationState & {
     });
 
     return () => subscription.remove();
-  }, [expoPushToken, registerForPushNotificationsAsync]);
+  }, [autoRegister, expoPushToken, registerForPushNotificationsAsync]);
 
   return { expoPushToken, notification, registerForPushNotificationsAsync };
 };

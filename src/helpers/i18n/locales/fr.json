@@ -710,6 +710,14 @@
           "close": "Masquer le conseil de profil"
         },
         "progressLabel": "Complété : {{percentage}}%"
+      },
+      "notificationsPrompt": {
+        "title": "Stay updated",
+        "description": "Enable push notifications to receive fresh horoscopes and updates after onboarding.",
+        "actions": {
+          "allow": "Turn on notifications",
+          "later": "Maybe later"
+        }
       }
     },
     "library": {

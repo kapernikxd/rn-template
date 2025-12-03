@@ -744,6 +744,14 @@
           "close": "Hide profile completion hint"
         },
         "progressLabel": "Completed: {{percentage}}%"
+      },
+      "notificationsPrompt": {
+        "title": "Stay updated",
+        "description": "Enable push notifications to receive fresh horoscopes and updates after onboarding.",
+        "actions": {
+          "allow": "Turn on notifications",
+          "later": "Maybe later"
+        }
       }
     },
     "library": {

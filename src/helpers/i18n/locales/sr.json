@@ -710,6 +710,14 @@
           "close": "Sakrij obaveštenje o popunjavanju profila"
         },
         "progressLabel": "Popunjeno: {{percentage}}%"
+      },
+      "notificationsPrompt": {
+        "title": "Stay updated",
+        "description": "Enable push notifications to receive fresh horoscopes and updates after onboarding.",
+        "actions": {
+          "allow": "Turn on notifications",
+          "later": "Maybe later"
+        }
       }
     },
     "library": {

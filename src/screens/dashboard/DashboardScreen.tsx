@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ListRenderItem,
+  Modal,
   ScrollView,
   StyleSheet,
+  Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,6 +14,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemeType, SizesType, useTheme } from 'rn-vs-lb/theme';
 import { useTranslation } from 'react-i18next';
+import * as Notifications from 'expo-notifications';
 
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 import astrologyService from '../../services/astrology/AstrologyService';
@@ -32,6 +36,8 @@ import { HoroscopeTabBar } from './components/HoroscopeTabBar';
 import { ProfileCompletionBanner } from './components/ProfileCompletionBanner';
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { getTokenBalance, subtractTokens } from '../../helpers/tokenStorage';
+import { usePushNotifications } from '../../helpers/hooks';
+import { consumeNotificationPromptPending } from '../../helpers/notifications/notificationPromptStorage';
 
 type HoroscopeCardCategory = Exclude<HoroscopeCategory, 'general'>;
 
@@ -64,11 +70,11 @@ const calculateProfileCompletion = (profileInfo: ProfileInfoData): number => {
 
 
 export const DashboardScreen = () => {
-  const { theme, sizes } = useTheme();
+  const { theme, sizes, typography } = useTheme();
   const { t, i18n } = useTranslation();
   const insets = useSafeAreaInsets();
   const { setColors } = useSafeAreaColors();
-  const { uiStore, configStore } = useRootStore();
+  const { uiStore, configStore, authStore } = useRootStore();
   const navigation = useNavigation<DashboardScreenProps['navigation']>();
   const cards = useHoroscopeCards();
   const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
@@ -86,8 +92,11 @@ export const DashboardScreen = () => {
   const [profileCompletion, setProfileCompletion] = useState(0);
   const [shouldShowProfileBanner, setShouldShowProfileBanner] = useState(false);
   const [tokenBalance, setTokenBalance] = useState<number | null>(null);
+  const [shouldPromptNotifications, setShouldPromptNotifications] = useState(false);
+  const [isRequestingNotifications, setIsRequestingNotifications] = useState(false);
   const isMountedRef = useRef(true);
   const horoscopesRef = useRef<StoredHoroscopes>({});
+  const { registerForPushNotificationsAsync } = usePushNotifications({ autoRegister: false });
 
   const handleOpenFilters = useCallback(() => {
     console.log('filters');
@@ -109,6 +118,34 @@ export const DashboardScreen = () => {
       bottomColor: theme.background,
     });
   }, [setColors, theme.background]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const maybeShowNotificationPrompt = async () => {
+      const shouldShow = await consumeNotificationPromptPending();
+
+      if (!shouldShow || cancelled) {
+        return;
+      }
+
+      try {
+        const { status } = await Notifications.getPermissionsAsync();
+
+        if (!cancelled && status !== 'granted') {
+          setShouldPromptNotifications(true);
+        }
+      } catch (error) {
+        console.warn('Failed to check notification permissions after onboarding', error);
+      }
+    };
+
+    void maybeShowNotificationPrompt();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const evaluateProfileCompletion = useCallback(async () => {
     try {
@@ -327,6 +364,35 @@ export const DashboardScreen = () => {
     });
   }, [activeModalCategory, loadHoroscope]);
 
+  const handleEnableNotifications = useCallback(async () => {
+    if (isRequestingNotifications) {
+      return;
+    }
+
+    setIsRequestingNotifications(true);
+
+    try {
+      const token = await registerForPushNotificationsAsync();
+
+      if (token) {
+        await authStore.sendPushToken(token);
+      }
+    } catch (error) {
+      console.warn('Failed to enable notifications from dashboard prompt', error);
+    } finally {
+      if (isMountedRef.current) {
+        setIsRequestingNotifications(false);
+        setShouldPromptNotifications(false);
+      }
+    }
+  }, [authStore, isRequestingNotifications, registerForPushNotificationsAsync]);
+
+  const handleSkipNotifications = useCallback(() => {
+    if (isMountedRef.current) {
+      setShouldPromptNotifications(false);
+    }
+  }, []);
+
   const renderCard: ListRenderItem<HoroscopeCardData> = useCallback(
     ({ item }) => (
       <HoroscopeCard
@@ -424,6 +490,50 @@ export const DashboardScreen = () => {
         errorMessage={modalError}
         onRetry={retryModalRequest}
       />
+
+      <Modal
+        transparent
+        visible={shouldPromptNotifications}
+        animationType="fade"
+        onRequestClose={handleSkipNotifications}
+      >
+        <View style={styles.notificationPromptOverlay}>
+          <View style={[styles.notificationPromptCard, { backgroundColor: theme.card }]}>
+            <Text style={[typography.titleH4, styles.notificationPromptTitle]}>
+              {t('screens.dashboard.notificationsPrompt.title')}
+            </Text>
+            <Text style={[typography.body, styles.notificationPromptDescription, { color: theme.greyText }]}>
+              {t('screens.dashboard.notificationsPrompt.description')}
+            </Text>
+
+            <View style={styles.notificationPromptActions}>
+              <TouchableOpacity
+                onPress={handleSkipNotifications}
+                style={styles.notificationPromptSecondaryButton}
+                accessibilityRole="button"
+              >
+                <Text style={[typography.body, styles.notificationPromptSecondaryText]}>
+                  {t('screens.dashboard.notificationsPrompt.actions.later')}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={handleEnableNotifications}
+                disabled={isRequestingNotifications}
+                style={[
+                  styles.notificationPromptPrimaryButton,
+                  isRequestingNotifications && styles.notificationPromptPrimaryButtonDisabled,
+                ]}
+                accessibilityRole="button"
+              >
+                <Text style={[typography.body, styles.notificationPromptPrimaryText]}>
+                  {t('screens.dashboard.notificationsPrompt.actions.allow')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -445,6 +555,54 @@ const createStyles = ({ theme, sizes, topInset }: CreateStylesParams) =>
       paddingTop: 0,
       paddingBottom: sizes.xl as number,
       paddingHorizontal: sizes.xxs as number,
+    },
+    notificationPromptOverlay: {
+      flex: 1,
+      backgroundColor: '#00000080',
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingHorizontal: sizes.lg as number,
+    },
+    notificationPromptCard: {
+      width: '100%',
+      borderRadius: sizes.lg as number,
+      borderWidth: StyleSheet.hairlineWidth,
+      borderColor: theme.border,
+      padding: sizes.lg as number,
+      gap: sizes.md as number,
+    },
+    notificationPromptTitle: {
+      color: theme.text,
+    },
+    notificationPromptDescription: {
+      color: theme.text,
+    },
+    notificationPromptActions: {
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      alignItems: 'center',
+      gap: sizes.sm as number,
+    },
+    notificationPromptPrimaryButton: {
+      backgroundColor: theme.primary,
+      paddingHorizontal: sizes.lg as number,
+      paddingVertical: sizes.sm as number,
+      borderRadius: sizes.md as number,
+    },
+    notificationPromptPrimaryButtonDisabled: {
+      opacity: 0.7,
+    },
+    notificationPromptPrimaryText: {
+      color: theme.background,
+      fontWeight: '600',
+    },
+    notificationPromptSecondaryButton: {
+      paddingHorizontal: sizes.md as number,
+      paddingVertical: sizes.sm as number,
+    },
+    notificationPromptSecondaryText: {
+      color: theme.text,
+      fontWeight: '600',
     },
   });
 
