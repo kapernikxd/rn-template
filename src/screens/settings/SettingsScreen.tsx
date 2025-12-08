@@ -64,11 +64,11 @@ export const SettingsScreen: FC = () => {
   ];
 
 
-    const COPY_LINK = useMemo(
-      () => [
-          { icon: 'copy', label: t('settings.section.copyAppLink'), action: handleShareAppLink },
-      ],
-      [handleShareAppLink, t],
+  const COPY_LINK = useMemo(
+    () => [
+      { icon: 'copy', label: t('settings.section.copyAppLink'), action: handleShareAppLink },
+    ],
+    [handleShareAppLink, t],
   );
 
   const onCopy = async () => {
@@ -81,62 +81,64 @@ export const SettingsScreen: FC = () => {
   return (
     <View style={styles.content}>
       <ScrollView contentContainerStyle={styles.body}>
-        <Spacer size='xxs'/>
-        <View style={styles.list}>
-          <SettingsSection
-            title={t('settings.section.userTitle')}
-            style={styles.section}
-          >
-            <View style={styles.cardWithoutH}>
-              <Pressable onPress={onCopy} style={styles.cardWithoutH}>
-                <SettingsListItem
-                  label={t('settings.section.userID')}
-                  laberColor={theme.text}
-                  value={userId ? truncateText(userId, 18) : '—'}
-                  valueTone='muted'
-                />
-              </Pressable>
-
-              {PROFILE.map((item, index) => (
-                <>
-                <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine />
-                <Spacer size='xxs' />
-                </>
-              ))}
-              <Spacer size='xxs' />
-            </View>
-          </SettingsSection>
-          {adsEnabled &&
+        <View>
+          <Spacer size='xxs' />
+          <View style={styles.list}>
             <SettingsSection
-              title={t('settings.section.adsTitle')}
+              title={t('settings.section.userTitle')}
+              style={styles.section}
+            >
+              <View style={styles.cardWithoutH}>
+                <Pressable onPress={onCopy} style={styles.cardWithoutH}>
+                  <SettingsListItem
+                    label={t('settings.section.userID')}
+                    laberColor={theme.text}
+                    value={userId ? truncateText(userId, 18) : '—'}
+                    valueTone='muted'
+                  />
+                </Pressable>
+
+                {PROFILE.map((item, index) => (
+                  <>
+                    <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine />
+                    <Spacer size='xxs' />
+                  </>
+                ))}
+                <Spacer size='xxs' />
+              </View>
+            </SettingsSection>
+            {adsEnabled &&
+              <SettingsSection
+                title={t('settings.section.adsTitle')}
+                style={styles.section}
+              ><CardContainer style={styles.card}>
+                  <RewardedAdSettingsCard style={{ padding: 0, backgroundColor: theme.card }} />
+                </CardContainer>
+              </SettingsSection>}
+
+
+            <SettingsSection
+              title={t('settings.section.appTitle')}
               style={styles.section}
             ><CardContainer style={styles.card}>
-                <RewardedAdSettingsCard style={{ padding: 0, backgroundColor: theme.card }} />
+                <ThemeSwitcher lightModeLabel={t('settings.component.theme.light')} darkModeLabel={t('settings.component.theme.dark')} />
+                <Spacer size='xs' />
+                <SettingsListItem
+                  label={t('settings.component.language.title')}
+                  laberColor={theme.text}
+                  accessory={<LanguageSelector />}
+                  labelIcon={<FontAwesome color={theme.text} name="language" size={21} />}
+                  labelIconColor={theme.text}
+                />
+                {COPY_LINK.map((item, index) => (
+                  <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine hideArrow />
+                ))}
               </CardContainer>
-            </SettingsSection>}
-
-
-          <SettingsSection
-            title={t('settings.section.appTitle')}
-            style={styles.section}
-          ><CardContainer style={styles.card}>
-              <ThemeSwitcher lightModeLabel={t('settings.component.theme.light')} darkModeLabel={t('settings.component.theme.dark')} />
-              <Spacer size='xs' />
-              <SettingsListItem
-                label={t('settings.component.language.title')}
-                laberColor={theme.text}
-                accessory={<LanguageSelector />}
-                labelIcon={<FontAwesome color={theme.text} name="language" size={21} />}
-                labelIconColor={theme.text}
-              />
-              {COPY_LINK.map((item, index) => (
-                <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine hideArrow />
-              ))}
-            </CardContainer>
-          </SettingsSection>
+            </SettingsSection>
+          </View>
+          <Spacer size='xl' />
+          <Spacer size='xl' />
         </View>
-        <Spacer size='xl' />
-        <Spacer size='xl' />
         <View>
           <View style={styles.version}>
             <Text style={typography.body}>{t('settings.section.version', { version: appVersion })}</Text>
