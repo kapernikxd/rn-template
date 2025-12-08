@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { Platform } from "react-native";
 
-import { DEFAULT_ADS_CONFIG, DEFAULT_APP_VERSION_CONFIG } from "../../constants/links";
+import { DEFAULT_ADS_CONFIG, DEFAULT_APP_VERSION_CONFIG, setApiUrl } from "../../constants/links";
 import { DEFAULT_CHAT_LIMIT_CONFIG } from "../../constants/ads";
 import type { NormalizedAppConfig, AdsConfig, AppVersionConfig, ChatLimitConfig } from "../../types/config";
 import { AppConfigService } from "../../services/config/AppConfigService";
@@ -85,15 +85,19 @@ export class ConfigStore {
     try {
       const response = await AppConfigService.fetchConfig(appId);
       runInAction(() => {
+        const apiUrlFromConfig = response.API_URL ?? response.urls?.API_URL ?? response.urls?.apiUrl;
+        setApiUrl(apiUrlFromConfig);
+
         this.config = {
           appVer: { ...DEFAULT_APP_VERSION_CONFIG, ...response.appVer },
           ads: { ...DEFAULT_ADS_CONFIG, ...(response.ads ?? {}) },
           chatLimit: { ...DEFAULT_CHAT_LIMIT_CONFIG, ...(response.chatLimit ?? {}) },
-          urls: { ...(response.urls ?? {}) }
+          urls: { ...(response.urls ?? {}), ...(response.API_URL ? { API_URL: response.API_URL } : {}) }
         };
         this.loading = false;
       });
     } catch (error) {
+      setApiUrl(null);
       runInAction(() => {
         this.loading = false;
         this.error = error instanceof Error ? error.message : String(error);
