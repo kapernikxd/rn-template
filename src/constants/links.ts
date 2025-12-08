@@ -62,17 +62,17 @@ export const DEFAULT_APP_VERSION_CONFIG = {
   minVersion: "1.0.0",
   latestVersion: "1.0.0",
   iosStoreUrl: "https://apps.apple.com/us/app/pllace/id6746166742",
-  androidStoreUrl: "https://play.google.com/store/apps/details?id=com.kapernikrs.expopllace",
+  androidStoreUrl: "https://play.google.com/store/apps/details?id=com.kapernikrs.aiastrology",
 };
 
 export const DEFAULT_ADS_CONFIG = {
-  ADS_ENABLED: true,
-  ADS_ENABLED_ANDROID: true,
-  ADS_ENABLED_IOS: true,
-  ANDROID_AD_UNIT_ID_BANNER: 'ca-app-pub-8636022279548301/8567360540',
-  ANDROID_AD_UNIT_ID_REWARD: 'ca-app-pub-8636022279548301/9133642229',
-  IOS_AD_UNIT_ID_BANNER: 'ca-app-pub-8636022279548301/7481186180',
-  IOS_AD_UNIT_ID_REWARD: 'ca-app-pub-8636022279548301/2111092392',
+  ADS_ENABLED: false,
+  ADS_ENABLED_ANDROID: false,
+  ADS_ENABLED_IOS: false,
+  ANDROID_AD_UNIT_ID_BANNER: 'ca-app-pub-4139428747088857/7598881852',
+  ANDROID_AD_UNIT_ID_REWARD: 'ca-app-pub-4139428747088857/4546887692',
+  IOS_AD_UNIT_ID_BANNER: 'ca-app-pub-4139428747088857/2439599105',
+  IOS_AD_UNIT_ID_REWARD: 'ca-app-pub-4139428747088857/8813435767',
   TOKEN_REWARD_AMOUNT: 10,
 };
 
