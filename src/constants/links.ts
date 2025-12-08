@@ -5,16 +5,47 @@ export const isDev = process.env.NODE_ENV === "development";
 export const BASE_URL = isDev
   ? "http://192.168.0.20:5001/"
   : "https://aipair.pro/";
-  
+
+const ensureTrailingSlash = (url: string) => (url.endsWith("/") ? url : `${url}/`);
+
+export const DEFAULT_API_URL = `${BASE_URL}api/`;
+
+export let API_URL = DEFAULT_API_URL;
+
+type ApiUrlListener = (url: string) => void;
+const apiUrlListeners: ApiUrlListener[] = [];
+
+export const onApiUrlChange = (listener: ApiUrlListener) => {
+  apiUrlListeners.push(listener);
+  listener(API_URL);
+
+  return () => {
+    const listenerIndex = apiUrlListeners.indexOf(listener);
+    if (listenerIndex !== -1) {
+      apiUrlListeners.splice(listenerIndex, 1);
+    }
+  };
+};
+
+export const setApiUrl = (url?: string | null) => {
+  if (isDev || !url) {
+    API_URL = DEFAULT_API_URL;
+  } else {
+    API_URL = ensureTrailingSlash(url);
+  }
+
+  apiUrlListeners.forEach((listener) => listener(API_URL));
+};
+
 
 export const DOMAIN = "https://AiPair.pro"
-export const API_URL = `${BASE_URL}api/`;
+export const CONFIG_SERVER_URL = "https://config.webbro.org/";
 
 
 export const EMAIL = "AiPairPro@yandex.com";
 
 export const SITE_NAME = "AiAstrology";
-export const CONFIG_APP_ID = "AiAstrology";
+export const CONFIG_APP_ID = "aiastrology";
 
 export const APP_METRICA = "cf0be637-7531-49d5-bdab-fcb9590fe10c"; // AiPair
 

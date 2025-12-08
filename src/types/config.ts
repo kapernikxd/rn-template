@@ -24,10 +24,11 @@ export type AdsConfig = {
 };
 
 export type AppConfigResponse = {
+  API_URL?: string;
   appVer: Partial<AppVersionConfig>;
   ads?: Partial<AdsConfig>;
   chatLimit?: Partial<ChatLimitConfig>;
-  urls?: any;
+  urls?: Record<string, any>;
 };
 
 export type NormalizedAppConfig = {
