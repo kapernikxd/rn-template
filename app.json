@@ -32,6 +32,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
+      "googleServicesFile": "./android/app/google-services.json",
       "package": "com.kapernikrs.aiastrology",
       "versionCode": 4
     },

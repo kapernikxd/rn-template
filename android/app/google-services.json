@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "688596350021",
-    "project_id": "aipair-486c4",
-    "storage_bucket": "aipair-486c4.firebasestorage.app"
+    "project_number": "597603376130",
+    "project_id": "aiastrology-3a616",
+    "storage_bucket": "aiastrology-3a616.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:688596350021:android:9761768e085433f1629f2c",
+        "mobilesdk_app_id": "1:597603376130:android:85c1acd5dc294bdaacdb1b",
         "android_client_info": {
-          "package_name": "com.kapernikrs.aipair"
+          "package_name": "com.kapernikrs.aiastrology"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDS8GOIGYV-vJ6nSgIXzC0hH24up9O-fes"
+          "current_key": "AIzaSyCWpiV3ivEcPGQFoVkCogDPb2tKVGnZQrI"
         }
       ],
       "services": {
