@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React, { useMemo, useRef } from 'react';
+import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet, View } from 'react-native';
 
@@ -13,10 +13,13 @@ import { AiAgentScreen, AiAgentCreateScreen, AiAgentEditScreen } from '../screen
 import Onboarding from '../screens/onboarding/Onboarding';
 import { useOnboarding } from '../helpers/hooks/useOnboarding';
 import { BottomAdBanner } from '../components/ads/BottomAdBanner';
+import { AnalyticsEvent, trackEvent } from '../services/analytics/events';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export const AppNavigator = () => {
+  const navigationRef = useRef<NavigationContainerRef<RootStackParamList> | null>(null);
+  const routeNameRef = useRef<string | undefined>();
   const { authStore, configStore } = useRootStore();
   const hasAttemptedAutoLogin = useStoreData(
     authStore,
@@ -55,39 +58,62 @@ export const AppNavigator = () => {
   return (
     <View style={styles.appContainer}>
       <View style={styles.navigatorContainer}>
-        <NavigationContainer>
-      <RootStack.Navigator initialRouteName={ROUTES.RootTabs} screenOptions={screenOptions}>
-        <RootStack.Screen name={ROUTES.RootTabs}>
-          {() => (
-            <MainLayout>
-              <MainTabsNavigator showLabels={false} />
-            </MainLayout>
-          )}
-        </RootStack.Screen>
-        <RootStack.Screen name={ROUTES.Auth} component={AuthStack} />
-        <RootStack.Screen name={ROUTES.TermsOfUse} component={TermsOfUseScreen} />
-        <RootStack.Screen name={ROUTES.AiAgent}>
-          {(props) => (
-            <MainLayout>
-              <AiAgentScreen {...props} />
-            </MainLayout>
-          )}
-        </RootStack.Screen>
-        <RootStack.Screen name={ROUTES.AiAgentCreate}>
-          {(props) => (
-            <MainLayout>
-              <AiAgentCreateScreen />
-            </MainLayout>
-          )}
-        </RootStack.Screen>
-        <RootStack.Screen name={ROUTES.AiAgentEdit}>
-          {(props) => (
-            <MainLayout>
-              <AiAgentEditScreen {...props} />
-            </MainLayout>
-          )}
-        </RootStack.Screen>
-      </RootStack.Navigator>
+        <NavigationContainer
+          ref={navigationRef}
+          onReady={() => {
+            const currentRoute = navigationRef.current?.getCurrentRoute();
+            routeNameRef.current = currentRoute?.name;
+
+            if (currentRoute?.name) {
+              void trackEvent(AnalyticsEvent.ScreenView, {
+                route: currentRoute.name,
+              });
+            }
+          }}
+          onStateChange={() => {
+            const currentRoute = navigationRef.current?.getCurrentRoute();
+            if (!currentRoute?.name || routeNameRef.current === currentRoute.name) {
+              return;
+            }
+
+            routeNameRef.current = currentRoute.name;
+            void trackEvent(AnalyticsEvent.ScreenView, {
+              route: currentRoute.name,
+            });
+          }}
+        >
+          <RootStack.Navigator initialRouteName={ROUTES.RootTabs} screenOptions={screenOptions}>
+            <RootStack.Screen name={ROUTES.RootTabs}>
+              {() => (
+                <MainLayout>
+                  <MainTabsNavigator showLabels={false} />
+                </MainLayout>
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen name={ROUTES.Auth} component={AuthStack} />
+            <RootStack.Screen name={ROUTES.TermsOfUse} component={TermsOfUseScreen} />
+            <RootStack.Screen name={ROUTES.AiAgent}>
+              {(props) => (
+                <MainLayout>
+                  <AiAgentScreen {...props} />
+                </MainLayout>
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen name={ROUTES.AiAgentCreate}>
+              {(props) => (
+                <MainLayout>
+                  <AiAgentCreateScreen />
+                </MainLayout>
+              )}
+            </RootStack.Screen>
+            <RootStack.Screen name={ROUTES.AiAgentEdit}>
+              {(props) => (
+                <MainLayout>
+                  <AiAgentEditScreen {...props} />
+                </MainLayout>
+              )}
+            </RootStack.Screen>
+          </RootStack.Navigator>
         </NavigationContainer>
       </View>
       {adsEnabled ? <BottomAdBanner /> : null}

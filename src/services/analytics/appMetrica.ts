@@ -30,13 +30,17 @@ export const initAppMetrica = () => {
   }
 };
 
+const ensureAppMetricaActivated = () => {
+  if (!isActivated) {
+    initAppMetrica();
+  }
+};
+
 export const reportAppOpen = async () => {
   if (!APP_METRICA) return;
 
   try {
-    if (!isActivated) {
-      initAppMetrica();
-    }
+    ensureAppMetricaActivated();
 
     let url: string | null = null;
 
@@ -68,6 +72,32 @@ export const reportAppOpen = async () => {
   } catch (e) {
     // Любая неожиданная фигня
     void logToServer("error", "reportAppOpen crashed", {
+      error: String(e),
+    });
+  }
+};
+
+export const reportEvent = async (
+  name: string,
+  attributes?: Record<string, unknown>,
+) => {
+  if (!APP_METRICA) return;
+
+  try {
+    ensureAppMetricaActivated();
+
+    AppMetrica.reportEvent(name, attributes);
+
+    if (__DEV__) {
+      void logToServer("info", "AppMetrica event", {
+        name,
+        attributes,
+      });
+    }
+  } catch (e) {
+    void logToServer("error", "AppMetrica.reportEvent failed", {
+      name,
+      attributes,
       error: String(e),
     });
   }

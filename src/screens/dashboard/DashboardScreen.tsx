@@ -34,6 +34,7 @@ import { HoroscopeTabBar } from './components/HoroscopeTabBar';
 import { ProfileCompletionBanner } from './components/ProfileCompletionBanner';
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { getTokenBalance, subtractTokens } from '../../helpers/tokenStorage';
+import { AnalyticsEvent, trackEvent } from '../../services/analytics/events';
 
 type HoroscopeCardCategory = Exclude<HoroscopeCategory, 'general'>;
 
@@ -111,6 +112,10 @@ export const DashboardScreen = () => {
           }
         }
 
+        void trackEvent(AnalyticsEvent.NotificationsAccepted, {
+          status: 'already_granted',
+        });
+
         return;
       }
 
@@ -128,6 +133,10 @@ export const DashboardScreen = () => {
         if (token) {
           await authStore.sendPushToken(token);
         }
+
+        void trackEvent(AnalyticsEvent.NotificationsAccepted, {
+          status: 'granted_after_prompt',
+        });
       }
     } catch (error) {
       console.warn('Failed to request push permissions on dashboard', error);
@@ -316,6 +325,8 @@ export const DashboardScreen = () => {
 
   const handleCardPress = useCallback(
     async (category: HoroscopeCardCategory) => {
+      void trackEvent(AnalyticsEvent.HoroscopeCardOpened, { category });
+
       if (!adsEnabled) {
         setActiveModalCategory(category);
         return;
