@@ -3,6 +3,7 @@ import * as Application from "expo-application";
 import * as Device from "expo-device";
 import { Platform } from "react-native";
 import uuid from "react-native-uuid";
+import { CONFIG_APP_ID } from "../../constants/links";
 
 /**
  * Локальный userId обеспечивает гостевую идентичность: хранится под одним ключом, генерируется
@@ -11,7 +12,7 @@ import uuid from "react-native-uuid";
  * перезаписывает локальный.
  */
 const USER_ID_KEY = "userId";
-const DEVICE_USER_ID_PREFIX = "device-";
+const DEVICE_USER_ID_PREFIX = `${CONFIG_APP_ID}-`
 
 const sanitizeUserId = (value: string) => value.replace(/[^a-zA-Z0-9_-]/g, "");
 
