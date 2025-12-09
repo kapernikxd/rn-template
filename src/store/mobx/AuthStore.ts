@@ -5,7 +5,6 @@ import AuthService from "../../services/auth/AuthService";
 import {
     getAccessToken,
     getAuthUser,
-    getAnonymousUserId,
     getRefreshToken,
     removeAccessToken,
     removeAuthUser,
@@ -448,7 +447,7 @@ export class AuthStore {
 
     private async loginWithStoredUserId(): Promise<boolean> {
         try {
-            const userId = await getAnonymousUserId();
+            const userId = await getLocalUserId();
             const { data } = await AuthService.loginByUserId(userId);
 
             const normalizedUser = this.normalizeUser(data.user);
