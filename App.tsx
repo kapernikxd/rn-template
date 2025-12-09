@@ -12,6 +12,7 @@ import { ForceUpdateWrapper } from './src/components/layouts/ForceUpdateWrapper'
 
 import i18n from './src/helpers/i18n';
 import { getPreferredLanguage } from './src/helpers/i18n/languageStorage';
+import { initAppMetrica, reportAppOpen } from './src/services/analytics/appMetrica';
 
 const AppStatusBar = () => {
   const { isDark, theme } = useTheme();
@@ -25,10 +26,10 @@ const AppStatusBar = () => {
 };
 
 export default function App() {
-  // useEffect(() => {
-  //   initAppMetrica();
-  //   reportAppOpen();
-  // }, []);
+  useEffect(() => {
+    initAppMetrica();
+    reportAppOpen();
+  }, []);
 
   const [isLanguageReady, setIsLanguageReady] = useState(false);
 
