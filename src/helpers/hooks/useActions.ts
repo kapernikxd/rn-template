@@ -2,6 +2,7 @@ import { Share } from 'react-native';
 import { useCallback } from "react";
 import { DOMAIN } from "../../constants/links";
 import { useRootStore } from '../../store/StoreProvider';
+import { AnalyticsEvent, trackEvent } from '../../services/analytics/events';
 
 export function useActions() {
   const { authStore, configStore } = useRootStore();
@@ -41,6 +42,10 @@ export function useActions() {
       }
 
       try {
+        void trackEvent(AnalyticsEvent.AppLinkShared, {
+          ios: Boolean(iosStoreUrl),
+          android: Boolean(androidStoreUrl),
+        });
         await Share.share({
           message: messageParts.join('\n'),
         });

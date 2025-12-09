@@ -23,6 +23,7 @@ import {
 import type { ProfileInfoData } from '../../../helpers/profile';
 import { useRootStore } from '../../../store/StoreProvider';
 import { ProfileNav } from '../../../navigation';
+import { AnalyticsEvent, trackEvent } from '../../../services/analytics/events';
 
 export const ProfileInfoView: FC = () => {
   const { theme } = useTheme();
@@ -76,6 +77,15 @@ export const ProfileInfoView: FC = () => {
   const onSubmit = handleSubmit(async (values) => {
     try {
       await saveProfileInfo(values);
+      const totalFields = Object.keys(values).length;
+      const filledFields = Object.values(values).filter((value) => `${value ?? ''}`.trim()).length;
+      const completion = totalFields ? Math.min(1, filledFields / totalFields) : 0;
+
+      void trackEvent(AnalyticsEvent.ProfileSaved, {
+        completion,
+        filledFields,
+        totalFields,
+      });
       uiStore.showSnackbar(t('settings.editProfile.snackbar.updated'), 'success');
     } catch (error) {
       console.warn('Failed to save profile info', error);

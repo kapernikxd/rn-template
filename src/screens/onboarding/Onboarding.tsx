@@ -8,6 +8,7 @@ import { LANGUAGE_OPTIONS, normalizeLanguageCode } from '../../constants/languag
 import { ZODIAC_OPTIONS } from '../../constants/zodiac';
 import { mergeProfileInfo } from '../../helpers/profile/profileInfoStorage';
 import { setPreferredLanguage } from '../../helpers/i18n/languageStorage';
+import { AnalyticsEvent, trackEvent } from '../../services/analytics/events';
 
 type OnboardingStep = 'language' | 'zodiac';
 
@@ -55,6 +56,7 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
   const handleLanguageSelect = (languageCode: string) => {
     setSelectedLanguage(languageCode);
     void i18n.changeLanguage(languageCode);
+    void trackEvent(AnalyticsEvent.LanguageSelected, { language: languageCode });
   };
 
   const handleNext = async () => {
@@ -73,6 +75,10 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
         setPreferredLanguage(selectedLanguage),
         mergeProfileInfo({ zodiacSign: selectedZodiac }),
       ]);
+      void trackEvent(AnalyticsEvent.OnboardingCompleted, {
+        language: selectedLanguage,
+        zodiac: selectedZodiac,
+      });
       onFinish();
     } catch (error) {
       console.warn('Failed to complete onboarding', error);
@@ -132,7 +138,10 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
                   key={zodiac.value}
                   style={[styles.option, isSelected && styles.optionSelected]}
                   activeOpacity={0.8}
-                  onPress={() => setSelectedZodiac(zodiac.value)}
+                  onPress={() => {
+                    setSelectedZodiac(zodiac.value);
+                    void trackEvent(AnalyticsEvent.ZodiacSelected, { zodiac: zodiac.value });
+                  }}
                 >
                   <Text
                     style={[typography.body, styles.optionLabel, isSelected && styles.optionLabelSelected]}
