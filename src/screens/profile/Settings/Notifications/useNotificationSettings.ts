@@ -86,6 +86,21 @@ export const useNotificationSettings = () => {
     [authStore, isAuthReady, registerForPushNotificationsAsync],
   );
 
+  const sendPushToken = useCallback(async () => {
+    if (!hasPermission || !isAuthReady) {
+      return;
+    }
+
+    try {
+      const token = await registerForPushNotificationsAsync();
+      if (token) {
+        await authStore.sendPushToken(token);
+      }
+    } catch (error) {
+      console.error('Failed to send push token', error);
+    }
+  }, [authStore, hasPermission, isAuthReady, registerForPushNotificationsAsync]);
+
   const submit = useCallback(
     methods.handleSubmit(async data => {
       setIsSubmitting(true);
@@ -93,12 +108,10 @@ export const useNotificationSettings = () => {
         await profileStore.updateProfile({
           pushNotificationSettings: data,
         });
-        if (hasPermission && isAuthReady) {
-          const token = await registerForPushNotificationsAsync();
-          if (token) {
-            await authStore.sendPushToken(token);
-          }
-        }
+
+        // Не блокируем завершение сабмита ожиданием пуш-токена, чтобы кнопка не висела в загрузке на iOS
+        void sendPushToken();
+
         uiStore.showSnackbar('Updated', 'success');
       } catch {
         uiStore.showSnackbar('Failed', 'error');
@@ -106,15 +119,7 @@ export const useNotificationSettings = () => {
         setIsSubmitting(false);
       }
     }),
-    [
-      methods,
-      profileStore,
-      hasPermission,
-      registerForPushNotificationsAsync,
-      authStore,
-      isAuthReady,
-      uiStore,
-    ],
+    [methods, profileStore, sendPushToken, uiStore],
   );
 
   const reset = useCallback(() => {
