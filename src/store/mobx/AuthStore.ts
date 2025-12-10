@@ -5,6 +5,7 @@ import AuthService from "../../services/auth/AuthService";
 import {
     getAccessToken,
     getAuthUser,
+    getLocalUserId,
     getRefreshToken,
     removeAccessToken,
     removeAuthUser,
@@ -260,7 +261,6 @@ export class AuthStore {
         }
     }
 
-
     async registration(props: RegistrationParams, expoPushToken?: string) {
         try {
             this.setLoading(true);
@@ -359,6 +359,13 @@ export class AuthStore {
         }
     }
 
+    /**
+     * Восстанавливает авторизацию при старте приложения:
+     * 1) читает accessToken и пользователя из стораджа; если токен ещё валиден — ставит пользователя в стор;
+     * 2) если access недоступен, пробует refreshToken и получает новые токены/пользователя с бэкенда;
+     * 3) при ошибке/отсутствии refresh сбрасывает сохранённые токены и пытается авторизоваться по userId (демо);
+     * 4) в любом случае помечает попытку автологина и уведомляет подписчиков.
+     */
     async refreshAccessToken() {
         let didRestoreSession = false;
         let accessToken: string | null = null;
@@ -375,7 +382,6 @@ export class AuthStore {
                 getAccessToken(),
                 getAuthUser(),
             ]);
-
             if (accessToken && storedUser && isTokenValid(accessToken)) {
                 await this.setAuthenticatedUser(storedUser, accessToken);
                 didRestoreSession = true;
@@ -464,6 +470,5 @@ export class AuthStore {
             return false;
         }
     }
-
 }
 

@@ -11,9 +11,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     storeRef.current = new RootStore();
   }
   useEffect(() => {
+    void storeRef.current?.configStore.ensureConfigLoaded();
     void storeRef.current?.authStore.refreshAccessToken();
     void storeRef.current?.identityStore.ensureUserId();
-    void storeRef.current?.configStore.ensureConfigLoaded();
   }, []);
   return <StoreContext.Provider value={storeRef.current}>{children}</StoreContext.Provider>;
 }
