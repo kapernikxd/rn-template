@@ -603,6 +603,18 @@
       "title": "Aggiornamento richiesto",
       "description": "È disponibile una nuova versione dell'app. Aggiorna per continuare a utilizzare l'app.",
       "button": "Aggiorna"
+    },
+    "ads": {
+      "rewardedTokens": {
+        "snackbar": {
+          "balanceLoadError": "Impossibile caricare il saldo token.",
+          "rewardEarned": "Ricompensa ricevuta! +{{amount}} token.",
+          "balanceUpdateError": "Impossibile aggiornare il saldo token.",
+          "adLoading": "L'annuncio è in caricamento, riprova tra poco.",
+          "loadFailed": "Impossibile caricare l'annuncio. Riprova più tardi.",
+          "showFailed": "Impossibile mostrare l'annuncio. Riprova più tardi."
+        }
+      }
     }
   },
   "reports": {

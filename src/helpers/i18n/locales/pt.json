@@ -603,6 +603,18 @@
       "title": "Atualização necessária",
       "description": "Há uma nova versão do aplicativo disponível. Atualize para continuar.",
       "button": "Atualizar"
+    },
+    "ads": {
+      "rewardedTokens": {
+        "snackbar": {
+          "balanceLoadError": "Falha ao carregar o saldo de tokens.",
+          "rewardEarned": "Recompensa recebida! +{{amount}} tokens.",
+          "balanceUpdateError": "Falha ao atualizar o saldo de tokens.",
+          "adLoading": "O anúncio está carregando, tente novamente em instantes.",
+          "loadFailed": "Falha ao carregar o anúncio. Tente novamente mais tarde.",
+          "showFailed": "Falha ao exibir o anúncio. Tente novamente mais tarde."
+        }
+      }
     }
   },
   "reports": {

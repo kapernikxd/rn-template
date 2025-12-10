@@ -657,6 +657,18 @@
       "title": "Update required",
       "description": "A new version of the app is available. Please update to continue.",
       "button": "Update"
+    },
+    "ads": {
+      "rewardedTokens": {
+        "snackbar": {
+          "balanceLoadError": "Failed to load token balance.",
+          "rewardEarned": "Reward received! +{{amount}} tokens.",
+          "balanceUpdateError": "Failed to update token balance.",
+          "adLoading": "Ad is loading, please try again shortly.",
+          "loadFailed": "Failed to load the ad. Please try again later.",
+          "showFailed": "Failed to show the ad. Please try again later."
+        }
+      }
     }
   },
   "screens": {

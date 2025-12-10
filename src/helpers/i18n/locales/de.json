@@ -603,6 +603,18 @@
       "title": "Aktualisierung erforderlich",
       "description": "Eine neue Version der App ist verfügbar. Bitte aktualisieren, um fortzufahren.",
       "button": "Aktualisieren"
+    },
+    "ads": {
+      "rewardedTokens": {
+        "snackbar": {
+          "balanceLoadError": "Token-Guthaben konnte nicht geladen werden.",
+          "rewardEarned": "Belohnung erhalten! +{{amount}} Tokens.",
+          "balanceUpdateError": "Token-Guthaben konnte nicht aktualisiert werden.",
+          "adLoading": "Anzeige wird geladen, bitte versuche es gleich noch einmal.",
+          "loadFailed": "Anzeige konnte nicht geladen werden. Bitte versuche es später erneut.",
+          "showFailed": "Anzeige konnte nicht angezeigt werden. Bitte versuche es später erneut."
+        }
+      }
     }
   },
   "reports": {

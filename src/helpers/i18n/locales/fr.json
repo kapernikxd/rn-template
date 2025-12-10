@@ -603,6 +603,18 @@
       "title": "Mise à jour requise",
       "description": "Une nouvelle version de l’application est disponible. Veuillez mettre à jour pour continuer.",
       "button": "Mettre à jour"
+    },
+    "ads": {
+      "rewardedTokens": {
+        "snackbar": {
+          "balanceLoadError": "Échec du chargement du solde de jetons.",
+          "rewardEarned": "Récompense reçue ! +{{amount}} jetons.",
+          "balanceUpdateError": "Échec de la mise à jour du solde de jetons.",
+          "adLoading": "La publicité est en cours de chargement, veuillez réessayer dans un instant.",
+          "loadFailed": "Échec du chargement de la publicité. Veuillez réessayer plus tard.",
+          "showFailed": "Échec de l’affichage de la publicité. Veuillez réessayer plus tard."
+        }
+      }
     }
   },
   "reports": {

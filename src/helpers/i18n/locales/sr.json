@@ -603,6 +603,18 @@
       "title": "Potrebno je ažuriranje",
       "description": "Dostupna je nova verzija aplikacije. Ažurirajte da biste nastavili sa radom.",
       "button": "Ažuriraj"
+    },
+    "ads": {
+      "rewardedTokens": {
+        "snackbar": {
+          "balanceLoadError": "Nije uspelo učitavanje stanja tokena.",
+          "rewardEarned": "Nagrada primljena! +{{amount}} tokena.",
+          "balanceUpdateError": "Nije uspelo ažuriranje stanja tokena.",
+          "adLoading": "Oglas se učitava, pokušajte ponovo za trenutak.",
+          "loadFailed": "Nije uspelo učitavanje oglasa. Pokušajte ponovo kasnije.",
+          "showFailed": "Nije uspelo prikazivanje oglasa. Pokušajte ponovo kasnije."
+        }
+      }
     }
   },
   "reports": {

@@ -95,14 +95,15 @@ export const SettingsScreen: FC = () => {
                     laberColor={theme.text}
                     value={userId ? truncateText(userId, 18) : '—'}
                     valueTone='muted'
+                    key={"userID"}
                   />
                 </Pressable>
 
                 {PROFILE.map((item, index) => (
-                  <>
-                    <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine />
+                  <View key={`profile-${index}`}>
+                    <ListItem iconColor={theme.text} key={`profile-${index}`} {...item} hideBottomLine />
                     <Spacer size='xxs' />
-                  </>
+                  </View>
                 ))}
                 <Spacer size='xxs' />
               </View>
@@ -131,7 +132,7 @@ export const SettingsScreen: FC = () => {
                   labelIconColor={theme.text}
                 />
                 {COPY_LINK.map((item, index) => (
-                  <ListItem iconColor={theme.text} key={index} {...item} hideBottomLine hideArrow />
+                  <ListItem iconColor={theme.text} key={`link-${index}`} {...item} hideBottomLine hideArrow />
                 ))}
               </CardContainer>
             </SettingsSection>

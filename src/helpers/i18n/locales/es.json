@@ -603,6 +603,18 @@
       "title": "Se requiere actualización",
       "description": "Hay una nueva versión de la aplicación disponible. Por favor, actualiza para continuar.",
       "button": "Actualizar"
+    },
+    "ads": {
+      "rewardedTokens": {
+        "snackbar": {
+          "balanceLoadError": "No se pudo cargar el saldo de tokens.",
+          "rewardEarned": "¡Recompensa recibida! +{{amount}} tokens.",
+          "balanceUpdateError": "No se pudo actualizar el saldo de tokens.",
+          "adLoading": "El anuncio se está cargando. Inténtalo de nuevo en un momento.",
+          "loadFailed": "No se pudo cargar el anuncio. Inténtalo de nuevo más tarde.",
+          "showFailed": "No se pudo mostrar el anuncio. Inténtalo de nuevo más tarde."
+        }
+      }
     }
   },
   "reports": {
