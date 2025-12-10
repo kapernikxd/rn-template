@@ -4,12 +4,18 @@ import { Linking } from 'react-native';
 import * as Notifications from 'expo-notifications';
 import { useFocusEffect } from '@react-navigation/native';
 
-import { useRootStore } from '../../../../store/StoreProvider';
+import { useRootStore, useStoreData } from '../../../../store/StoreProvider';
 import { usePortalNavigation, usePushNotifications } from '../../../../helpers/hooks';
 import { NotificationSettingsFormValues } from './NotificationSettings.view';
 
 export const useNotificationSettings = () => {
   const { profileStore, uiStore, authStore } = useRootStore();
+  const hasAttemptedAutoLogin = useStoreData(
+    authStore,
+    (store) => store.hasAttemptedAutoLogin,
+  );
+  const isAuthenticated = useStoreData(authStore, (store) => store.isAuth);
+  const isAuthReady = hasAttemptedAutoLogin && isAuthenticated;
   const { goBack } = usePortalNavigation();
   const { expoPushToken, registerForPushNotificationsAsync } = usePushNotifications();
 
@@ -35,6 +41,10 @@ export const useNotificationSettings = () => {
   });
 
   const checkPermission = useCallback(async () => {
+    if (!isAuthReady) {
+      return;
+    }
+
     const { status } = await Notifications.getPermissionsAsync();
     const granted = status === 'granted';
     setHasPermission(granted);
@@ -44,7 +54,7 @@ export const useNotificationSettings = () => {
         await authStore.sendPushToken(token);
       }
     }
-  }, [authStore, expoPushToken, registerForPushNotificationsAsync]);
+  }, [authStore, expoPushToken, isAuthReady, registerForPushNotificationsAsync]);
 
   useFocusEffect(
     useCallback(() => {
@@ -54,6 +64,10 @@ export const useNotificationSettings = () => {
 
   const handlePermissionToggle = useCallback(
     async (value: boolean) => {
+      if (!isAuthReady) {
+        return;
+      }
+
       if (value) {
         const { status } = await Notifications.requestPermissionsAsync();
         const granted = status === 'granted';
@@ -69,7 +83,7 @@ export const useNotificationSettings = () => {
         setHasPermission(false);
       }
     },
-    [authStore, registerForPushNotificationsAsync],
+    [authStore, isAuthReady, registerForPushNotificationsAsync],
   );
 
   const submit = useCallback(
@@ -79,7 +93,7 @@ export const useNotificationSettings = () => {
         await profileStore.updateProfile({
           pushNotificationSettings: data,
         });
-        if (hasPermission) {
+        if (hasPermission && isAuthReady) {
           const token = await registerForPushNotificationsAsync();
           if (token) {
             await authStore.sendPushToken(token);
@@ -98,6 +112,7 @@ export const useNotificationSettings = () => {
       hasPermission,
       registerForPushNotificationsAsync,
       authStore,
+      isAuthReady,
       uiStore,
     ],
   );
@@ -143,6 +158,7 @@ export const useNotificationSettings = () => {
     onReset: reset,
     onBackPress: goBack,
     isSubmitting,
+    isAuthReady,
   };
 };
 
