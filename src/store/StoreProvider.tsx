@@ -1,3 +1,4 @@
+import { AppState, type AppStateStatus } from 'react-native';
 import { createContext, useCallback, useContext, useEffect, useRef, type ReactNode } from 'react';
 import { useSyncExternalStore } from 'react';
 import { RootStore } from './rootStore';
@@ -7,13 +8,26 @@ const StoreContext = createContext<RootStore | null>(null);
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   const storeRef = useRef<RootStore>(null);
+  const appStateRef = useRef<AppStateStatus>(AppState.currentState);
   if (!storeRef.current) {
     storeRef.current = new RootStore();
   }
   useEffect(() => {
-    void storeRef.current?.configStore.ensureConfigLoaded();
+    void storeRef.current?.configStore.fetchConfig();
     void storeRef.current?.authStore.refreshAccessToken();
     void storeRef.current?.identityStore.ensureUserId();
+
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      const wasInBackground = appStateRef.current.match(/inactive|background/);
+      if (wasInBackground && nextAppState === 'active') {
+        void storeRef.current?.configStore.fetchConfig();
+      }
+      appStateRef.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
   return <StoreContext.Provider value={storeRef.current}>{children}</StoreContext.Provider>;
 }
