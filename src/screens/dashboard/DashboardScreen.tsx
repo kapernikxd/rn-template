@@ -35,6 +35,7 @@ import { ProfileCompletionBanner } from './components/ProfileCompletionBanner';
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
 import { getTokenBalance, subtractTokens } from '../../helpers/tokenStorage';
 import { AnalyticsEvent, trackEvent } from '../../services/analytics/events';
+import { ScreenLoader } from '../../components';
 
 type HoroscopeCardCategory = Exclude<HoroscopeCategory, 'general'>;
 
@@ -76,6 +77,9 @@ export const DashboardScreen = () => {
   const navigation = useNavigation<DashboardScreenProps['navigation']>();
   const cards = useHoroscopeCards();
   const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
+  const hasAttemptedAutoLogin = useStoreData(authStore, (store) => store.hasAttemptedAutoLogin);
+  const isAuthenticated = useStoreData(authStore, (store) => store.isAuth);
+  const isAuthReady = hasAttemptedAutoLogin && isAuthenticated;
   const { expoPushToken, registerForPushNotificationsAsync } = usePushNotifications({
     autoRegister: false,
   });
@@ -101,6 +105,10 @@ export const DashboardScreen = () => {
   }, []);
 
   const requestPushPermission = useCallback(async () => {
+    if (!isAuthReady) {
+      return;
+    }
+
     try {
       const permissionStatus = await Notifications.getPermissionsAsync();
 
@@ -141,7 +149,7 @@ export const DashboardScreen = () => {
     } catch (error) {
       console.warn('Failed to request push permissions on dashboard', error);
     }
-  }, [authStore, expoPushToken, registerForPushNotificationsAsync]);
+  }, [authStore, expoPushToken, isAuthReady, registerForPushNotificationsAsync]);
 
   useEffect(() => {
     return () => {
@@ -189,6 +197,10 @@ export const DashboardScreen = () => {
       return () => {};
     }, [evaluateProfileCompletion, requestPushPermission]),
   );
+
+  if (!isAuthReady) {
+    return <ScreenLoader />;
+  }
 
   useEffect(() => {
     let cancelled = false;
