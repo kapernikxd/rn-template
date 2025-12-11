@@ -15,13 +15,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme, ThemeType } from "rn-vs-lb/theme";
 import { useTranslation } from "react-i18next";
 
-import { useRewardedAdTokens } from "../../../helpers/hooks/useRewardedAdTokens";
-import { useRewardedAdTokensYandex } from "../../../helpers/hooks/useRewardedAdTokensYandex";
+import { useRewardedAdTokensBySource } from "../../../helpers/hooks/useRewardedAdTokensBySource";
+import { useRootStore, useStoreData } from "../../../store/StoreProvider";
+import { resolveAdSource, type AdSource } from "../../../types/ads";
 
 const formatTokens = (value: number, locale: string) =>
   Number.isFinite(value) ? value.toLocaleString(locale) : String(value);
-
-type AdSource = "google" | "yandex";
 
 type TokenBadgeProps = {
   balance?: number;
@@ -44,11 +43,20 @@ export const TokenBadge = memo(
     valueStyle,
     iconColor,
     iconSize = 18,
-    adSource = "google",
+    adSource,
     onBalanceChange,
   }: TokenBadgeProps) => {
     const { theme } = useTheme();
     const styles = getStyles(theme);
+    const { configStore } = useRootStore();
+    const adsSourceFromConfig = useStoreData(
+      configStore,
+      (store) => store.adsConfig.ADS_SOURCE,
+    );
+    const resolvedAdSource = useMemo(
+      () => resolveAdSource(adSource ?? adsSourceFromConfig),
+      [adSource, adsSourceFromConfig],
+    );
     const handleRewardEarned = useCallback(
       (updatedBalance: number) => {
         onBalanceChange?.(updatedBalance);
@@ -56,10 +64,10 @@ export const TokenBadge = memo(
       [onBalanceChange],
     );
 
-    const rewarded =
-      adSource === "yandex"
-        ? useRewardedAdTokensYandex({ onRewardEarned: handleRewardEarned })
-        : useRewardedAdTokens({ onRewardEarned: handleRewardEarned });
+    const rewarded = useRewardedAdTokensBySource(
+      { onRewardEarned: handleRewardEarned },
+      resolvedAdSource,
+    );
 
     const { balance: storedBalance, isAdLoaded, showRewardedAd } = rewarded;
     const [isMenuVisible, setIsMenuVisible] = useState(false);
