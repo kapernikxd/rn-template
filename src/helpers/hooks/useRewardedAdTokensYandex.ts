@@ -18,13 +18,13 @@ import { DEFAULT_TOKEN_BALANCE } from "../../constants/links";
 
 const isIos = Platform.OS === "ios";
 
-type UseRewardedAdTokensResult = {
+export type UseRewardedAdTokensResult = {
   balance: number;
   isAdLoaded: boolean;
   showRewardedAd: () => void;
 };
 
-type UseRewardedAdTokensOptions = {
+export type UseRewardedAdTokensOptions = {
   onRewardEarned?: (balance: number) => void;
   shouldAwardTokens?: boolean;
 };
@@ -36,8 +36,8 @@ export const useRewardedAdTokensYandex = (
   const { uiStore, configStore } = useRootStore();
   const { t } = useTranslation();
 
-  const { yandexAdsConfig, rewardAmount } = useStoreData(configStore, (store) => ({
-    yandexAdsConfig: 'demo-rewarded-yandex',        // ⚠️ нужно добавить в стор
+  const { adsConfig, rewardAmount } = useStoreData(configStore, (store) => ({
+    adsConfig: store.adsConfig,
     rewardAmount: store.tokenRewardAmount,
   }));
 
@@ -49,11 +49,12 @@ export const useRewardedAdTokensYandex = (
   const hasAppliedRewardRef = useRef(false);
 
   const rewardedAdUnitId = useMemo(() => {
-    // можно сделать тестовый ID по аналогии с TestIds, пока пусть будет боевой
+    if (__DEV__) return "demo-rewarded-yandex";
+
     return isIos
-      ? 'demo-rewarded-yandex' // yandexAdsConfig.IOS_AD_UNIT_ID_REWARD
-      : 'demo-rewarded-yandex' // yandexAdsConfig.ANDROID_AD_UNIT_ID_REWARD;
-  }, [yandexAdsConfig]);
+      ? adsConfig.YANDEX_IOS_AD_UNIT_ID_REWARD
+      : adsConfig.YANDEX_ANDROID_AD_UNIT_ID_REWARD;
+  }, [adsConfig]);
 
   const updateBalance = useCallback((value: number) => {
     if (isMountedRef.current) {
@@ -81,6 +82,14 @@ export const useRewardedAdTokensYandex = (
     adRef.current = null;
 
     try {
+      if (!rewardedAdUnitId) {
+        uiStore.showSnackbar(
+          t("components.ads.rewardedTokens.snackbar.loadFailed"),
+          "error",
+        );
+        return;
+      }
+
       const loader = await RewardedAdLoader.create();
       const config = new AdRequestConfiguration({
         adUnitId: rewardedAdUnitId,

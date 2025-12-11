@@ -12,9 +12,9 @@ import { TermsOfUseScreen } from '../screens/docs';
 import { AiAgentScreen, AiAgentCreateScreen, AiAgentEditScreen } from '../screens/aibot';
 import Onboarding from '../screens/onboarding/Onboarding';
 import { useOnboarding } from '../helpers/hooks/useOnboarding';
-import { BottomAdBanner } from '../components/ads/BottomAdBanner';
 import { AnalyticsEvent, trackEvent } from '../services/analytics/events';
-import { YandexBottomAdBanner } from '../components/ads/yandex';
+import { BottomAdBanner } from '../components/ads/BottomAdBanner';
+import { resolveAdSource } from '../types/ads';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -27,6 +27,10 @@ export const AppNavigator = () => {
     (store) => store.hasAttemptedAutoLogin,
   );
   const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
+  const adsSource = useStoreData(
+    configStore,
+    (store) => store.adsConfig.ADS_SOURCE,
+  );
 
   const screenOptions = useMemo(
     () => ({
@@ -117,7 +121,7 @@ export const AppNavigator = () => {
           </RootStack.Navigator>
         </NavigationContainer>
       </View>
-      {adsEnabled ? <YandexBottomAdBanner /> : null}
+      {adsEnabled ? <BottomAdBanner source={resolveAdSource(adsSource)} /> : null}
     </View>
   );
 };

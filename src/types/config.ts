@@ -13,6 +13,7 @@ export type ChatLimitConfig = {
 };
 
 export type AdsConfig = {
+  ADS_SOURCE?: 'GOOGLE' | 'YANDEX';
   ADS_ENABLED: boolean;
   ADS_ENABLED_ANDROID?: boolean;
   ADS_ENABLED_IOS?: boolean;
@@ -20,6 +21,10 @@ export type AdsConfig = {
   ANDROID_AD_UNIT_ID_REWARD: string;
   IOS_AD_UNIT_ID_BANNER: string;
   IOS_AD_UNIT_ID_REWARD: string;
+  YANDEX_ANDROID_AD_UNIT_ID_BANNER?: string;
+  YANDEX_ANDROID_AD_UNIT_ID_REWARD?: string;
+  YANDEX_IOS_AD_UNIT_ID_BANNER?: string;
+  YANDEX_IOS_AD_UNIT_ID_REWARD?: string;
   TOKEN_REWARD_AMOUNT: number;
 };
 

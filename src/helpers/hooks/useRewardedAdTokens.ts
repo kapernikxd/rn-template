@@ -14,13 +14,13 @@ import { DEFAULT_TOKEN_BALANCE } from "../../constants/links";
 
 const isIos = Platform.OS === "ios";
 
-type UseRewardedAdTokensResult = {
+export type UseRewardedAdTokensResult = {
   balance: number;
   isAdLoaded: boolean;
   showRewardedAd: () => void;
 };
 
-type UseRewardedAdTokensOptions = {
+export type UseRewardedAdTokensOptions = {
   onRewardEarned?: (balance: number) => void;
   shouldAwardTokens?: boolean;
 };

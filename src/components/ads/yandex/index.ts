@@ -1,1 +1,1 @@
-export { default as YandexBottomAdBanner } from "./stickyBanner";
+export { YandexBottomAdBanner } from "./BottomBanner";
