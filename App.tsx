@@ -13,6 +13,7 @@ import { ForceUpdateWrapper } from './src/components/layouts/ForceUpdateWrapper'
 import i18n from './src/helpers/i18n';
 import { getPreferredLanguage } from './src/helpers/i18n/languageStorage';
 import { initAppMetrica, reportAppOpen } from './src/services/analytics/appMetrica';
+import { MobileAds } from 'yandex-mobile-ads';
 
 const AppStatusBar = () => {
   const { isDark, theme } = useTheme();
@@ -72,6 +73,13 @@ export default function App() {
 }
 
 const AppWithConfig = () => {
+
+  useEffect(() => {
+    (async () => {
+      await MobileAds.initialize();
+    })();
+  });
+
   return (
     <ForceUpdateWrapper>
       <AppNavigator />

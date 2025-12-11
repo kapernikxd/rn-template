@@ -16,9 +16,12 @@ import { useTheme, ThemeType } from "rn-vs-lb/theme";
 import { useTranslation } from "react-i18next";
 
 import { useRewardedAdTokens } from "../../../helpers/hooks/useRewardedAdTokens";
+import { useRewardedAdTokensYandex } from "../../../helpers/hooks/useRewardedAdTokensYandex";
 
 const formatTokens = (value: number, locale: string) =>
   Number.isFinite(value) ? value.toLocaleString(locale) : String(value);
+
+type AdSource = "google" | "yandex";
 
 type TokenBadgeProps = {
   balance?: number;
@@ -29,6 +32,7 @@ type TokenBadgeProps = {
   iconColor?: string;
   iconSize?: number;
   onBalanceChange?: (balance: number) => void;
+  adSource?: AdSource;
 };
 
 export const TokenBadge = memo(
@@ -40,6 +44,7 @@ export const TokenBadge = memo(
     valueStyle,
     iconColor,
     iconSize = 18,
+    adSource = "google",
     onBalanceChange,
   }: TokenBadgeProps) => {
     const { theme } = useTheme();
@@ -51,29 +56,32 @@ export const TokenBadge = memo(
       [onBalanceChange],
     );
 
-    const { balance: storedBalance, isAdLoaded, showRewardedAd } = useRewardedAdTokens({
-      onRewardEarned: handleRewardEarned,
-    });
+    const rewarded =
+      adSource === "yandex"
+        ? useRewardedAdTokensYandex({ onRewardEarned: handleRewardEarned })
+        : useRewardedAdTokens({ onRewardEarned: handleRewardEarned });
+
+    const { balance: storedBalance, isAdLoaded, showRewardedAd } = rewarded;
     const [isMenuVisible, setIsMenuVisible] = useState(false);
     const [pendingShowAfterClose, setPendingShowAfterClose] = useState(false);
     const { t, i18n } = useTranslation();
 
-  const currentBalance = useMemo(
-    () => (typeof balance === "number" ? balance : storedBalance),
-    [balance, storedBalance],
-  );
+    const currentBalance = useMemo(
+      () => (typeof balance === "number" ? balance : storedBalance),
+      [balance, storedBalance],
+    );
 
-  useEffect(() => {
-    onBalanceChange?.(currentBalance);
-  }, [currentBalance, onBalanceChange]);
+    useEffect(() => {
+      onBalanceChange?.(currentBalance);
+    }, [currentBalance, onBalanceChange]);
 
-  useEffect(() => {
-    if (typeof balance !== "number" || balance === storedBalance) {
-      return;
-    }
+    useEffect(() => {
+      if (typeof balance !== "number" || balance === storedBalance) {
+        return;
+      }
 
-    onBalanceChange?.(storedBalance);
-  }, [balance, storedBalance, onBalanceChange]);
+      onBalanceChange?.(storedBalance);
+    }, [balance, storedBalance, onBalanceChange]);
 
     const locale = i18n.language || "en";
     const formattedBalance = useMemo(
@@ -83,12 +91,12 @@ export const TokenBadge = memo(
 
     const accessibilityLabelText = label
       ? t("ads.tokenBadge.accessibility.withLabel", {
-          label,
-          balance: formattedBalance,
-        })
+        label,
+        balance: formattedBalance,
+      })
       : t("ads.tokenBadge.accessibility.balance", {
-          balance: formattedBalance,
-        });
+        balance: formattedBalance,
+      });
 
     const menuStatusText = t(
       isAdLoaded ? "ads.tokenBadge.adReady" : "ads.tokenBadge.adLoading",

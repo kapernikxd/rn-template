@@ -14,6 +14,7 @@ import Onboarding from '../screens/onboarding/Onboarding';
 import { useOnboarding } from '../helpers/hooks/useOnboarding';
 import { BottomAdBanner } from '../components/ads/BottomAdBanner';
 import { AnalyticsEvent, trackEvent } from '../services/analytics/events';
+import { YandexBottomAdBanner } from '../components/ads/yandex';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
@@ -116,7 +117,7 @@ export const AppNavigator = () => {
           </RootStack.Navigator>
         </NavigationContainer>
       </View>
-      {adsEnabled ? <BottomAdBanner /> : null}
+      {adsEnabled ? <YandexBottomAdBanner /> : null}
     </View>
   );
 };

@@ -1,0 +1,1 @@
+export { default as YandexBottomAdBanner } from "./stickyBanner";
