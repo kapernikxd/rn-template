@@ -86,7 +86,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
       <View style={styles.right}>
         {adsEnabled ? (
-          <TokenBadge adSource='yandex' balance={tokenBalance ?? undefined} onBalanceChange={onBalanceChange} />
+          <TokenBadge balance={tokenBalance ?? undefined} onBalanceChange={onBalanceChange} />
         ) : null}
       </View>
     </View>
