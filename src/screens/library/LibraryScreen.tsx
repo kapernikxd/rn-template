@@ -208,7 +208,7 @@ export const LibraryScreen = () => {
         aspectWithPoints: ["bodies", "points", "angles"],
         aspectTypes: ["major"],
         customOrbs: {},
-        language: "ru",
+        language: "en",
       });
 
       setHoroscope(nextHoroscope);
