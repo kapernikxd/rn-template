@@ -16,7 +16,7 @@
       "usesAppleSignIn": true,
       "supportsTablet": true,
       "bundleIdentifier": "com.kapernikrs.aiastrology",
-      "buildNumber": "8",
+      "buildNumber": "9",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "We need access to your photo library so you can upload images to your profile and events.",
         "NSCameraUsageDescription": "We need access to your camera so you can take photos directly in the app.",
@@ -34,7 +34,7 @@
       "predictiveBackGestureEnabled": false,
       "googleServicesFile": "./android/app/google-services.json",
       "package": "com.kapernikrs.aiastrology",
-      "versionCode": 8
+      "versionCode": 9
     },
     "notification": {
       "icon": "./assets/notification-icon.png",
