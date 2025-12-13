@@ -28,7 +28,7 @@ type TabConfig = {
 
 const TABS: TabConfig[] = [
   { name: 'DashboardTab', labelKey: 'navigation.tabs.dashboard', icon: 'dashboard', component: DashboardStack },
-  { name: 'LibraryTab', labelKey: 'navigation.tabs.library', icon: 'photo-library', component: LibraryStack, hidden: true },
+  { name: 'LibraryTab', labelKey: 'navigation.tabs.library', icon: 'photo-library', component: LibraryStack },
   { name: 'ChatsTab', labelKey: 'navigation.tabs.chats', icon: 'chat-bubble-outline', component: ChatsStack, hidden: true },
   { name: 'ProfileTab', labelKey: 'navigation.tabs.profile', icon: 'settings', component: ProfileStack },
 ];
