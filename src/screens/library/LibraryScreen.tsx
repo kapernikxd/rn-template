@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import * as Clipboard from "expo-clipboard";
 import { useTheme } from "rn-vs-lb/theme";
 import { Svg, Circle, Line, Text as SvgText } from "react-native-svg";
 import { Horoscope, Origin } from "circular-natal-horoscope-js";
@@ -44,6 +45,7 @@ export const LibraryScreen = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [horoscope, setHoroscope] = useState<Horoscope | null>(null);
+  const [copyMessage, setCopyMessage] = useState<string | null>(null);
 
   const styles = useMemo(
     () =>
@@ -97,10 +99,24 @@ export const LibraryScreen = () => {
           ...typography.button,
           color: theme.white,
         },
+        copyButton: {
+          backgroundColor: theme.white,
+          borderWidth: 1,
+          borderColor: theme.primary,
+        },
+        copyButtonText: {
+          color: theme.primary,
+        },
         errorText: {
           color: theme.danger,
           ...typography.caption,
           marginTop: sizes.xs as number,
+        },
+        copyMessage: {
+          ...typography.caption,
+          color: theme.primary,
+          marginTop: sizes.xs as number,
+          textAlign: "center",
         },
         chartWrapper: {
           backgroundColor: theme.white,
@@ -137,7 +153,25 @@ export const LibraryScreen = () => {
           justifyContent: "center",
         },
       }),
-    [sizes.lg, sizes.md, sizes.sm, sizes.xs, theme.background, theme.border, theme.danger, theme.greyText, theme.primary, theme.text, theme.title, theme.white, typography.body, typography.button, typography.caption, typography.titleH3, typography.titleH4],
+    [
+      sizes.lg,
+      sizes.md,
+      sizes.sm,
+      sizes.xs,
+      theme.background,
+      theme.border,
+      theme.danger,
+      theme.greyText,
+      theme.primary,
+      theme.text,
+      theme.title,
+      theme.white,
+      typography.body,
+      typography.button,
+      typography.caption,
+      typography.titleH3,
+      typography.titleH4,
+    ],
   );
 
   const normalizeCity = useCallback((value: string) => value.trim().toLowerCase(), []);
@@ -151,6 +185,28 @@ export const LibraryScreen = () => {
       setLongitude(coordinates.longitude.toString());
     }
   }, [normalizeCity]);
+
+  const buildExportPayload = useCallback(() => {
+    if (!horoscope) return null;
+
+    const bodies = (horoscope.CelestialBodies?.all ?? []).map((body) => ({
+      key: body.key,
+      label: body.label,
+      sign: body?.Sign?.label ?? null,
+      house: body?.House?.id ?? null,
+      eclipticDegrees: body?.ChartPosition?.Ecliptic?.DecimalDegrees ?? null,
+      arcDegreesFormatted: body?.ChartPosition?.Ecliptic?.ArcDegreesFormatted30 ?? null,
+    }));
+
+    const houses = (horoscope.Houses ?? []).map((house) => ({
+      id: house.id,
+      label: house?.Sign?.label ?? house?.label ?? `Дом ${house.id}`,
+      startDegrees: house?.ChartPosition?.StartPosition?.Ecliptic?.DecimalDegrees ?? null,
+      arcDegreesFormatted: house?.ChartPosition?.StartPosition?.Ecliptic?.ArcDegreesFormatted30 ?? null,
+    }));
+
+    return { bodies, houses };
+  }, [horoscope]);
 
   const formatPosition = useCallback((item: any) => {
     const degrees = item?.ChartPosition?.Ecliptic?.ArcDegreesFormatted30;
@@ -212,6 +268,7 @@ export const LibraryScreen = () => {
       });
 
       setHoroscope(nextHoroscope);
+      setCopyMessage(null);
     } catch (creationError) {
       console.warn("Failed to build horoscope", creationError);
       setError("Не удалось построить натальную карту. Проверьте введённые данные.");
@@ -219,6 +276,22 @@ export const LibraryScreen = () => {
       setLoading(false);
     }
   }, [day, latitude, longitude, month, time, year]);
+
+  const handleCopyResults = useCallback(async () => {
+    const payload = buildExportPayload();
+
+    if (!payload) return;
+
+    setCopyMessage(null);
+
+    try {
+      await Clipboard.setStringAsync(JSON.stringify(payload, null, 2));
+      setCopyMessage("Планеты и дома скопированы в буфер обмена.");
+    } catch (copyError) {
+      console.warn("Failed to copy horoscope data", copyError);
+      setCopyMessage("Не удалось скопировать данные. Попробуйте ещё раз.");
+    }
+  }, [buildExportPayload]);
 
   const renderChart = useCallback(() => {
     if (!horoscope) return null;
@@ -385,7 +458,13 @@ export const LibraryScreen = () => {
       <TouchableOpacity style={styles.button} onPress={handleGenerate} disabled={loading}>
         {loading ? <ActivityIndicator color={theme.white} /> : <Text style={styles.buttonText}>Построить карту</Text>}
       </TouchableOpacity>
+      {horoscope ? (
+        <TouchableOpacity style={[styles.button, styles.copyButton]} onPress={handleCopyResults}>
+          <Text style={[styles.buttonText, styles.copyButtonText]}>Скопировать планеты и дома</Text>
+        </TouchableOpacity>
+      ) : null}
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {copyMessage ? <Text style={styles.copyMessage}>{copyMessage}</Text> : null}
 
       {horoscope ? (
         <View style={styles.chartWrapper}>
