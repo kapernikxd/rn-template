@@ -39,10 +39,16 @@ export async function initAdsConsent(): Promise<ConsentInitResult> {
     throw error;
   }
 
-  if (
+  const shouldGatherConsent =
     consentInfo.status === AdsConsentStatus.REQUIRED ||
-    consentInfo.status === AdsConsentStatus.UNKNOWN
-  ) {
+    consentInfo.status === AdsConsentStatus.UNKNOWN ||
+    (__DEV__ && consentInfo.isConsentFormAvailable);
+
+  if (__DEV__ && shouldGatherConsent) {
+    logConsent("info", "Forcing consent form in dev environment");
+  }
+
+  if (shouldGatherConsent) {
     try {
       logConsent("info", "Gathering consent");
       await AdsConsent.gatherConsent();
