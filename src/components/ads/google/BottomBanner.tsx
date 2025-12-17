@@ -10,6 +10,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from 'rn-vs-lb/theme';
 
 import { ensureTrackingTransparencyPermission } from '../../../services/privacy/trackingTransparency';
+import { useAds } from '../../../ads/AdsContext';
 
 const isMobilePlatform = Platform.OS === 'ios' || Platform.OS === 'android';
 
@@ -21,9 +22,10 @@ export const GoogleBottomAdBanner: FC<GoogleBottomAdBannerProps> = ({ unitId }) 
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
   const [adLoaded, setAdLoaded] = useState(false);
+  const { canRequestAds } = useAds();
 
   useEffect(() => {
-    if (!isMobilePlatform) return;
+    if (!isMobilePlatform || !canRequestAds) return;
 
     let isMounted = true;
     const initializeAds = async () => {
@@ -35,9 +37,6 @@ export const GoogleBottomAdBanner: FC<GoogleBottomAdBannerProps> = ({ unitId }) 
           tagForChildDirectedTreatment: false,
         };
         await mobileAds().setRequestConfiguration(requestConfiguration);
-        if (!isMounted) return;
-
-        await mobileAds().initialize();
       } catch {
         // ignore errors
       }
@@ -47,7 +46,7 @@ export const GoogleBottomAdBanner: FC<GoogleBottomAdBannerProps> = ({ unitId }) 
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [canRequestAds]);
 
   const bannerAdUnitId = useMemo(() => {
     if (__DEV__) return TestIds.BANNER;
@@ -55,7 +54,7 @@ export const GoogleBottomAdBanner: FC<GoogleBottomAdBannerProps> = ({ unitId }) 
     return unitId;
   }, [unitId]);
 
-  if (!isMobilePlatform || !bannerAdUnitId) {
+  if (!isMobilePlatform || !bannerAdUnitId || !canRequestAds) {
     return null;
   }
 

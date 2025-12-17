@@ -15,6 +15,7 @@ import {
   getTokenBalance,
 } from "../tokenStorage";
 import { DEFAULT_TOKEN_BALANCE } from "../../constants/links";
+import { useAds } from "../../ads/AdsContext";
 
 const isIos = Platform.OS === "ios";
 
@@ -35,6 +36,7 @@ export const useRewardedAdTokensYandex = (
   const { onRewardEarned, shouldAwardTokens = true } = options;
   const { uiStore, configStore } = useRootStore();
   const { t } = useTranslation();
+  const { canRequestAds } = useAds();
 
   const { adsConfig, rewardAmount } = useStoreData(configStore, (store) => ({
     adsConfig: store.adsConfig,
@@ -78,6 +80,10 @@ export const useRewardedAdTokensYandex = (
   }, [updateBalance]);
 
   const loadAd = useCallback(async () => {
+    if (!canRequestAds) {
+      return;
+    }
+
     setIsAdLoaded(false);
     adRef.current = null;
 
@@ -109,7 +115,7 @@ export const useRewardedAdTokensYandex = (
         );
       }
     }
-  }, [rewardedAdUnitId, uiStore, t]);
+  }, [canRequestAds, rewardedAdUnitId, uiStore, t]);
 
   useEffect(() => {
     const init = async () => {
@@ -125,6 +131,12 @@ export const useRewardedAdTokensYandex = (
         }
       }
 
+      if (!canRequestAds) {
+        adRef.current = null;
+        setIsAdLoaded(false);
+        return;
+      }
+
       try {
         await ensureTrackingTransparencyPermission();
       } catch {
@@ -137,13 +149,17 @@ export const useRewardedAdTokensYandex = (
     };
 
     void init();
-  }, [loadAd, uiStore, updateBalance, t]);
+  }, [canRequestAds, loadAd, uiStore, updateBalance, t]);
 
   const applyReward = useCallback(async () => {
     if (hasAppliedRewardRef.current) return;
     hasAppliedRewardRef.current = true;
 
     try {
+      if (!canRequestAds) {
+        return;
+      }
+
       if (shouldAwardTokens) {
         const rewardValue = rewardAmount;
         const updatedBalance = await addTokens(rewardValue);
@@ -168,6 +184,7 @@ export const useRewardedAdTokensYandex = (
       }
     }
   }, [
+    canRequestAds,
     onRewardEarned,
     rewardAmount,
     shouldAwardTokens,
@@ -177,6 +194,10 @@ export const useRewardedAdTokensYandex = (
   ]);
 
   const showRewardedAd = useCallback(() => {
+    if (!canRequestAds) {
+      return;
+    }
+
     const ad = adRef.current;
 
     if (!ad) {
