@@ -53,7 +53,7 @@ export const LibraryScreen = () => {
         container: {
           flexGrow: 1,
           backgroundColor: theme.background,
-          paddingHorizontal: sizes.lg as number,
+          paddingHorizontal: sizes.xs as number,
           paddingVertical: sizes.md as number,
         },
         title: {
