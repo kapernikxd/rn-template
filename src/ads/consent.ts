@@ -2,7 +2,24 @@ import {
   AdsConsent,
   AdsConsentStatus,
   type AdsConsentInfo,
-} from 'react-native-google-mobile-ads';
+} from "react-native-google-mobile-ads";
+import { logToServer } from "../helpers/utils/logger";
+
+type LogLevel = "info" | "warn" | "error";
+
+const CONSENT_TAG = "[AdsConsent]";
+
+function logConsent(
+  level: LogLevel,
+  message: string,
+  context: Record<string, unknown> = {},
+) {
+  const consoleLogger =
+    level === "warn" ? console.warn : level === "error" ? console.error : console.log;
+
+  consoleLogger(`${CONSENT_TAG} ${message}`, context);
+  void logToServer(level, `${CONSENT_TAG} ${message}`, context);
+}
 
 export type ConsentInitResult = {
   status: AdsConsentStatus;
@@ -11,14 +28,14 @@ export type ConsentInitResult = {
 };
 
 export async function initAdsConsent(): Promise<ConsentInitResult> {
-  console.log('[AdsConsent] Starting consent flow');
+  logConsent("info", "Starting consent flow");
 
   let consentInfo: AdsConsentInfo;
   try {
     consentInfo = await AdsConsent.requestInfoUpdate();
-    console.log('[AdsConsent] requestInfoUpdate status:', consentInfo.status);
+    logConsent("info", "requestInfoUpdate status", { status: consentInfo.status });
   } catch (error) {
-    console.warn('[AdsConsent] Failed to request info update', error);
+    logConsent("warn", "Failed to request info update", { error });
     throw error;
   }
 
@@ -27,18 +44,20 @@ export async function initAdsConsent(): Promise<ConsentInitResult> {
     consentInfo.status === AdsConsentStatus.UNKNOWN
   ) {
     try {
-      console.log('[AdsConsent] Gathering consent');
+      logConsent("info", "Gathering consent");
       await AdsConsent.gatherConsent();
     } catch (error) {
-      console.warn('[AdsConsent] Failed to gather consent', error);
+      logConsent("warn", "Failed to gather consent", { error });
     }
   }
 
   const updatedInfo = await AdsConsent.getConsentInfo();
 
-  console.log('[AdsConsent] Updated status:', updatedInfo.status);
-  console.log('[AdsConsent] canRequestAds:', updatedInfo.canRequestAds);
-  console.log('[AdsConsent] formAvailable:', updatedInfo.isConsentFormAvailable);
+  logConsent("info", "Updated consent info", {
+    status: updatedInfo.status,
+    canRequestAds: updatedInfo.canRequestAds,
+    formAvailable: updatedInfo.isConsentFormAvailable,
+  });
 
   return {
     status: updatedInfo.status,
@@ -48,6 +67,6 @@ export async function initAdsConsent(): Promise<ConsentInitResult> {
 }
 
 export async function showPrivacyOptionsForm(): Promise<void> {
-  console.log('[AdsConsent] Showing privacy options form');
+  logConsent("info", "Showing privacy options form");
   await AdsConsent.showForm();
 }
