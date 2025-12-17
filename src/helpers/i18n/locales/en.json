@@ -364,6 +364,17 @@
         "light": "Light Theme",
         "dark": "Dark Theme"
       },
+      "adsConsent": {
+        "title": "Privacy / Ads consent",
+        "status": {
+          "required": "Consent required",
+          "obtained": "Consent obtained",
+          "notRequired": "Consent not required",
+          "unknown": "Consent status unknown"
+        },
+        "updated": "Ads consent updated",
+        "unavailable": "Consent form is currently unavailable"
+      },
       "deleteAccount": {
         "title": "Delete Account",
         "modalTitle": "Confirm Deletion",

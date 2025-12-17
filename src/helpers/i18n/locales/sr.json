@@ -372,6 +372,17 @@
         "light": "Svetla tema",
         "dark": "Tamna tema"
       },
+      "adsConsent": {
+        "title": "Privatnost / saglasnost za oglase",
+        "status": {
+          "required": "Potrebna je saglasnost",
+          "obtained": "Saglasnost dobijena",
+          "notRequired": "Saglasnost nije potrebna",
+          "unknown": "Status saglasnosti je nepoznat"
+        },
+        "updated": "Saglasnost za oglase je ažurirana",
+        "unavailable": "Forma za saglasnost trenutno nije dostupna"
+      },
       "deleteAccount": {
         "title": "Obriši nalog",
         "modalTitle": "Potvrdi brisanje",

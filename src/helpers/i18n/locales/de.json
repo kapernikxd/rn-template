@@ -372,6 +372,17 @@
         "light": "Helles Design",
         "dark": "Dunkles Design"
       },
+      "adsConsent": {
+        "title": "Datenschutz / Werbeeinwilligung",
+        "status": {
+          "required": "Einwilligung erforderlich",
+          "obtained": "Einwilligung erteilt",
+          "notRequired": "Einwilligung nicht erforderlich",
+          "unknown": "Einwilligungsstatus unbekannt"
+        },
+        "updated": "Werbeeinwilligung aktualisiert",
+        "unavailable": "Das Einwilligungsformular ist derzeit nicht verfügbar"
+      },
       "deleteAccount": {
         "title": "Konto löschen",
         "modalTitle": "Löschen bestätigen",

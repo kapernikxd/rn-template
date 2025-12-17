@@ -372,6 +372,17 @@
         "light": "Thème clair",
         "dark": "Thème sombre"
       },
+      "adsConsent": {
+        "title": "Confidentialité / consentement aux annonces",
+        "status": {
+          "required": "Consentement requis",
+          "obtained": "Consentement obtenu",
+          "notRequired": "Consentement non requis",
+          "unknown": "Statut du consentement inconnu"
+        },
+        "updated": "Consentement publicitaire mis à jour",
+        "unavailable": "Le formulaire de consentement est actuellement indisponible"
+      },
       "deleteAccount": {
         "title": "Supprimer le compte",
         "modalTitle": "Confirmer la suppression",

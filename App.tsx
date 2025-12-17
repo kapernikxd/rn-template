@@ -9,12 +9,11 @@ import { Host } from 'react-native-portalize';
 import CustomSnackbar from './src/components/CustomSnackbar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ForceUpdateWrapper } from './src/components/layouts/ForceUpdateWrapper';
+import { ensureGoogleMobileAdsInitialized } from './src/ads/googleMobileAds';
 
 import i18n from './src/helpers/i18n';
 import { getPreferredLanguage } from './src/helpers/i18n/languageStorage';
 import { initAppMetrica, reportAppOpen } from './src/services/analytics/appMetrica';
-import { MobileAds } from 'yandex-mobile-ads';
-
 const AppStatusBar = () => {
   const { isDark, theme } = useTheme();
 
@@ -76,9 +75,9 @@ const AppWithConfig = () => {
 
   useEffect(() => {
     (async () => {
-      await MobileAds.initialize();
+      await ensureGoogleMobileAdsInitialized();
     })();
-  });
+  }, []);
 
   return (
     <ForceUpdateWrapper>
