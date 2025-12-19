@@ -9,6 +9,7 @@ import {
   View,
 } from "react-native";
 import * as Clipboard from "expo-clipboard";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme } from "rn-vs-lb/theme";
 import { Svg, Circle, Line, Text as SvgText } from "react-native-svg";
 import { Horoscope, Origin } from "circular-natal-horoscope-js";
@@ -20,6 +21,8 @@ const clampNumber = (value: number, min: number, max: number) => {
   return Math.min(Math.max(value, min), max);
 };
 
+const FORM_STORAGE_KEY = "libraryFormState";
+
 export const LibraryScreen = () => {
   const { theme, typography, sizes } = useTheme();
   const rootStore = useRootStore();
@@ -30,17 +33,18 @@ export const LibraryScreen = () => {
     query: store.query,
   }));
 
-  const [day, setDay] = useState("1");
-  const [month, setMonth] = useState("1");
-  const [year, setYear] = useState("1990");
-  const [time, setTime] = useState("12:00");
-  const [city, setCity] = useState("Москва");
-  const [latitude, setLatitude] = useState("55.7558");
-  const [longitude, setLongitude] = useState("37.6173");
+  const [day, setDay] = useState("");
+  const [month, setMonth] = useState("");
+  const [year, setYear] = useState("");
+  const [time, setTime] = useState("");
+  const [city, setCity] = useState("");
+  const [latitude, setLatitude] = useState("");
+  const [longitude, setLongitude] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [horoscope, setHoroscope] = useState<Horoscope | null>(null);
   const [copyMessage, setCopyMessage] = useState<string | null>(null);
+  const [formLoaded, setFormLoaded] = useState(false);
 
   const styles = useMemo(
     () =>
@@ -115,12 +119,29 @@ export const LibraryScreen = () => {
         },
         suggestionsWrapper: {
           marginTop: sizes.xs as number,
+          position: "relative",
+          zIndex: 5,
         },
         suggestionsContainer: {
           backgroundColor: theme.white,
           borderColor: theme.border,
           borderWidth: 1,
           borderRadius: 12,
+          paddingVertical: sizes.xs as number,
+          paddingHorizontal: sizes.xs as number,
+          position: "absolute",
+          top: sizes.sm as number,
+          left: 0,
+          right: 0,
+          maxHeight: 220,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
+          elevation: 6,
+        },
+        suggestionsContent: {
+          rowGap: sizes.xs as number,
         },
         suggestionItem: {
           paddingHorizontal: sizes.sm as number,
@@ -193,6 +214,46 @@ export const LibraryScreen = () => {
   );
 
   useEffect(() => {
+    const loadForm = async () => {
+      try {
+        const savedForm = await AsyncStorage.getItem(FORM_STORAGE_KEY);
+
+        if (savedForm) {
+          const parsed = JSON.parse(savedForm);
+          setDay(parsed.day ?? "");
+          setMonth(parsed.month ?? "");
+          setYear(parsed.year ?? "");
+          setTime(parsed.time ?? "");
+          setCity(parsed.city ?? "");
+          setLatitude(parsed.latitude ?? "");
+          setLongitude(parsed.longitude ?? "");
+        }
+      } catch (storageError) {
+        console.warn("Failed to load library form state", storageError);
+      } finally {
+        setFormLoaded(true);
+      }
+    };
+
+    loadForm().catch((error) => console.warn(error));
+  }, []);
+
+  useEffect(() => {
+    if (!formLoaded) return;
+
+    const timeout = setTimeout(() => {
+      const payload = { day, month, year, time, city, latitude, longitude };
+      AsyncStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(payload)).catch((error) =>
+        console.warn("Failed to save library form state", error),
+      );
+    }, 400);
+
+    return () => clearTimeout(timeout);
+  }, [city, day, formLoaded, latitude, longitude, month, time, year]);
+
+  useEffect(() => {
+    if (!city) return;
+
     const timeout = setTimeout(() => {
       void rootStore.citySearchStore.searchCities(city);
     }, 300);
@@ -455,16 +516,18 @@ export const LibraryScreen = () => {
             ) : null}
             {!citySearchState.isLoading && !citySearchState.error && citySearchState.cities.length > 0 ? (
               <View style={styles.suggestionsContainer}>
-                {citySearchState.cities.map((suggestion) => (
-                  <TouchableOpacity
-                    key={suggestion._id}
-                    style={styles.suggestionItem}
-                    onPress={() => handleSelectCity(suggestion)}
-                  >
-                    <Text style={styles.suggestionCity}>{suggestion.city}</Text>
-                    <Text style={styles.suggestionCountry}>{suggestion.country}</Text>
-                  </TouchableOpacity>
-                ))}
+                <ScrollView nestedScrollEnabled contentContainerStyle={styles.suggestionsContent}>
+                  {citySearchState.cities.map((suggestion) => (
+                    <TouchableOpacity
+                      key={suggestion._id}
+                      style={styles.suggestionItem}
+                      onPress={() => handleSelectCity(suggestion)}
+                    >
+                      <Text style={styles.suggestionCity}>{suggestion.city}</Text>
+                      <Text style={styles.suggestionCountry}>{suggestion.country}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
               </View>
             ) : null}
           </View>
