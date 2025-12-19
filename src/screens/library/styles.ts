@@ -68,6 +68,12 @@ export const makeStyles = ({ theme, typography, sizes }: any) =>
       marginTop: sizes.md as number,
       marginBottom: sizes.xs as number,
     },
+    sectionDescription: {
+      ...typography.body,
+      color: theme.greyText,
+      marginBottom: sizes.sm as number,
+      textAlign: "center",
+    },
     smallAction: {
       marginTop: sizes.sm as number,
       alignSelf: "center",
@@ -75,5 +81,13 @@ export const makeStyles = ({ theme, typography, sizes }: any) =>
     smallActionText: {
       ...typography.body,
       color: theme.primary,
+    },
+    readingsSection: {
+      marginTop: sizes.lg as number,
+      gap: sizes.sm as number,
+    },
+    readingsList: {
+      flexDirection: "column",
+      gap: sizes.sm as number,
     },
   });

@@ -4,7 +4,12 @@ import { LANGUAGE_OPTIONS, normalizeLanguageCode } from '../../constants/languag
 import i18n from '../../helpers/i18n';
 import $api from '../../helpers/http';
 import type { ProfileInfoData } from '../../helpers/profile/profileInfoStorage';
-import type { HoroscopeCategory, HoroscopeResponse } from '../../types/astrology';
+import type {
+  HoroscopeCategory,
+  HoroscopeResponse,
+  NatalReadingRequest,
+  NatalReadingResponse,
+} from '../../types/astrology';
 
 class AstrologyService {
   private getLanguageParam(languageCode?: string): string {
@@ -23,6 +28,20 @@ class AstrologyService {
     const response: AxiosResponse<HoroscopeResponse> = await $api.post(
       `astrology/${category}`,
       profile,
+      { params: { lang } },
+    );
+
+    return response.data;
+  }
+
+  async generateNatalReading(
+    payload: NatalReadingRequest,
+    languageCode?: string,
+  ): Promise<NatalReadingResponse> {
+    const lang = this.getLanguageParam(languageCode);
+    const response: AxiosResponse<NatalReadingResponse> = await $api.post(
+      'astrology/natal-reading',
+      payload,
       { params: { lang } },
     );
 
