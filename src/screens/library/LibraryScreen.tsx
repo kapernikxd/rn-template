@@ -23,6 +23,7 @@ import {
   getStoredNatalReadings,
   saveNatalReading,
 } from "../../helpers/astrology/natalReadingStorage";
+import { AnalyticsEvent, trackEvent } from "../../services/analytics/events";
 
 import { CollapsibleCard } from "./components/CollapsibleCard";
 import { FormHeader } from "./components/FormHeader";
@@ -280,6 +281,13 @@ export const LibraryScreen = () => {
     setError(null);
     setActiveReadingKey(null);
 
+    void trackEvent(AnalyticsEvent.NatalChartGenerateStarted, {
+      hasCoordinates: Boolean(latitude.trim()) && Boolean(longitude.trim()),
+      hasCity: Boolean(city.trim()),
+      hasTime: Boolean(time.trim()),
+      hasDate: Boolean(day.trim()) && Boolean(month.trim()) && Boolean(year.trim()),
+    });
+
     const parsedDay = clampNumber(Number(day), 1, 31);
     const parsedMonth = clampNumber(Number(month) - 1, 0, 11);
     const parsedYear = clampNumber(Number(year), 1, 9999);
@@ -324,9 +332,17 @@ export const LibraryScreen = () => {
 
       collapseForm();
       setIsChartCollapsed(false);
+
+      void trackEvent(AnalyticsEvent.NatalChartGenerateSuccess, {
+        hasResult: Boolean(next),
+      });
     } catch (e) {
       console.warn(e);
       setError("Не удалось построить карту.");
+
+      void trackEvent(AnalyticsEvent.NatalChartGenerateFailed, {
+        error: e instanceof Error ? e.message : String(e),
+      });
     } finally {
       setLoading(false);
     }
@@ -335,9 +351,11 @@ export const LibraryScreen = () => {
     month,
     year,
     time,
+    city,
     latitude,
     longitude,
     collapseForm,
+    trackEvent,
   ]);
 
   const handleCopyResults = useCallback(async () => {
@@ -346,10 +364,18 @@ export const LibraryScreen = () => {
       const payload = buildExportPayload(horoscope);
       await Clipboard.setStringAsync(JSON.stringify(payload, null, 2));
       setCopyMessage("Скопировано в буфер обмена");
+
+      void trackEvent(AnalyticsEvent.NatalChartCopy, {
+        success: true,
+      });
     } catch {
       setCopyMessage("Ошибка копирования");
+
+      void trackEvent(AnalyticsEvent.NatalChartCopy, {
+        success: false,
+      });
     }
-  }, [horoscope]);
+  }, [horoscope, trackEvent]);
 
   const chartPayload = useMemo(
     () => (horoscope ? buildExportPayload(horoscope) : null),
@@ -404,12 +430,21 @@ export const LibraryScreen = () => {
     async (key: string, options?: { force?: boolean }) => {
       if (!horoscope || !chartPayload || !chartSignature) {
         setError("Сначала постройте карту.");
+
+        void trackEvent(AnalyticsEvent.NatalReadingLoadFailed, {
+          key,
+          reason: "no_chart",
+        });
         return null;
       }
 
       if (!options?.force) {
         const cached = natalReadings[key];
         if (cached) {
+          void trackEvent(AnalyticsEvent.NatalReadingLoadSuccess, {
+            key,
+            source: "memory",
+          });
           return cached;
         }
 
@@ -419,6 +454,11 @@ export const LibraryScreen = () => {
             setNatalReadings((prev) => ({ ...prev, [key]: stored }));
             setReadingErrors((prev) => ({ ...prev, [key]: undefined }));
           }
+
+          void trackEvent(AnalyticsEvent.NatalReadingLoadSuccess, {
+            key,
+            source: "storage",
+          });
 
           return stored;
         }
@@ -449,6 +489,11 @@ export const LibraryScreen = () => {
           setNatalReadings((prev) => ({ ...prev, [key]: normalized }));
         }
 
+        void trackEvent(AnalyticsEvent.NatalReadingLoadSuccess, {
+          key,
+          source: "api",
+        });
+
         return normalized;
       } catch (requestError) {
         const message =
@@ -460,6 +505,11 @@ export const LibraryScreen = () => {
           setReadingErrors((prev) => ({ ...prev, [key]: message }));
         }
 
+        void trackEvent(AnalyticsEvent.NatalReadingLoadFailed, {
+          key,
+          error: message,
+        });
+
         return null;
       } finally {
         if (isMountedRef.current) {
@@ -467,13 +517,25 @@ export const LibraryScreen = () => {
         }
       }
     },
-    [chartPayload, chartSignature, horoscope, natalReadings, readingCards],
+    [
+      chartPayload,
+      chartSignature,
+      horoscope,
+      natalReadings,
+      readingCards,
+      trackEvent,
+    ],
   );
 
   const handleOpenReading = useCallback(
     (key: string) => {
       if (!horoscope) {
         setError("Сначала постройте карту.");
+
+        void trackEvent(AnalyticsEvent.NatalReadingLoadFailed, {
+          key,
+          reason: "no_chart",
+        });
         return;
       }
 
@@ -481,6 +543,12 @@ export const LibraryScreen = () => {
         adsEnabled &&
         !natalReadings[key] &&
         !openedReadingKeysRef.current.has(key);
+
+      void trackEvent(AnalyticsEvent.NatalReadingOpen, {
+        key,
+        hasCached: Boolean(natalReadings[key]),
+        rewarded: shouldShowRewardedAd,
+      });
 
       if (shouldShowRewardedAd) {
         openedReadingKeysRef.current.add(key);
@@ -490,18 +558,34 @@ export const LibraryScreen = () => {
       setActiveReadingKey(key);
       fetchNatalReading(key).catch((err) => {
         console.warn(`Failed to load natal reading for ${key}`, err);
+
+        void trackEvent(AnalyticsEvent.NatalReadingLoadFailed, {
+          key,
+          error: err instanceof Error ? err.message : String(err),
+        });
       });
     },
-    [adsEnabled, fetchNatalReading, horoscope, natalReadings, showRewardedAd],
+    [
+      adsEnabled,
+      fetchNatalReading,
+      horoscope,
+      natalReadings,
+      showRewardedAd,
+      trackEvent,
+    ],
   );
 
   const handleRetryReading = useCallback(() => {
     if (!activeReadingKey) return;
 
+    void trackEvent(AnalyticsEvent.NatalReadingRetry, {
+      key: activeReadingKey,
+    });
+
     fetchNatalReading(activeReadingKey, { force: true }).catch((err) => {
       console.warn(`Failed to reload natal reading for ${activeReadingKey}`, err);
     });
-  }, [activeReadingKey, fetchNatalReading]);
+  }, [activeReadingKey, fetchNatalReading, trackEvent]);
 
   const closeReadingModal = useCallback(() => {
     setActiveReadingKey(null);

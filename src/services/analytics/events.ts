@@ -9,6 +9,14 @@ export const AnalyticsEvent = {
   NotificationsAccepted: "notifications_accepted",
   ProfileSaved: "profile_saved",
   AppLinkShared: "app_link_shared",
+  NatalChartGenerateStarted: "natal_chart_generate_started",
+  NatalChartGenerateSuccess: "natal_chart_generate_success",
+  NatalChartGenerateFailed: "natal_chart_generate_failed",
+  NatalChartCopy: "natal_chart_copy",
+  NatalReadingOpen: "natal_reading_open",
+  NatalReadingLoadSuccess: "natal_reading_load_success",
+  NatalReadingLoadFailed: "natal_reading_load_failed",
+  NatalReadingRetry: "natal_reading_retry",
 } as const;
 
 export type AnalyticsEventName = (typeof AnalyticsEvent)[keyof typeof AnalyticsEvent];
