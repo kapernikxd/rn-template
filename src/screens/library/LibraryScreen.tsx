@@ -16,6 +16,8 @@ import { useTheme } from "rn-vs-lb/theme";
 import { useRootStore, useStoreData } from "../../store/StoreProvider";
 import type { CitySearchItem } from "../../types/citySearch";
 import astrologyService from "../../services/astrology/AstrologyService";
+import { useRewardedAdTokensBySource } from "../../helpers/hooks/useRewardedAdTokensBySource";
+import { resolveAdSource } from "../../types/ads";
 import {
   getStoredNatalReading,
   getStoredNatalReadings,
@@ -87,6 +89,16 @@ export const LibraryScreen = () => {
     }),
   );
 
+  const { adsEnabled, adsSource } = useStoreData(rootStore.configStore, (store) => ({
+    adsEnabled: store.adsEnabled,
+    adsSource: store.adsConfig.ADS_SOURCE,
+  }));
+
+  const { showRewardedAd } = useRewardedAdTokensBySource(
+    { shouldAwardTokens: false },
+    resolveAdSource(adsSource),
+  );
+
   // form state
   const [day, setDay] = useState("");
   const [month, setMonth] = useState("");
@@ -117,6 +129,7 @@ export const LibraryScreen = () => {
 
   const { animate } = useLayoutAnimation();
   const isMountedRef = useRef(true);
+  const openedReadingKeysRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     return () => {
@@ -464,12 +477,22 @@ export const LibraryScreen = () => {
         return;
       }
 
+      const shouldShowRewardedAd =
+        adsEnabled &&
+        !natalReadings[key] &&
+        !openedReadingKeysRef.current.has(key);
+
+      if (shouldShowRewardedAd) {
+        openedReadingKeysRef.current.add(key);
+        showRewardedAd();
+      }
+
       setActiveReadingKey(key);
       fetchNatalReading(key).catch((err) => {
         console.warn(`Failed to load natal reading for ${key}`, err);
       });
     },
-    [fetchNatalReading, horoscope],
+    [adsEnabled, fetchNatalReading, horoscope, natalReadings, showRewardedAd],
   );
 
   const handleRetryReading = useCallback(() => {
