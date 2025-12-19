@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   ScrollView,
@@ -12,20 +12,8 @@ import * as Clipboard from "expo-clipboard";
 import { useTheme } from "rn-vs-lb/theme";
 import { Svg, Circle, Line, Text as SvgText } from "react-native-svg";
 import { Horoscope, Origin } from "circular-natal-horoscope-js";
-
-type Coordinates = {
-  latitude: number;
-  longitude: number;
-};
-
-const CITY_COORDINATES: Record<string, Coordinates> = {
-  moscow: { latitude: 55.7558, longitude: 37.6173 },
-  "санкт-петербург": { latitude: 59.9311, longitude: 30.3609 },
-  "st petersburg": { latitude: 59.9311, longitude: 30.3609 },
-  "saint petersburg": { latitude: 59.9311, longitude: 30.3609 },
-  kazan: { latitude: 55.7963, longitude: 49.1088 },
-  "novosibirsk": { latitude: 55.0302, longitude: 82.9204 },
-};
+import { useRootStore, useStoreData } from "../../store/StoreProvider";
+import { CitySearchItem } from "../../types/citySearch";
 
 const clampNumber = (value: number, min: number, max: number) => {
   "worklet";
@@ -34,6 +22,13 @@ const clampNumber = (value: number, min: number, max: number) => {
 
 export const LibraryScreen = () => {
   const { theme, typography, sizes } = useTheme();
+  const rootStore = useRootStore();
+  const citySearchState = useStoreData(rootStore.citySearchStore, (store) => ({
+    cities: store.cities,
+    isLoading: store.isLoading,
+    error: store.error,
+    query: store.query,
+  }));
 
   const [day, setDay] = useState("1");
   const [month, setMonth] = useState("1");
@@ -118,6 +113,29 @@ export const LibraryScreen = () => {
           marginTop: sizes.xs as number,
           textAlign: "center",
         },
+        suggestionsWrapper: {
+          marginTop: sizes.xs as number,
+        },
+        suggestionsContainer: {
+          backgroundColor: theme.white,
+          borderColor: theme.border,
+          borderWidth: 1,
+          borderRadius: 12,
+        },
+        suggestionItem: {
+          paddingHorizontal: sizes.sm as number,
+          paddingVertical: sizes.xs as number,
+          borderBottomWidth: StyleSheet.hairlineWidth,
+          borderColor: theme.border,
+        },
+        suggestionCity: {
+          ...typography.body,
+          color: theme.text,
+        },
+        suggestionCountry: {
+          ...typography.caption,
+          color: theme.greyText,
+        },
         chartWrapper: {
           backgroundColor: theme.white,
           borderRadius: 16,
@@ -174,17 +192,19 @@ export const LibraryScreen = () => {
     ],
   );
 
-  const normalizeCity = useCallback((value: string) => value.trim().toLowerCase(), []);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      void rootStore.citySearchStore.searchCities(city);
+    }, 300);
 
-  const tryApplyCityCoordinates = useCallback((value: string) => {
-    const normalized = normalizeCity(value);
-    const coordinates = CITY_COORDINATES[normalized];
+    return () => clearTimeout(timeout);
+  }, [city, rootStore.citySearchStore]);
 
-    if (coordinates) {
-      setLatitude(coordinates.latitude.toString());
-      setLongitude(coordinates.longitude.toString());
-    }
-  }, [normalizeCity]);
+  const handleSelectCity = useCallback((selectedCity: CitySearchItem) => {
+    setCity(selectedCity.city);
+    setLatitude(selectedCity.lat.toString());
+    setLongitude(selectedCity.lng.toString());
+  }, []);
 
   const buildExportPayload = useCallback(() => {
     if (!horoscope) return null;
@@ -422,11 +442,32 @@ export const LibraryScreen = () => {
           <TextInput
             value={city}
             onChangeText={setCity}
-            onBlur={() => tryApplyCityCoordinates(city)}
             style={styles.input}
             placeholder="Москва"
             placeholderTextColor={theme.greyText}
           />
+          <View style={styles.suggestionsWrapper}>
+            {citySearchState.isLoading ? (
+              <ActivityIndicator size="small" color={theme.primary} />
+            ) : null}
+            {citySearchState.error ? (
+              <Text style={styles.errorText}>Не удалось загрузить города</Text>
+            ) : null}
+            {!citySearchState.isLoading && !citySearchState.error && citySearchState.cities.length > 0 ? (
+              <View style={styles.suggestionsContainer}>
+                {citySearchState.cities.map((suggestion) => (
+                  <TouchableOpacity
+                    key={suggestion._id}
+                    style={styles.suggestionItem}
+                    onPress={() => handleSelectCity(suggestion)}
+                  >
+                    <Text style={styles.suggestionCity}>{suggestion.city}</Text>
+                    <Text style={styles.suggestionCountry}>{suggestion.country}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            ) : null}
+          </View>
         </View>
       </View>
 
