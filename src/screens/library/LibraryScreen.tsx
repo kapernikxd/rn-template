@@ -15,6 +15,12 @@ import { useTheme } from "rn-vs-lb/theme";
 
 import { useRootStore, useStoreData } from "../../store/StoreProvider";
 import type { CitySearchItem } from "../../types/citySearch";
+import astrologyService from "../../services/astrology/AstrologyService";
+import {
+  getStoredNatalReading,
+  getStoredNatalReadings,
+  saveNatalReading,
+} from "../../helpers/astrology/natalReadingStorage";
 
 import { CollapsibleCard } from "./components/CollapsibleCard";
 import { FormHeader } from "./components/FormHeader";
@@ -22,6 +28,8 @@ import { ChartHeader } from "./components/ChartHeader";
 import { LabeledInput } from "./components/LabeledInput";
 import { CityPicker } from "./components/CityPicker";
 import { NatalChart } from "./components/NatalChart";
+import { NatalReadingCard } from "./components/NatalReadingCard";
+import { NatalReadingModal } from "./components/NatalReadingModal";
 
 import { useLayoutAnimation } from "./hooks/useLayoutAnimation";
 import { useDebouncedEffect } from "./hooks/useDebouncedEffect";
@@ -42,6 +50,25 @@ type FormState = {
   latitude: string;
   longitude: string;
 };
+
+type NatalReadingCardConfig = {
+  key: string;
+  title: string;
+  accent: string;
+};
+
+const NATAL_READING_CARDS: NatalReadingCardConfig[] = [
+  { key: "energy", title: "Общий энергопрофиль", accent: "#8E7DFF" },
+  { key: "personality", title: "Личность и характер", accent: "#FF8FB1" },
+  { key: "emotions", title: "Эмоции и внутренний мир", accent: "#6DD3C2" },
+  { key: "relationships", title: "Отношения и близость", accent: "#F3B14C" },
+  { key: "mind", title: "Мышление и стиль работы", accent: "#6EB5FF" },
+  { key: "purpose", title: "Предназначение и вектор развития", accent: "#C792EA" },
+  { key: "career", title: "Карьера", accent: "#7ED957" },
+  { key: "social", title: "Как тебя видят люди", accent: "#FFA552" },
+  { key: "inner", title: "То, что внутри", accent: "#A0AEC0" },
+  { key: "shadow", title: "Тёмный слой", accent: "#5E5CE6" },
+];
 
 export const LibraryScreen = () => {
   const { theme, typography, sizes } = useTheme();
@@ -74,6 +101,10 @@ export const LibraryScreen = () => {
   const [copyMessage, setCopyMessage] = useState<string | null>(null);
   const [horoscope, setHoroscope] = useState<Horoscope | null>(null);
   const [formLoaded, setFormLoaded] = useState(false);
+  const [natalReadings, setNatalReadings] = useState<Record<string, string>>({});
+  const [readingErrors, setReadingErrors] = useState<Record<string, string | undefined>>({});
+  const [activeReadingKey, setActiveReadingKey] = useState<string | null>(null);
+  const [loadingReadingKey, setLoadingReadingKey] = useState<string | null>(null);
 
   // city picker
   const [isCityFocused, setIsCityFocused] = useState(false);
@@ -85,6 +116,13 @@ export const LibraryScreen = () => {
   const [isChartCollapsed, setIsChartCollapsed] = useState(false);
 
   const { animate } = useLayoutAnimation();
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   /* ---------------- form collapse ---------------- */
 
@@ -227,6 +265,7 @@ export const LibraryScreen = () => {
 
   const handleGenerate = useCallback(() => {
     setError(null);
+    setActiveReadingKey(null);
 
     const parsedDay = clampNumber(Number(day), 1, 31);
     const parsedMonth = clampNumber(Number(month) - 1, 0, 11);
@@ -299,13 +338,177 @@ export const LibraryScreen = () => {
     }
   }, [horoscope]);
 
+  const chartPayload = useMemo(
+    () => (horoscope ? buildExportPayload(horoscope) : null),
+    [horoscope],
+  );
+
+  const chartSignature = useMemo(
+    () => (chartPayload ? JSON.stringify(chartPayload) : ""),
+    [chartPayload],
+  );
+
+  useEffect(() => {
+    let isActive = true;
+
+    const loadStoredReadings = async () => {
+      if (!chartSignature) {
+        if (isActive) {
+          setNatalReadings({});
+          setReadingErrors({});
+        }
+        return;
+      }
+
+      try {
+        const stored = await getStoredNatalReadings();
+        if (!isActive) return;
+
+        const filtered: Record<string, string> = {};
+        Object.entries(stored).forEach(([key, value]) => {
+          if (value.chartSignature === chartSignature) {
+            filtered[key] = value.reading;
+          }
+        });
+
+        setNatalReadings(filtered);
+        setReadingErrors({});
+      } catch (storageError) {
+        console.warn("Failed to read natal readings", storageError);
+      }
+    };
+
+    loadStoredReadings().catch(console.warn);
+
+    return () => {
+      isActive = false;
+    };
+  }, [chartSignature]);
+
+  const readingCards = useMemo(() => NATAL_READING_CARDS, []);
+
+  const fetchNatalReading = useCallback(
+    async (key: string, options?: { force?: boolean }) => {
+      if (!horoscope || !chartPayload || !chartSignature) {
+        setError("Сначала постройте карту.");
+        return null;
+      }
+
+      if (!options?.force) {
+        const cached = natalReadings[key];
+        if (cached) {
+          return cached;
+        }
+
+        const stored = await getStoredNatalReading(key, chartSignature);
+        if (stored) {
+          if (isMountedRef.current) {
+            setNatalReadings((prev) => ({ ...prev, [key]: stored }));
+            setReadingErrors((prev) => ({ ...prev, [key]: undefined }));
+          }
+
+          return stored;
+        }
+      }
+
+      if (!isMountedRef.current) {
+        return null;
+      }
+
+      setLoadingReadingKey(key);
+      setReadingErrors((prev) => ({ ...prev, [key]: undefined }));
+
+      try {
+        const themeTitle =
+          readingCards.find((item) => item.key === key)?.title ?? key;
+
+        const response = await astrologyService.generateNatalReading(
+          { chart: chartPayload, theme: themeTitle },
+          undefined,
+        );
+
+        const normalized =
+          typeof response.reading === "string" ? response.reading.trim() : "";
+
+        await saveNatalReading(key, normalized, chartSignature);
+
+        if (isMountedRef.current) {
+          setNatalReadings((prev) => ({ ...prev, [key]: normalized }));
+        }
+
+        return normalized;
+      } catch (requestError) {
+        const message =
+          requestError instanceof Error
+            ? requestError.message
+            : "Не удалось получить данные";
+
+        if (isMountedRef.current) {
+          setReadingErrors((prev) => ({ ...prev, [key]: message }));
+        }
+
+        return null;
+      } finally {
+        if (isMountedRef.current) {
+          setLoadingReadingKey((prev) => (prev === key ? null : prev));
+        }
+      }
+    },
+    [chartPayload, chartSignature, horoscope, natalReadings, readingCards],
+  );
+
+  const handleOpenReading = useCallback(
+    (key: string) => {
+      if (!horoscope) {
+        setError("Сначала постройте карту.");
+        return;
+      }
+
+      setActiveReadingKey(key);
+      fetchNatalReading(key).catch((err) => {
+        console.warn(`Failed to load natal reading for ${key}`, err);
+      });
+    },
+    [fetchNatalReading, horoscope],
+  );
+
+  const handleRetryReading = useCallback(() => {
+    if (!activeReadingKey) return;
+
+    fetchNatalReading(activeReadingKey, { force: true }).catch((err) => {
+      console.warn(`Failed to reload natal reading for ${activeReadingKey}`, err);
+    });
+  }, [activeReadingKey, fetchNatalReading]);
+
+  const closeReadingModal = useCallback(() => {
+    setActiveReadingKey(null);
+  }, []);
+
+  const activeCard = useMemo(
+    () => readingCards.find((card) => card.key === activeReadingKey),
+    [activeReadingKey, readingCards],
+  );
+
+  const activeReading = activeReadingKey
+    ? natalReadings[activeReadingKey]
+    : undefined;
+
+  const activeReadingError = activeReadingKey
+    ? readingErrors[activeReadingKey]
+    : undefined;
+
+  const activeReadingLoading = activeReadingKey
+    ? loadingReadingKey === activeReadingKey
+    : false;
+
   /* ---------------- render ---------------- */
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
-    >
+    <>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
       <Text style={styles.title}>Натальная карта</Text>
       <Spacer />
 
@@ -403,7 +606,42 @@ export const LibraryScreen = () => {
           </View>
         )}
       </CollapsibleCard>
-    </ScrollView>
+
+      <View style={styles.readingsSection}>
+        <Text style={styles.sectionTitle}>Темы разбора</Text>
+        <Text style={styles.sectionDescription}>
+          Выберите одну из тем, чтобы получить текстовую интерпретацию и
+          сохранить её на устройстве.
+        </Text>
+
+        <View style={styles.readingsList}>
+          {readingCards.map((card) => (
+            <NatalReadingCard
+              key={card.key}
+              title={card.title}
+              accent={card.accent}
+              preview={natalReadings[card.key]}
+              isSaved={Boolean(natalReadings[card.key])}
+              isLoading={loadingReadingKey === card.key}
+              disabled={!horoscope}
+              onPress={() => handleOpenReading(card.key)}
+            />
+          ))}
+        </View>
+      </View>
+      </ScrollView>
+
+      <NatalReadingModal
+        visible={Boolean(activeReadingKey)}
+        onClose={closeReadingModal}
+        title={activeCard?.title ?? ""}
+        accent={activeCard?.accent ?? theme.primary}
+        reading={activeReading}
+        isLoading={activeReadingLoading}
+        errorMessage={activeReadingError ?? undefined}
+        onRetry={handleRetryReading}
+      />
+    </>
   );
 };
 
