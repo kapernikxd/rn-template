@@ -1,31 +1,43 @@
+// src/screens/Library/LibraryScreen.tsx
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ActivityIndicator, LayoutAnimation, Platform, ScrollView, Text, TextInput, TouchableOpacity, UIManager, View } from "react-native";
 import * as Clipboard from "expo-clipboard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useTheme } from "rn-vs-lb/theme";
-import { Svg, Circle, Line, Text as SvgText } from "react-native-svg";
 import { Horoscope, Origin } from "circular-natal-horoscope-js";
-import { useRootStore, useStoreData } from "../../store/StoreProvider";
-import { CitySearchItem } from "../../types/citySearch";
 import { Spacer } from "rn-vs-lb";
+import { useTheme } from "rn-vs-lb/theme";
 
-const clampNumber = (value: number, min: number, max: number) => {
-  "worklet";
-  return Math.min(Math.max(value, min), max);
-};
+import { useRootStore, useStoreData } from "../../store/StoreProvider";
+import type { CitySearchItem } from "../../types/citySearch";
+
+import { CollapsibleCard } from "./components/CollapsibleCard";
+import { FormHeader } from "./components/FormHeader";
+import { LabeledInput } from "./components/LabeledInput";
+import { CityPicker } from "./components/CityPicker";
+import { NatalChart } from "./components/NatalChart";
+import { useLayoutAnimation } from "./hooks/useLayoutAnimation";
+import { useDebouncedEffect } from "./hooks/useDebouncedEffect";
+import { buildExportPayload } from "./utils/buildExportPayload";
+import { clampNumber } from "./utils/clampNumber";
+import { makeSummaryText } from "./utils/makeSummaryText";
+import { makeStyles } from "./styles";
 
 const FORM_STORAGE_KEY = "libraryFormState";
 
+type FormState = {
+  day: string;
+  month: string;
+  year: string;
+  time: string;
+  city: string;
+  latitude: string;
+  longitude: string;
+};
+
 export const LibraryScreen = () => {
   const { theme, typography, sizes } = useTheme();
+  const styles = useMemo(() => makeStyles({ theme, typography, sizes }), [theme, typography, sizes]);
+
   const rootStore = useRootStore();
   const citySearchState = useStoreData(rootStore.citySearchStore, (store) => ({
     cities: store.cities,
@@ -41,6 +53,7 @@ export const LibraryScreen = () => {
   const [city, setCity] = useState("");
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [horoscope, setHoroscope] = useState<Horoscope | null>(null);
@@ -50,204 +63,51 @@ export const LibraryScreen = () => {
   // dropdown control
   const [isCityFocused, setIsCityFocused] = useState(false);
   const [isCitySelected, setIsCitySelected] = useState(false);
-
-  // ✅ ref чтобы возвращать фокус после нажатия на крестик
   const cityInputRef = useRef<TextInput>(null);
 
-  const styles = useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          flexGrow: 1,
-          backgroundColor: theme.background,
-          paddingHorizontal: sizes.xs as number,
-          paddingVertical: sizes.md as number,
-        },
-        title: {
-          ...typography.titleH3,
-          color: theme.title,
-          marginBottom: sizes.xs as number,
-          textAlign: "center",
-        },
-        description: {
-          ...typography.body,
-          color: theme.greyText,
-          marginBottom: sizes.lg as number,
-          textAlign: "center",
-        },
-        formRow: {
-          flexDirection: "row",
-          columnGap: sizes.sm as number,
-          marginBottom: sizes.sm as number,
-        },
-        input: {
-          flex: 1,
-          borderWidth: 1,
-          borderColor: theme.border,
-          borderRadius: 12,
-          paddingHorizontal: sizes.sm as number,
-          paddingVertical: sizes.xs as number,
-          color: theme.text,
-          backgroundColor: theme.white,
-        },
-        label: {
-          ...typography.caption,
-          color: theme.greyText,
-          marginBottom: sizes.xs as number,
-        },
-        button: {
-          backgroundColor: theme.primary,
-          paddingVertical: sizes.sm as number,
-          borderRadius: 14,
-          alignItems: "center",
-          marginTop: sizes.sm as number,
-        },
-        buttonText: {
-          ...typography.button,
-          color: theme.white,
-        },
-        copyButton: {
-          backgroundColor: theme.white,
-          borderWidth: 1,
-          borderColor: theme.primary,
-        },
-        copyButtonText: {
-          color: theme.primary,
-        },
-        errorText: {
-          color: theme.danger,
-          ...typography.caption,
-          marginTop: sizes.xs as number,
-        },
-        copyMessage: {
-          ...typography.caption,
-          color: theme.primary,
-          marginTop: sizes.xs as number,
-          textAlign: "center",
-        },
-        suggestionsWrapper: {
-          marginTop: -12,
-          position: "relative",
-          zIndex: 5,
-        },
-        suggestionsContainer: {
-          backgroundColor: theme.white,
-          borderColor: theme.border,
-          borderWidth: 1,
-          borderRadius: 12,
-          paddingVertical: sizes.xs as number,
-          paddingHorizontal: sizes.xs as number,
-          position: "absolute",
-          top: sizes.sm as number,
-          left: 0,
-          right: 0,
-          maxHeight: 220,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.1,
-          shadowRadius: 8,
-          elevation: 6,
-        },
-        suggestionsContent: {
-          rowGap: sizes.xs as number,
-        },
-        suggestionItem: {
-          paddingHorizontal: sizes.sm as number,
-          paddingVertical: sizes.xs as number,
-          borderBottomWidth: StyleSheet.hairlineWidth,
-          borderColor: theme.border,
-        },
-        suggestionCity: {
-          ...typography.body,
-          color: theme.text,
-        },
-        suggestionCountry: {
-          ...typography.caption,
-          color: theme.greyText,
-        },
-        chartWrapper: {
-          backgroundColor: theme.white,
-          borderRadius: 16,
-          padding: sizes.md as number,
-          marginTop: sizes.lg as number,
-        },
-        sectionTitle: {
-          ...typography.titleH4,
-          color: theme.title,
-          marginTop: sizes.md as number,
-          marginBottom: sizes.xs as number,
-        },
-        infoRow: {
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingVertical: sizes.xs as number,
-          borderBottomWidth: StyleSheet.hairlineWidth,
-          borderColor: theme.border,
-        },
-        infoLabel: {
-          ...typography.body,
-          color: theme.text,
-          flex: 1,
-        },
-        infoValue: {
-          ...typography.caption,
-          color: theme.greyText,
-          marginLeft: sizes.sm as number,
-          textAlign: "right",
-        },
-        chartContainer: {
-          alignItems: "center",
-          justifyContent: "center",
-        },
+  // collapsible form
+  const [isFormCollapsed, setIsFormCollapsed] = useState(false);
 
-        // city input + clear button
-        cityInputWrapper: {
-          position: "relative",
-        },
-        clearButton: {
-          position: "absolute",
-          right: 3,
-          top: 4,
-          width: 28,
-          height: 28,
-          borderRadius: 14,
-          alignItems: "center",
-          justifyContent: "center",
-        },
-        clearButtonText: {
-          fontSize: 18,
-          lineHeight: 18,
-          color: theme.greyText,
-        },
-      }),
-    [
-      sizes.lg,
-      sizes.md,
-      sizes.sm,
-      sizes.xs,
-      theme.background,
-      theme.border,
-      theme.danger,
-      theme.greyText,
-      theme.primary,
-      theme.text,
-      theme.title,
-      theme.white,
-      typography.body,
-      typography.button,
-      typography.caption,
-      typography.titleH3,
-      typography.titleH4,
-    ],
-  );
+  const { animate } = useLayoutAnimation();
 
+  const toggleForm = useCallback(() => {
+    animate();
+    setIsFormCollapsed((prev) => !prev);
+  }, [animate]);
+
+  const collapseForm = useCallback(() => {
+    animate();
+    setIsFormCollapsed(true);
+  }, [animate]);
+
+  const expandForm = useCallback(() => {
+    animate();
+    setIsFormCollapsed(false);
+  }, [animate]);
+
+  const isAnyFormValue =
+    Boolean(day.trim()) ||
+    Boolean(month.trim()) ||
+    Boolean(year.trim()) ||
+    Boolean(time.trim()) ||
+    Boolean(city.trim()) ||
+    Boolean(latitude.trim()) ||
+    Boolean(longitude.trim());
+
+  // initial collapse logic: if saved values exist, start collapsed; else expanded
+  useEffect(() => {
+    if (!formLoaded) return;
+    setIsFormCollapsed(isAnyFormValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formLoaded]);
+
+  // load saved form
   useEffect(() => {
     const loadForm = async () => {
       try {
         const savedForm = await AsyncStorage.getItem(FORM_STORAGE_KEY);
-
         if (savedForm) {
-          const parsed = JSON.parse(savedForm);
+          const parsed = JSON.parse(savedForm) as Partial<FormState>;
           setDay(parsed.day ?? "");
           setMonth(parsed.month ?? "");
           setYear(parsed.year ?? "");
@@ -264,112 +124,58 @@ export const LibraryScreen = () => {
       }
     };
 
-    loadForm().catch((error) => console.warn(error));
+    loadForm().catch((e) => console.warn(e));
   }, []);
 
-  useEffect(() => {
-    if (!formLoaded) return;
-
-    const timeout = setTimeout(() => {
-      const payload = { day, month, year, time, city, latitude, longitude };
-      AsyncStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(payload)).catch((error) =>
-        console.warn("Failed to save library form state", error),
+  // save with small debounce
+  useDebouncedEffect(
+    () => {
+      if (!formLoaded) return;
+      const payload: FormState = { day, month, year, time, city, latitude, longitude };
+      AsyncStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(payload)).catch((e) =>
+        console.warn("Failed to save library form state", e),
       );
-    }, 400);
+    },
+    400,
+    [formLoaded, day, month, year, time, city, latitude, longitude],
+  );
 
-    return () => clearTimeout(timeout);
-  }, [city, day, formLoaded, latitude, longitude, month, time, year]);
-
-  // ✅ поиск городов с дебаунсом 1 сек (и только когда поле в фокусе)
-  useEffect(() => {
-    const q = city.trim();
-
-    if (!q) return;
-    if (q.length < 2) return;
-    if (!isCityFocused) return;
-    if (isCitySelected) return;
-
-    const timeout = setTimeout(() => {
+  // city search: debounce 1s, only when focused and not selected
+  useDebouncedEffect(
+    () => {
+      const q = city.trim();
+      if (!q) return;
+      if (q.length < 2) return;
+      if (!isCityFocused) return;
+      if (isCitySelected) return;
       void rootStore.citySearchStore.searchCities(q);
-    }, 1000);
-
-    return () => clearTimeout(timeout);
-  }, [city, isCityFocused, isCitySelected, rootStore.citySearchStore]);
+    },
+    1000,
+    [city, isCityFocused, isCitySelected, rootStore.citySearchStore],
+  );
 
   const handleSelectCity = useCallback((selectedCity: CitySearchItem) => {
     setCity(selectedCity.city);
-    setLatitude(selectedCity.lat.toString());
-    setLongitude(selectedCity.lng.toString());
-
+    setLatitude(String(selectedCity.lat));
+    setLongitude(String(selectedCity.lng));
     setIsCitySelected(true);
     setIsCityFocused(false);
   }, []);
 
-  const handleCityChange = useCallback((text: string) => {
-    setCity(text);
-    setIsCitySelected(false);
-  }, []);
-
-  // ✅ важно: не гасим фокус, и возвращаем его на инпут
   const handleClearCity = useCallback(() => {
     setCity("");
     setLatitude("");
     setLongitude("");
     setIsCitySelected(false);
 
-    // возвращаем фокус, чтобы поиск после ввода работал
+    // keep focus after press
     setTimeout(() => {
       cityInputRef.current?.focus();
       setIsCityFocused(true);
     }, 0);
   }, []);
 
-  const showSuggestions =
-    isCityFocused &&
-    !isCitySelected &&
-    city.trim().length > 0 &&
-    !citySearchState.isLoading &&
-    !citySearchState.error &&
-    citySearchState.cities.length > 0;
-
-  const buildExportPayload = useCallback(() => {
-    if (!horoscope) return null;
-
-    const bodies = (horoscope.CelestialBodies?.all ?? []).map((body) => ({
-      key: body.key,
-      label: body.label,
-      sign: body?.Sign?.label ?? null,
-      house: body?.House?.id ?? null,
-      eclipticDegrees: body?.ChartPosition?.Ecliptic?.DecimalDegrees ?? null,
-      arcDegreesFormatted: body?.ChartPosition?.Ecliptic?.ArcDegreesFormatted30 ?? null,
-    }));
-
-    const houses = (horoscope.Houses ?? []).map((house) => ({
-      id: house.id,
-      label: house?.Sign?.label ?? house?.label ?? `Дом ${house.id}`,
-      startDegrees: house?.ChartPosition?.StartPosition?.Ecliptic?.DecimalDegrees ?? null,
-      arcDegreesFormatted: house?.ChartPosition?.StartPosition?.Ecliptic?.ArcDegreesFormatted30 ?? null,
-    }));
-
-    return { bodies, houses };
-  }, [horoscope]);
-
-  const formatPosition = useCallback((item: any) => {
-    const degrees = item?.ChartPosition?.Ecliptic?.ArcDegreesFormatted30;
-    const signLabel = item?.Sign?.label ?? item?.label;
-
-    if (!degrees) return signLabel ?? "-";
-    return `${signLabel} · ${degrees}`;
-  }, []);
-
-  const toPolar = useCallback((angle: number, radius: number, center: number) => {
-    const rad = ((angle - 90) * Math.PI) / 180;
-
-    return {
-      x: center + radius * Math.cos(rad),
-      y: center + radius * Math.sin(rad),
-    };
-  }, []);
+  const summaryText = useMemo(() => makeSummaryText({ day, month, year, time, city }), [day, month, year, time, city]);
 
   const handleGenerate = useCallback(() => {
     setError(null);
@@ -381,6 +187,7 @@ export const LibraryScreen = () => {
     const [hoursString, minutesString] = time.split(":");
     const parsedHour = clampNumber(Number(hoursString), 0, 23);
     const parsedMinute = clampNumber(Number(minutesString ?? "0"), 0, 59);
+
     const lat = Number(latitude);
     const lon = Number(longitude);
 
@@ -415,282 +222,96 @@ export const LibraryScreen = () => {
 
       setHoroscope(nextHoroscope);
       setCopyMessage(null);
+      collapseForm();
     } catch (creationError) {
       console.warn("Failed to build horoscope", creationError);
       setError("Не удалось построить натальную карту. Проверьте введённые данные.");
     } finally {
       setLoading(false);
     }
-  }, [day, latitude, longitude, month, time, year]);
+  }, [collapseForm, day, latitude, longitude, month, time, year]);
 
   const handleCopyResults = useCallback(async () => {
-    const payload = buildExportPayload();
-
-    if (!payload) return;
-
+    if (!horoscope) return;
     setCopyMessage(null);
 
     try {
+      const payload = buildExportPayload(horoscope);
       await Clipboard.setStringAsync(JSON.stringify(payload, null, 2));
       setCopyMessage("Планеты и дома скопированы в буфер обмена.");
     } catch (copyError) {
       console.warn("Failed to copy horoscope data", copyError);
       setCopyMessage("Не удалось скопировать данные. Попробуйте ещё раз.");
     }
-  }, [buildExportPayload]);
-
-  const renderChart = useCallback(() => {
-    if (!horoscope) return null;
-
-    const chartSize = 320;
-    const center = chartSize / 2;
-    const outerRadius = chartSize / 2 - 12;
-    const innerRadius = outerRadius - 26;
-    const planetRadius = innerRadius - 18;
-    const houses = horoscope.Houses ?? [];
-    const bodies = horoscope.CelestialBodies?.all ?? [];
-
-    return (
-      <View style={styles.chartContainer}>
-        <Svg width={chartSize} height={chartSize}>
-          <Circle cx={center} cy={center} r={outerRadius} fill={theme.background} stroke={theme.border} />
-          <Circle cx={center} cy={center} r={innerRadius} fill={theme.white} stroke={theme.border} />
-
-          {houses.map((house) => {
-            const angle = house?.ChartPosition?.StartPosition?.Ecliptic?.DecimalDegrees ?? 0;
-            const lineStart = toPolar(angle, outerRadius, center);
-            const lineEnd = toPolar(angle, innerRadius, center);
-
-            return (
-              <Line
-                key={`house-${house.id}`}
-                x1={lineStart.x}
-                y1={lineStart.y}
-                x2={lineEnd.x}
-                y2={lineEnd.y}
-                stroke={theme.border}
-                strokeWidth={2}
-              />
-            );
-          })}
-
-          {bodies.map((body, index) => {
-            const angle = body?.ChartPosition?.Ecliptic?.DecimalDegrees ?? 0;
-            const position = toPolar(angle, planetRadius, center);
-            const labelPosition = toPolar(angle, planetRadius - 12, center);
-            const shortLabel = body?.label?.slice(0, 3) ?? `P${index + 1}`;
-
-            return (
-              <React.Fragment key={body.key ?? `planet-${index}`}>
-                <Circle cx={position.x} cy={position.y} r={6} fill={theme.primary} stroke={theme.white} />
-                <SvgText
-                  x={labelPosition.x}
-                  y={labelPosition.y}
-                  fill={theme.text}
-                  fontSize={10}
-                  fontWeight="bold"
-                  textAnchor="middle"
-                >
-                  {shortLabel}
-                </SvgText>
-              </React.Fragment>
-            );
-          })}
-        </Svg>
-      </View>
-    );
-  }, [
-    horoscope,
-    styles.chartContainer,
-    theme.background,
-    theme.border,
-    theme.primary,
-    theme.text,
-    theme.white,
-    toPolar,
-  ]);
+  }, [horoscope]);
 
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
-      <Text style={styles.title}>Построение натальной карты</Text>
+      <Text style={styles.title}>Натальная карта</Text>
       <Spacer />
 
-      <View style={styles.formRow}>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.label}>День</Text>
-          <TextInput
-            keyboardType="numeric"
-            value={day}
-            onChangeText={setDay}
-            style={styles.input}
-            placeholder="1"
-            placeholderTextColor={theme.greyText}
-          />
+      <CollapsibleCard
+        collapsed={isFormCollapsed}
+        header={<FormHeader title="Данные рождения" subtitle={summaryText} collapsed={isFormCollapsed} hasResult={Boolean(horoscope)} onPress={toggleForm} />}
+        collapsedFooter={
+          <TouchableOpacity style={styles.smallAction} onPress={expandForm}>
+            <Text style={styles.smallActionText}>Изменить данные</Text>
+          </TouchableOpacity>
+        }
+      >
+        <View style={styles.formRow}>
+          <LabeledInput label="День" value={day} onChangeText={setDay} keyboardType="numeric" placeholder="1" autoCapitalize="none" />
+          <LabeledInput label="Месяц" value={month} onChangeText={setMonth} keyboardType="numeric" placeholder="1" autoCapitalize="none" />
+          <LabeledInput label="Год" value={year} onChangeText={setYear} keyboardType="numeric" placeholder="1990" autoCapitalize="none" />
         </View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.label}>Месяц</Text>
-          <TextInput
-            keyboardType="numeric"
-            value={month}
-            onChangeText={setMonth}
-            style={styles.input}
-            placeholder="1"
-            placeholderTextColor={theme.greyText}
-          />
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.label}>Год</Text>
-          <TextInput
-            keyboardType="numeric"
-            value={year}
-            onChangeText={setYear}
-            style={styles.input}
-            placeholder="1990"
-            placeholderTextColor={theme.greyText}
-          />
-        </View>
-      </View>
 
-      <View style={styles.formRow}>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.label}>Время (чч:мм)</Text>
-          <TextInput
-            value={time}
-            onChangeText={setTime}
-            style={styles.input}
-            placeholder="12:00"
-            placeholderTextColor={theme.greyText}
-            autoCapitalize="none"
+        <View style={styles.formRow}>
+          <LabeledInput label="Время (чч:мм)" value={time} onChangeText={setTime} placeholder="12:00" autoCapitalize="none" />
+          <CityPicker
+            value={city}
+            onChange={setCity}
+            onSelect={handleSelectCity}
+            onClear={handleClearCity}
+            isFocused={isCityFocused}
+            setFocused={setIsCityFocused}
+            isSelected={isCitySelected}
+            setSelected={setIsCitySelected}
+            inputRef={cityInputRef}
+            suggestions={citySearchState.cities}
+            isLoading={citySearchState.isLoading}
+            error={citySearchState.error}
           />
         </View>
 
-        <View style={{ flex: 1 }}>
-          <Text style={styles.label}>Город</Text>
-
-          <View style={styles.cityInputWrapper}>
-            <TextInput
-              ref={cityInputRef}
-              value={city}
-              onChangeText={handleCityChange}
-              style={[styles.input, city.trim().length > 0 ? { paddingRight: 44 } : null]}
-              placeholder="Москва"
-              placeholderTextColor={theme.greyText}
-              onFocus={() => setIsCityFocused(true)}
-              onBlur={() => setIsCityFocused(false)}
-            />
-
-            {city.trim().length > 0 ? (
-              <TouchableOpacity
-                style={styles.clearButton}
-                onPress={handleClearCity}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-              >
-                <Text style={styles.clearButtonText}>×</Text>
-              </TouchableOpacity>
-            ) : null}
-          </View>
-
-          <View style={styles.suggestionsWrapper}>
-            {citySearchState.isLoading && isCityFocused && !isCitySelected && city.trim().length > 0 ? (
-              <ActivityIndicator size="small" color={theme.primary} />
-            ) : null}
-
-            {citySearchState.error && isCityFocused ? (
-              <Text style={styles.errorText}>Не удалось загрузить города</Text>
-            ) : null}
-
-            {showSuggestions ? (
-              <View style={styles.suggestionsContainer}>
-                <ScrollView nestedScrollEnabled contentContainerStyle={styles.suggestionsContent}>
-                  {citySearchState.cities.map((suggestion) => (
-                    <TouchableOpacity
-                      key={suggestion._id}
-                      style={styles.suggestionItem}
-                      onPress={() => handleSelectCity(suggestion)}
-                    >
-                      <Text style={styles.suggestionCity}>{suggestion.city}</Text>
-                      <Text style={styles.suggestionCountry}>{suggestion.country}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </View>
-            ) : null}
-          </View>
+        <View style={styles.formRow}>
+          <LabeledInput label="Широта" value={latitude} onChangeText={setLatitude} keyboardType="numeric" placeholder="55.7558" autoCapitalize="none" />
+          <LabeledInput label="Долгота" value={longitude} onChangeText={setLongitude} keyboardType="numeric" placeholder="37.6173" autoCapitalize="none" />
         </View>
-      </View>
 
-      <View style={styles.formRow}>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.label}>Широта</Text>
-          <TextInput
-            value={latitude}
-            onChangeText={setLatitude}
-            style={styles.input}
-            keyboardType="numeric"
-            placeholder="55.7558"
-            placeholderTextColor={theme.greyText}
-          />
-        </View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.label}>Долгота</Text>
-          <TextInput
-            value={longitude}
-            onChangeText={setLongitude}
-            style={styles.input}
-            keyboardType="numeric"
-            placeholder="37.6173"
-            placeholderTextColor={theme.greyText}
-          />
-        </View>
-      </View>
-
-      <TouchableOpacity style={styles.button} onPress={handleGenerate} disabled={loading}>
-        {loading ? <ActivityIndicator color={theme.white} /> : <Text style={styles.buttonText}>Построить карту</Text>}
-      </TouchableOpacity>
-
-      {horoscope ? (
-        <TouchableOpacity style={[styles.button, styles.copyButton]} onPress={handleCopyResults}>
-          <Text style={[styles.buttonText, styles.copyButtonText]}>Скопировать планеты и дома</Text>
+        <TouchableOpacity style={styles.button} onPress={handleGenerate} disabled={loading}>
+          {loading ? <ActivityIndicator color={theme.white} /> : <Text style={styles.buttonText}>Построить карту</Text>}
         </TouchableOpacity>
-      ) : null}
 
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
-      {copyMessage ? <Text style={styles.copyMessage}>{copyMessage}</Text> : null}
+        {horoscope ? (
+          <TouchableOpacity style={[styles.button, styles.copyButton]} onPress={handleCopyResults}>
+            <Text style={[styles.buttonText, styles.copyButtonText]}>Скопировать планеты и дома</Text>
+          </TouchableOpacity>
+        ) : null}
+
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+        {copyMessage ? <Text style={styles.copyMessage}>{copyMessage}</Text> : null}
+      </CollapsibleCard>
 
       {horoscope ? (
         <View style={styles.chartWrapper}>
           <Text style={styles.sectionTitle}>Карта</Text>
-          {renderChart()}
-
-          <Text style={styles.sectionTitle}>Планеты</Text>
-          {(horoscope.CelestialBodies?.all ?? []).map((body) => (
-            <View key={body.key} style={styles.infoRow}>
-              <Text style={styles.infoLabel}>{body.label}</Text>
-              <Text style={styles.infoValue}>{formatPosition(body)}</Text>
-            </View>
-          ))}
-
-          <Text style={styles.sectionTitle}>Дома</Text>
-          {(horoscope.Houses ?? []).map((house) => (
-            <View key={house.id} style={styles.infoRow}>
-              <Text style={styles.infoLabel}>Дом {house.id}</Text>
-              <Text style={styles.infoValue}>{formatPosition(house)}</Text>
-            </View>
-          ))}
-
-          <Text style={styles.sectionTitle}>Основные аспекты</Text>
-          {Object.entries(horoscope.Aspects?.types ?? {}).map(([aspectKey, aspects]) => (
-            <View key={aspectKey} style={styles.infoRow}>
-              <Text style={styles.infoLabel}>{aspectKey}</Text>
-              <Text style={styles.infoValue}>{(aspects as any[]).length}</Text>
-            </View>
-          ))}
+          <NatalChart horoscope={horoscope} />
         </View>
       ) : (
         <View style={styles.chartWrapper}>
           <Text style={styles.sectionTitle}>Здесь появится ваша карта</Text>
           <Text style={styles.description}>
-            После нажатия на кнопку мы покажем планеты, дома, аспекты и простую визуализацию круга.
+            Заполните данные и нажмите “Построить карту” — мы покажем планеты, дома, аспекты и визуализацию круга.
           </Text>
         </View>
       )}
