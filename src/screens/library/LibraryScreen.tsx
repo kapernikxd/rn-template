@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   ScrollView,
@@ -15,6 +15,7 @@ import { Svg, Circle, Line, Text as SvgText } from "react-native-svg";
 import { Horoscope, Origin } from "circular-natal-horoscope-js";
 import { useRootStore, useStoreData } from "../../store/StoreProvider";
 import { CitySearchItem } from "../../types/citySearch";
+import { Spacer } from "rn-vs-lb";
 
 const clampNumber = (value: number, min: number, max: number) => {
   "worklet";
@@ -45,6 +46,13 @@ export const LibraryScreen = () => {
   const [horoscope, setHoroscope] = useState<Horoscope | null>(null);
   const [copyMessage, setCopyMessage] = useState<string | null>(null);
   const [formLoaded, setFormLoaded] = useState(false);
+
+  // dropdown control
+  const [isCityFocused, setIsCityFocused] = useState(false);
+  const [isCitySelected, setIsCitySelected] = useState(false);
+
+  // ✅ ref чтобы возвращать фокус после нажатия на крестик
+  const cityInputRef = useRef<TextInput>(null);
 
   const styles = useMemo(
     () =>
@@ -118,7 +126,7 @@ export const LibraryScreen = () => {
           textAlign: "center",
         },
         suggestionsWrapper: {
-          marginTop: sizes.xs as number,
+          marginTop: -12,
           position: "relative",
           zIndex: 5,
         },
@@ -191,6 +199,26 @@ export const LibraryScreen = () => {
           alignItems: "center",
           justifyContent: "center",
         },
+
+        // city input + clear button
+        cityInputWrapper: {
+          position: "relative",
+        },
+        clearButton: {
+          position: "absolute",
+          right: 3,
+          top: 4,
+          width: 28,
+          height: 28,
+          borderRadius: 14,
+          alignItems: "center",
+          justifyContent: "center",
+        },
+        clearButtonText: {
+          fontSize: 18,
+          lineHeight: 18,
+          color: theme.greyText,
+        },
       }),
     [
       sizes.lg,
@@ -227,6 +255,7 @@ export const LibraryScreen = () => {
           setCity(parsed.city ?? "");
           setLatitude(parsed.latitude ?? "");
           setLongitude(parsed.longitude ?? "");
+          setIsCitySelected(Boolean((parsed.city ?? "").trim()));
         }
       } catch (storageError) {
         console.warn("Failed to load library form state", storageError);
@@ -251,21 +280,57 @@ export const LibraryScreen = () => {
     return () => clearTimeout(timeout);
   }, [city, day, formLoaded, latitude, longitude, month, time, year]);
 
+  // ✅ поиск городов с дебаунсом 1 сек (и только когда поле в фокусе)
   useEffect(() => {
-    if (!city) return;
+    const q = city.trim();
+
+    if (!q) return;
+    if (q.length < 2) return;
+    if (!isCityFocused) return;
+    if (isCitySelected) return;
 
     const timeout = setTimeout(() => {
-      void rootStore.citySearchStore.searchCities(city);
-    }, 300);
+      void rootStore.citySearchStore.searchCities(q);
+    }, 1000);
 
     return () => clearTimeout(timeout);
-  }, [city, rootStore.citySearchStore]);
+  }, [city, isCityFocused, isCitySelected, rootStore.citySearchStore]);
 
   const handleSelectCity = useCallback((selectedCity: CitySearchItem) => {
     setCity(selectedCity.city);
     setLatitude(selectedCity.lat.toString());
     setLongitude(selectedCity.lng.toString());
+
+    setIsCitySelected(true);
+    setIsCityFocused(false);
   }, []);
+
+  const handleCityChange = useCallback((text: string) => {
+    setCity(text);
+    setIsCitySelected(false);
+  }, []);
+
+  // ✅ важно: не гасим фокус, и возвращаем его на инпут
+  const handleClearCity = useCallback(() => {
+    setCity("");
+    setLatitude("");
+    setLongitude("");
+    setIsCitySelected(false);
+
+    // возвращаем фокус, чтобы поиск после ввода работал
+    setTimeout(() => {
+      cityInputRef.current?.focus();
+      setIsCityFocused(true);
+    }, 0);
+  }, []);
+
+  const showSuggestions =
+    isCityFocused &&
+    !isCitySelected &&
+    city.trim().length > 0 &&
+    !citySearchState.isLoading &&
+    !citySearchState.error &&
+    citySearchState.cities.length > 0;
 
   const buildExportPayload = useCallback(() => {
     if (!horoscope) return null;
@@ -417,13 +482,7 @@ export const LibraryScreen = () => {
 
             return (
               <React.Fragment key={body.key ?? `planet-${index}`}>
-                <Circle
-                  cx={position.x}
-                  cy={position.y}
-                  r={6}
-                  fill={theme.primary}
-                  stroke={theme.white}
-                />
+                <Circle cx={position.x} cy={position.y} r={6} fill={theme.primary} stroke={theme.white} />
                 <SvgText
                   x={labelPosition.x}
                   y={labelPosition.y}
@@ -440,15 +499,21 @@ export const LibraryScreen = () => {
         </Svg>
       </View>
     );
-  }, [horoscope, styles.chartContainer, theme.background, theme.border, theme.primary, theme.text, theme.white, toPolar]);
+  }, [
+    horoscope,
+    styles.chartContainer,
+    theme.background,
+    theme.border,
+    theme.primary,
+    theme.text,
+    theme.white,
+    toPolar,
+  ]);
 
   return (
     <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
       <Text style={styles.title}>Построение натальной карты</Text>
-      <Text style={styles.description}>
-        Укажите дату, время и город рождения. Мы построим круг, дома и основные положения
-        планет с помощью "circular-natal-horoscope-js".
-      </Text>
+      <Spacer />
 
       <View style={styles.formRow}>
         <View style={{ flex: 1 }}>
@@ -498,23 +563,43 @@ export const LibraryScreen = () => {
             autoCapitalize="none"
           />
         </View>
+
         <View style={{ flex: 1 }}>
           <Text style={styles.label}>Город</Text>
-          <TextInput
-            value={city}
-            onChangeText={setCity}
-            style={styles.input}
-            placeholder="Москва"
-            placeholderTextColor={theme.greyText}
-          />
+
+          <View style={styles.cityInputWrapper}>
+            <TextInput
+              ref={cityInputRef}
+              value={city}
+              onChangeText={handleCityChange}
+              style={[styles.input, city.trim().length > 0 ? { paddingRight: 44 } : null]}
+              placeholder="Москва"
+              placeholderTextColor={theme.greyText}
+              onFocus={() => setIsCityFocused(true)}
+              onBlur={() => setIsCityFocused(false)}
+            />
+
+            {city.trim().length > 0 ? (
+              <TouchableOpacity
+                style={styles.clearButton}
+                onPress={handleClearCity}
+                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+              >
+                <Text style={styles.clearButtonText}>×</Text>
+              </TouchableOpacity>
+            ) : null}
+          </View>
+
           <View style={styles.suggestionsWrapper}>
-            {citySearchState.isLoading ? (
+            {citySearchState.isLoading && isCityFocused && !isCitySelected && city.trim().length > 0 ? (
               <ActivityIndicator size="small" color={theme.primary} />
             ) : null}
-            {citySearchState.error ? (
+
+            {citySearchState.error && isCityFocused ? (
               <Text style={styles.errorText}>Не удалось загрузить города</Text>
             ) : null}
-            {!citySearchState.isLoading && !citySearchState.error && citySearchState.cities.length > 0 ? (
+
+            {showSuggestions ? (
               <View style={styles.suggestionsContainer}>
                 <ScrollView nestedScrollEnabled contentContainerStyle={styles.suggestionsContent}>
                   {citySearchState.cities.map((suggestion) => (
@@ -562,11 +647,13 @@ export const LibraryScreen = () => {
       <TouchableOpacity style={styles.button} onPress={handleGenerate} disabled={loading}>
         {loading ? <ActivityIndicator color={theme.white} /> : <Text style={styles.buttonText}>Построить карту</Text>}
       </TouchableOpacity>
+
       {horoscope ? (
         <TouchableOpacity style={[styles.button, styles.copyButton]} onPress={handleCopyResults}>
           <Text style={[styles.buttonText, styles.copyButtonText]}>Скопировать планеты и дома</Text>
         </TouchableOpacity>
       ) : null}
+
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
       {copyMessage ? <Text style={styles.copyMessage}>{copyMessage}</Text> : null}
 
