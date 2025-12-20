@@ -339,6 +339,11 @@ export const DashboardScreen = () => {
     async (category: HoroscopeCardCategory) => {
       void trackEvent(AnalyticsEvent.HoroscopeCardOpened, { category });
 
+      if (activeModalCategory === category || horoscopesRef.current?.[category]) {
+        setActiveModalCategory(category);
+        return;
+      }
+
       if (!adsEnabled) {
         setActiveModalCategory(category);
         return;
@@ -361,7 +366,7 @@ export const DashboardScreen = () => {
         uiStore.showSnackbar('Не удалось списать токены. Попробуйте позже.', 'error');
       }
     },
-    [adsEnabled, uiStore],
+    [activeModalCategory, adsEnabled, uiStore],
   );
 
   const handleBannerPress = useCallback(() => {
