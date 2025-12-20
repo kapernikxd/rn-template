@@ -180,11 +180,39 @@ export const LibraryScreen = () => {
     Boolean(latitude.trim()) ||
     Boolean(longitude.trim());
 
+  const hasAllFormValues = useMemo(() => {
+    if (!day.trim() || !month.trim() || !year.trim() || !time.trim()) {
+      return false;
+    }
+
+    if (!city.trim() || !latitude.trim() || !longitude.trim()) {
+      return false;
+    }
+
+    const lat = Number(latitude);
+    const lon = Number(longitude);
+    if (Number.isNaN(lat) || Number.isNaN(lon)) {
+      return false;
+    }
+
+    const [h, m = "0"] = time.split(":");
+    return !Number.isNaN(Number(h)) && !Number.isNaN(Number(m));
+  }, [city, day, latitude, longitude, month, time, year]);
+
   useEffect(() => {
     if (!formLoaded) return;
     setIsFormCollapsed(hasAnyFormValue);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formLoaded]);
+
+  useEffect(() => {
+    if (!formLoaded || loading || horoscope || !hasAllFormValues) {
+      return;
+    }
+
+    handleGenerate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formLoaded, loading, horoscope, hasAllFormValues]);
 
   useEffect(() => {
     const load = async () => {
