@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from 'rn-vs-lb/theme';
+import { useTranslation } from 'react-i18next';
 
 type NatalReadingCardProps = {
   title: string;
@@ -31,6 +32,7 @@ export const NatalReadingCard: React.FC<NatalReadingCardProps> = ({
   onPress,
 }) => {
   const { theme, typography, sizes } = useTheme();
+  const { t } = useTranslation();
 
   const previewText = useMemo(() => {
     const paragraphs = splitIntoParagraphs(preview);
@@ -114,7 +116,11 @@ export const NatalReadingCard: React.FC<NatalReadingCardProps> = ({
             <Feather name="arrow-right" size={18} color={theme.greyText} />
           )}
           <Text style={styles.statusText} numberOfLines={1}>
-            {isLoading ? 'Запрос...' : isSaved ? 'Сохранено' : 'Открыть'}
+            {isLoading
+              ? t('library.readings.status.requesting')
+              : isSaved
+                ? t('library.readings.status.saved')
+                : t('library.readings.status.open')}
           </Text>
         </View>
       </View>
