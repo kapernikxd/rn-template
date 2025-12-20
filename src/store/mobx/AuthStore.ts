@@ -2,6 +2,8 @@ import { isAxiosError } from "axios";
 import { $api, registerTokenRefreshFailureHandler, registerTokenRefreshHandler } from "../../helpers";
 import { makeAutoObservable, runInAction } from "mobx";
 import AuthService from "../../services/auth/AuthService";
+import i18n from "../../helpers/i18n";
+import { normalizeLanguageCode } from "../../constants/languages";
 import {
     getAccessToken,
     getAuthUser,
@@ -430,8 +432,9 @@ export class AuthStore {
     }
 
     async sendPushToken(token: string) {
+        const language = normalizeLanguageCode(i18n.resolvedLanguage ?? i18n.language);
         try {
-            await AuthService.sendPushToken(token);
+            await AuthService.sendPushToken(token, language);
         } catch (e) {
             console.warn("Ошибка при отправке пуш-токена", e);
         }
