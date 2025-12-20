@@ -101,7 +101,7 @@ export default class AuthService {
     }
   }
 
-  static async sendPushToken(pushToken: string): Promise<void> {
-    return $api.post("/push/mobile", { pushToken, appName: SITE_NAME });
+  static async sendPushToken(pushToken: string, language?: string): Promise<void> {
+    return $api.post("/push/mobile", { pushToken, appName: SITE_NAME, language });
   }
 }
