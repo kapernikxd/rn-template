@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { ActivityIndicator, Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from 'rn-vs-lb/theme';
+import { useTranslation } from 'react-i18next';
 
 type NatalReadingModalProps = {
   visible: boolean;
@@ -33,6 +34,7 @@ export const NatalReadingModal: React.FC<NatalReadingModalProps> = ({
   onClose,
 }) => {
   const { theme, typography, sizes } = useTheme();
+  const { t } = useTranslation();
 
   const styles = useMemo(
     () =>
@@ -133,14 +135,14 @@ export const NatalReadingModal: React.FC<NatalReadingModalProps> = ({
             {isLoading ? (
               <View style={styles.loading}>
                 <ActivityIndicator color={theme.title} />
-                <Text style={styles.helperText}>Получаем данные...</Text>
+                <Text style={styles.helperText}>{t('library.readings.modal.loading')}</Text>
               </View>
             ) : errorMessage ? (
               <View style={styles.body}>
-                <Text style={styles.errorText}>Не удалось загрузить интерпретацию</Text>
+                <Text style={styles.errorText}>{t('library.readings.modal.errorTitle')}</Text>
                 <Text style={styles.helperText}>{errorMessage}</Text>
                 <Pressable onPress={onRetry} style={styles.retryButton} hitSlop={8}>
-                  <Text style={styles.retryText}>Повторить</Text>
+                  <Text style={styles.retryText}>{t('library.readings.modal.retry')}</Text>
                 </Pressable>
               </View>
             ) : paragraphs.length > 0 ? (
@@ -153,7 +155,7 @@ export const NatalReadingModal: React.FC<NatalReadingModalProps> = ({
               </View>
             ) : (
               <Text style={styles.helperText}>
-                Здесь появится расшифровка выбранной темы.
+                {t('library.readings.modal.empty')}
               </Text>
             )}
           </ScrollView>

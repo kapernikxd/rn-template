@@ -20,6 +20,9 @@ type Props = {
   suggestions: CitySearchItem[];
   isLoading: boolean;
   error: unknown;
+  label: string;
+  placeholder: string;
+  errorText: string;
 };
 
 export const CityPicker = memo(
@@ -36,6 +39,9 @@ export const CityPicker = memo(
     suggestions,
     isLoading,
     error,
+    label,
+    placeholder,
+    errorText,
   }: Props) => {
     const { theme, typography, sizes } = useTheme();
 
@@ -130,7 +136,7 @@ export const CityPicker = memo(
 
     return (
       <View style={s.wrapper}>
-        <Text style={s.label}>Город</Text>
+        <Text style={s.label}>{label}</Text>
 
         <View style={s.cityInputWrapper}>
           <TextInput
@@ -138,7 +144,7 @@ export const CityPicker = memo(
             value={value}
             onChangeText={handleChange}
             style={s.input}
-            placeholder="Москва"
+            placeholder={placeholder}
             placeholderTextColor={theme.greyText}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
@@ -160,7 +166,7 @@ export const CityPicker = memo(
             <ActivityIndicator size="small" color={theme.primary} />
           ) : null}
 
-          {error && isFocused ? <Text style={s.errorText}>Не удалось загрузить города</Text> : null}
+          {error && isFocused ? <Text style={s.errorText}>{errorText}</Text> : null}
 
           {showSuggestions ? (
             <View style={s.suggestionsContainer}>

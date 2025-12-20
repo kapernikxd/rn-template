@@ -1,5 +1,8 @@
 // src/screens/Library/utils/makeSummaryText.ts
-export const makeSummaryText = (p: { day: string; month: string; year: string; time: string; city: string }) => {
+export const makeSummaryText = (
+  p: { day: string; month: string; year: string; time: string; city: string },
+  emptyText: string,
+) => {
   const parts: string[] = [];
   const d = p.day.trim();
   const m = p.month.trim();
@@ -11,6 +14,6 @@ export const makeSummaryText = (p: { day: string; month: string; year: string; t
   if (t) parts.push(t);
   if (c) parts.push(c);
 
-  if (parts.length === 0) return "Заполните данные для расчёта натальной карты";
+  if (parts.length === 0) return emptyText;
   return parts.join(" · ");
 };

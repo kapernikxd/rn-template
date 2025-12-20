@@ -1111,5 +1111,90 @@
         }
       }
     }
+  },
+  "library": {
+    "title": "Natal chart",
+    "form": {
+      "title": "Birth details",
+      "edit": "Edit details",
+      "summaryPlaceholder": "Enter data to calculate the natal chart",
+      "status": {
+        "filled": "Completed",
+        "fill": "Fill in"
+      },
+      "fields": {
+        "day": "Day",
+        "month": "Month",
+        "year": "Year",
+        "time": "Time",
+        "timePlaceholder": "12:00",
+        "city": "City",
+        "cityPlaceholder": "Moscow",
+        "cityError": "Failed to load cities",
+        "latitude": "Latitude",
+        "longitude": "Longitude"
+      },
+      "actions": {
+        "build": "Generate chart",
+        "copy": "Copy data"
+      }
+    },
+    "chart": {
+      "title": "Chart",
+      "subtitleEmpty": "Generate the chart first",
+      "subtitleStats": "{{bodies}} planets · {{houses}} houses · {{aspects}} aspects",
+      "show": "Show chart",
+      "placeholder": {
+        "title": "Your chart will appear here",
+        "description": "Fill in the data and tap \"Generate chart\""
+      },
+      "status": {
+        "ready": "Ready",
+        "empty": "No data"
+      },
+      "sections": {
+        "planets": "Planets",
+        "houses": "Houses",
+        "house": "House {{id}}",
+        "aspects": "Main aspects"
+      }
+    },
+    "readings": {
+      "title": "Reading themes",
+      "description": "Choose a theme to get a text interpretation and save it on your device.",
+      "cards": {
+        "energy": "Overall energy profile",
+        "personality": "Personality and character",
+        "emotions": "Emotions and inner world",
+        "relationships": "Relationships and intimacy",
+        "mind": "Thinking and working style",
+        "purpose": "Purpose and development",
+        "career": "Career",
+        "social": "How people see you",
+        "inner": "Inner self",
+        "shadow": "Shadow layer"
+      },
+      "status": {
+        "requesting": "Requesting...",
+        "saved": "Saved",
+        "open": "Open"
+      },
+      "modal": {
+        "loading": "Fetching data...",
+        "errorTitle": "Failed to load interpretation",
+        "retry": "Retry",
+        "empty": "The interpretation of the selected theme will appear here."
+      }
+    },
+    "errors": {
+      "coordinates": "Check the coordinates.",
+      "build": "Could not generate the chart.",
+      "noChart": "Generate the chart first.",
+      "readingFetch": "Failed to fetch data"
+    },
+    "copy": {
+      "success": "Copied to clipboard",
+      "error": "Copy error"
+    }
   }
 }

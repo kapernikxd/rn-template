@@ -3,6 +3,7 @@ import React, { memo, useCallback, useMemo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Svg, Circle, Line, Text as SvgText } from "react-native-svg";
 import { useTheme } from "rn-vs-lb/theme";
+import { useTranslation } from "react-i18next";
 import type { Horoscope } from "circular-natal-horoscope-js";
 
 type Props = {
@@ -11,6 +12,7 @@ type Props = {
 
 export const NatalChart = memo(({ horoscope }: Props) => {
   const { theme, typography, sizes } = useTheme();
+  const { t } = useTranslation();
 
   const s = useMemo(
     () =>
@@ -95,7 +97,7 @@ export const NatalChart = memo(({ horoscope }: Props) => {
     <View>
       {chart}
 
-      <Text style={s.sectionTitle}>Планеты</Text>
+      <Text style={s.sectionTitle}>{t("library.chart.sections.planets")}</Text>
       {(horoscope.CelestialBodies?.all ?? []).map((body:any) => (
         <View key={body.key} style={s.infoRow}>
           <Text style={s.infoLabel}>{body.label}</Text>
@@ -103,15 +105,15 @@ export const NatalChart = memo(({ horoscope }: Props) => {
         </View>
       ))}
 
-      <Text style={s.sectionTitle}>Дома</Text>
+      <Text style={s.sectionTitle}>{t("library.chart.sections.houses")}</Text>
       {(horoscope.Houses ?? []).map((house:any) => (
         <View key={house.id} style={s.infoRow}>
-          <Text style={s.infoLabel}>Дом {house.id}</Text>
+          <Text style={s.infoLabel}>{t("library.chart.sections.house", { id: house.id })}</Text>
           <Text style={s.infoValue}>{formatPosition(house)}</Text>
         </View>
       ))}
 
-      <Text style={s.sectionTitle}>Основные аспекты</Text>
+      <Text style={s.sectionTitle}>{t("library.chart.sections.aspects")}</Text>
       {Object.entries(horoscope.Aspects?.types ?? {}).map(([aspectKey, aspects]) => (
         <View key={aspectKey} style={s.infoRow}>
           <Text style={s.infoLabel}>{aspectKey}</Text>

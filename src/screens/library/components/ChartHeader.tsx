@@ -3,6 +3,7 @@ import React, { memo, useMemo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "rn-vs-lb/theme";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   title?: string;
@@ -13,8 +14,11 @@ type Props = {
 };
 
 export const ChartHeader = memo(
-  ({ title = "Карта", subtitle, collapsed, hasResult, onPress }: Props) => {
+  ({ title, subtitle, collapsed, hasResult, onPress }: Props) => {
     const { theme, typography, sizes } = useTheme();
+    const { t } = useTranslation();
+
+    const resolvedTitle = title ?? t("library.chart.title");
 
     const s = useMemo(() => {
       const successBg = "#E9F7EF";
@@ -76,7 +80,7 @@ export const ChartHeader = memo(
     return (
       <TouchableOpacity activeOpacity={0.85} onPress={onPress} style={s.header}>
         <View style={s.left}>
-          <Text style={s.title}>{title}</Text>
+          <Text style={s.title}>{resolvedTitle}</Text>
           <Text style={s.subtitle} numberOfLines={1}>
             {subtitle}
           </Text>
@@ -89,7 +93,9 @@ export const ChartHeader = memo(
               size={16}
               color={hasResult ? "#1E7A46" : theme.greyText}
             />
-            <Text style={s.pillText}>{hasResult ? "Готово" : "Нет данных"}</Text>
+            <Text style={s.pillText}>
+              {hasResult ? t("library.chart.status.ready") : t("library.chart.status.empty")}
+            </Text>
           </View>
 
           <View style={s.iconBtn}>

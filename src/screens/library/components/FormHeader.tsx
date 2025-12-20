@@ -3,6 +3,7 @@ import React, { memo, useMemo } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "rn-vs-lb/theme";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   title: string;
@@ -14,6 +15,7 @@ type Props = {
 
 export const FormHeader = memo(({ title, subtitle, collapsed, hasResult, onPress }: Props) => {
   const { theme, typography, sizes } = useTheme();
+  const { t } = useTranslation();
 
   const s = useMemo(() => {
     const successBg = "#E9F7EF";
@@ -114,7 +116,9 @@ export const FormHeader = memo(({ title, subtitle, collapsed, hasResult, onPress
           ) : (
             <MaterialIcons name="edit" size={16} color={theme.greyText} />
           )}
-          <Text style={s.pillText}>{hasResult ? "Заполнено" : "Заполнить"}</Text>
+          <Text style={s.pillText}>
+            {hasResult ? t("library.form.status.filled") : t("library.form.status.fill")}
+          </Text>
         </View>
 
         <View style={s.chevronBtn}>

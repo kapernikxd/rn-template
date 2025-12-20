@@ -12,6 +12,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Horoscope, Origin } from "circular-natal-horoscope-js";
 import { Spacer } from "rn-vs-lb";
 import { useTheme } from "rn-vs-lb/theme";
+import { useTranslation } from "react-i18next";
 
 import { useRootStore, useStoreData } from "../../store/StoreProvider";
 import type { CitySearchItem } from "../../types/citySearch";
@@ -60,21 +61,22 @@ type NatalReadingCardConfig = {
   accent: string;
 };
 
-const NATAL_READING_CARDS: NatalReadingCardConfig[] = [
-  { key: "energy", title: "Общий энергопрофиль", accent: "#8E7DFF" },
-  { key: "personality", title: "Личность и характер", accent: "#FF8FB1" },
-  { key: "emotions", title: "Эмоции и внутренний мир", accent: "#6DD3C2" },
-  { key: "relationships", title: "Отношения и близость", accent: "#F3B14C" },
-  { key: "mind", title: "Мышление и стиль работы", accent: "#6EB5FF" },
-  { key: "purpose", title: "Предназначение и вектор развития", accent: "#C792EA" },
-  { key: "career", title: "Карьера", accent: "#7ED957" },
-  { key: "social", title: "Как тебя видят люди", accent: "#FFA552" },
-  { key: "inner", title: "То, что внутри", accent: "#A0AEC0" },
-  { key: "shadow", title: "Тёмный слой", accent: "#5E5CE6" },
+const NATAL_READING_CARDS: Omit<NatalReadingCardConfig, "title">[] = [
+  { key: "energy", accent: "#8E7DFF" },
+  { key: "personality", accent: "#FF8FB1" },
+  { key: "emotions", accent: "#6DD3C2" },
+  { key: "relationships", accent: "#F3B14C" },
+  { key: "mind", accent: "#6EB5FF" },
+  { key: "purpose", accent: "#C792EA" },
+  { key: "career", accent: "#7ED957" },
+  { key: "social", accent: "#FFA552" },
+  { key: "inner", accent: "#A0AEC0" },
+  { key: "shadow", accent: "#5E5CE6" },
 ];
 
 export const LibraryScreen = () => {
   const { theme, typography, sizes } = useTheme();
+  const { t } = useTranslation();
   const styles = useMemo(
     () => makeStyles({ theme, typography, sizes }),
     [theme, typography, sizes],
@@ -262,20 +264,24 @@ export const LibraryScreen = () => {
   /* ---------------- generate ---------------- */
 
   const summaryText = useMemo(
-    () => makeSummaryText({ day, month, year, time, city }),
-    [day, month, year, time, city],
+    () =>
+      makeSummaryText(
+        { day, month, year, time, city },
+        t("library.form.summaryPlaceholder"),
+      ),
+    [city, day, month, t, time, year],
   );
 
   const chartSubtitle = useMemo(() => {
-    if (!horoscope) return "Сначала постройте карту";
+    if (!horoscope) return t("library.chart.subtitleEmpty");
     const bodies = horoscope.CelestialBodies?.all?.length ?? 0;
     const houses = horoscope.Houses?.length ?? 0;
     const aspects = Object.values(horoscope.Aspects?.types ?? {}).reduce(
       (sum, a) => sum + (Array.isArray(a) ? a.length : 0),
       0,
     );
-    return `${bodies} планет · ${houses} домов · ${aspects} аспектов`;
-  }, [horoscope]);
+    return t("library.chart.subtitleStats", { bodies, houses, aspects });
+  }, [horoscope, t]);
 
   const handleGenerate = useCallback(() => {
     setError(null);
@@ -299,7 +305,7 @@ export const LibraryScreen = () => {
     const lat = Number(latitude);
     const lon = Number(longitude);
     if (Number.isNaN(lat) || Number.isNaN(lon)) {
-      setError("Проверьте координаты.");
+      setError(t("library.errors.coordinates"));
       return;
     }
 
@@ -338,7 +344,7 @@ export const LibraryScreen = () => {
       });
     } catch (e) {
       console.warn(e);
-      setError("Не удалось построить карту.");
+      setError(t("library.errors.build"));
 
       void trackEvent(AnalyticsEvent.NatalChartGenerateFailed, {
         error: e instanceof Error ? e.message : String(e),
@@ -355,6 +361,7 @@ export const LibraryScreen = () => {
     latitude,
     longitude,
     collapseForm,
+    t,
     trackEvent,
   ]);
 
@@ -363,19 +370,19 @@ export const LibraryScreen = () => {
     try {
       const payload = buildExportPayload(horoscope);
       await Clipboard.setStringAsync(JSON.stringify(payload, null, 2));
-      setCopyMessage("Скопировано в буфер обмена");
+      setCopyMessage(t("library.copy.success"));
 
       void trackEvent(AnalyticsEvent.NatalChartCopy, {
         success: true,
       });
     } catch {
-      setCopyMessage("Ошибка копирования");
+      setCopyMessage(t("library.copy.error"));
 
       void trackEvent(AnalyticsEvent.NatalChartCopy, {
         success: false,
       });
     }
-  }, [horoscope, trackEvent]);
+  }, [horoscope, t, trackEvent]);
 
   const chartPayload = useMemo(
     () => (horoscope ? buildExportPayload(horoscope) : null),
@@ -424,12 +431,19 @@ export const LibraryScreen = () => {
     };
   }, [chartSignature]);
 
-  const readingCards = useMemo(() => NATAL_READING_CARDS, []);
+  const readingCards = useMemo(
+    () =>
+      NATAL_READING_CARDS.map((card) => ({
+        ...card,
+        title: t(`library.readings.cards.${card.key}`),
+      })),
+    [t],
+  );
 
   const fetchNatalReading = useCallback(
     async (key: string, options?: { force?: boolean }) => {
       if (!horoscope || !chartPayload || !chartSignature) {
-        setError("Сначала постройте карту.");
+        setError(t("library.errors.noChart"));
 
         void trackEvent(AnalyticsEvent.NatalReadingLoadFailed, {
           key,
@@ -499,7 +513,7 @@ export const LibraryScreen = () => {
         const message =
           requestError instanceof Error
             ? requestError.message
-            : "Не удалось получить данные";
+            : t("library.errors.readingFetch");
 
         if (isMountedRef.current) {
           setReadingErrors((prev) => ({ ...prev, [key]: message }));
@@ -523,6 +537,7 @@ export const LibraryScreen = () => {
       horoscope,
       natalReadings,
       readingCards,
+      t,
       trackEvent,
     ],
   );
@@ -530,7 +545,7 @@ export const LibraryScreen = () => {
   const handleOpenReading = useCallback(
     (key: string) => {
       if (!horoscope) {
-        setError("Сначала постройте карту.");
+        setError(t("library.errors.noChart"));
 
         void trackEvent(AnalyticsEvent.NatalReadingLoadFailed, {
           key,
@@ -616,7 +631,7 @@ export const LibraryScreen = () => {
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"
       >
-      <Text style={styles.title}>Натальная карта</Text>
+      <Text style={styles.title}>{t("library.title")}</Text>
       <Spacer />
 
       {/* ---------- FORM ---------- */}
@@ -624,7 +639,7 @@ export const LibraryScreen = () => {
         collapsed={isFormCollapsed}
         header={
           <FormHeader
-            title="Данные рождения"
+            title={t("library.form.title")}
             subtitle={summaryText}
             collapsed={isFormCollapsed}
             hasResult={Boolean(horoscope)}
@@ -633,18 +648,23 @@ export const LibraryScreen = () => {
         }
         collapsedFooter={
           <TouchableOpacity style={styles.smallAction} onPress={expandForm}>
-            <Text style={styles.smallActionText}>Изменить данные</Text>
+            <Text style={styles.smallActionText}>{t("library.form.edit")}</Text>
           </TouchableOpacity>
         }
       >
         <View style={styles.formRow}>
-          <LabeledInput label="День" value={day} onChangeText={setDay} keyboardType="numeric" />
-          <LabeledInput label="Месяц" value={month} onChangeText={setMonth} keyboardType="numeric" />
-          <LabeledInput label="Год" value={year} onChangeText={setYear} keyboardType="numeric" />
+          <LabeledInput label={t("library.form.fields.day")} value={day} onChangeText={setDay} keyboardType="numeric" />
+          <LabeledInput label={t("library.form.fields.month")} value={month} onChangeText={setMonth} keyboardType="numeric" />
+          <LabeledInput label={t("library.form.fields.year")} value={year} onChangeText={setYear} keyboardType="numeric" />
         </View>
 
         <View style={styles.formRow}>
-          <LabeledInput label="Время" value={time} onChangeText={setTime} placeholder="12:00" />
+          <LabeledInput
+            label={t("library.form.fields.time")}
+            value={time}
+            onChangeText={setTime}
+            placeholder={t("library.form.fields.timePlaceholder")}
+          />
           <CityPicker
             value={city}
             onChange={setCity}
@@ -658,21 +678,30 @@ export const LibraryScreen = () => {
             suggestions={citySearchState.cities}
             isLoading={citySearchState.isLoading}
             error={citySearchState.error}
+            label={t("library.form.fields.city")}
+            placeholder={t("library.form.fields.cityPlaceholder")}
+            errorText={t("library.form.fields.cityError")}
           />
         </View>
 
         <View style={styles.formRow}>
-          <LabeledInput label="Широта" value={latitude} onChangeText={setLatitude} keyboardType="numeric" />
-          <LabeledInput label="Долгота" value={longitude} onChangeText={setLongitude} keyboardType="numeric" />
+          <LabeledInput label={t("library.form.fields.latitude")} value={latitude} onChangeText={setLatitude} keyboardType="numeric" />
+          <LabeledInput label={t("library.form.fields.longitude")} value={longitude} onChangeText={setLongitude} keyboardType="numeric" />
         </View>
 
         <TouchableOpacity style={styles.button} onPress={handleGenerate} disabled={loading}>
-          {loading ? <ActivityIndicator color={theme.white} /> : <Text style={styles.buttonText}>Построить карту</Text>}
+          {loading ? (
+            <ActivityIndicator color={theme.white} />
+          ) : (
+            <Text style={styles.buttonText}>{t("library.form.actions.build")}</Text>
+          )}
         </TouchableOpacity>
 
         {horoscope && (
           <TouchableOpacity style={[styles.button, styles.copyButton]} onPress={handleCopyResults}>
-            <Text style={[styles.buttonText, styles.copyButtonText]}>Скопировать данные</Text>
+            <Text style={[styles.buttonText, styles.copyButtonText]}>
+              {t("library.form.actions.copy")}
+            </Text>
           </TouchableOpacity>
         )}
 
@@ -690,12 +719,13 @@ export const LibraryScreen = () => {
             hasResult={Boolean(horoscope)}
             subtitle={chartSubtitle}
             onPress={toggleChart}
+            title={t("library.chart.title")}
           />
         }
         collapsedFooter={
           horoscope ? (
             <TouchableOpacity style={styles.smallAction} onPress={expandChart}>
-              <Text style={styles.smallActionText}>Показать карту</Text>
+              <Text style={styles.smallActionText}>{t("library.chart.show")}</Text>
             </TouchableOpacity>
           ) : null
         }
@@ -706,19 +736,16 @@ export const LibraryScreen = () => {
           </View>
         ) : (
           <View style={styles.chartWrapper}>
-            <Text style={styles.sectionTitle}>Здесь появится ваша карта</Text>
-            <Text style={styles.description}>
-              Заполните данные и нажмите «Построить карту»
-            </Text>
+            <Text style={styles.sectionTitle}>{t("library.chart.placeholder.title")}</Text>
+            <Text style={styles.description}>{t("library.chart.placeholder.description")}</Text>
           </View>
         )}
       </CollapsibleCard>
 
       <View style={styles.readingsSection}>
-        <Text style={styles.sectionTitle}>Темы разбора</Text>
+        <Text style={styles.sectionTitle}>{t("library.readings.title")}</Text>
         <Text style={styles.sectionDescription}>
-          Выберите одну из тем, чтобы получить текстовую интерпретацию и
-          сохранить её на устройстве.
+          {t("library.readings.description")}
         </Text>
 
         <View style={styles.readingsList}>
