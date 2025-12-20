@@ -1079,88 +1079,88 @@
     }
   },
   "library": {
-    "title": "Natal chart",
+    "title": "Tema natale",
     "form": {
-      "title": "Birth details",
-      "edit": "Edit details",
-      "summaryPlaceholder": "Enter data to calculate the natal chart",
+      "title": "Dati di nascita",
+      "edit": "Modifica dati",
+      "summaryPlaceholder": "Inserisci i dati per calcolare il tema natale",
       "status": {
-        "filled": "Completed",
-        "fill": "Fill in"
+        "filled": "Completato",
+        "fill": "Compila"
       },
       "fields": {
-        "day": "Day",
-        "month": "Month",
-        "year": "Year",
-        "time": "Time",
+        "day": "Giorno",
+        "month": "Mese",
+        "year": "Anno",
+        "time": "Ora",
         "timePlaceholder": "12:00",
-        "city": "City",
-        "cityPlaceholder": "Moscow",
-        "cityError": "Failed to load cities",
-        "latitude": "Latitude",
-        "longitude": "Longitude"
+        "city": "Città",
+        "cityPlaceholder": "Mosca",
+        "cityError": "Impossibile caricare le città",
+        "latitude": "Latitudine",
+        "longitude": "Longitudine"
       },
       "actions": {
-        "build": "Generate chart",
-        "copy": "Copy data"
+        "build": "Genera tema",
+        "copy": "Copia dati"
       }
     },
     "chart": {
-      "title": "Chart",
-      "subtitleEmpty": "Generate the chart first",
-      "subtitleStats": "{{bodies}} planets · {{houses}} houses · {{aspects}} aspects",
-      "show": "Show chart",
+      "title": "Tema",
+      "subtitleEmpty": "Genera prima il tema",
+      "subtitleStats": "{{bodies}} pianeti · {{houses}} case · {{aspects}} aspetti",
+      "show": "Mostra tema",
       "placeholder": {
-        "title": "Your chart will appear here",
-        "description": "Fill in the data and tap \"Generate chart\""
+        "title": "Il tuo tema apparirà qui",
+        "description": "Inserisci i dati e tocca «Genera tema»"
       },
       "status": {
-        "ready": "Ready",
-        "empty": "No data"
+        "ready": "Pronto",
+        "empty": "Nessun dato"
       },
       "sections": {
-        "planets": "Planets",
-        "houses": "Houses",
-        "house": "House {{id}}",
-        "aspects": "Main aspects"
+        "planets": "Pianeti",
+        "houses": "Case",
+        "house": "Casa {{id}}",
+        "aspects": "Aspetti principali"
       }
     },
     "readings": {
-      "title": "Reading themes",
-      "description": "Choose a theme to get a text interpretation and save it on your device.",
+      "title": "Temi di interpretazione",
+      "description": "Scegli un tema per ottenere un’interpretazione testuale e salvarla sul tuo dispositivo.",
       "cards": {
-        "energy": "Overall energy profile",
-        "personality": "Personality and character",
-        "emotions": "Emotions and inner world",
-        "relationships": "Relationships and intimacy",
-        "mind": "Thinking and working style",
-        "purpose": "Purpose and development",
-        "career": "Career",
-        "social": "How people see you",
-        "inner": "Inner self",
-        "shadow": "Shadow layer"
+        "energy": "Profilo energetico generale",
+        "personality": "Personalità e carattere",
+        "emotions": "Emozioni e mondo interiore",
+        "relationships": "Relazioni e intimità",
+        "mind": "Stile di pensiero e di lavoro",
+        "purpose": "Scopo e sviluppo",
+        "career": "Carriera",
+        "social": "Come ti vedono gli altri",
+        "inner": "Io interiore",
+        "shadow": "Lato ombra"
       },
       "status": {
-        "requesting": "Requesting...",
-        "saved": "Saved",
-        "open": "Open"
+        "requesting": "Richiesta in corso...",
+        "saved": "Salvato",
+        "open": "Apri"
       },
       "modal": {
-        "loading": "Fetching data...",
-        "errorTitle": "Failed to load interpretation",
-        "retry": "Retry",
-        "empty": "The interpretation of the selected theme will appear here."
+        "loading": "Caricamento dati...",
+        "errorTitle": "Impossibile caricare l’interpretazione",
+        "retry": "Riprova",
+        "empty": "L’interpretazione del tema selezionato apparirà qui."
       }
     },
     "errors": {
-      "coordinates": "Check the coordinates.",
-      "build": "Could not generate the chart.",
-      "noChart": "Generate the chart first.",
-      "readingFetch": "Failed to fetch data"
+      "coordinates": "Controlla le coordinate.",
+      "build": "Impossibile generare il tema.",
+      "noChart": "Genera prima il tema.",
+      "readingFetch": "Impossibile recuperare i dati"
     },
     "copy": {
-      "success": "Copied to clipboard",
-      "error": "Copy error"
+      "success": "Copiato negli appunti",
+      "error": "Errore di copia"
     }
   }
 }

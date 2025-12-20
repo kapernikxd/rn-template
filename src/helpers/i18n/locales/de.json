@@ -1079,88 +1079,88 @@
     }
   },
   "library": {
-    "title": "Natal chart",
+    "title": "Geburtsradix",
     "form": {
-      "title": "Birth details",
-      "edit": "Edit details",
-      "summaryPlaceholder": "Enter data to calculate the natal chart",
+      "title": "Geburtsdaten",
+      "edit": "Daten bearbeiten",
+      "summaryPlaceholder": "Daten eingeben, um das Geburtshoroskop zu berechnen",
       "status": {
-        "filled": "Completed",
-        "fill": "Fill in"
+        "filled": "Ausgefüllt",
+        "fill": "Ausfüllen"
       },
       "fields": {
-        "day": "Day",
-        "month": "Month",
-        "year": "Year",
-        "time": "Time",
+        "day": "Tag",
+        "month": "Monat",
+        "year": "Jahr",
+        "time": "Uhrzeit",
         "timePlaceholder": "12:00",
-        "city": "City",
-        "cityPlaceholder": "Moscow",
-        "cityError": "Failed to load cities",
-        "latitude": "Latitude",
-        "longitude": "Longitude"
+        "city": "Stadt",
+        "cityPlaceholder": "Moskau",
+        "cityError": "Städte konnten nicht geladen werden",
+        "latitude": "Breitengrad",
+        "longitude": "Längengrad"
       },
       "actions": {
-        "build": "Generate chart",
-        "copy": "Copy data"
+        "build": "Horoskop erstellen",
+        "copy": "Daten kopieren"
       }
     },
     "chart": {
-      "title": "Chart",
-      "subtitleEmpty": "Generate the chart first",
-      "subtitleStats": "{{bodies}} planets · {{houses}} houses · {{aspects}} aspects",
-      "show": "Show chart",
+      "title": "Horoskop",
+      "subtitleEmpty": "Erstelle zuerst das Horoskop",
+      "subtitleStats": "{{bodies}} Planeten · {{houses}} Häuser · {{aspects}} Aspekte",
+      "show": "Horoskop anzeigen",
       "placeholder": {
-        "title": "Your chart will appear here",
-        "description": "Fill in the data and tap \"Generate chart\""
+        "title": "Dein Horoskop erscheint hier",
+        "description": "Gib die Daten ein und tippe auf „Horoskop erstellen“"
       },
       "status": {
-        "ready": "Ready",
-        "empty": "No data"
+        "ready": "Bereit",
+        "empty": "Keine Daten"
       },
       "sections": {
-        "planets": "Planets",
-        "houses": "Houses",
-        "house": "House {{id}}",
-        "aspects": "Main aspects"
+        "planets": "Planeten",
+        "houses": "Häuser",
+        "house": "Haus {{id}}",
+        "aspects": "Hauptaspekte"
       }
     },
     "readings": {
-      "title": "Reading themes",
-      "description": "Choose a theme to get a text interpretation and save it on your device.",
+      "title": "Deutungsthemen",
+      "description": "Wähle ein Thema, um eine textbasierte Interpretation zu erhalten und sie auf deinem Gerät zu speichern.",
       "cards": {
-        "energy": "Overall energy profile",
-        "personality": "Personality and character",
-        "emotions": "Emotions and inner world",
-        "relationships": "Relationships and intimacy",
-        "mind": "Thinking and working style",
-        "purpose": "Purpose and development",
-        "career": "Career",
-        "social": "How people see you",
-        "inner": "Inner self",
-        "shadow": "Shadow layer"
+        "energy": "Gesamtenergie-Profil",
+        "personality": "Persönlichkeit und Charakter",
+        "emotions": "Emotionen und innere Welt",
+        "relationships": "Beziehungen und Intimität",
+        "mind": "Denk- und Arbeitsstil",
+        "purpose": "Lebensaufgabe und Entwicklung",
+        "career": "Karriere",
+        "social": "Wie andere dich sehen",
+        "inner": "Inneres Selbst",
+        "shadow": "Schattenseite"
       },
       "status": {
-        "requesting": "Requesting...",
-        "saved": "Saved",
-        "open": "Open"
+        "requesting": "Wird geladen...",
+        "saved": "Gespeichert",
+        "open": "Öffnen"
       },
       "modal": {
-        "loading": "Fetching data...",
-        "errorTitle": "Failed to load interpretation",
-        "retry": "Retry",
-        "empty": "The interpretation of the selected theme will appear here."
+        "loading": "Daten werden geladen...",
+        "errorTitle": "Interpretation konnte nicht geladen werden",
+        "retry": "Erneut versuchen",
+        "empty": "Die Interpretation des ausgewählten Themas erscheint hier."
       }
     },
     "errors": {
-      "coordinates": "Check the coordinates.",
-      "build": "Could not generate the chart.",
-      "noChart": "Generate the chart first.",
-      "readingFetch": "Failed to fetch data"
+      "coordinates": "Bitte überprüfe die Koordinaten.",
+      "build": "Das Horoskop konnte nicht erstellt werden.",
+      "noChart": "Bitte erst das Horoskop erstellen.",
+      "readingFetch": "Daten konnten nicht abgerufen werden"
     },
     "copy": {
-      "success": "Copied to clipboard",
-      "error": "Copy error"
+      "success": "In die Zwischenablage kopiert",
+      "error": "Fehler beim Kopieren"
     }
   }
 }
