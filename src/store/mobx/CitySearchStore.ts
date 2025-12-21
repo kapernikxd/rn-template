@@ -2,19 +2,21 @@ import { makeAutoObservable, runInAction } from "mobx";
 import { CitySearchService } from "../../services/citySearch/CitySearchService";
 import { CitySearchItem } from "../../types/citySearch";
 import { BaseStore, StoreListener } from "./BaseStore";
+import { ConfigStore } from "./ConfigStore";
 
 export class CitySearchStore {
   private readonly baseStore = new BaseStore();
   readonly subscribe: (listener: StoreListener) => () => void;
-  private citySearchService = new CitySearchService();
+  private citySearchService: CitySearchService;
 
   cities: CitySearchItem[] = [];
   isLoading = false;
   error: string | null = null;
   query = "";
 
-  constructor() {
+  constructor(configStore: ConfigStore) {
     this.subscribe = this.baseStore.subscribe;
+    this.citySearchService = new CitySearchService(configStore);
     makeAutoObservable(this, {
       baseStore: false,
       subscribe: false,

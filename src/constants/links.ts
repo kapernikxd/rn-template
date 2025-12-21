@@ -47,6 +47,8 @@ export const EMAIL = "AiPairPro@yandex.com";
 export const SITE_NAME = "AiAstrology";
 export const CONFIG_APP_ID = "aiastrology";
 
+export const DEFAULT_CITY_SEARCH_API = "https://cities.webbro.org/search.php";
+
 export const APP_METRICA = "40e3a66a-2488-4dc3-b544-7ba1c72ba5f1"
 
 export const appVersion = Constants.expoConfig?.version || '1.0.0';
