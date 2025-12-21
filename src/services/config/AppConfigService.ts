@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as Localization from "expo-localization";
 
-import { CONFIG_APP_ID, CONFIG_SERVER_URL, SITE_NAME } from "../../constants/links";
+import { CONFIG_APP_ID, CONFIG_SERVER_URL, SITE_NAME, appVersion } from "../../constants/links";
 import type { AppConfigResponse } from "../../types/config";
 
 export class AppConfigService {
@@ -27,6 +27,7 @@ export class AppConfigService {
           "Cache-Control": "no-cache",
           Pragma: "no-cache",
           "X-App-Name": SITE_NAME,
+          "X-App-Version": appVersion,
           ...(userCountry ? { "X-User-Country": userCountry } : {}),
         },
       },
