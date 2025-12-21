@@ -1,11 +1,14 @@
 import axios from "axios";
 import { CitySearchItem, CitySearchResponse } from "../../types/citySearch";
-
-const CITY_SEARCH_API = "https://cities.webbro.org";
+import type { ConfigStore } from "../../store/mobx/ConfigStore";
 
 export class CitySearchService {
+  constructor(private readonly configStore: ConfigStore) {}
+
   async search(query: string, limit = 10) {
-    return axios.get<CitySearchResponse>(`${CITY_SEARCH_API}/search.php`, {
+    const citySearchUrl = this.configStore.urls?.CITY_SEARCH_API;
+
+    return axios.get<CitySearchResponse>(citySearchUrl, {
       params: { q: query, limit },
     });
   }

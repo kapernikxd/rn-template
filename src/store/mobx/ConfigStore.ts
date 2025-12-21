@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { Platform } from "react-native";
 
-import { DEFAULT_ADS_CONFIG, DEFAULT_APP_VERSION_CONFIG, setApiUrl } from "../../constants/links";
+import { DEFAULT_ADS_CONFIG, DEFAULT_APP_VERSION_CONFIG, DEFAULT_CITY_SEARCH_API, setApiUrl } from "../../constants/links";
 import { DEFAULT_CHAT_LIMIT_CONFIG } from "../../constants/ads";
 import type { NormalizedAppConfig, AdsConfig, AppVersionConfig, ChatLimitConfig } from "../../types/config";
 import { AppConfigService } from "../../services/config/AppConfigService";
@@ -17,7 +17,7 @@ export class ConfigStore {
     appVer: { ...DEFAULT_APP_VERSION_CONFIG },
     ads: { ...DEFAULT_ADS_CONFIG },
     chatLimit: { ...DEFAULT_CHAT_LIMIT_CONFIG },
-    urls: {},
+    urls: { CITY_SEARCH_API: DEFAULT_CITY_SEARCH_API },
   };
 
   loading = false;
@@ -88,11 +88,18 @@ export class ConfigStore {
         const apiUrlFromConfig = response.API_URL ?? response.urls?.API_URL ?? response.urls?.apiUrl;
         setApiUrl(apiUrlFromConfig);
 
+        const citySearchApiUrl =
+          response.CITY_SEARCH_API ?? response.urls?.CITY_SEARCH_API ?? DEFAULT_CITY_SEARCH_API;
+
         this.config = {
           appVer: { ...DEFAULT_APP_VERSION_CONFIG, ...response.appVer },
           ads: { ...DEFAULT_ADS_CONFIG, ...(response.ads ?? {}) },
           chatLimit: { ...DEFAULT_CHAT_LIMIT_CONFIG, ...(response.chatLimit ?? {}) },
-          urls: { ...(response.urls ?? {}), ...(response.API_URL ? { API_URL: response.API_URL } : {}) }
+          urls: {
+            CITY_SEARCH_API: citySearchApiUrl,
+            ...(response.urls ?? {}),
+            ...(response.API_URL ? { API_URL: response.API_URL } : {}),
+          }
         };
         this.loading = false;
       });

@@ -33,6 +33,6 @@ export class RootStore {
     this.identityStore = new IdentityStore();
     this.imageGenerationStore = new ImageGenerationStore();
     this.configStore = new ConfigStore(this);
-    this.citySearchStore = new CitySearchStore();
+    this.citySearchStore = new CitySearchStore(this.configStore);
   }
 }
