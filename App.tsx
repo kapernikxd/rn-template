@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ThemeProvider, useTheme } from 'rn-vs-lb/theme';
-import { StoreProvider } from './src/store/StoreProvider';
+import { StoreProvider, useRootStore, useStoreData } from './src/store/StoreProvider';
 import { AppNavigator } from './src/navigation';
 import { Theme } from './src/constants/theme';
 import { Host } from 'react-native-portalize';
@@ -73,12 +73,22 @@ export default function App() {
 }
 
 const AppWithConfig = () => {
+  const { authStore, chatStore, configStore } = useRootStore();
+  const isAuthenticated = useStoreData(authStore, (store) => store.isAuth);
+  const initialChatUserIds = useStoreData(configStore, (store) => store.initialChatUserIds);
+  const isConfigReady = useStoreData(configStore, (store) => store.isInitialized && !store.loading);
 
   useEffect(() => {
     (async () => {
       await MobileAds.initialize();
     })();
   });
+
+  useEffect(() => {
+    if (!isAuthenticated || !isConfigReady) return;
+
+    void chatStore.startInitialChats(initialChatUserIds);
+  }, [chatStore, initialChatUserIds, isAuthenticated, isConfigReady]);
 
   return (
     <ForceUpdateWrapper>

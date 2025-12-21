@@ -32,6 +32,7 @@ export class ChatStore {
   private currentChatSubscribedId: string | null = null;
 
   private chatService: ChatService;
+  private startedInitialChatsFor = new Set<string>();
 
   constructor(root: RootStore) {
     this.root = root;
@@ -41,6 +42,7 @@ export class ChatStore {
       subscribe: false,
       notify: false,
       root: false,
+      startedInitialChatsFor: false,
     } as any);
     this.chatService = new ChatService();
   }
@@ -580,6 +582,27 @@ export class ChatStore {
     } catch (err) {
       console.error("Ошибка при пометке сообщений как прочитанных:", err);
     }
+  }
+
+  async startInitialChats(userIds?: string[]) {
+    if (!userIds?.length) return;
+
+    const pendingUserIds = userIds.filter((id) => id && !this.startedInitialChatsFor.has(id));
+
+    if (!pendingUserIds.length) return;
+
+    pendingUserIds.forEach((id) => this.startedInitialChatsFor.add(id));
+
+    await Promise.all(
+      pendingUserIds.map(async (id) => {
+        try {
+          await this.messageById(id);
+        } catch (error) {
+          console.error(`Failed to start chat with user ${id}:`, error);
+          this.startedInitialChatsFor.delete(id);
+        }
+      }),
+    );
   }
 
   async messageById(id: string) {
