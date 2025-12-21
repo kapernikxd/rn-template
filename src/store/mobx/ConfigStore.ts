@@ -18,6 +18,7 @@ export class ConfigStore {
     ads: { ...DEFAULT_ADS_CONFIG },
     chatLimit: { ...DEFAULT_CHAT_LIMIT_CONFIG },
     urls: { CITY_SEARCH_API: DEFAULT_CITY_SEARCH_API },
+    initialChatUserIds: [],
   };
 
   loading = false;
@@ -63,6 +64,10 @@ export class ConfigStore {
     return this.config.chatLimit;
   }
 
+  get initialChatUserIds(): string[] {
+    return this.config.initialChatUserIds;
+  }
+
   get adsEnabled(): boolean {
     const { ADS_ENABLED, ADS_ENABLED_ANDROID, ADS_ENABLED_IOS } = this.adsConfig;
 
@@ -99,7 +104,8 @@ export class ConfigStore {
             CITY_SEARCH_API: citySearchApiUrl,
             ...(response.urls ?? {}),
             ...(response.API_URL ? { API_URL: response.API_URL } : {}),
-          }
+          },
+          initialChatUserIds: response.initialChatUserIds ?? [],
         };
         this.loading = false;
       });

@@ -34,6 +34,7 @@ export type AppConfigResponse = {
   ads?: Partial<AdsConfig>;
   chatLimit?: Partial<ChatLimitConfig>;
   urls?: Record<string, any>;
+  initialChatUserIds?: string[];
 };
 
 export type NormalizedAppConfig = {
@@ -41,4 +42,5 @@ export type NormalizedAppConfig = {
   ads: AdsConfig;
   chatLimit: ChatLimitConfig;
   urls?: any;
+  initialChatUserIds: string[];
 };
