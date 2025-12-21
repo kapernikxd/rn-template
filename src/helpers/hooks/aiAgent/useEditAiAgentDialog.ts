@@ -3,6 +3,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ChangeEventHandler, FormEventHandler, KeyboardEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { useRootStore, useStoreData } from "../../../store/StoreProvider";
 import { AiBotDTO } from "../../../types";
 import { getUserAvatar } from "../../utils/user";
@@ -15,11 +16,11 @@ const isAvatarFile = (file: AvatarFile | File): file is AvatarFile =>
 const canUseObjectUrl =
   typeof URL !== "undefined" && typeof URL.createObjectURL === "function";
 
-
 export interface EditAiAgentFormState {
   name: string;
   lastname: string;
   profession: string;
+  gender: string;
   userBio: string;
   aiPrompt: string;
   intro: string;
@@ -31,6 +32,7 @@ const INITIAL_FORM: EditAiAgentFormState = {
   name: "",
   lastname: "",
   profession: "",
+  gender: "",
   userBio: "",
   aiPrompt: "",
   intro: "",
@@ -39,11 +41,13 @@ const INITIAL_FORM: EditAiAgentFormState = {
 };
 
 const normalized = (v: string) => v.trim().toLowerCase();
+const normalizeGenderValue = (value?: string) => value?.trim().toLowerCase() ?? "";
 const arraysEqual = (a: string[], b: string[]) =>
   a.length === b.length && a.every((item, i) => item === b[i]);
 
 export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, onClose: () => void) {
-  const { aiBotStore } = useRootStore();
+  const { aiBotStore, uiStore } = useRootStore();
+  const { t } = useTranslation();
 
   // store-derived
   const botDetails = useStoreData(aiBotStore, (s) => s.botDetails);
@@ -68,6 +72,7 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
       name: aiAgent.name ?? "",
       lastname: aiAgent.lastname ?? "",
       profession: aiAgent.profession ?? "",
+      gender: normalizeGenderValue(aiAgent.gender),
       userBio: aiAgent.userBio ?? "",
       aiPrompt: botDetails?.aiPrompt ?? aiAgent.aiPrompt ?? "",
       intro: botDetails?.intro ?? aiAgent.intro ?? "",
@@ -111,7 +116,9 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
     }
 
     if (!canUseObjectUrl) {
-      console.warn("Object URLs are not supported in this environment.");
+      console.warn(
+        t("components.aibot.editDialog.debug.objectUrlNotSupported"),
+      );
       setAvatarFile(file);
       setAvatarPreview(null);
       return;
@@ -124,7 +131,7 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
     tempUrlRef.current = url;
     setAvatarFile(file);
     setAvatarPreview(url);
-  }, []);
+  }, [t]);
 
   const handleAvatarRemove = useCallback(() => {
     if (tempUrlRef.current && canUseObjectUrl) {
@@ -228,15 +235,24 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
       return;
     }
 
-    const hasAvatarUpdate = Boolean(avatarFile);
-    const payload: AiBotUpdatePayload = {};
-
     const normalizedName = formState.name.trim();
     const normalizedLastName = formState.lastname.trim();
     const normalizedProfession = formState.profession.trim();
+    const normalizedGender = normalizeGenderValue(formState.gender);
     const normalizedBio = formState.userBio.trim();
     const normalizedPrompt = formState.aiPrompt.trim();
     const normalizedIntro = formState.intro.trim();
+
+    if (!normalizedProfession || !normalizedGender) {
+      uiStore.showSnackbar(
+        t("components.aibot.editDialog.snackbar.fillProfessionAndGender"),
+        "warning",
+      );
+      return;
+    }
+
+    const hasAvatarUpdate = Boolean(avatarFile);
+    const payload: AiBotUpdatePayload = {};
 
     const currentPrompt = botDetails?.aiPrompt ?? aiAgent.aiPrompt ?? "";
     const currentIntro = botDetails?.intro ?? aiAgent.intro ?? "";
@@ -246,6 +262,8 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
     if (normalizedName !== (aiAgent.name ?? "")) payload.name = normalizedName;
     if (normalizedLastName !== (aiAgent.lastname ?? "")) payload.lastname = normalizedLastName;
     if (normalizedProfession !== (aiAgent.profession ?? "")) payload.profession = normalizedProfession;
+    const currentGender = normalizeGenderValue(aiAgent.gender);
+    if (normalizedGender !== currentGender) payload.gender = normalizedGender;
     if (normalizedBio !== (aiAgent.userBio ?? "")) payload.userBio = normalizedBio;
     if (normalizedPrompt !== currentPrompt) payload.aiPrompt = normalizedPrompt;
     if (normalizedIntro !== currentIntro) {
@@ -266,11 +284,23 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
       await aiBotStore.updateBot(aiAgent._id, payload, avatarFile ?? undefined);
       onClose();
     } catch (e) {
-      console.error("Failed to update AI agent", e);
+      console.error(
+        t("components.aibot.editDialog.debug.updateFailed"),
+        e,
+      );
     } finally {
       setIsSubmitting(false);
     }
-  }, [aiAgent, onClose, avatarFile, formState, botDetails, aiBotStore]);
+  }, [
+    aiAgent,
+    onClose,
+    avatarFile,
+    formState,
+    botDetails,
+    aiBotStore,
+    uiStore,
+    t,
+  ]);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = useCallback(
     async (event) => {
@@ -288,12 +318,12 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
       profession: formState.profession.length.toString().padStart(2, "0"),
       userBio: formState.userBio.length.toString().padStart(3, "0"),
     }),
-    [formState]
+    [formState],
   );
 
   const selectedCategories = useMemo(
     () => new Set(formState.categories.map((item) => normalized(item))),
-    [formState.categories]
+    [formState.categories],
   );
 
   return {
@@ -304,9 +334,12 @@ export function useEditAiAgentDialog(open: boolean, aiAgent: AiBotDTO | null, on
     maxGalleryItems,
 
     // local state
-    formState, setFormState,
-    usefulnessInput, setUsefulnessInput,
-    avatarFile, avatarPreview,
+    formState,
+    setFormState,
+    usefulnessInput,
+    setUsefulnessInput,
+    avatarFile,
+    avatarPreview,
     isSubmitting,
 
     // computed

@@ -3,16 +3,16 @@ import { useForm } from 'react-hook-form';
 import { Directory, File, Paths } from 'expo-file-system';
 import uuid from 'react-native-uuid';
 import { launchImageLibrary } from 'react-native-image-picker';
+import { useTranslation } from 'react-i18next';
 
 import { useRootStore } from '../../../store/StoreProvider';
 import { useImageCompressor, usePortalNavigation } from '../../../helpers/hooks';
 import { UpdateProfileProps } from '../../../types/profile';
 import { getUserAvatar } from '../../../helpers/utils/user';
-import { useTranslation } from 'react-i18next';
 
 type EditProfileFormValues = Pick<
   UpdateProfileProps,
-  'name' | 'lastname' | 'profession' | 'phone' | 'userBio'
+  'name' | 'lastname' | 'profession' | 'phone' | 'userBio' | 'gender'
 >;
 
 function safeCreateDirectory(dir: Directory) {
@@ -44,8 +44,16 @@ export const useEditProfile = () => {
       profession: profileStore.myProfile?.profession,
       phone: profileStore.myProfile?.phone,
       userBio: profileStore.myProfile?.userBio,
+      gender: profileStore.myProfile?.gender,
     }),
-    [profileStore.myProfile?.name, profileStore.myProfile?.lastname, profileStore.myProfile?.profession, profileStore.myProfile?.phone, profileStore.myProfile?.userBio],
+    [
+      profileStore.myProfile?.name,
+      profileStore.myProfile?.lastname,
+      profileStore.myProfile?.profession,
+      profileStore.myProfile?.phone,
+      profileStore.myProfile?.userBio,
+      profileStore.myProfile?.gender,
+    ],
   );
 
   const methods = useForm<EditProfileFormValues>({ defaultValues: initialValues });
@@ -67,19 +75,28 @@ export const useEditProfile = () => {
         ) as Partial<EditProfileFormValues>;
 
         if (Object.keys(changedFields).length === 0) {
-          uiStore.showSnackbar(t('notifications.profile.noChanges'), 'info');
+          uiStore.showSnackbar(
+            t('components.profile.edit.snackbar.noChanges'),
+            'info',
+          );
           return;
         }
 
         await profileStore.updateProfile(changedFields as UpdateProfileProps);
-        uiStore.showSnackbar(t('notifications.profile.updateSuccess'), 'success');
+        uiStore.showSnackbar(
+          t('components.profile.edit.snackbar.updated'),
+          'success',
+        );
       } catch (e) {
-        uiStore.showSnackbar(t('errors.common.generic'), 'error');
+        uiStore.showSnackbar(
+          t('components.profile.edit.snackbar.error'),
+          'error',
+        );
       } finally {
         setIsSubmitting(false);
       }
     }),
-    [methods, initialValues, profileStore, t, uiStore],
+    [methods, initialValues, profileStore, uiStore, t],
   );
 
   const reset = useCallback(() => {
@@ -89,11 +106,22 @@ export const useEditProfile = () => {
       profession: profileStore.myProfile?.profession,
       phone: profileStore.myProfile?.phone,
       userBio: profileStore.myProfile?.userBio,
+      gender: profileStore.myProfile?.gender,
     });
-  }, [methods, profileStore.myProfile?.name, profileStore.myProfile?.lastname, profileStore.myProfile?.profession, profileStore.myProfile?.phone, profileStore.myProfile?.userBio]);
+  }, [
+    methods,
+    profileStore.myProfile?.name,
+    profileStore.myProfile?.lastname,
+    profileStore.myProfile?.profession,
+    profileStore.myProfile?.phone,
+    profileStore.myProfile?.userBio,
+  ]);
 
   const imageUriFromStore = useMemo(
-    () => (profileStore.myProfile?.avatarFile ? getUserAvatar(profileStore.myProfile) : null),
+    () =>
+      profileStore.myProfile?.avatarFile
+        ? getUserAvatar(profileStore.myProfile)
+        : null,
     [profileStore.myProfile],
   );
 
@@ -142,9 +170,16 @@ export const useEditProfile = () => {
       if (asset.width && asset.height) {
         try {
           const compressedUri = await compressImage(asset.uri, asset.width, asset.height);
-          src = new File({ uri: compressedUri, name: fileName, type: asset.type || 'image/jpeg' } as any);
+          src = new File({
+            uri: compressedUri,
+            name: fileName,
+            type: asset.type || 'image/jpeg',
+          } as any);
         } catch (error) {
-          console.warn('compressImage failed, fallback to original', error);
+          console.warn(
+            t('components.profile.edit.debug.compressImageFailed'),
+            error,
+          );
         }
       }
 
@@ -162,23 +197,38 @@ export const useEditProfile = () => {
 
       await profileStore.uploadProfilePhoto(formData);
       await profileStore.fetchMyProfile();
-      uiStore.showSnackbar(t('notifications.profile.photoUploadSuccess'), 'success');
+      uiStore.showSnackbar(
+        t('components.profile.edit.snackbar.photoUploadSuccess'),
+        'success',
+      );
     } catch (error) {
-      console.error('onPressSelect error:', error);
-      uiStore.showSnackbar(t('notifications.profile.photoUploadError'), 'error');
+      console.error(
+        t('components.profile.edit.debug.onPressSelectError'),
+        error,
+      );
+      uiStore.showSnackbar(
+        t('components.profile.edit.snackbar.photoUploadError'),
+        'error',
+      );
     }
-  }, [compressImage, profileStore, t, uiStore]);
+  }, [compressImage, profileStore, uiStore, t]);
 
   const onPressRemove = useCallback(async () => {
     try {
       const fullPath = profileStore?.myProfile?.avatarFile;
       if (!fullPath) {
-        uiStore.showSnackbar(t('notifications.profile.noPhotoToRemove'), 'warning');
+        uiStore.showSnackbar(
+          t('components.profile.edit.snackbar.noPhotoToRemove'),
+          'warning',
+        );
         return;
       }
       const fileName = fullPath.split('/').pop();
       if (!fileName) {
-        uiStore.showSnackbar(t('notifications.profile.invalidFilePath'), 'error');
+        uiStore.showSnackbar(
+          t('components.profile.edit.snackbar.invalidFilePath'),
+          'error',
+        );
         return;
       }
 
@@ -188,12 +238,21 @@ export const useEditProfile = () => {
       await profileStore.deleteProfilePhoto(fileName);
       await profileStore.fetchMyProfile();
 
-      uiStore.showSnackbar(t('notifications.profile.photoDeleteSuccess'), 'success');
+      uiStore.showSnackbar(
+        t('components.profile.edit.snackbar.photoRemoveSuccess'),
+        'success',
+      );
     } catch (error) {
-      console.error('onPressRemove error:', error);
-      uiStore.showSnackbar(t('notifications.profile.photoDeleteError'), 'error');
+      console.error(
+        t('components.profile.edit.debug.onPressRemoveError'),
+        error,
+      );
+      uiStore.showSnackbar(
+        t('components.profile.edit.snackbar.photoRemoveError'),
+        'error',
+      );
     }
-  }, [profileStore, t, uiStore]);
+  }, [profileStore, uiStore, t]);
 
   useEffect(() => {
     onRefresh();
@@ -216,4 +275,3 @@ export const useEditProfile = () => {
     isSubmitting,
   };
 };
-

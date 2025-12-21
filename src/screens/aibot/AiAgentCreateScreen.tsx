@@ -200,6 +200,14 @@ export const AiAgentCreateScreen: React.FC = () => {
     [steps, t],
   );
 
+  const genderOptions = useMemo(
+    () => [
+      { label: t('settings.editProfile.options.gender.male'), value: 'male' },
+      { label: t('settings.editProfile.options.gender.female'), value: 'female' },
+    ],
+    [t],
+  );
+
   const getCategoryLabel = useCallback(
     (category: string) => {
       const normalized = category.trim().toLowerCase().replace(/\s+/g, "-");
@@ -250,6 +258,21 @@ export const AiAgentCreateScreen: React.FC = () => {
         onChangeText={(text) => handleChange("lastName", text)}
         placeholder={t('screens.aibot.create.identity.fields.lastName.placeholder')}
       />
+      <Text style={styles.subSectionTitle}>{t('screens.aibot.create.identity.fields.gender.label')}</Text>
+      <View style={styles.genderRow}>
+        {genderOptions.map((option) => {
+          const isSelected = form.gender === option.value;
+          return (
+            <TouchableOpacity
+              key={option.value}
+              style={[styles.genderChip, isSelected && styles.genderChipActive]}
+              onPress={() => handleChange('gender', option.value)}
+            >
+              <Text style={[styles.genderText, isSelected && styles.genderTextActive]}>{option.label}</Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
       <FormTextField
         label={t('screens.aibot.create.identity.fields.profession.label')}
         value={form.profession}
@@ -533,6 +556,7 @@ const createStyles = ({
     },
     stepContainer: {
       paddingHorizontal: sizes.xs as number,
+      width: "103%",
     },
     card: {
       backgroundColor: isDark ? theme.card : theme.white,
@@ -567,7 +591,7 @@ const createStyles = ({
       ...typography.bodySm,
       color: theme.text,
       marginBottom: 12,
-      fontWeight: '600',
+      fontWeight: '400',
     },
     avatarRow: {
       flexDirection: "row",
@@ -612,6 +636,27 @@ const createStyles = ({
       flexWrap: "wrap",
       marginBottom: sizes.lg as number,
       gap: sizes.sm as number,
+    },
+    genderRow: {
+      flexDirection: "row",
+      gap: sizes.sm as number,
+      marginBottom: sizes.lg as number,
+    },
+    genderChip: {
+      paddingHorizontal: sizes.md as number,
+      paddingVertical: sizes.xs as number,
+      borderRadius: 12,
+      backgroundColor: isDark ? theme.backgroundSecond : theme.backgroundLight,
+    },
+    genderChipActive: {
+      backgroundColor: theme.primary,
+    },
+    genderText: {
+      ...typography.bodySm,
+      color: theme.text,
+    },
+    genderTextActive: {
+      color: theme.white,
     },
     chip: {
       paddingHorizontal: sizes.md as number,

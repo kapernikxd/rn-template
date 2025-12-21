@@ -28,6 +28,8 @@ const HeaderWithImg: React.FC<HeaderProps> = observer(({ imgUrl, title, onImgPre
   // Получаем ID пользователя
   const singleUser = users?.[0] ?? {};
   const userId = singleUser._id;
+  const isAiAgent = Boolean(singleUser?.role === "aiBot");
+  const profession = (singleUser?.profession as string | undefined)?.trim();
 
    // Реактивно следим за статусом пользователя
   //  const isUserOnline = () => onlineStore.onlineUsers?.some(onlineUser => onlineUser.userId === userId);
@@ -72,7 +74,9 @@ const HeaderWithImg: React.FC<HeaderProps> = observer(({ imgUrl, title, onImgPre
                   <Text style={{ fontStyle: 'italic', color: theme.text }}>
                     {isTyping
                       ? t('components.chat.header.typing')
-                      : getStatus(isUserOnline())}
+                      : isAiAgent && profession
+                        ? profession
+                        : getStatus(isUserOnline())}
                   </Text>
                 )
                 : typingSomeUser ? (

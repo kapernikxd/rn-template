@@ -21,7 +21,7 @@ import {
   AiAgentTabBar,
 } from "./components";
 import { createAiAgentStyles } from "./styles";
-import { POST_REPORT_REASON_KEYS, USER_REPORT_REASON_KEYS } from "../../constants";
+import { postReasonOptions, userReasonOptions } from "../../constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 
@@ -45,6 +45,7 @@ export const AiAgentScreen = ({ route }: Props) => {
     isChatLoading,
     isFollowing,
     disableFollowAction,
+    isCreator,
     onBack,
     handleToggleFollow,
     handleStartChat,
@@ -109,15 +110,6 @@ export const AiAgentScreen = ({ route }: Props) => {
     const availableWidth = width - horizontalPadding - gallerySpacing * (galleryColumns - 1);
     return Math.max(80, availableWidth / galleryColumns);
   }, [galleryColumns, gallerySpacing, horizontalPadding, width]);
-
-  const userReportReasons = useMemo(
-    () => USER_REPORT_REASON_KEYS.map((key) => t(key)),
-    [t],
-  );
-  const postReportReasons = useMemo(
-    () => POST_REPORT_REASON_KEYS.map((key) => t(key)),
-    [t],
-  );
 
   const handleShare = useCallback(async () => {
     if (!aiBot) return;
@@ -219,6 +211,26 @@ export const AiAgentScreen = ({ route }: Props) => {
       }
     },
     [aiBotId, profileStore],
+  );
+
+  const translatedUserReasons = useMemo(
+    () =>
+      userReasonOptions.map((reason) => {
+        const key = `screens.aibot.profile.reportReasons.${reason}`;
+        const translated = t(key);
+        return translated === key ? reason : translated;
+      }),
+    [t],
+  );
+
+  const translatedPostReasons = useMemo(
+    () =>
+      postReasonOptions.map((reason) => {
+        const key = `screens.aibot.profile.reportReasons.${reason}`;
+        const translated = t(key);
+        return translated === key ? reason : translated;
+      }),
+    [t],
   );
 
   const menuItems = useMemo(() => {
@@ -340,6 +352,9 @@ export const AiAgentScreen = ({ route }: Props) => {
             photos={botPhotos}
             galleryColumns={galleryColumns}
             galleryItemSize={galleryItemSize}
+            aiBotId={aiBotId}
+            adsEnabled={adsEnabled}
+            isCreator={isCreator}
           />
         )}
       </ScrollView>
@@ -351,8 +366,8 @@ export const AiAgentScreen = ({ route }: Props) => {
         title={t('screens.aibot.profile.reportTitle')}
         cancelText={t('common.cancel')}
         submitText={t('common.submit')}
-        userReasons={userReportReasons}
-        postReasons={postReportReasons}
+        userReasons={translatedUserReasons}
+        postReasons={translatedPostReasons}
         inputPlaceholder={t('screens.aibot.profile.reportPlaceholder')}
       />
       {aiBotId ? (

@@ -1,6 +1,7 @@
 // hooks/useChats.ts
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import { CHAT_LIMIT } from '../../../constants';
 import { FetchChatsOptions } from '../../../types/chat';
 import { useRootStore } from '../../../store/StoreProvider';
@@ -22,6 +23,7 @@ type UseChatsOptions = {
 
 export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
   const { chatStore, authStore, onlineStore, uiStore } = useRootStore();
+  const { t } = useTranslation();
 
   const [chatIds, setChatIds] = useState<string[]>([]);
   const [activeTab, setActiveTabState] = useState<ChatTab>(ChatTab.Person);
@@ -80,13 +82,22 @@ export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
       try {
         await chatStore.deleteChat(chatId);
         setChatIds(prev => prev.filter(id => id !== chatId));
-        uiStore.showSnackbar('Чат удалён', 'success');
+        uiStore.showSnackbar(
+          t('components.chat.list.snackbar.chatDeleted'),
+          'success',
+        );
       } catch (error) {
-        console.error('Failed to delete chat', error);
-        uiStore.showSnackbar('Не удалось удалить чат', 'error');
+        console.error(
+          t('components.chat.list.debug.deleteChatFailed'),
+          error,
+        );
+        uiStore.showSnackbar(
+          t('components.chat.list.snackbar.deleteChatFailed'),
+          'error',
+        );
       }
     },
-    [chatStore, uiStore],
+    [chatStore, uiStore, t],
   );
 
   // загрузка на смену таба/страницы

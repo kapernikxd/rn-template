@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import { isAxiosError } from 'axios';
+import i18n from 'i18next';
 import { BaseStore, StoreListener } from './BaseStore';
-import i18n from '../../helpers/i18n';
 import type { RootStore } from '../rootStore';
 import aiBotDetailsService from '../../services/aibot/AiBotService';
 import { MAX_GALLERY_ITEMS, steps } from '../../helpers/data/agent-create';
@@ -10,7 +10,6 @@ import { revokeGallery, revokeIfNeeded } from '../../helpers/utils/agent-create'
 import { AiBotUpdatePayload, CreateAiAgentFormState, GalleryItem } from '../../types/aiBot';
 import { AiBotDetails, AiBotDTO, AiBotMainPageBot, UserDTO } from '../../types';
 import { AvatarFile, ProfilesFilterParams } from '../../types/profile';
-
 
 export class AiBotStore {
   private readonly baseStore = new BaseStore();
@@ -22,6 +21,7 @@ export class AiBotStore {
     firstName: '',
     lastName: '',
     profession: '',
+    gender: '',
     prompt: '',
     description: '',
     intro: '',
@@ -123,6 +123,7 @@ export class AiBotStore {
           this.form.firstName.trim() &&
           this.form.lastName.trim() &&
           this.form.profession.trim() &&
+          this.form.gender.trim() &&
           (this.avatar !== null || this.avatarPreview !== null),
         );
       case 1:
@@ -211,6 +212,7 @@ export class AiBotStore {
       firstName: '',
       lastName: '',
       profession: '',
+      gender: '',
       prompt: '',
       description: '',
       intro: '',
@@ -244,17 +246,15 @@ export class AiBotStore {
     try {
       const { data } = await this.aiBotDetailsService.getAllAiBots({ page, limit });
       runInAction(() => {
-        // Если это первая страница — заменяем события
         if (page === 1) {
           this.bots = data.profiles;
-          // Если загружаем следующую страницу — добавляем к существующим
         } else {
           this.bots = [...this.bots, ...data.profiles];
         }
-        this.hasMoreAiProfiles = data.hasMore; // Флаг, есть ли еще данные
+        this.hasMoreAiProfiles = data.hasMore;
       });
     } catch (error) {
-      console.error("Error fetching ai profiles", error);
+      console.error(i18n.t('stores.aiBot.debug.fetchAiProfilesFailed'), error);
     } finally {
       runInAction(() => {
         this.isLoadingAiProfiles = false;
@@ -279,10 +279,10 @@ export class AiBotStore {
       this.notify();
       return this.mainPageBots;
     } catch (error) {
-      console.error("Failed to load AI bots for admin main page", error);
+      console.error(i18n.t('stores.aiBot.debug.fetchMainPageBotsFailed'), error);
       runInAction(() => {
         this.mainPageBots = [];
-        this.mainPageBotsError = i18n.t('notifications.aiBots.mainPageError');
+        this.mainPageBotsError = i18n.t('stores.aiBot.snackbar.mainPageBotsError');
       });
       this.notify();
     } finally {
@@ -308,8 +308,11 @@ export class AiBotStore {
         this.selectAiBot = null;
       });
       this.notify();
-      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.singleLoadError'), 'error');
-      console.error("Failed to load AI bot", error);
+      this.root.uiStore.showSnackbar(
+        i18n.t('stores.aiBot.snackbar.fetchAiBotError'),
+        'error',
+      );
+      console.error(i18n.t('stores.aiBot.debug.fetchAiBotFailed'), error);
     } finally {
       runInAction(() => {
         this.isAiUserLoading = false;
@@ -333,7 +336,7 @@ export class AiBotStore {
         this.userAiBots = [];
       });
       this.notify();
-      console.error("Failed to load user AI bots", error);
+      console.error(i18n.t('stores.aiBot.debug.fetchUserAiBotsFailed'), error);
     } finally {
       runInAction(() => {
         this.isAiUserLoading = false;
@@ -371,8 +374,11 @@ export class AiBotStore {
         this.myBots = [];
       });
       this.notify();
-      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.myBotsError'), 'error');
-      console.error("Failed to load my AI bots", error);
+      this.root.uiStore.showSnackbar(
+        i18n.t('stores.aiBot.snackbar.fetchMyAiBotsError'),
+        'error',
+      );
+      console.error(i18n.t('stores.aiBot.debug.fetchMyAiBotsFailed'), error);
     } finally {
       runInAction(() => {
         this.isLoadingMyBots = false;
@@ -400,8 +406,11 @@ export class AiBotStore {
         this.subscribedBots = [];
       });
       this.notify();
-      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.subscriptionsError'), 'error');
-      console.error("Failed to load subscribed AI bots", error);
+      this.root.uiStore.showSnackbar(
+        i18n.t('stores.aiBot.snackbar.fetchSubscriptionsError'),
+        'error',
+      );
+      console.error(i18n.t('stores.aiBot.debug.fetchSubscribedAiBotsFailed'), error);
     } finally {
       runInAction(() => {
         this.isLoadingSubscribedBots = false;
@@ -447,8 +456,11 @@ export class AiBotStore {
       });
       this.notify();
     } catch (error) {
-      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.followUpdateError'), 'error');
-      console.error('Failed to update follow status', error);
+      this.root.uiStore.showSnackbar(
+        i18n.t('stores.aiBot.snackbar.updateSubscriptionError'),
+        'error',
+      );
+      console.error(i18n.t('stores.aiBot.debug.updateFollowFailed'), error);
     }
   }
 
@@ -459,10 +471,16 @@ export class AiBotStore {
         this.myBots.push(data);
         this.notify();
       });
-      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.createSuccess'), 'success');
+      this.root.uiStore.showSnackbar(
+        i18n.t('stores.aiBot.snackbar.createSuccess'),
+        'success',
+      );
       return data;
     } catch (error: unknown) {
-      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.createError'), 'error');
+      this.root.uiStore.showSnackbar(
+        i18n.t('stores.aiBot.snackbar.createFailed'),
+        'error',
+      );
       throw error;
     }
   }
@@ -472,6 +490,7 @@ export class AiBotStore {
     formData.append('name', this.form.firstName.trim());
     formData.append('lastname', this.form.lastName.trim());
     formData.append('profession', this.form.profession.trim());
+    formData.append('gender', this.form.gender.trim());
     const userBio = this.form.description.trim();
     if (userBio) {
       formData.append('userBio', userBio);
@@ -520,7 +539,7 @@ export class AiBotStore {
       const created = await this.createBot(payload);
 
       if (!created) {
-        throw new Error('Failed to create AI agent');
+        throw new Error(i18n.t('stores.aiBot.errors.createAiAgent'));
       }
 
       const galleryPayload = this.buildGalleryFormData();
@@ -534,21 +553,26 @@ export class AiBotStore {
       });
       this.notify();
 
-      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.createSuccess'), 'success');
+      this.root.uiStore.showSnackbar(
+        i18n.t('stores.aiBot.snackbar.createSuccess'),
+        'success',
+      );
     } catch (error: unknown) {
       const message = this.resolveErrorMessage(error);
 
       runInAction(() => {
-        if(message.toLowerCase().includes("header missing")) {
-          this.creationError = i18n.t('notifications.aiBots.authRequired');
-        }
-        else {
+        if (message.toLowerCase().includes('header missing')) {
+          this.creationError = i18n.t('stores.aiBot.creationError.loginRequired');
+        } else {
           this.creationError = message;
         }
       });
       this.notify();
 
-      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.createError'), 'error');
+      this.root.uiStore.showSnackbar(
+        i18n.t('stores.aiBot.snackbar.createFailed'),
+        'error',
+      );
     } finally {
       runInAction(() => {
         this.isSubmitting = false;
@@ -576,7 +600,7 @@ export class AiBotStore {
       return error.message;
     }
 
-    return 'Failed to create AI agent';
+    return i18n.t('stores.aiBot.errors.createAiAgent');
   }
 
   async updateBot(id: string, payload: AiBotUpdatePayload, avatar?: AvatarFile | File) {
@@ -650,13 +674,19 @@ export class AiBotStore {
           this.notify();
         });
 
-        this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.updateSuccess'), 'success');
+        this.root.uiStore.showSnackbar(
+          i18n.t('stores.aiBot.snackbar.updateSuccess'),
+          'success',
+        );
       }
 
       return updated as AiBotDTO | undefined;
     } catch (error) {
-      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.updateError'), 'error');
-      console.error('Failed to update AI agent', error);
+      this.root.uiStore.showSnackbar(
+        i18n.t('stores.aiBot.snackbar.updateFailed'),
+        'error',
+      );
+      console.error(i18n.t('stores.aiBot.debug.updateAiBotFailed'), error);
       throw error;
     }
   }
@@ -677,7 +707,10 @@ export class AiBotStore {
         this.botDetails = null;
         this.botPhotos = [];
         this.notify();
-        this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.deleteSuccess'), 'success');
+        this.root.uiStore.showSnackbar(
+          i18n.t('stores.aiBot.snackbar.deleteSuccess'),
+          'success',
+        );
       });
     } catch (error) {
       throw error;
@@ -699,8 +732,11 @@ export class AiBotStore {
       });
       this.notify();
     } catch (error) {
-      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.subscriptionError'), 'error');
-      console.error('Failed to fetch AI bot details', error);
+      this.root.uiStore.showSnackbar(
+        i18n.t('stores.aiBot.snackbar.renewSubscriptionFailed'),
+        'error',
+      );
+      console.error(i18n.t('stores.aiBot.debug.fetchBotDetailsFailed'), error);
     } finally {
       runInAction(() => {
         this.photosLoading = false;
@@ -720,7 +756,10 @@ export class AiBotStore {
         } as AiBotDTO;
       });
     } catch (e) {
-      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.subscriptionError'), 'error');
+      this.root.uiStore.showSnackbar(
+        i18n.t('stores.aiBot.snackbar.renewSubscriptionFailed'),
+        'error',
+      );
     }
   }
 
@@ -733,10 +772,16 @@ export class AiBotStore {
         this.botPhotos = data.photos ?? [];
       });
       this.notify();
-      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.photosSaveSuccess'), 'success');
+      this.root.uiStore.showSnackbar(
+        i18n.t('stores.aiBot.snackbar.photosSaved'),
+        'success',
+      );
     } catch (error) {
-      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.photosSaveError'), 'error');
-      console.error('Failed to upload AI bot photos', error);
+      this.root.uiStore.showSnackbar(
+        i18n.t('stores.aiBot.snackbar.photosSaveFailed'),
+        'error',
+      );
+      console.error(i18n.t('stores.aiBot.debug.uploadPhotosFailed'), error);
     } finally {
       runInAction(() => {
         this.photosUpdating = false;
@@ -755,10 +800,16 @@ export class AiBotStore {
         this.botPhotos = data.photos ?? [];
       });
       this.notify();
-      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.photosDeleteSuccess'), 'success');
+      this.root.uiStore.showSnackbar(
+        i18n.t('stores.aiBot.snackbar.photosDeleted'),
+        'success',
+      );
     } catch (error) {
-      this.root.uiStore.showSnackbar(i18n.t('notifications.aiBots.photosDeleteError'), 'error');
-      console.error('Failed to delete AI bot photos', error);
+      this.root.uiStore.showSnackbar(
+        i18n.t('stores.aiBot.snackbar.photosDeleteFailed'),
+        'error',
+      );
+      console.error(i18n.t('stores.aiBot.debug.deletePhotosFailed'), error);
     } finally {
       runInAction(() => {
         this.photosUpdating = false;

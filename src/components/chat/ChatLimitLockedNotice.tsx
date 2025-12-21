@@ -12,9 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { useTheme, type SizesType } from 'rn-vs-lb/theme';
-import { useRewardedAdTokensBySource } from '../../helpers/hooks/useRewardedAdTokensBySource';
-import { useRootStore, useStoreData } from '../../store/StoreProvider';
-import { resolveAdSource } from '../../types/ads';
+import { useRewardedAdTokens } from '../../helpers/hooks/useRewardedAdTokens';
 
 type Props = {
   message?: string;
@@ -45,16 +43,8 @@ const ChatLimitLockedNotice = ({
     [onTokenBalanceRefresh],
   );
 
-  const { configStore } = useRootStore();
-  const adsSourceFromConfig = useStoreData(
-    configStore,
-    (store) => store.adsConfig.ADS_SOURCE,
-  );
   const { balance: rewardedBalance, isAdLoaded, showRewardedAd } =
-    useRewardedAdTokensBySource(
-      { onRewardEarned: handleRewardEarned },
-      resolveAdSource(adsSourceFromConfig),
-    );
+    useRewardedAdTokens({ onRewardEarned: handleRewardEarned });
   const adStatusText = useMemo(
     () =>
       t(

@@ -3,6 +3,7 @@
 
 import { useEffect, useCallback } from "react";
 import type { ChangeEvent } from "react";
+import { useTranslation } from "react-i18next";
 import { useRootStore, useStoreData } from "../../../store/StoreProvider";
 import { isLikelyImage, normalizeImageToJpeg } from "../../utils/image";
 import { usePortalNavigation } from "../useNavigation";
@@ -14,6 +15,7 @@ const isAvatarFile = (file: AvatarFile | File): file is AvatarFile =>
 export function useCreateAiAgentPage() {
   const { aiBotStore } = useRootStore();
   const { goToAiBotProfile } = usePortalNavigation();
+  const { t } = useTranslation();
 
   // store-backed state
   const step = useStoreData(aiBotStore, (s) => s.step);
@@ -45,7 +47,9 @@ export function useCreateAiAgentPage() {
       }
 
       if (!isLikelyImage(file)) {
-        console.warn("Selected file is not a supported image format.");
+        console.warn(
+          t("components.aibot.createPage.debug.selectedFileNotImage"),
+        );
         return;
       }
 
@@ -53,10 +57,13 @@ export function useCreateAiAgentPage() {
         const normalized = await normalizeImageToJpeg(file);
         aiBotStore.setAvatar(normalized);
       } catch (error) {
-        console.error("Failed to process avatar image", error);
+        console.error(
+          t("components.aibot.createPage.debug.processAvatarFailed"),
+          error,
+        );
       }
     },
-    [aiBotStore],
+    [aiBotStore, t],
   );
 
   const addGalleryFiles = useCallback(
@@ -80,7 +87,12 @@ export function useCreateAiAgentPage() {
         }
 
         if (!isLikelyImage(file)) {
-          console.warn("Skipped non-image file in gallery upload:", file.name);
+          const fileName = (file as File).name;
+          console.warn(
+            t("components.aibot.createPage.debug.skippedNonImageFile", {
+              fileName,
+            }),
+          );
           continue;
         }
 
@@ -88,7 +100,10 @@ export function useCreateAiAgentPage() {
           const normalized = await normalizeImageToJpeg(file);
           processed.push(normalized);
         } catch (error) {
-          console.error("Failed to process gallery image", error);
+          console.error(
+            t("components.aibot.createPage.debug.processGalleryImageFailed"),
+            error,
+          );
         }
       }
 
@@ -96,7 +111,7 @@ export function useCreateAiAgentPage() {
         aiBotStore.addGalleryItems(processed);
       }
     },
-    [aiBotStore, gallery.length, maxGalleryItems],
+    [aiBotStore, gallery.length, maxGalleryItems, t],
   );
 
   const handleAvatarChange = useCallback(
@@ -125,9 +140,12 @@ export function useCreateAiAgentPage() {
     aiBotStore.resetFlow();
   }, [aiBotStore]);
 
-  const handleChange = useCallback(<K extends keyof typeof form>(field: K, value: (typeof form)[K]) => {
-    aiBotStore.setFormField(field, value);
-  }, [aiBotStore, form]);
+  const handleChange = useCallback(
+    <K extends keyof typeof form>(field: K, value: (typeof form)[K]) => {
+      aiBotStore.setFormField(field, value);
+    },
+    [aiBotStore, form],
+  );
 
   const goNext = useCallback(() => {
     if (step === steps.length - 1) {
@@ -158,13 +176,29 @@ export function useCreateAiAgentPage() {
 
   return {
     // data
-    step, form, avatarPreview, gallery, completed, currentStepComplete, isSubmitting,
-    creationError, createdBot, steps, maxGalleryItems,
+    step,
+    form,
+    avatarPreview,
+    gallery,
+    completed,
+    currentStepComplete,
+    isSubmitting,
+    creationError,
+    createdBot,
+    steps,
+    maxGalleryItems,
     getAiProfile: goToAiBotProfile,
 
     // handlers
-    handleAvatarChange, handleGalleryChange, removeGalleryItem,
-    resetFlow, handleChange, goNext, goPrev, goToStep,
-    setAvatarFile, addGalleryFiles,
+    handleAvatarChange,
+    handleGalleryChange,
+    removeGalleryItem,
+    resetFlow,
+    handleChange,
+    goNext,
+    goPrev,
+    goToStep,
+    setAvatarFile,
+    addGalleryFiles,
   } as const;
 }
