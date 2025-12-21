@@ -9,12 +9,12 @@ import { Host } from 'react-native-portalize';
 import CustomSnackbar from './src/components/CustomSnackbar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ForceUpdateWrapper } from './src/components/layouts/ForceUpdateWrapper';
+import { ensureGoogleMobileAdsInitialized } from './src/ads/googleMobileAds';
+import { useRootStore, useStoreData } from './src/store/StoreProvider';
 
 import i18n from './src/helpers/i18n';
 import { getPreferredLanguage } from './src/helpers/i18n/languageStorage';
 import { initAppMetrica, reportAppOpen } from './src/services/analytics/appMetrica';
-import { MobileAds } from 'yandex-mobile-ads';
-
 const AppStatusBar = () => {
   const { isDark, theme } = useTheme();
 
@@ -73,12 +73,16 @@ export default function App() {
 }
 
 const AppWithConfig = () => {
+  const { configStore } = useRootStore();
+  const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
 
   useEffect(() => {
     (async () => {
-      await MobileAds.initialize();
+      if (!adsEnabled) return;
+
+      await ensureGoogleMobileAdsInitialized();
     })();
-  });
+  }, [adsEnabled]);
 
   return (
     <ForceUpdateWrapper>

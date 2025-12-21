@@ -1,15 +1,14 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Platform, StyleSheet, View } from 'react-native';
-import mobileAds, {
-  BannerAd,
-  BannerAdSize,
-  RequestConfiguration,
-  TestIds,
-} from 'react-native-google-mobile-ads';
+import { BannerAd, BannerAdSize, TestIds } from 'react-native-google-mobile-ads';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTheme } from 'rn-vs-lb/theme';
 
-import { ensureTrackingTransparencyPermission } from '../../../services/privacy/trackingTransparency';
+import {
+  areGoogleAdsInitialized,
+  ensureGoogleMobileAdsInitialized,
+} from '../../../ads/googleMobileAds';
+import { useRootStore, useStoreData } from '../../../store/StoreProvider';
 
 const isMobilePlatform = Platform.OS === 'ios' || Platform.OS === 'android';
 
@@ -20,24 +19,20 @@ export type GoogleBottomAdBannerProps = {
 export const GoogleBottomAdBanner: FC<GoogleBottomAdBannerProps> = ({ unitId }) => {
   const { theme } = useTheme();
   const insets = useSafeAreaInsets();
+  const { configStore } = useRootStore();
+  const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
   const [adLoaded, setAdLoaded] = useState(false);
+  const [adsReady, setAdsReady] = useState(areGoogleAdsInitialized());
 
   useEffect(() => {
-    if (!isMobilePlatform) return;
+    if (!isMobilePlatform || !adsEnabled) return;
 
     let isMounted = true;
     const initializeAds = async () => {
       try {
-        await ensureTrackingTransparencyPermission();
+        await ensureGoogleMobileAdsInitialized();
         if (!isMounted) return;
-
-        const requestConfiguration: RequestConfiguration = {
-          tagForChildDirectedTreatment: false,
-        };
-        await mobileAds().setRequestConfiguration(requestConfiguration);
-        if (!isMounted) return;
-
-        await mobileAds().initialize();
+        setAdsReady(true);
       } catch {
         // ignore errors
       }
@@ -47,7 +42,7 @@ export const GoogleBottomAdBanner: FC<GoogleBottomAdBannerProps> = ({ unitId }) 
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [adsEnabled]);
 
   const bannerAdUnitId = useMemo(() => {
     if (__DEV__) return TestIds.BANNER;
@@ -55,7 +50,7 @@ export const GoogleBottomAdBanner: FC<GoogleBottomAdBannerProps> = ({ unitId }) 
     return unitId;
   }, [unitId]);
 
-  if (!isMobilePlatform || !bannerAdUnitId) {
+  if (!adsEnabled || !isMobilePlatform || !bannerAdUnitId || !adsReady) {
     return null;
   }
 

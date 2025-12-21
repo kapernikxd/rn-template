@@ -372,6 +372,17 @@
         "light": "Tema chiaro",
         "dark": "Tema scuro"
       },
+      "adsConsent": {
+        "title": "Privacy / consenso annunci",
+        "status": {
+          "required": "Consenso richiesto",
+          "obtained": "Consenso ottenuto",
+          "notRequired": "Consenso non richiesto",
+          "unknown": "Stato del consenso sconosciuto"
+        },
+        "updated": "Consenso agli annunci aggiornato",
+        "unavailable": "Il modulo di consenso non è disponibile"
+      },
       "deleteAccount": {
         "title": "Elimina account",
         "modalTitle": "Conferma eliminazione",

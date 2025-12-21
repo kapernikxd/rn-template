@@ -1,4 +1,4 @@
-import { FC, useCallback, useEffect, useMemo } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import {
   CardContainer,
@@ -21,6 +21,8 @@ import { useTranslation } from 'react-i18next';
 import { ProfileNav, ROUTES } from '../../navigation';
 import { useNavigation } from '@react-navigation/native';
 import { useActions } from '../../helpers/hooks';
+import { AdsConsentStatus } from '@react-native-google-mobile-ads/consent';
+import { getConsentStatusLabel, getCurrentConsentStatus, requestConsentForm } from '../../ads/consent';
 
 type SettingsRoute =
   | typeof ROUTES.ProfleSettings
@@ -34,6 +36,8 @@ export const SettingsScreen: FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<ProfileNav>();
   const { handleShareAppLink } = useActions();
+  const [consentStatus, setConsentStatus] = useState<AdsConsentStatus | null>(null);
+  const [isUpdatingConsent, setIsUpdatingConsent] = useState(false);
 
 
   const styles = getStyles({ globalStyleSheet, theme, sizes });
@@ -58,6 +62,31 @@ export const SettingsScreen: FC = () => {
   }, [identityStore, setColors, theme.background]);
 
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchConsentStatus = async () => {
+      try {
+        const status = await getCurrentConsentStatus();
+        if (isMounted) {
+          setConsentStatus(status);
+        }
+      } catch (error) {
+        console.warn('Failed to fetch ads consent status', error);
+        if (isMounted) {
+          setConsentStatus(AdsConsentStatus.UNKNOWN);
+        }
+      }
+    };
+
+    void fetchConsentStatus();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+
   const PROFILE = [
     { icon: 'user-o', label: t('settings.section.userTitle'), action: navigateTo(ROUTES.ProfleSettings) },
     { icon: 'bell', label: t('settings.section.accountManagement.notifications'), action: navigateTo(ROUTES.ProfileNotificationSettings) },
@@ -71,12 +100,38 @@ export const SettingsScreen: FC = () => {
     [handleShareAppLink, t],
   );
 
+  const consentStatusLabel = useMemo(() => {
+    if (!consentStatus) return t('settings.component.adsConsent.status.unknown');
+
+    const key = getConsentStatusLabel(consentStatus);
+    return t(`settings.component.adsConsent.status.${key}`);
+  }, [consentStatus, t]);
+
   const onCopy = async () => {
     if (userId) {
       await Clipboard.setStringAsync(userId);
       uiStore.showSnackbar(t('common.copy'), 'success');
     }
   }
+
+  const handleChangeConsent = useCallback(async () => {
+    setIsUpdatingConsent(true);
+    try {
+      const result = await requestConsentForm();
+      setConsentStatus(result.status);
+
+      if (result.formAvailable) {
+        uiStore.showSnackbar(t('settings.component.adsConsent.updated'), 'success');
+      } else {
+        uiStore.showSnackbar(t('settings.component.adsConsent.unavailable'), 'warning');
+      }
+    } catch (error) {
+      console.warn('Failed to update ads consent', error);
+      uiStore.showSnackbar(t('settings.component.adsConsent.unavailable'), 'error');
+    } finally {
+      setIsUpdatingConsent(false);
+    }
+  }, [t, uiStore]);
 
   return (
     <View style={styles.content}>
@@ -114,6 +169,15 @@ export const SettingsScreen: FC = () => {
                 style={styles.section}
               ><CardContainer style={styles.card}>
                   <RewardedAdSettingsCard style={{ padding: 0, backgroundColor: theme.card }} />
+                  <Spacer size='xs' />
+                  <SettingsListItem
+                    label={t('settings.component.adsConsent.title')}
+                    laberColor={theme.text}
+                    value={consentStatusLabel}
+                    valueTone='muted'
+                    onPress={handleChangeConsent}
+                    disabled={isUpdatingConsent}
+                  />
                 </CardContainer>
               </SettingsSection>}
 
