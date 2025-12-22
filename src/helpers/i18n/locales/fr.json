@@ -627,6 +627,10 @@
         "refreshBalanceDescription": "Demander les jetons à jour",
         "whatAreTokens": "Que sont les jetons ?",
         "whatAreTokensDescription": "Comment ils fonctionnent et où en obtenir",
+        "tokenInfoOverview": "Les jetons permettent de continuer à discuter quand la limite de messages gratuits est atteinte.",
+        "tokenInfoUsage": "Utilisez-les pour débloquer des messages supplémentaires pendant le minuteur.",
+        "tokenInfoEarn": "Obtenez-en plus en regardant des publicités récompensées.",
+        "tokenInfoClose": "Fermer",
         "unavailableSuffix": "(indisponible)"
       },
       "swipeable": {
