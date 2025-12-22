@@ -18,6 +18,8 @@ import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 import { ROUTES } from '../../navigation';
 import { useChatNatalChartRequirement } from '../../helpers/hooks/Chats/useChatNatalChartRequirement';
 import { NatalChartRequiredModal } from '../../components/chat/NatalChartRequiredModal';
+import { AnalyticsEvent, trackEvent } from '../../services/analytics/events';
+import { ChatListItem } from '../../types/chat';
 
 export const ChatsScreen: FC = observer(() => {
   const { theme, isDark } = useTheme();
@@ -51,23 +53,44 @@ export const ChatsScreen: FC = observer(() => {
     });
   }, [theme, setColors]);
 
-  const renderPrivateItem = ({ item }: { item: any }) => {
+  useEffect(() => {
+    void trackEvent(AnalyticsEvent.ChatsScreenViewed, {
+      tab: activeTab,
+    });
+  }, [activeTab]);
+
+  useEffect(() => {
+    void trackEvent(AnalyticsEvent.ChatsTabChanged, {
+      tab: activeTab,
+    });
+  }, [activeTab]);
+
+  const handleOpenChat = (chat: ChatListItem) => {
+    const chatType = chat.isBotChat ? 'bot' : chat.isGroupChat ? 'group' : 'private';
+    void trackEvent(AnalyticsEvent.ChatOpened, {
+      chatId: chat._id,
+      chatType,
+      sourceTab: activeTab,
+    });
+
+    goToChatMessages({
+      chatId: chat._id,
+    });
+  };
+
+  const renderPrivateItem = ({ item }: { item: ChatListItem }) => {
     const user = getCompanionUser(item, authStore.getMyId());
     const isUserOnline = onlineStore.onlineUsers?.some(u => u.userId === user?._id) ?? false;
 
     return (
       <SwipeableChatItem
-        onDelete={() => handleDeleteChat(item._id)}
+        onDelete={() => handleDeleteChat(item)}
         actionBackgroundColor={theme.danger}
         iconColor={theme.white}
       >
         <ChatItem
           unread={item?.unread?.count > 0 ? String(item?.unread?.count) : undefined}
-          onPress={() =>
-            goToChatMessages({
-              chatId: item._id,
-            })
-          }
+          onPress={() => handleOpenChat(item)}
           variant="person"
           imgUrl={getUserAvatar(user as UserDTO)}
           senderFullName={getUserFullName(user as UserDTO)}
@@ -79,19 +102,15 @@ export const ChatsScreen: FC = observer(() => {
     );
   };
 
-  const renderGroupItem = ({ item }: { item: any }) => (
+  const renderGroupItem = ({ item }: { item: ChatListItem }) => (
     <SwipeableChatItem
-      onDelete={() => handleDeleteChat(item._id)}
+      onDelete={() => handleDeleteChat(item)}
       actionBackgroundColor={theme.danger}
       iconColor={theme.white}
     >
       <ChatItem
         unread={item?.unread?.count > 0 ? String(item?.unread?.count) : undefined}
-        onPress={() =>
-          goToChatMessages({
-            chatId: item._id,
-          })
-        }
+        onPress={() => handleOpenChat(item)}
         variant="group"
         chatName={item?.title ?? t('screens.chats.fallbacks.group')}
         createdAt={getSmartTime(item?.latestMessage?.createdAt)}
@@ -101,19 +120,15 @@ export const ChatsScreen: FC = observer(() => {
     </SwipeableChatItem>
   );
 
-  const renderBotItem = ({ item }: { item: any }) => (
+  const renderBotItem = ({ item }: { item: ChatListItem }) => (
     <SwipeableChatItem
-      onDelete={() => handleDeleteChat(item._id)}
+      onDelete={() => handleDeleteChat(item)}
       actionBackgroundColor={theme.danger}
       iconColor={theme.white}
     >
       <ChatItem
         unread={item?.unread?.count > 0 ? String(item?.unread?.count) : undefined}
-        onPress={() =>
-          goToChatMessages({
-            chatId: item._id,
-          })
-        }
+        onPress={() => handleOpenChat(item)}
         variant="bot"
         chatName={item?.title ?? t('screens.chats.fallbacks.bot')}
         createdAt={getSmartTime(item?.latestMessage?.createdAt)}
