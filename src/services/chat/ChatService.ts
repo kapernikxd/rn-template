@@ -4,6 +4,7 @@ import $api from "../../helpers/http";
 import { MessageDTO } from "../../types";
 import { DeleteMessageResponse, FetchChatsOptions, FetchChatsResponse, FormDataImage, MessageByIdResponse, UnreadStatus, UploadImage } from "../../types/chat";
 import { ImagePickerAsset } from "expo-image-picker";
+import type { NatalChartPayload } from "../../types/astrology";
 
 export default class ChatService {
   async fetchChats(
@@ -60,12 +61,22 @@ export default class ChatService {
     message: string,
     chatId: string,
     replyToMessageId?: string,
-    images?: ImagePickerAsset[]
+    images?: ImagePickerAsset[],
+    natalChart?: NatalChartPayload,
+    natalChartSignature?: string,
   ): Promise<AxiosResponse<{ data: MessageDTO }>> {
     const formData = new FormData();
     formData.append('content', message);
     formData.append('chatId', chatId);
     if (replyToMessageId) formData.append('replyTo', replyToMessageId);
+    if (natalChart) {
+      // Send natal chart JSON so the backend can log astrology context with the message.
+      formData.append('natalChart', JSON.stringify(natalChart));
+    }
+    if (natalChartSignature) {
+      // Signature lets the server and clients verify the chart version matches any readings.
+      formData.append('natalChartSignature', natalChartSignature);
+    }
 
     images?.forEach((img, index) => {
       const file: FormDataImage = {
