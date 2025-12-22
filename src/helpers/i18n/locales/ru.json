@@ -1,6 +1,6 @@
 {
-  "welcome": "Welcome",
-  "login": "Sign In",
+  "welcome": "Добро пожаловать",
+  "login": "Войти",
   "logout": "Выйти",
   "ads": {
     "rewardedCard": {
@@ -20,21 +20,6 @@
       "menuAccessibility": "Меню токенов",
       "menuTitle": "Баланс токенов",
       "watchAd": "Посмотреть рекламу"
-    }
-  },
-  "navigation": {
-    "chats": {
-      "title": "Чаты",
-      "messagesTitle": "Сообщения"
-    },
-    "common": {
-      "back": "Назад"
-    },
-    "tabs": {
-      "dashboard": "Главная",
-      "library": "Библиотека",
-      "chats": "Чаты",
-      "profile": "Профиль"
     }
   },
   "common": {
@@ -190,13 +175,33 @@
       "title": "Редактирование профиля",
       "subtitle": "Заполните личную информацию",
       "fields": {
-        "username": {
-          "label": "Имя пользователя",
-          "placeholder": "Введите имя пользователя"
+        "name": {
+          "label": "Имя",
+          "placeholder": "Введите имя"
+        },
+        "lastname": {
+          "label": "Фамилия",
+          "placeholder": "Введите фамилию"
+        },
+        "profession": {
+          "label": "Профессия",
+          "placeholder": "Ваша профессия"
+        },
+        "phone": {
+          "label": "Номер телефона",
+          "placeholder": "Введите номер телефона"
         },
         "gender": {
           "label": "Пол",
           "placeholder": "Выберите пол"
+        },
+        "userBio": {
+          "label": "О себе",
+          "placeholder": "Коротко расскажите о себе"
+        },
+        "username": {
+          "label": "Имя пользователя",
+          "placeholder": "Введите имя пользователя"
         },
         "zodiacSign": {
           "label": "Знак зодиака",
@@ -217,33 +222,7 @@
         "hasChildren": {
           "label": "Есть дети?",
           "placeholder": "Выберите вариант"
-        },
-        "name": {
-          "label": "Имя",
-          "placeholder": "Введите имя"
-        },
-        "lastname": {
-          "label": "Фамилия",
-          "placeholder": "Введите фамилию"
-        },
-        "profession": {
-          "label": "Профессия",
-          "placeholder": "Ваша профессия"
-        },
-        "phone": {
-          "label": "Номер телефона",
-          "placeholder": "Введите номер телефона"
-        },
-        "userBio": {
-          "label": "О себе",
-          "placeholder": "Коротко расскажите о себе"
         }
-      },
-      "validation": {
-        "nameRequired": "Введите имя!",
-        "lastnameRequired": "Введите фамилию!",
-        "zodiacSignRequired": "Выберите знак зодиака",
-        "ageDigits": "Возраст должен содержать только цифры"
       },
       "options": {
         "gender": {
@@ -258,6 +237,12 @@
           "no": "Нет",
           "yes": "Да"
         }
+      },
+      "validation": {
+        "nameRequired": "Введите имя!",
+        "lastnameRequired": "Введите фамилию!",
+        "zodiacSignRequired": "Выберите знак зодиака",
+        "ageDigits": "Возраст должен содержать только цифры"
       },
       "snackbar": {
         "updated": "Профиль обновлён"
@@ -370,68 +355,6 @@
         "modalDescription": "Все ваши данные — профиль, события, история чатов — будут удалены навсегда. Это действие необратимо и будет завершено в течение 24 часов. Вы уверены?",
         "requestSent": "Ваш запрос отправлен. Аккаунт будет удалён в течение 24 часов."
       }
-    }
-  },
-  "notifications": {
-    "aiBots": {
-      "mainPageError": "Не удалось загрузить список ботов. Попробуйте позже.",
-      "singleLoadError": "Не удалось загрузить AI-бота",
-      "myBotsError": "Не удалось загрузить ваших AI-ботов",
-      "subscriptionsError": "Не удалось загрузить подписки на AI-ботов",
-      "followUpdateError": "Не удалось обновить статус подписки",
-      "createSuccess": "AI-бот создан",
-      "createError": "Не удалось создать AI-бота",
-      "authRequired": "Пожалуйста, авторизуйтесь",
-      "updateSuccess": "AI-бот обновлён",
-      "updateError": "Не удалось обновить AI-бота",
-      "deleteSuccess": "AI-бот удалён",
-      "subscriptionError": "Не удалось обновить подписку",
-      "photosSaveSuccess": "Фотографии сохранены",
-      "photosSaveError": "Не удалось загрузить фотографии",
-      "photosDeleteSuccess": "Фотографии удалены",
-      "photosDeleteError": "Не удалось удалить фотографии"
-    },
-    "profile": {
-      "updateSuccess": "Профиль обновлён",
-      "followError": "Не удалось обновить подписку",
-      "blockSuccess": "Пользователь заблокирован",
-      "reportSuccess": "Жалоба отправлена",
-      "deleteRequestSent": "Запрос отправлен",
-      "noChanges": "Ничего не изменилось",
-      "photoUploadSuccess": "Фото успешно загружено",
-      "photoUploadError": "Не удалось загрузить фото",
-      "noPhotoToRemove": "Нет фото для удаления",
-      "invalidFilePath": "Неверный путь к файлу",
-      "photoDeleteSuccess": "Фото успешно удалено",
-      "photoDeleteError": "Не удалось удалить фото"
-    }
-  },
-  "reports": {
-    "reasons": {
-      "user": {
-        "spamOrFraud": "Спам или мошенничество",
-        "harassmentOrBullying": "Преследование или запугивание",
-        "inappropriateContent": "Неприемлемый контент",
-        "fakeProfile": "Фейковый профиль"
-      },
-      "post": {
-        "spamOrMisleading": "Спам или вводящие в заблуждение материалы",
-        "hateOrDiscrimination": "Разжигание ненависти или дискриминация",
-        "violenceOrThreats": "Насилие или угрозы",
-        "sexualContent": "Материалы сексуального характера",
-        "harassmentOrBullying": "Преследование или запугивание"
-      },
-      "common": {
-        "other": "Другое"
-      }
-    }
-  },
-  "errors": {
-    "common": {
-      "generic": "Произошла ошибка. Попробуйте позже."
-    },
-    "imageGeneration": {
-      "noImageSelected": "Не выбрано изображение"
     }
   },
   "components": {
@@ -591,6 +514,33 @@
       }
     },
     "aibot": {
+      "profile": {
+        "highlights": {
+          "creatorInfoTitle": "Информация о создателе",
+          "creatorLabel": "Создатель",
+          "createdLabel": "Создан"
+        },
+        "debug": {
+          "startChatFailed": "Не удалось начать чат с AI-агентом"
+        }
+      },
+      "createPage": {
+        "debug": {
+          "selectedFileNotImage": "Выбранный файл не является поддерживаемым форматом изображения.",
+          "processAvatarFailed": "Не удалось обработать аватар",
+          "skippedNonImageFile": "Пропущен файл не-изображение при загрузке галереи: {{fileName}}",
+          "processGalleryImageFailed": "Не удалось обработать изображение для галереи"
+        }
+      },
+      "editDialog": {
+        "debug": {
+          "objectUrlNotSupported": "Object URL не поддерживаются в этой среде.",
+          "updateFailed": "Не удалось обновить AI-агента"
+        },
+        "snackbar": {
+          "fillProfessionAndGender": "Пожалуйста, заполните профессию и пол."
+        }
+      },
       "card": {
         "defaultName": "AI-агент"
       },
@@ -601,6 +551,20 @@
         "empty": "Здесь пока пусто. Возвращайтесь позже!",
         "noDescription": "Описание отсутствует"
       },
+      "chatLimit": {
+        "debug": {
+          "syncStateFailed": "Не удалось синхронизировать состояние лимита чата",
+          "loadTokenBalanceFailed": "Не удалось загрузить баланс токенов",
+          "unlockFailed": "Не удалось разблокировать лимит чата"
+        },
+        "snackbar": {
+          "resetSuccess": "Лимит сообщений был сброшен.",
+          "insufficientTokens": "Недостаточно токенов для разблокировки.",
+          "unlockError": "Не удалось разблокировать чат. Пожалуйста, попробуйте позже.",
+          "cooldownWithTokens": "Достигнут лимит сообщений. Подождите {{duration}} или используйте токены, чтобы продолжить.",
+          "cooldownNoTokens": "Достигнут лимит сообщений. Подождите, пока таймер закончится."
+        }
+      },
       "guestChat": {
         "defaultBotName": "AI-бот",
         "inputPlaceholder": "Спросите что-нибудь...",
@@ -608,10 +572,35 @@
         "errors": {
           "limitReached": "Достигнут дневной лимит. Пожалуйста, попробуйте позже.",
           "sendFailed": "Не удалось отправить сообщение. Попробуйте ещё раз."
+        },
+        "debug": {
+          "persistHistoryFailed": "Не удалось сохранить историю гостьего чата",
+          "persistSessionFailed": "Не удалось сохранить сессию гостевого чата",
+          "sendFailedLog": "Не удалось отправить сообщение гостевому AI",
+          "parseHistoryFailed": "Не удалось разобрать сохранённую историю гостевого чата",
+          "loadDataFailed": "Не удалось загрузить данные гостевого чата"
         }
       }
     },
     "chat": {
+      "messages": {
+        "title": {
+          "privateChat": "Личный чат"
+        },
+        "debug": {
+          "scrollToPinnedFailed": "Не удалось прокрутить к закреплённому сообщению",
+          "deleteMessageFailed": "Не удалось удалить сообщение",
+          "clearHistoryFailed": "Не удалось очистить историю чата"
+        },
+        "snackbar": {
+          "reportSent": "Жалоба отправлена.",
+          "messageDeleted": "Сообщение удалено.",
+          "deleteMessageFailed": "Не удалось удалить сообщение.",
+          "copied": "Скопировано.",
+          "historyCleared": "История чата очищена.",
+          "clearHistoryFailed": "Не удалось очистить историю чата."
+        }
+      },
       "limitNotice": {
         "message": "Лимит сообщений исчерпан",
         "adReady": "Реклама готова к показу",
@@ -651,12 +640,61 @@
       },
       "messageItem": {
         "deleted": "Сообщение удалено"
+      },
+      "list": {
+        "debug": {
+          "deleteChatFailed": "Не удалось удалить чат"
+        },
+        "snackbar": {
+          "chatDeleted": "Чат удалён.",
+          "deleteChatFailed": "Не удалось удалить чат."
+        }
       }
     },
     "forceUpdate": {
       "title": "Требуется обновление",
       "description": "Доступна новая версия приложения. Пожалуйста, обновитесь, чтобы продолжить работу.",
       "button": "Обновить"
+    },
+    "account": {
+      "changePassword": {
+        "snackbar": {
+          "updated": "Пароль обновлён.",
+          "error": "Произошла ошибка при смене пароля."
+        }
+      },
+      "settings": {
+        "snackbar": {
+          "updated": "Успешно обновлено.",
+          "error": "Произошла ошибка."
+        }
+      }
+    },
+    "profile": {
+      "edit": {
+        "snackbar": {
+          "noChanges": "Ничего не изменилось.",
+          "updated": "Профиль обновлён.",
+          "error": "Произошла ошибка при обновлении профиля.",
+          "photoUploadSuccess": "Фото успешно загружено.",
+          "photoUploadError": "Не удалось загрузить фото.",
+          "noPhotoToRemove": "Нет фото для удаления.",
+          "invalidFilePath": "Некорректный путь к файлу.",
+          "photoRemoveSuccess": "Фото успешно удалено.",
+          "photoRemoveError": "Не удалось удалить фото."
+        },
+        "debug": {
+          "compressImageFailed": "compressImage не удалось, используем исходное изображение",
+          "onPressSelectError": "Ошибка onPressSelect:",
+          "onPressRemoveError": "Ошибка onPressRemove:"
+        }
+      },
+      "socialProfiles": {
+        "snackbar": {
+          "updated": "Социальные профили обновлены.",
+          "error": "Произошла ошибка при обновлении социальных профилей."
+        }
+      }
     },
     "ads": {
       "rewardedTokens": {
@@ -673,13 +711,6 @@
   },
   "screens": {
     "dashboard": {
-      "header": {
-        "title": "AiAstrology",
-        "subtitle": "Ежедневные астрологические подсказки",
-        "accessibility": {
-          "openFilters": "Открыть фильтры"
-        }
-      },
       "tabs": {
         "all": "Все"
       },
@@ -694,6 +725,13 @@
           "closePreview": "Закрыть предпросмотр"
         },
         "uploadPrompt": "Нажмите здесь, чтобы загрузить фото, которое хотите оживить!"
+      },
+      "header": {
+        "title": "AiAstrology",
+        "subtitle": "Ежедневные астрологические подсказки",
+        "accessibility": {
+          "openFilters": "Открыть фильтры"
+        }
       },
       "horoscope": {
         "dateFormat": "dddd, D MMMM",
@@ -1005,18 +1043,6 @@
       }
     },
     "onboarding": {
-      "steps": {
-        "language": {
-          "title": "🌐 Выберите язык",
-          "description": "Выберите язык интерфейса, чтобы персонализировать ваш опыт в приложении."
-        },
-        "zodiac": {
-          "title": "✨ Какой у вас знак зодиака?",
-          "description": "Мы будем использовать его для персональных гороскопов и рекомендаций."
-        }
-      },
-      "stepCounter": "{{current}} из {{total}}",
-      "back": "Назад",
       "slides": {
         "language": {
           "title": "🌐 Выберите язык",
@@ -1041,7 +1067,19 @@
       },
       "skip": "Пропустить",
       "next": "Далее",
-      "start": "Начать"
+      "start": "Начать",
+      "steps": {
+        "language": {
+          "title": "🌐 Выберите язык",
+          "description": "Выберите язык интерфейса, чтобы персонализировать ваш опыт в приложении."
+        },
+        "zodiac": {
+          "title": "✨ Какой у вас знак зодиака?",
+          "description": "Мы будем использовать его для персональных гороскопов и рекомендаций."
+        }
+      },
+      "stepCounter": "{{current}} из {{total}}",
+      "back": "Назад"
     },
     "profile": {
       "tabs": {
@@ -1065,17 +1103,17 @@
         "bot": "Бот"
       },
       "searchPlaceholder": "Поиск...",
-      "natalChartModal": {
-        "title": "Постройте натальную карту, чтобы перейти к чатам",
-        "description": "Сначала создайте натальную карту, и тогда чат станет доступен.",
-        "action": "Перейти к построению карты"
-      },
       "messages": {
         "reply": "Ответить",
         "photoPlaceholder": "фото",
         "placeholder": "Сообщение",
         "editing": "Редактирование",
         "clearHistory": "Очистить историю чата"
+      },
+      "natalChartModal": {
+        "title": "Постройте натальную карту, чтобы перейти к чатам",
+        "description": "Сначала создайте натальную карту, и тогда чат станет доступен.",
+        "action": "Перейти к построению карты"
       }
     },
     "docs": {
@@ -1144,6 +1182,146 @@
           }
         }
       }
+    }
+  },
+  "stores": {
+    "aiBot": {
+      "snackbar": {
+        "mainPageBotsError": "Не удалось загрузить список ботов. Пожалуйста, попробуйте обновить страницу позже.",
+        "fetchAiBotError": "Не удалось загрузить AI-бота.",
+        "fetchMyAiBotsError": "Не удалось загрузить ваших AI-ботов.",
+        "fetchSubscriptionsError": "Не удалось загрузить подписки на AI-ботов.",
+        "updateSubscriptionError": "Не удалось обновить статус подписки.",
+        "createSuccess": "AI-бот создан.",
+        "createFailed": "Не удалось создать AI-бота.",
+        "updateSuccess": "AI-бот обновлён.",
+        "updateFailed": "Не удалось обновить AI-бота.",
+        "deleteSuccess": "AI-бот удалён.",
+        "renewSubscriptionFailed": "Не удалось продлить подписку.",
+        "photosSaved": "Фотографии сохранены.",
+        "photosSaveFailed": "Не удалось загрузить фотографии.",
+        "photosDeleted": "Фотографии удалены.",
+        "photosDeleteFailed": "Не удалось удалить фотографии."
+      },
+      "creationError": {
+        "loginRequired": "Пожалуйста, войдите в аккаунт!"
+      },
+      "errors": {
+        "createAiAgent": "Не удалось создать AI-агента"
+      },
+      "debug": {
+        "fetchAiProfilesFailed": "Ошибка при получении AI-профилей",
+        "fetchMainPageBotsFailed": "Не удалось загрузить AI-ботов для главной страницы админа",
+        "fetchAiBotFailed": "Не удалось загрузить AI-бота",
+        "fetchUserAiBotsFailed": "Не удалось загрузить AI-ботов пользователя",
+        "fetchMyAiBotsFailed": "Не удалось загрузить моих AI-ботов",
+        "fetchSubscribedAiBotsFailed": "Не удалось загрузить подписки на AI-ботов",
+        "updateFollowFailed": "Не удалось обновить статус подписки",
+        "updateAiBotFailed": "Не удалось обновить AI-агента",
+        "fetchBotDetailsFailed": "Не удалось получить детали AI-бота",
+        "uploadPhotosFailed": "Не удалось загрузить фото AI-бота",
+        "deletePhotosFailed": "Не удалось удалить фото AI-бота"
+      }
+    },
+    "auth": {
+      "debug": {
+        "sendPushTokenFailed": "Не удалось отправить push-токен"
+      }
+    },
+    "chat": {
+      "snackbar": {
+        "sendFailed": "Не удалось отправить сообщение"
+      }
+    },
+    "imageGeneration": {
+      "errors": {
+        "generic": "Что-то пошло не так. Пожалуйста, попробуйте позже.",
+        "noImageSelected": "Изображение не выбрано."
+      }
+    },
+    "profile": {
+      "updated": "Профиль обновлён",
+      "followUpdateFailed": "Не удалось обновить подписку",
+      "userBlocked": "Пользователь заблокирован",
+      "reportSent": "Жалоба отправлена",
+      "deleteAccountRequestSent": "Запрос на удаление аккаунта отправлен"
+    }
+  },
+  "navigation": {
+    "chats": {
+      "title": "Чаты",
+      "messagesTitle": "Сообщения"
+    },
+    "common": {
+      "back": "Назад"
+    },
+    "tabs": {
+      "dashboard": "Главная",
+      "library": "Библиотека",
+      "chats": "Чаты",
+      "profile": "Профиль"
+    }
+  },
+  "notifications": {
+    "aiBots": {
+      "mainPageError": "Не удалось загрузить список ботов. Попробуйте позже.",
+      "singleLoadError": "Не удалось загрузить AI-бота",
+      "myBotsError": "Не удалось загрузить ваших AI-ботов",
+      "subscriptionsError": "Не удалось загрузить подписки на AI-ботов",
+      "followUpdateError": "Не удалось обновить статус подписки",
+      "createSuccess": "AI-бот создан",
+      "createError": "Не удалось создать AI-бота",
+      "authRequired": "Пожалуйста, авторизуйтесь",
+      "updateSuccess": "AI-бот обновлён",
+      "updateError": "Не удалось обновить AI-бота",
+      "deleteSuccess": "AI-бот удалён",
+      "subscriptionError": "Не удалось обновить подписку",
+      "photosSaveSuccess": "Фотографии сохранены",
+      "photosSaveError": "Не удалось загрузить фотографии",
+      "photosDeleteSuccess": "Фотографии удалены",
+      "photosDeleteError": "Не удалось удалить фотографии"
+    },
+    "profile": {
+      "updateSuccess": "Профиль обновлён",
+      "followError": "Не удалось обновить подписку",
+      "blockSuccess": "Пользователь заблокирован",
+      "reportSuccess": "Жалоба отправлена",
+      "deleteRequestSent": "Запрос отправлен",
+      "noChanges": "Ничего не изменилось",
+      "photoUploadSuccess": "Фото успешно загружено",
+      "photoUploadError": "Не удалось загрузить фото",
+      "noPhotoToRemove": "Нет фото для удаления",
+      "invalidFilePath": "Неверный путь к файлу",
+      "photoDeleteSuccess": "Фото успешно удалено",
+      "photoDeleteError": "Не удалось удалить фото"
+    }
+  },
+  "reports": {
+    "reasons": {
+      "user": {
+        "spamOrFraud": "Спам или мошенничество",
+        "harassmentOrBullying": "Преследование или запугивание",
+        "inappropriateContent": "Неприемлемый контент",
+        "fakeProfile": "Фейковый профиль"
+      },
+      "post": {
+        "spamOrMisleading": "Спам или вводящие в заблуждение материалы",
+        "hateOrDiscrimination": "Разжигание ненависти или дискриминация",
+        "violenceOrThreats": "Насилие или угрозы",
+        "sexualContent": "Материалы сексуального характера",
+        "harassmentOrBullying": "Преследование или запугивание"
+      },
+      "common": {
+        "other": "Другое"
+      }
+    }
+  },
+  "errors": {
+    "common": {
+      "generic": "Произошла ошибка. Попробуйте позже."
+    },
+    "imageGeneration": {
+      "noImageSelected": "Не выбрано изображение"
     }
   },
   "library": {

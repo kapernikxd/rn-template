@@ -22,30 +22,6 @@
       "watchAd": "Pogledaj oglas"
     }
   },
-  "navigation": {
-    "tabs": {
-      "dashboard": "Početna",
-      "library": "Biblioteka",
-      "chats": "Četovi",
-      "profile": "Profil"
-    }
-  },
-  "notifications": {
-    "profile": {
-      "updateSuccess": "Profil je ažuriran",
-      "followError": "Nije uspelo ažuriranje praćenja",
-      "blockSuccess": "Korisnik blokiran",
-      "reportSuccess": "Prijava poslata",
-      "deleteRequestSent": "Zahtev poslat",
-      "noChanges": "Nema promena",
-      "photoUploadSuccess": "Fotografija je otpremljena",
-      "photoUploadError": "Nije uspelo otpremanje fotografije",
-      "noPhotoToRemove": "Nema fotografije za uklanjanje",
-      "invalidFilePath": "Nevažeća putanja do datoteke",
-      "photoDeleteSuccess": "Fotografija je obrisana",
-      "photoDeleteError": "Nije uspelo brisanje fotografije"
-    }
-  },
   "common": {
     "cancel": "Otkaži",
     "update": "Ažuriraj",
@@ -57,6 +33,7 @@
     "submit": "Pošalji",
     "done": "Gotovo",
     "next": "Dalje",
+    "copy": "Kopirano",
     "terms": {
       "acceptPrefix": "Prihvatam",
       "link": "Uslove korišćenja",
@@ -198,13 +175,33 @@
       "title": "Uredi profil",
       "subtitle": "Unesi svoje lične podatke",
       "fields": {
-        "username": {
-          "label": "Korisničko ime",
-          "placeholder": "Unesi korisničko ime"
+        "name": {
+          "label": "Ime",
+          "placeholder": "Unesi ime"
+        },
+        "lastname": {
+          "label": "Prezime",
+          "placeholder": "Unesi prezime"
+        },
+        "profession": {
+          "label": "Profesija",
+          "placeholder": "Tvoja profesija"
+        },
+        "phone": {
+          "label": "Broj telefona",
+          "placeholder": "Unesi broj telefona"
         },
         "gender": {
           "label": "Pol",
           "placeholder": "Izaberi pol"
+        },
+        "userBio": {
+          "label": "O meni",
+          "placeholder": "Kratka biografija"
+        },
+        "username": {
+          "label": "Korisničko ime",
+          "placeholder": "Unesi korisničko ime"
         },
         "zodiacSign": {
           "label": "Horoskopski znak",
@@ -225,33 +222,7 @@
         "hasChildren": {
           "label": "Da li imaš decu?",
           "placeholder": "Izaberi opciju"
-        },
-        "name": {
-          "label": "Ime",
-          "placeholder": "Unesi ime"
-        },
-        "lastname": {
-          "label": "Prezime",
-          "placeholder": "Unesi prezime"
-        },
-        "profession": {
-          "label": "Profesija",
-          "placeholder": "Tvoja profesija"
-        },
-        "phone": {
-          "label": "Broj telefona",
-          "placeholder": "Unesi broj telefona"
-        },
-        "userBio": {
-          "label": "O meni",
-          "placeholder": "Kratka biografija"
         }
-      },
-      "validation": {
-        "nameRequired": "Unesi ime!",
-        "lastnameRequired": "Unesi prezime!",
-        "zodiacSignRequired": "Izaberi horoskopski znak",
-        "ageDigits": "Godine moraju sadržati samo cifre"
       },
       "options": {
         "gender": {
@@ -266,6 +237,12 @@
           "no": "Ne",
           "yes": "Da"
         }
+      },
+      "validation": {
+        "nameRequired": "Unesi ime!",
+        "lastnameRequired": "Unesi prezime!",
+        "zodiacSignRequired": "Izaberi horoskopski znak",
+        "ageDigits": "Godine moraju sadržati samo cifre"
       },
       "snackbar": {
         "updated": "Profil je ažuriran"
@@ -537,6 +514,33 @@
       }
     },
     "aibot": {
+      "profile": {
+        "highlights": {
+          "creatorInfoTitle": "Informacije o kreatoru",
+          "creatorLabel": "Kreator",
+          "createdLabel": "Kreirano"
+        },
+        "debug": {
+          "startChatFailed": "Nije uspelo pokretanje četa sa AI agentom"
+        }
+      },
+      "createPage": {
+        "debug": {
+          "selectedFileNotImage": "Izabrana datoteka nije podržan format slike.",
+          "processAvatarFailed": "Nije uspela obrada slike avatara",
+          "skippedNonImageFile": "Preskočena datoteka koja nije slika pri otpremanju galerije: {{fileName}}",
+          "processGalleryImageFailed": "Nije uspela obrada slike iz galerije"
+        }
+      },
+      "editDialog": {
+        "debug": {
+          "objectUrlNotSupported": "Object URL-ovi nisu podržani u ovom okruženju.",
+          "updateFailed": "Nije uspelo ažuriranje AI agenta"
+        },
+        "snackbar": {
+          "fillProfessionAndGender": "Popunite profesiju i pol."
+        }
+      },
       "card": {
         "defaultName": "AI agent"
       },
@@ -547,6 +551,20 @@
         "empty": "Ovde je zasad prazno. Vratite se kasnije!",
         "noDescription": "Opis nije dostupan"
       },
+      "chatLimit": {
+        "debug": {
+          "syncStateFailed": "Nije uspela sinhronizacija stanja ograničenja poruka",
+          "loadTokenBalanceFailed": "Nije uspelo učitavanje stanja tokena",
+          "unlockFailed": "Nije uspelo otključavanje ograničenja četa"
+        },
+        "snackbar": {
+          "resetSuccess": "Ograničenje poruka je resetovano.",
+          "insufficientTokens": "Nedovoljno tokena za otključavanje.",
+          "unlockError": "Nije uspelo otključavanje četa. Pokušajte ponovo kasnije.",
+          "cooldownWithTokens": "Dostigli ste ograničenje poruka. Sačekajte {{duration}} ili iskoristite tokene da nastavite.",
+          "cooldownNoTokens": "Dostigli ste ograničenje poruka. Sačekajte da se tajmer završi."
+        }
+      },
       "guestChat": {
         "defaultBotName": "AI bot",
         "inputPlaceholder": "Pitajte nešto...",
@@ -554,10 +572,35 @@
         "errors": {
           "limitReached": "Dnevni limit je dostignut. Pokušajte kasnije.",
           "sendFailed": "Slanje poruke nije uspelo. Pokušajte ponovo."
+        },
+        "debug": {
+          "persistHistoryFailed": "Nije uspelo čuvanje istorije četa gosta",
+          "persistSessionFailed": "Nije uspelo čuvanje sesije četa gosta",
+          "sendFailedLog": "Nije uspelo slanje AI poruke u guest modu",
+          "parseHistoryFailed": "Nije uspelo čitanje sačuvane istorije četa gosta",
+          "loadDataFailed": "Nije uspelo učitavanje podataka četa gosta"
         }
       }
     },
     "chat": {
+      "messages": {
+        "title": {
+          "privateChat": "Privatni čet"
+        },
+        "debug": {
+          "scrollToPinnedFailed": "Nije uspelo skrolovanje do zakačene poruke",
+          "deleteMessageFailed": "Nije uspelo brisanje poruke",
+          "clearHistoryFailed": "Nije uspelo brisanje istorije četa"
+        },
+        "snackbar": {
+          "reportSent": "Prijava poslata.",
+          "messageDeleted": "Poruka obrisana.",
+          "deleteMessageFailed": "Nije uspelo brisanje poruke.",
+          "copied": "Kopirano.",
+          "historyCleared": "Istorija četa obrisana.",
+          "clearHistoryFailed": "Nije uspelo brisanje istorije četa."
+        }
+      },
       "limitNotice": {
         "message": "Limit poruka je iscrpljen",
         "adReady": "Oglas je spreman za prikaz",
@@ -597,12 +640,61 @@
       },
       "messageItem": {
         "deleted": "Poruka je obrisana"
+      },
+      "list": {
+        "debug": {
+          "deleteChatFailed": "Nije uspelo brisanje četa"
+        },
+        "snackbar": {
+          "chatDeleted": "Čet obrisan.",
+          "deleteChatFailed": "Nije uspelo brisanje četa."
+        }
       }
     },
     "forceUpdate": {
       "title": "Potrebno je ažuriranje",
       "description": "Dostupna je nova verzija aplikacije. Ažurirajte da biste nastavili sa radom.",
       "button": "Ažuriraj"
+    },
+    "account": {
+      "changePassword": {
+        "snackbar": {
+          "updated": "Lozinka je ažurirana.",
+          "error": "Došlo je do greške pri promeni lozinke."
+        }
+      },
+      "settings": {
+        "snackbar": {
+          "updated": "Uspešno ažurirano.",
+          "error": "Došlo je do greške."
+        }
+      }
+    },
+    "profile": {
+      "edit": {
+        "snackbar": {
+          "noChanges": "Nema izmena.",
+          "updated": "Profil je ažuriran.",
+          "error": "Došlo je do greške pri ažuriranju profila.",
+          "photoUploadSuccess": "Fotografija je uspešno otpremljena.",
+          "photoUploadError": "Nije uspelo otpremanje fotografije.",
+          "noPhotoToRemove": "Nema fotografije za brisanje.",
+          "invalidFilePath": "Nevažeća putanja datoteke.",
+          "photoRemoveSuccess": "Fotografija je uspešno obrisana.",
+          "photoRemoveError": "Nije uspelo brisanje fotografije."
+        },
+        "debug": {
+          "compressImageFailed": "compressImage nije uspeo, koristi se originalna slika",
+          "onPressSelectError": "Greška u onPressSelect:",
+          "onPressRemoveError": "Greška u onPressRemove:"
+        }
+      },
+      "socialProfiles": {
+        "snackbar": {
+          "updated": "Društveni profili su ažurirani.",
+          "error": "Došlo je do greške pri ažuriranju društvenih profila."
+        }
+      }
     },
     "ads": {
       "rewardedTokens": {
@@ -617,35 +709,8 @@
       }
     }
   },
-  "reports": {
-    "reasons": {
-      "user": {
-        "spamOrFraud": "Spam ili prevara",
-        "harassmentOrBullying": "Uznemiravanje ili zlostavljanje",
-        "inappropriateContent": "Neprimeren sadržaj",
-        "fakeProfile": "Lažni profil"
-      },
-      "post": {
-        "spamOrMisleading": "Spam ili obmanjujući sadržaj",
-        "hateOrDiscrimination": "Mržnja ili diskriminacija",
-        "violenceOrThreats": "Nasilje ili pretnje",
-        "sexualContent": "Seksualni sadržaj",
-        "harassmentOrBullying": "Uznemiravanje ili zlostavljanje"
-      },
-      "common": {
-        "other": "Drugo"
-      }
-    }
-  },
   "screens": {
     "dashboard": {
-      "header": {
-        "title": "AiAstrology",
-        "subtitle": "Dnevne astro smernice",
-        "accessibility": {
-          "openFilters": "Otvori filtere"
-        }
-      },
       "tabs": {
         "all": "Sve"
       },
@@ -660,6 +725,13 @@
           "closePreview": "Zatvori pregled"
         },
         "uploadPrompt": "Tapni ovde da otpremiš fotografiju koju želiš da oživiš!"
+      },
+      "header": {
+        "title": "AiAstrology",
+        "subtitle": "Dnevne astro smernice",
+        "accessibility": {
+          "openFilters": "Otvori filtere"
+        }
       },
       "horoscope": {
         "dateFormat": "dddd, D MMMM",
@@ -771,7 +843,12 @@
         "createdAtLabel": "Kreirano"
       },
       "gallery": {
-        "empty": "Kreator još nije dodao fotografije."
+        "empty": "Kreator još nije dodao fotografije.",
+        "locked": {
+          "title": "Potrebno je pogledati oglas",
+          "cta": "Pogledaj oglas da vidiš",
+          "success": "Slika je otključana"
+        }
       },
       "common": {
         "categories": {
@@ -780,7 +857,12 @@
           "для-прикола": "Za zabavu",
           "романтический": "Romantično",
           "роли": "Uloge",
-          "история": "Istorija"
+          "история": "Istorija",
+          "language": "Jezik",
+          "romantic": "Romantično",
+          "useful": "Korisno",
+          "scenario": "Scenariji",
+          "fun": "Zabava"
         },
         "errors": {
           "openProfile": "Neuspešno otvaranje profila bota"
@@ -821,6 +903,10 @@
             "lastName": {
               "label": "Prezime",
               "placeholder": "Unesi prezime agenta"
+            },
+            "gender": {
+              "label": "Pol",
+              "placeholder": "Izaberite pol"
             },
             "profession": {
               "label": "Profesija ili uloga",
@@ -908,6 +994,10 @@
               "label": "Prezime",
               "placeholder": "Prezime agenta"
             },
+            "gender": {
+              "label": "Pol",
+              "placeholder": "Izaberite pol"
+            },
             "profession": {
               "label": "Profesija",
               "placeholder": "Na primer, dizajner"
@@ -953,18 +1043,6 @@
       }
     },
     "onboarding": {
-      "steps": {
-        "language": {
-          "title": "🌐 Izaberi jezik",
-          "description": "Изаберите језик интерфејса да бисте персонализовали своје искуство са апликацијом."
-        },
-        "zodiac": {
-          "title": "✨ Koji je tvoj horoskopski znak?",
-          "description": "Koristićemo ga za personalizovane horoskope i preporuke."
-        }
-      },
-      "stepCounter": "{{current}} od {{total}}",
-      "back": "Nazad",
       "slides": {
         "language": {
           "title": "🌐 Izaberi jezik",
@@ -989,7 +1067,19 @@
       },
       "skip": "Preskoči",
       "next": "Dalje",
-      "start": "Počni"
+      "start": "Počni",
+      "steps": {
+        "language": {
+          "title": "🌐 Izaberi jezik",
+          "description": "Изаберите језик интерфејса да бисте персонализовали своје искуство са апликацијом."
+        },
+        "zodiac": {
+          "title": "✨ Koji je tvoj horoskopski znak?",
+          "description": "Koristićemo ga za personalizovane horoskope i preporuke."
+        }
+      },
+      "stepCounter": "{{current}} od {{total}}",
+      "back": "Nazad"
     },
     "profile": {
       "tabs": {
@@ -1013,17 +1103,17 @@
         "bot": "Bot"
       },
       "searchPlaceholder": "Pretraga...",
-      "natalChartModal": {
-        "title": "Napravite natalnu kartu da biste ćaskali",
-        "description": "Prvo generišite natalnu kartu da biste otključali chat.",
-        "action": "Napravi natalnu kartu"
-      },
       "messages": {
         "reply": "Odgovori",
         "photoPlaceholder": "fotografija",
         "placeholder": "Poruka",
         "editing": "Uređivanje",
         "clearHistory": "Obriši istoriju četa"
+      },
+      "natalChartModal": {
+        "title": "Napravite natalnu kartu da biste ćaskali",
+        "description": "Prvo generišite natalnu kartu da biste otključali chat.",
+        "action": "Napravi natalnu kartu"
       }
     },
     "docs": {
@@ -1091,6 +1181,113 @@
             }
           }
         }
+      }
+    }
+  },
+  "stores": {
+    "aiBot": {
+      "snackbar": {
+        "mainPageBotsError": "Nije uspelo učitavanje liste botova. Pokušajte da osvežite stranicu kasnije.",
+        "fetchAiBotError": "Nije uspelo učitavanje AI bota.",
+        "fetchMyAiBotsError": "Nije uspelo učitavanje vaših AI botova.",
+        "fetchSubscriptionsError": "Nije uspelo učitavanje pretplata na AI botove.",
+        "updateSubscriptionError": "Nije uspelo ažuriranje statusa pretplate.",
+        "createSuccess": "AI bot je kreiran.",
+        "createFailed": "Nije uspelo kreiranje AI bota.",
+        "updateSuccess": "AI bot je ažuriran.",
+        "updateFailed": "Nije uspelo ažuriranje AI bota.",
+        "deleteSuccess": "AI bot je uklonjen.",
+        "renewSubscriptionFailed": "Nije uspelo obnavljanje pretplate.",
+        "photosSaved": "Fotografije su sačuvane.",
+        "photosSaveFailed": "Nije uspelo otpremanje fotografija.",
+        "photosDeleted": "Fotografije su obrisane.",
+        "photosDeleteFailed": "Nije uspelo brisanje fotografija."
+      },
+      "creationError": {
+        "loginRequired": "Molimo prijavite se!"
+      },
+      "errors": {
+        "createAiAgent": "Nije uspelo kreiranje AI agenta"
+      },
+      "debug": {
+        "fetchAiProfilesFailed": "Greška pri učitavanju AI profila",
+        "fetchMainPageBotsFailed": "Nije uspelo učitavanje AI botova za glavnu admin stranicu",
+        "fetchAiBotFailed": "Nije uspelo učitavanje AI bota",
+        "fetchUserAiBotsFailed": "Nije uspelo učitavanje korisnikovih AI botova",
+        "fetchMyAiBotsFailed": "Nije uspelo učitavanje mojih AI botova",
+        "fetchSubscribedAiBotsFailed": "Nije uspelo učitavanje AI botova na koje ste pretplaćeni",
+        "updateFollowFailed": "Nije uspelo ažuriranje statusa praćenja",
+        "updateAiBotFailed": "Nije uspelo ažuriranje AI agenta",
+        "fetchBotDetailsFailed": "Nije uspelo učitavanje detalja AI bota",
+        "uploadPhotosFailed": "Nije uspelo otpremanje fotografija AI bota",
+        "deletePhotosFailed": "Nije uspelo brisanje fotografija AI bota"
+      }
+    },
+    "auth": {
+      "debug": {
+        "sendPushTokenFailed": "Nije uspelo slanje push tokena"
+      }
+    },
+    "chat": {
+      "snackbar": {
+        "sendFailed": "Nije uspelo slanje poruke"
+      }
+    },
+    "imageGeneration": {
+      "errors": {
+        "generic": "Nešto je pošlo naopako. Pokušajte ponovo kasnije.",
+        "noImageSelected": "Nijedna slika nije izabrana."
+      }
+    },
+    "profile": {
+      "updated": "Profil je ažuriran",
+      "followUpdateFailed": "Nije uspelo ažuriranje pretplate",
+      "userBlocked": "Korisnik je blokiran",
+      "reportSent": "Prijava poslata",
+      "deleteAccountRequestSent": "Zahtev za brisanje naloga je poslat"
+    }
+  },
+  "navigation": {
+    "tabs": {
+      "dashboard": "Početna",
+      "library": "Biblioteka",
+      "chats": "Četovi",
+      "profile": "Profil"
+    }
+  },
+  "notifications": {
+    "profile": {
+      "updateSuccess": "Profil je ažuriran",
+      "followError": "Nije uspelo ažuriranje praćenja",
+      "blockSuccess": "Korisnik blokiran",
+      "reportSuccess": "Prijava poslata",
+      "deleteRequestSent": "Zahtev poslat",
+      "noChanges": "Nema promena",
+      "photoUploadSuccess": "Fotografija je otpremljena",
+      "photoUploadError": "Nije uspelo otpremanje fotografije",
+      "noPhotoToRemove": "Nema fotografije za uklanjanje",
+      "invalidFilePath": "Nevažeća putanja do datoteke",
+      "photoDeleteSuccess": "Fotografija je obrisana",
+      "photoDeleteError": "Nije uspelo brisanje fotografije"
+    }
+  },
+  "reports": {
+    "reasons": {
+      "user": {
+        "spamOrFraud": "Spam ili prevara",
+        "harassmentOrBullying": "Uznemiravanje ili zlostavljanje",
+        "inappropriateContent": "Neprimeren sadržaj",
+        "fakeProfile": "Lažni profil"
+      },
+      "post": {
+        "spamOrMisleading": "Spam ili obmanjujući sadržaj",
+        "hateOrDiscrimination": "Mržnja ili diskriminacija",
+        "violenceOrThreats": "Nasilje ili pretnje",
+        "sexualContent": "Seksualni sadržaj",
+        "harassmentOrBullying": "Uznemiravanje ili zlostavljanje"
+      },
+      "common": {
+        "other": "Drugo"
       }
     }
   },

@@ -22,30 +22,6 @@
       "watchAd": "Regarder une pub"
     }
   },
-  "navigation": {
-    "tabs": {
-      "dashboard": "Accueil",
-      "library": "Bibliothèque",
-      "chats": "Discussions",
-      "profile": "Profil"
-    }
-  },
-  "notifications": {
-    "profile": {
-      "updateSuccess": "Profil mis à jour",
-      "followError": "Impossible de mettre à jour l'abonnement",
-      "blockSuccess": "Utilisateur bloqué",
-      "reportSuccess": "Signalement envoyé",
-      "deleteRequestSent": "Demande envoyée",
-      "noChanges": "Aucun changement effectué",
-      "photoUploadSuccess": "Photo téléchargée",
-      "photoUploadError": "Échec du téléchargement de la photo",
-      "noPhotoToRemove": "Aucune photo à supprimer",
-      "invalidFilePath": "Chemin de fichier invalide",
-      "photoDeleteSuccess": "Photo supprimée",
-      "photoDeleteError": "Échec de la suppression de la photo"
-    }
-  },
   "common": {
     "cancel": "Annuler",
     "update": "Mettre à jour",
@@ -57,6 +33,7 @@
     "submit": "Envoyer",
     "done": "Terminé",
     "next": "Suivant",
+    "copy": "Copié",
     "terms": {
       "acceptPrefix": "J’accepte les",
       "link": "Conditions d’utilisation",
@@ -198,13 +175,33 @@
       "title": "Modifier le profil",
       "subtitle": "Renseignez vos informations personnelles",
       "fields": {
-        "username": {
-          "label": "Nom d'utilisateur",
-          "placeholder": "Entrez un nom d'utilisateur"
+        "name": {
+          "label": "Prénom",
+          "placeholder": "Entrez le prénom"
+        },
+        "lastname": {
+          "label": "Nom",
+          "placeholder": "Entrez le nom"
+        },
+        "profession": {
+          "label": "Profession",
+          "placeholder": "Votre profession"
+        },
+        "phone": {
+          "label": "Numéro de téléphone",
+          "placeholder": "Entrez le numéro de téléphone"
         },
         "gender": {
           "label": "Genre",
           "placeholder": "Sélectionnez un genre"
+        },
+        "userBio": {
+          "label": "À propos de moi",
+          "placeholder": "Une courte biographie"
+        },
+        "username": {
+          "label": "Nom d'utilisateur",
+          "placeholder": "Entrez un nom d'utilisateur"
         },
         "zodiacSign": {
           "label": "Signe du zodiaque",
@@ -225,33 +222,7 @@
         "hasChildren": {
           "label": "Avez-vous des enfants ?",
           "placeholder": "Sélectionnez une option"
-        },
-        "name": {
-          "label": "Prénom",
-          "placeholder": "Entrez le prénom"
-        },
-        "lastname": {
-          "label": "Nom",
-          "placeholder": "Entrez le nom"
-        },
-        "profession": {
-          "label": "Profession",
-          "placeholder": "Votre profession"
-        },
-        "phone": {
-          "label": "Numéro de téléphone",
-          "placeholder": "Entrez le numéro de téléphone"
-        },
-        "userBio": {
-          "label": "À propos de moi",
-          "placeholder": "Une courte biographie"
         }
-      },
-      "validation": {
-        "nameRequired": "Entrez votre prénom !",
-        "lastnameRequired": "Entrez votre nom !",
-        "zodiacSignRequired": "Sélectionnez un signe du zodiaque",
-        "ageDigits": "L’âge doit contenir uniquement des chiffres"
       },
       "options": {
         "gender": {
@@ -266,6 +237,12 @@
           "no": "Non",
           "yes": "Oui"
         }
+      },
+      "validation": {
+        "nameRequired": "Entrez votre prénom !",
+        "lastnameRequired": "Entrez votre nom !",
+        "zodiacSignRequired": "Sélectionnez un signe du zodiaque",
+        "ageDigits": "L’âge doit contenir uniquement des chiffres"
       },
       "snackbar": {
         "updated": "Profil mis à jour"
@@ -537,6 +514,33 @@
       }
     },
     "aibot": {
+      "profile": {
+        "highlights": {
+          "creatorInfoTitle": "Infos sur le créateur",
+          "creatorLabel": "Créateur",
+          "createdLabel": "Créé"
+        },
+        "debug": {
+          "startChatFailed": "Échec du démarrage du chat avec l’agent IA"
+        }
+      },
+      "createPage": {
+        "debug": {
+          "selectedFileNotImage": "Le fichier sélectionné n’est pas un format d’image pris en charge.",
+          "processAvatarFailed": "Échec du traitement de l’image de l’avatar",
+          "skippedNonImageFile": "Fichier non image ignoré lors du téléversement de la galerie : {{fileName}}",
+          "processGalleryImageFailed": "Échec du traitement de l’image de la galerie"
+        }
+      },
+      "editDialog": {
+        "debug": {
+          "objectUrlNotSupported": "Les URL d’objet ne sont pas prises en charge dans cet environnement.",
+          "updateFailed": "Échec de la mise à jour de l’agent IA"
+        },
+        "snackbar": {
+          "fillProfessionAndGender": "Veuillez renseigner la profession et le genre."
+        }
+      },
       "card": {
         "defaultName": "Agent IA"
       },
@@ -547,6 +551,20 @@
         "empty": "Il n’y a encore rien ici. Revenez plus tard !",
         "noDescription": "Pas de description"
       },
+      "chatLimit": {
+        "debug": {
+          "syncStateFailed": "Échec de la synchronisation de l’état de la limite de chat",
+          "loadTokenBalanceFailed": "Échec du chargement du solde de jetons",
+          "unlockFailed": "Échec du déblocage de la limite de chat"
+        },
+        "snackbar": {
+          "resetSuccess": "La limite de messages a été réinitialisée.",
+          "insufficientTokens": "Nombre de jetons insuffisant pour débloquer.",
+          "unlockError": "Échec du déblocage du chat. Veuillez réessayer plus tard.",
+          "cooldownWithTokens": "Limite de messages atteinte. Attendez {{duration}} ou utilisez des jetons pour continuer.",
+          "cooldownNoTokens": "Limite de messages atteinte. Veuillez attendre que le minuteur se termine."
+        }
+      },
       "guestChat": {
         "defaultBotName": "Bot IA",
         "inputPlaceholder": "Posez une question…",
@@ -554,10 +572,35 @@
         "errors": {
           "limitReached": "Limite quotidienne atteinte. Veuillez réessayer plus tard.",
           "sendFailed": "Échec de l’envoi du message. Réessayez."
+        },
+        "debug": {
+          "persistHistoryFailed": "Échec de l’enregistrement de l’historique du chat invité",
+          "persistSessionFailed": "Échec de l’enregistrement de la session de chat invité",
+          "sendFailedLog": "Échec de l’envoi du message IA invité",
+          "parseHistoryFailed": "Échec de la lecture de l’historique du chat invité enregistré",
+          "loadDataFailed": "Échec du chargement des données du chat invité"
         }
       }
     },
     "chat": {
+      "messages": {
+        "title": {
+          "privateChat": "Chat privé"
+        },
+        "debug": {
+          "scrollToPinnedFailed": "Échec du défilement vers le message épinglé",
+          "deleteMessageFailed": "Échec de la suppression du message",
+          "clearHistoryFailed": "Échec de la suppression de l’historique du chat"
+        },
+        "snackbar": {
+          "reportSent": "Signalement envoyé.",
+          "messageDeleted": "Message supprimé.",
+          "deleteMessageFailed": "Échec de la suppression du message.",
+          "copied": "Copié.",
+          "historyCleared": "Historique du chat supprimé.",
+          "clearHistoryFailed": "Échec de la suppression de l’historique du chat."
+        }
+      },
       "limitNotice": {
         "message": "Limite de messages atteinte",
         "adReady": "La publicité est prête à être affichée",
@@ -597,12 +640,61 @@
       },
       "messageItem": {
         "deleted": "Message supprimé"
+      },
+      "list": {
+        "debug": {
+          "deleteChatFailed": "Échec de la suppression du chat"
+        },
+        "snackbar": {
+          "chatDeleted": "Chat supprimé.",
+          "deleteChatFailed": "Échec de la suppression du chat."
+        }
       }
     },
     "forceUpdate": {
       "title": "Mise à jour requise",
       "description": "Une nouvelle version de l’application est disponible. Veuillez mettre à jour pour continuer.",
       "button": "Mettre à jour"
+    },
+    "account": {
+      "changePassword": {
+        "snackbar": {
+          "updated": "Mot de passe mis à jour.",
+          "error": "Une erreur s’est produite lors du changement de mot de passe."
+        }
+      },
+      "settings": {
+        "snackbar": {
+          "updated": "Mis à jour avec succès.",
+          "error": "Une erreur s’est produite."
+        }
+      }
+    },
+    "profile": {
+      "edit": {
+        "snackbar": {
+          "noChanges": "Aucune modification effectuée.",
+          "updated": "Profil mis à jour.",
+          "error": "Une erreur s’est produite lors de la mise à jour du profil.",
+          "photoUploadSuccess": "Photo téléversée avec succès.",
+          "photoUploadError": "Échec du téléversement de la photo.",
+          "noPhotoToRemove": "Aucune photo à supprimer.",
+          "invalidFilePath": "Chemin de fichier invalide.",
+          "photoRemoveSuccess": "Photo supprimée avec succès.",
+          "photoRemoveError": "Échec de la suppression de la photo."
+        },
+        "debug": {
+          "compressImageFailed": "Échec de compressImage, utilisation de l’image d’origine",
+          "onPressSelectError": "Erreur dans onPressSelect :",
+          "onPressRemoveError": "Erreur dans onPressRemove :"
+        }
+      },
+      "socialProfiles": {
+        "snackbar": {
+          "updated": "Profils sociaux mis à jour.",
+          "error": "Une erreur s’est produite lors de la mise à jour des profils sociaux."
+        }
+      }
     },
     "ads": {
       "rewardedTokens": {
@@ -617,35 +709,8 @@
       }
     }
   },
-  "reports": {
-    "reasons": {
-      "user": {
-        "spamOrFraud": "Spam ou fraude",
-        "harassmentOrBullying": "Harcèlement ou intimidation",
-        "inappropriateContent": "Contenu inapproprié",
-        "fakeProfile": "Faux profil"
-      },
-      "post": {
-        "spamOrMisleading": "Spam ou contenu trompeur",
-        "hateOrDiscrimination": "Haine ou discrimination",
-        "violenceOrThreats": "Violence ou menaces",
-        "sexualContent": "Contenu sexuel",
-        "harassmentOrBullying": "Harcèlement ou intimidation"
-      },
-      "common": {
-        "other": "Autre"
-      }
-    }
-  },
   "screens": {
     "dashboard": {
-      "header": {
-        "title": "AiAstrology",
-        "subtitle": "Guidance astrologique quotidienne",
-        "accessibility": {
-          "openFilters": "Ouvrir les filtres"
-        }
-      },
       "tabs": {
         "all": "Tous"
       },
@@ -660,6 +725,13 @@
           "closePreview": "Fermer l’aperçu"
         },
         "uploadPrompt": "Appuyez ici pour téléverser une photo que vous souhaitez animer !"
+      },
+      "header": {
+        "title": "AiAstrology",
+        "subtitle": "Guidance astrologique quotidienne",
+        "accessibility": {
+          "openFilters": "Ouvrir les filtres"
+        }
       },
       "horoscope": {
         "dateFormat": "dddd, D MMMM",
@@ -771,7 +843,12 @@
         "createdAtLabel": "Créé"
       },
       "gallery": {
-        "empty": "Le créateur n’a pas encore ajouté de photos."
+        "empty": "Le créateur n’a pas encore ajouté de photos.",
+        "locked": {
+          "title": "Publicité requise",
+          "cta": "Regarder une publicité pour voir",
+          "success": "Image déverrouillée"
+        }
       },
       "common": {
         "categories": {
@@ -780,7 +857,12 @@
           "для-прикола": "Pour le fun",
           "романтический": "Romantique",
           "роли": "Rôles",
-          "история": "Histoire"
+          "история": "Histoire",
+          "language": "Langue",
+          "romantic": "Romantique",
+          "useful": "Utile",
+          "scenario": "Scénario",
+          "fun": "Divertissement"
         },
         "errors": {
           "openProfile": "Impossible d’ouvrir le profil du bot"
@@ -821,6 +903,10 @@
             "lastName": {
               "label": "Nom",
               "placeholder": "Entrez le nom de famille de l’agent"
+            },
+            "gender": {
+              "label": "Genre",
+              "placeholder": "Sélectionnez un genre"
             },
             "profession": {
               "label": "Profession ou rôle",
@@ -908,6 +994,10 @@
               "label": "Nom",
               "placeholder": "Nom de l’agent"
             },
+            "gender": {
+              "label": "Genre",
+              "placeholder": "Sélectionnez un genre"
+            },
             "profession": {
               "label": "Profession",
               "placeholder": "Par exemple, designer"
@@ -953,18 +1043,6 @@
       }
     },
     "onboarding": {
-      "steps": {
-        "language": {
-          "title": "🌐 Choisissez votre langue",
-          "description": "Sélectionnez la langue de votre interface pour personnaliser votre expérience avec l'application."
-        },
-        "zodiac": {
-          "title": "✨ Quel est votre signe du zodiaque ?",
-          "description": "Nous l’utiliserons pour personnaliser horoscopes et recommandations."
-        }
-      },
-      "stepCounter": "{{current}} sur {{total}}",
-      "back": "Retour",
       "slides": {
         "language": {
           "title": "🌐 Choisissez votre langue",
@@ -989,7 +1067,19 @@
       },
       "skip": "Passer",
       "next": "Suivant",
-      "start": "Commencer"
+      "start": "Commencer",
+      "steps": {
+        "language": {
+          "title": "🌐 Choisissez votre langue",
+          "description": "Sélectionnez la langue de votre interface pour personnaliser votre expérience avec l'application."
+        },
+        "zodiac": {
+          "title": "✨ Quel est votre signe du zodiaque ?",
+          "description": "Nous l’utiliserons pour personnaliser horoscopes et recommandations."
+        }
+      },
+      "stepCounter": "{{current}} sur {{total}}",
+      "back": "Retour"
     },
     "profile": {
       "tabs": {
@@ -1013,17 +1103,17 @@
         "bot": "Bot"
       },
       "searchPlaceholder": "Recherche...",
-      "natalChartModal": {
-        "title": "Crée ta carte natale pour discuter",
-        "description": "Génère d'abord ta carte natale pour accéder au chat.",
-        "action": "Créer la carte natale"
-      },
       "messages": {
         "reply": "Répondre",
         "photoPlaceholder": "photo",
         "placeholder": "Message",
         "editing": "Modification",
         "clearHistory": "Effacer l’historique du chat"
+      },
+      "natalChartModal": {
+        "title": "Crée ta carte natale pour discuter",
+        "description": "Génère d'abord ta carte natale pour accéder au chat.",
+        "action": "Créer la carte natale"
       }
     },
     "docs": {
@@ -1091,6 +1181,113 @@
             }
           }
         }
+      }
+    }
+  },
+  "stores": {
+    "aiBot": {
+      "snackbar": {
+        "mainPageBotsError": "Échec du chargement de la liste des bots. Veuillez essayer d’actualiser la page plus tard.",
+        "fetchAiBotError": "Échec du chargement du bot IA.",
+        "fetchMyAiBotsError": "Échec du chargement de vos bots IA.",
+        "fetchSubscriptionsError": "Échec du chargement de vos abonnements aux bots IA.",
+        "updateSubscriptionError": "Échec de la mise à jour du statut d’abonnement.",
+        "createSuccess": "Bot IA créé.",
+        "createFailed": "Échec de la création du bot IA.",
+        "updateSuccess": "Le bot IA a été mis à jour.",
+        "updateFailed": "Échec de la mise à jour du bot IA.",
+        "deleteSuccess": "Le bot IA a été supprimé.",
+        "renewSubscriptionFailed": "Échec du renouvellement de votre abonnement.",
+        "photosSaved": "Photos enregistrées.",
+        "photosSaveFailed": "Échec du téléversement des photos.",
+        "photosDeleted": "Photos supprimées.",
+        "photosDeleteFailed": "Échec de la suppression des photos."
+      },
+      "creationError": {
+        "loginRequired": "Veuillez vous connecter !"
+      },
+      "errors": {
+        "createAiAgent": "Échec de la création de l’agent IA"
+      },
+      "debug": {
+        "fetchAiProfilesFailed": "Erreur lors de la récupération des profils IA",
+        "fetchMainPageBotsFailed": "Échec du chargement des bots IA pour la page d’accueil administrateur",
+        "fetchAiBotFailed": "Échec du chargement du bot IA",
+        "fetchUserAiBotsFailed": "Échec du chargement des bots IA de l’utilisateur",
+        "fetchMyAiBotsFailed": "Échec du chargement de mes bots IA",
+        "fetchSubscribedAiBotsFailed": "Échec du chargement des bots IA abonnés",
+        "updateFollowFailed": "Échec de la mise à jour du statut d’abonnement",
+        "updateAiBotFailed": "Échec de la mise à jour de l’agent IA",
+        "fetchBotDetailsFailed": "Échec de la récupération des détails du bot IA",
+        "uploadPhotosFailed": "Échec du téléversement des photos du bot IA",
+        "deletePhotosFailed": "Échec de la suppression des photos du bot IA"
+      }
+    },
+    "auth": {
+      "debug": {
+        "sendPushTokenFailed": "Échec de l’envoi du jeton de notification push"
+      }
+    },
+    "chat": {
+      "snackbar": {
+        "sendFailed": "Échec de l’envoi du message"
+      }
+    },
+    "imageGeneration": {
+      "errors": {
+        "generic": "Une erreur s’est produite. Veuillez réessayer plus tard.",
+        "noImageSelected": "Aucune image sélectionnée."
+      }
+    },
+    "profile": {
+      "updated": "Profil mis à jour",
+      "followUpdateFailed": "Échec de la mise à jour de l’abonnement",
+      "userBlocked": "Utilisateur bloqué",
+      "reportSent": "Signalement envoyé",
+      "deleteAccountRequestSent": "Demande de suppression du compte envoyée"
+    }
+  },
+  "navigation": {
+    "tabs": {
+      "dashboard": "Accueil",
+      "library": "Bibliothèque",
+      "chats": "Discussions",
+      "profile": "Profil"
+    }
+  },
+  "notifications": {
+    "profile": {
+      "updateSuccess": "Profil mis à jour",
+      "followError": "Impossible de mettre à jour l'abonnement",
+      "blockSuccess": "Utilisateur bloqué",
+      "reportSuccess": "Signalement envoyé",
+      "deleteRequestSent": "Demande envoyée",
+      "noChanges": "Aucun changement effectué",
+      "photoUploadSuccess": "Photo téléchargée",
+      "photoUploadError": "Échec du téléchargement de la photo",
+      "noPhotoToRemove": "Aucune photo à supprimer",
+      "invalidFilePath": "Chemin de fichier invalide",
+      "photoDeleteSuccess": "Photo supprimée",
+      "photoDeleteError": "Échec de la suppression de la photo"
+    }
+  },
+  "reports": {
+    "reasons": {
+      "user": {
+        "spamOrFraud": "Spam ou fraude",
+        "harassmentOrBullying": "Harcèlement ou intimidation",
+        "inappropriateContent": "Contenu inapproprié",
+        "fakeProfile": "Faux profil"
+      },
+      "post": {
+        "spamOrMisleading": "Spam ou contenu trompeur",
+        "hateOrDiscrimination": "Haine ou discrimination",
+        "violenceOrThreats": "Violence ou menaces",
+        "sexualContent": "Contenu sexuel",
+        "harassmentOrBullying": "Harcèlement ou intimidation"
+      },
+      "common": {
+        "other": "Autre"
       }
     }
   },

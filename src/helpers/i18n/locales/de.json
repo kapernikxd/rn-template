@@ -22,30 +22,6 @@
       "watchAd": "Anzeige ansehen"
     }
   },
-  "navigation": {
-    "tabs": {
-      "dashboard": "Home",
-      "library": "Library",
-      "chats": "Chats",
-      "profile": "Profile"
-    }
-  },
-  "notifications": {
-    "profile": {
-      "updateSuccess": "Profile updated",
-      "followError": "Failed to update subscription",
-      "blockSuccess": "User blocked",
-      "reportSuccess": "Report sent",
-      "deleteRequestSent": "Request submitted",
-      "noChanges": "No changes made",
-      "photoUploadSuccess": "Photo uploaded",
-      "photoUploadError": "Failed to upload photo",
-      "noPhotoToRemove": "No photo to remove",
-      "invalidFilePath": "Invalid file path",
-      "photoDeleteSuccess": "Photo deleted",
-      "photoDeleteError": "Failed to delete photo"
-    }
-  },
   "common": {
     "cancel": "Abbrechen",
     "update": "Aktualisieren",
@@ -57,6 +33,7 @@
     "submit": "Senden",
     "done": "Fertig",
     "next": "Weiter",
+    "copy": "Kopiert",
     "terms": {
       "acceptPrefix": "Ich akzeptiere die",
       "link": "Nutzungsbedingungen",
@@ -198,13 +175,33 @@
       "title": "Profil bearbeiten",
       "subtitle": "Gib deine persönlichen Informationen ein",
       "fields": {
-        "username": {
-          "label": "Benutzername",
-          "placeholder": "Benutzername eingeben"
+        "name": {
+          "label": "Vorname",
+          "placeholder": "Vorname eingeben"
+        },
+        "lastname": {
+          "label": "Nachname",
+          "placeholder": "Nachname eingeben"
+        },
+        "profession": {
+          "label": "Beruf",
+          "placeholder": "Dein Beruf"
+        },
+        "phone": {
+          "label": "Telefonnummer",
+          "placeholder": "Telefonnummer eingeben"
         },
         "gender": {
           "label": "Geschlecht",
           "placeholder": "Geschlecht auswählen"
+        },
+        "userBio": {
+          "label": "Über mich",
+          "placeholder": "Kurze Biografie"
+        },
+        "username": {
+          "label": "Benutzername",
+          "placeholder": "Benutzername eingeben"
         },
         "zodiacSign": {
           "label": "Sternzeichen",
@@ -225,33 +222,7 @@
         "hasChildren": {
           "label": "Hast du Kinder?",
           "placeholder": "Option auswählen"
-        },
-        "name": {
-          "label": "Vorname",
-          "placeholder": "Vorname eingeben"
-        },
-        "lastname": {
-          "label": "Nachname",
-          "placeholder": "Nachname eingeben"
-        },
-        "profession": {
-          "label": "Beruf",
-          "placeholder": "Dein Beruf"
-        },
-        "phone": {
-          "label": "Telefonnummer",
-          "placeholder": "Telefonnummer eingeben"
-        },
-        "userBio": {
-          "label": "Über mich",
-          "placeholder": "Kurze Biografie"
         }
-      },
-      "validation": {
-        "nameRequired": "Gib deinen Vornamen ein!",
-        "lastnameRequired": "Gib deinen Nachnamen ein!",
-        "zodiacSignRequired": "Wähle ein Sternzeichen aus",
-        "ageDigits": "Das Alter darf nur Ziffern enthalten"
       },
       "options": {
         "gender": {
@@ -266,6 +237,12 @@
           "no": "Nein",
           "yes": "Ja"
         }
+      },
+      "validation": {
+        "nameRequired": "Gib deinen Vornamen ein!",
+        "lastnameRequired": "Gib deinen Nachnamen ein!",
+        "zodiacSignRequired": "Wähle ein Sternzeichen aus",
+        "ageDigits": "Das Alter darf nur Ziffern enthalten"
       },
       "snackbar": {
         "updated": "Profil aktualisiert"
@@ -537,6 +514,33 @@
       }
     },
     "aibot": {
+      "profile": {
+        "highlights": {
+          "creatorInfoTitle": "Infos zum Ersteller",
+          "creatorLabel": "Ersteller",
+          "createdLabel": "Erstellt"
+        },
+        "debug": {
+          "startChatFailed": "Chat mit dem AI-Agenten konnte nicht gestartet werden"
+        }
+      },
+      "createPage": {
+        "debug": {
+          "selectedFileNotImage": "Die ausgewählte Datei ist kein unterstütztes Bildformat.",
+          "processAvatarFailed": "Avatarbild konnte nicht verarbeitet werden",
+          "skippedNonImageFile": "Nicht-Bild-Datei beim Hochladen der Galerie übersprungen: {{fileName}}",
+          "processGalleryImageFailed": "Galeriebild konnte nicht verarbeitet werden"
+        }
+      },
+      "editDialog": {
+        "debug": {
+          "objectUrlNotSupported": "Object-URLs werden in dieser Umgebung nicht unterstützt.",
+          "updateFailed": "AI-Agent konnte nicht aktualisiert werden"
+        },
+        "snackbar": {
+          "fillProfessionAndGender": "Bitte gib Beruf und Geschlecht an."
+        }
+      },
       "card": {
         "defaultName": "KI-Agent"
       },
@@ -547,6 +551,20 @@
         "empty": "Hier ist noch nichts. Schau später wieder vorbei!",
         "noDescription": "Keine Beschreibung"
       },
+      "chatLimit": {
+        "debug": {
+          "syncStateFailed": "Chat-Limit-Status konnte nicht synchronisiert werden",
+          "loadTokenBalanceFailed": "Token-Guthaben konnte nicht geladen werden",
+          "unlockFailed": "Chat-Limit konnte nicht aufgehoben werden"
+        },
+        "snackbar": {
+          "resetSuccess": "Nachrichtenlimit wurde zurückgesetzt.",
+          "insufficientTokens": "Nicht genug Tokens zum Freischalten.",
+          "unlockError": "Der Chat konnte nicht freigeschaltet werden. Bitte versuche es später erneut.",
+          "cooldownWithTokens": "Nachrichtenlimit erreicht. Warte {{duration}} oder nutze Tokens, um fortzufahren.",
+          "cooldownNoTokens": "Nachrichtenlimit erreicht. Bitte warte, bis der Timer abgelaufen ist."
+        }
+      },
       "guestChat": {
         "defaultBotName": "KI-Bot",
         "inputPlaceholder": "Frag etwas...",
@@ -554,10 +572,35 @@
         "errors": {
           "limitReached": "Tageslimit erreicht. Bitte später erneut versuchen.",
           "sendFailed": "Nachricht konnte nicht gesendet werden. Bitte erneut versuchen."
+        },
+        "debug": {
+          "persistHistoryFailed": "Gast-Chatverlauf konnte nicht gespeichert werden",
+          "persistSessionFailed": "Gast-Chat-Sitzung konnte nicht gespeichert werden",
+          "sendFailedLog": "Senden der Gast-AI-Nachricht ist fehlgeschlagen",
+          "parseHistoryFailed": "Gespeicherter Gast-Chatverlauf konnte nicht gelesen werden",
+          "loadDataFailed": "Daten des Gast-Chats konnten nicht geladen werden"
         }
       }
     },
     "chat": {
+      "messages": {
+        "title": {
+          "privateChat": "Privater Chat"
+        },
+        "debug": {
+          "scrollToPinnedFailed": "Scrollen zur angehefteten Nachricht fehlgeschlagen",
+          "deleteMessageFailed": "Nachricht konnte nicht gelöscht werden",
+          "clearHistoryFailed": "Chatverlauf konnte nicht gelöscht werden"
+        },
+        "snackbar": {
+          "reportSent": "Meldung gesendet.",
+          "messageDeleted": "Nachricht gelöscht.",
+          "deleteMessageFailed": "Nachricht konnte nicht gelöscht werden.",
+          "copied": "Kopiert.",
+          "historyCleared": "Chatverlauf gelöscht.",
+          "clearHistoryFailed": "Chatverlauf konnte nicht gelöscht werden."
+        }
+      },
       "limitNotice": {
         "message": "Nachrichtenlimit erreicht",
         "adReady": "Anzeige ist bereit zur Wiedergabe",
@@ -597,12 +640,61 @@
       },
       "messageItem": {
         "deleted": "Nachricht gelöscht"
+      },
+      "list": {
+        "debug": {
+          "deleteChatFailed": "Chat konnte nicht gelöscht werden"
+        },
+        "snackbar": {
+          "chatDeleted": "Chat gelöscht.",
+          "deleteChatFailed": "Chat konnte nicht gelöscht werden."
+        }
       }
     },
     "forceUpdate": {
       "title": "Aktualisierung erforderlich",
       "description": "Eine neue Version der App ist verfügbar. Bitte aktualisieren, um fortzufahren.",
       "button": "Aktualisieren"
+    },
+    "account": {
+      "changePassword": {
+        "snackbar": {
+          "updated": "Passwort aktualisiert.",
+          "error": "Beim Ändern des Passworts ist ein Fehler aufgetreten."
+        }
+      },
+      "settings": {
+        "snackbar": {
+          "updated": "Erfolgreich aktualisiert.",
+          "error": "Es ist ein Fehler aufgetreten."
+        }
+      }
+    },
+    "profile": {
+      "edit": {
+        "snackbar": {
+          "noChanges": "Es wurde nichts geändert.",
+          "updated": "Profil aktualisiert.",
+          "error": "Beim Aktualisieren des Profils ist ein Fehler aufgetreten.",
+          "photoUploadSuccess": "Foto erfolgreich hochgeladen.",
+          "photoUploadError": "Foto konnte nicht hochgeladen werden.",
+          "noPhotoToRemove": "Es gibt kein Foto zum Entfernen.",
+          "invalidFilePath": "Ungültiger Dateipfad.",
+          "photoRemoveSuccess": "Foto erfolgreich entfernt.",
+          "photoRemoveError": "Foto konnte nicht entfernt werden."
+        },
+        "debug": {
+          "compressImageFailed": "compressImage fehlgeschlagen, ursprüngliches Bild wird verwendet",
+          "onPressSelectError": "Fehler in onPressSelect:",
+          "onPressRemoveError": "Fehler in onPressRemove:"
+        }
+      },
+      "socialProfiles": {
+        "snackbar": {
+          "updated": "Soziale Profile aktualisiert.",
+          "error": "Beim Aktualisieren der sozialen Profile ist ein Fehler aufgetreten."
+        }
+      }
     },
     "ads": {
       "rewardedTokens": {
@@ -617,35 +709,8 @@
       }
     }
   },
-  "reports": {
-    "reasons": {
-      "user": {
-        "spamOrFraud": "Spam or fraud",
-        "harassmentOrBullying": "Harassment or bullying",
-        "inappropriateContent": "Inappropriate content",
-        "fakeProfile": "Fake profile"
-      },
-      "post": {
-        "spamOrMisleading": "Spam or misleading content",
-        "hateOrDiscrimination": "Hate or discrimination",
-        "violenceOrThreats": "Violence or threats",
-        "sexualContent": "Sexual content",
-        "harassmentOrBullying": "Harassment or bullying"
-      },
-      "common": {
-        "other": "Other"
-      }
-    }
-  },
   "screens": {
     "dashboard": {
-      "header": {
-        "title": "AiAstrology",
-        "subtitle": "Tägliche astrologische Orientierung",
-        "accessibility": {
-          "openFilters": "Filter öffnen"
-        }
-      },
       "tabs": {
         "all": "Alle"
       },
@@ -660,6 +725,13 @@
           "closePreview": "Vorschau schließen"
         },
         "uploadPrompt": "Tippe hier, um ein Foto hochzuladen, das du zum Leben erwecken möchtest!"
+      },
+      "header": {
+        "title": "AiAstrology",
+        "subtitle": "Tägliche astrologische Orientierung",
+        "accessibility": {
+          "openFilters": "Filter öffnen"
+        }
       },
       "horoscope": {
         "dateFormat": "dddd, D. MMMM",
@@ -771,7 +843,12 @@
         "createdAtLabel": "Erstellt am"
       },
       "gallery": {
-        "empty": "Der Ersteller hat noch keine Fotos hinzugefügt."
+        "empty": "Der Ersteller hat noch keine Fotos hinzugefügt.",
+        "locked": {
+          "title": "Anzeige erforderlich",
+          "cta": "Anzeige ansehen, um zu öffnen",
+          "success": "Bild freigeschaltet"
+        }
       },
       "common": {
         "categories": {
@@ -780,7 +857,12 @@
           "для-прикола": "Zum Spaß",
           "романтический": "Romantisch",
           "роли": "Rollen",
-          "история": "Geschichte"
+          "история": "Geschichte",
+          "language": "Sprache",
+          "romantic": "Romantisch",
+          "useful": "Nützlich",
+          "scenario": "Szenario",
+          "fun": "Spaß"
         },
         "errors": {
           "openProfile": "Bot-Profil konnte nicht geöffnet werden"
@@ -821,6 +903,10 @@
             "lastName": {
               "label": "Nachname",
               "placeholder": "Nachnamen des Agenten eingeben"
+            },
+            "gender": {
+              "label": "Geschlecht",
+              "placeholder": "Geschlecht auswählen"
             },
             "profession": {
               "label": "Beruf oder Rolle",
@@ -908,6 +994,10 @@
               "label": "Nachname",
               "placeholder": "Nachname des Agenten"
             },
+            "gender": {
+              "label": "Geschlecht",
+              "placeholder": "Geschlecht auswählen"
+            },
             "profession": {
               "label": "Beruf",
               "placeholder": "Zum Beispiel: Designer"
@@ -953,18 +1043,6 @@
       }
     },
     "onboarding": {
-      "steps": {
-        "language": {
-          "title": "🌐 Wähle deine Sprache",
-          "description": "Wählen Sie Ihre Benutzeroberflächensprache, um Ihr App-Erlebnis zu personalisieren."
-        },
-        "zodiac": {
-          "title": "✨ Was ist dein Sternzeichen?",
-          "description": "Wir verwenden es, um Horoskope und Empfehlungen für dich anzupassen."
-        }
-      },
-      "stepCounter": "{{current}} von {{total}}",
-      "back": "Zurück",
       "slides": {
         "language": {
           "title": "🌐 Wähle deine Sprache",
@@ -989,7 +1067,19 @@
       },
       "skip": "Überspringen",
       "next": "Weiter",
-      "start": "Starten"
+      "start": "Starten",
+      "steps": {
+        "language": {
+          "title": "🌐 Wähle deine Sprache",
+          "description": "Wählen Sie Ihre Benutzeroberflächensprache, um Ihr App-Erlebnis zu personalisieren."
+        },
+        "zodiac": {
+          "title": "✨ Was ist dein Sternzeichen?",
+          "description": "Wir verwenden es, um Horoskope und Empfehlungen für dich anzupassen."
+        }
+      },
+      "stepCounter": "{{current}} von {{total}}",
+      "back": "Zurück"
     },
     "profile": {
       "tabs": {
@@ -1013,17 +1103,17 @@
         "bot": "Bot"
       },
       "searchPlaceholder": "Suchen...",
-      "natalChartModal": {
-        "title": "Erstelle dein Geburtshoroskop, um zu chatten",
-        "description": "Erstelle zuerst dein Geburtshoroskop, um Zugriff auf den Chat zu erhalten.",
-        "action": "Geburtshoroskop erstellen"
-      },
       "messages": {
         "reply": "Antworten",
         "photoPlaceholder": "Foto",
         "placeholder": "Nachricht",
         "editing": "Bearbeiten",
         "clearHistory": "Chatverlauf löschen"
+      },
+      "natalChartModal": {
+        "title": "Erstelle dein Geburtshoroskop, um zu chatten",
+        "description": "Erstelle zuerst dein Geburtshoroskop, um Zugriff auf den Chat zu erhalten.",
+        "action": "Geburtshoroskop erstellen"
       }
     },
     "docs": {
@@ -1091,6 +1181,113 @@
             }
           }
         }
+      }
+    }
+  },
+  "stores": {
+    "aiBot": {
+      "snackbar": {
+        "mainPageBotsError": "Die Liste der Bots konnte nicht geladen werden. Bitte versuche später, die Seite zu aktualisieren.",
+        "fetchAiBotError": "AI-Bot konnte nicht geladen werden.",
+        "fetchMyAiBotsError": "Deine AI-Bots konnten nicht geladen werden.",
+        "fetchSubscriptionsError": "Abonnements für AI-Bots konnten nicht geladen werden.",
+        "updateSubscriptionError": "Abonnementstatus konnte nicht aktualisiert werden.",
+        "createSuccess": "AI-Bot erstellt.",
+        "createFailed": "AI-Bot konnte nicht erstellt werden.",
+        "updateSuccess": "AI-Bot wurde aktualisiert.",
+        "updateFailed": "AI-Bot konnte nicht aktualisiert werden.",
+        "deleteSuccess": "AI-Bot wurde gelöscht.",
+        "renewSubscriptionFailed": "Abonnement konnte nicht verlängert werden.",
+        "photosSaved": "Fotos gespeichert.",
+        "photosSaveFailed": "Fotos konnten nicht hochgeladen werden.",
+        "photosDeleted": "Fotos gelöscht.",
+        "photosDeleteFailed": "Fotos konnten nicht gelöscht werden."
+      },
+      "creationError": {
+        "loginRequired": "Bitte melde dich an!"
+      },
+      "errors": {
+        "createAiAgent": "AI-Agent konnte nicht erstellt werden"
+      },
+      "debug": {
+        "fetchAiProfilesFailed": "Fehler beim Abrufen der AI-Profile",
+        "fetchMainPageBotsFailed": "AI-Bots für die Admin-Startseite konnten nicht geladen werden",
+        "fetchAiBotFailed": "AI-Bot konnte nicht geladen werden",
+        "fetchUserAiBotsFailed": "AI-Bots des Benutzers konnten nicht geladen werden",
+        "fetchMyAiBotsFailed": "Meine AI-Bots konnten nicht geladen werden",
+        "fetchSubscribedAiBotsFailed": "Abonnierte AI-Bots konnten nicht geladen werden",
+        "updateFollowFailed": "Folgestatus konnte nicht aktualisiert werden",
+        "updateAiBotFailed": "AI-Agent konnte nicht aktualisiert werden",
+        "fetchBotDetailsFailed": "Details des AI-Bots konnten nicht abgerufen werden",
+        "uploadPhotosFailed": "Fotos des AI-Bots konnten nicht hochgeladen werden",
+        "deletePhotosFailed": "Fotos des AI-Bots konnten nicht gelöscht werden"
+      }
+    },
+    "auth": {
+      "debug": {
+        "sendPushTokenFailed": "Push-Token konnte nicht gesendet werden"
+      }
+    },
+    "chat": {
+      "snackbar": {
+        "sendFailed": "Nachricht konnte nicht gesendet werden"
+      }
+    },
+    "imageGeneration": {
+      "errors": {
+        "generic": "Etwas ist schiefgelaufen. Bitte versuche es später erneut.",
+        "noImageSelected": "Kein Bild ausgewählt."
+      }
+    },
+    "profile": {
+      "updated": "Profil aktualisiert",
+      "followUpdateFailed": "Abonnement konnte nicht aktualisiert werden",
+      "userBlocked": "Benutzer wurde blockiert",
+      "reportSent": "Meldung gesendet",
+      "deleteAccountRequestSent": "Löschanfrage für das Konto wurde gesendet"
+    }
+  },
+  "navigation": {
+    "tabs": {
+      "dashboard": "Home",
+      "library": "Library",
+      "chats": "Chats",
+      "profile": "Profile"
+    }
+  },
+  "notifications": {
+    "profile": {
+      "updateSuccess": "Profile updated",
+      "followError": "Failed to update subscription",
+      "blockSuccess": "User blocked",
+      "reportSuccess": "Report sent",
+      "deleteRequestSent": "Request submitted",
+      "noChanges": "No changes made",
+      "photoUploadSuccess": "Photo uploaded",
+      "photoUploadError": "Failed to upload photo",
+      "noPhotoToRemove": "No photo to remove",
+      "invalidFilePath": "Invalid file path",
+      "photoDeleteSuccess": "Photo deleted",
+      "photoDeleteError": "Failed to delete photo"
+    }
+  },
+  "reports": {
+    "reasons": {
+      "user": {
+        "spamOrFraud": "Spam or fraud",
+        "harassmentOrBullying": "Harassment or bullying",
+        "inappropriateContent": "Inappropriate content",
+        "fakeProfile": "Fake profile"
+      },
+      "post": {
+        "spamOrMisleading": "Spam or misleading content",
+        "hateOrDiscrimination": "Hate or discrimination",
+        "violenceOrThreats": "Violence or threats",
+        "sexualContent": "Sexual content",
+        "harassmentOrBullying": "Harassment or bullying"
+      },
+      "common": {
+        "other": "Other"
       }
     }
   },

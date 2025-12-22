@@ -2,21 +2,6 @@
   "welcome": "Welcome",
   "login": "Sign In",
   "logout": "Sign Out",
-  "navigation": {
-    "chats": {
-      "title": "Chats",
-      "messagesTitle": "Messages"
-    },
-    "common": {
-      "back": "Back"
-    },
-    "tabs": {
-      "dashboard": "Home",
-      "library": "Library",
-      "chats": "Chats",
-      "profile": "Profile"
-    }
-  },
   "ads": {
     "rewardedCard": {
       "title": "My tokens",
@@ -190,13 +175,33 @@
       "title": "Edit Profile",
       "subtitle": "Fill in your personal information",
       "fields": {
-        "username": {
-          "label": "Username",
-          "placeholder": "Enter username"
+        "name": {
+          "label": "First Name",
+          "placeholder": "First name"
+        },
+        "lastname": {
+          "label": "Last Name",
+          "placeholder": "Last name"
+        },
+        "profession": {
+          "label": "Profession",
+          "placeholder": "Your profession"
+        },
+        "phone": {
+          "label": "Phone Number",
+          "placeholder": "Enter phone number"
         },
         "gender": {
           "label": "Gender",
           "placeholder": "Select gender"
+        },
+        "userBio": {
+          "label": "About Me",
+          "placeholder": "A short bio about you"
+        },
+        "username": {
+          "label": "Username",
+          "placeholder": "Enter username"
         },
         "zodiacSign": {
           "label": "Zodiac sign",
@@ -217,33 +222,7 @@
         "hasChildren": {
           "label": "Do you have children?",
           "placeholder": "Select an option"
-        },
-        "name": {
-          "label": "First Name",
-          "placeholder": "First name"
-        },
-        "lastname": {
-          "label": "Last Name",
-          "placeholder": "Last name"
-        },
-        "profession": {
-          "label": "Profession",
-          "placeholder": "Your profession"
-        },
-        "phone": {
-          "label": "Phone Number",
-          "placeholder": "Enter phone number"
-        },
-        "userBio": {
-          "label": "About Me",
-          "placeholder": "A short bio about you"
         }
-      },
-      "validation": {
-        "nameRequired": "Enter your first name!",
-        "lastnameRequired": "Enter your last name!",
-        "zodiacSignRequired": "Select a zodiac sign",
-        "ageDigits": "Age must contain digits only"
       },
       "options": {
         "gender": {
@@ -258,6 +237,12 @@
           "no": "No",
           "yes": "Yes"
         }
+      },
+      "validation": {
+        "nameRequired": "Enter your first name!",
+        "lastnameRequired": "Enter your last name!",
+        "zodiacSignRequired": "Select a zodiac sign",
+        "ageDigits": "Age must contain digits only"
       },
       "snackbar": {
         "updated": "Profile updated"
@@ -370,68 +355,6 @@
         "modalDescription": "All your data, including your profile, events, and chat history, will be permanently deleted. This process is irreversible and will be completed within 24 hours. Are you sure you want to continue?",
         "requestSent": "Your request has been sent. The account will be deleted within 24 hours."
       }
-    }
-  },
-  "notifications": {
-    "aiBots": {
-      "mainPageError": "Failed to load the list of AI bots. Please try again later.",
-      "singleLoadError": "Failed to load the AI bot",
-      "myBotsError": "Failed to load your AI bots",
-      "subscriptionsError": "Failed to load AI bot subscriptions",
-      "followUpdateError": "Failed to update subscription status",
-      "createSuccess": "AI bot created",
-      "createError": "Failed to create AI bot",
-      "authRequired": "Please sign in",
-      "updateSuccess": "AI bot updated",
-      "updateError": "Failed to update AI bot",
-      "deleteSuccess": "AI bot deleted",
-      "subscriptionError": "Failed to update subscription",
-      "photosSaveSuccess": "Photos saved",
-      "photosSaveError": "Failed to upload photos",
-      "photosDeleteSuccess": "Photos deleted",
-      "photosDeleteError": "Failed to delete photos"
-    },
-    "profile": {
-      "updateSuccess": "Profile updated",
-      "followError": "Failed to update subscription",
-      "blockSuccess": "User blocked",
-      "reportSuccess": "Report sent",
-      "deleteRequestSent": "Request submitted",
-      "noChanges": "No changes made",
-      "photoUploadSuccess": "Photo uploaded",
-      "photoUploadError": "Failed to upload photo",
-      "noPhotoToRemove": "No photo to remove",
-      "invalidFilePath": "Invalid file path",
-      "photoDeleteSuccess": "Photo deleted",
-      "photoDeleteError": "Failed to delete photo"
-    }
-  },
-  "reports": {
-    "reasons": {
-      "user": {
-        "spamOrFraud": "Spam or fraud",
-        "harassmentOrBullying": "Harassment or bullying",
-        "inappropriateContent": "Inappropriate content",
-        "fakeProfile": "Fake profile"
-      },
-      "post": {
-        "spamOrMisleading": "Spam or misleading content",
-        "hateOrDiscrimination": "Hate or discrimination",
-        "violenceOrThreats": "Violence or threats",
-        "sexualContent": "Sexual content",
-        "harassmentOrBullying": "Harassment or bullying"
-      },
-      "common": {
-        "other": "Other"
-      }
-    }
-  },
-  "errors": {
-    "common": {
-      "generic": "Something went wrong. Please try again later."
-    },
-    "imageGeneration": {
-      "noImageSelected": "No image selected"
     }
   },
   "components": {
@@ -591,6 +514,33 @@
       }
     },
     "aibot": {
+      "profile": {
+        "highlights": {
+          "creatorInfoTitle": "Creator info",
+          "creatorLabel": "Creator",
+          "createdLabel": "Created"
+        },
+        "debug": {
+          "startChatFailed": "Failed to start chat with AI agent"
+        }
+      },
+      "createPage": {
+        "debug": {
+          "selectedFileNotImage": "Selected file is not a supported image format.",
+          "processAvatarFailed": "Failed to process avatar image",
+          "skippedNonImageFile": "Skipped non-image file in gallery upload: {{fileName}}",
+          "processGalleryImageFailed": "Failed to process gallery image"
+        }
+      },
+      "editDialog": {
+        "debug": {
+          "objectUrlNotSupported": "Object URLs are not supported in this environment.",
+          "updateFailed": "Failed to update AI agent"
+        },
+        "snackbar": {
+          "fillProfessionAndGender": "Please fill in the profession and gender."
+        }
+      },
       "card": {
         "defaultName": "AI agent"
       },
@@ -601,6 +551,20 @@
         "empty": "Nothing here yet. Check back later!",
         "noDescription": "No description available"
       },
+      "chatLimit": {
+        "debug": {
+          "syncStateFailed": "Failed to sync chat limit state",
+          "loadTokenBalanceFailed": "Failed to load token balance",
+          "unlockFailed": "Failed to unlock chat limit"
+        },
+        "snackbar": {
+          "resetSuccess": "Message limit has been reset.",
+          "insufficientTokens": "Not enough tokens to unlock.",
+          "unlockError": "Failed to unlock the chat. Please try again later.",
+          "cooldownWithTokens": "Message limit reached. Wait {{duration}} or use tokens to continue.",
+          "cooldownNoTokens": "Message limit reached. Please wait for the timer to finish."
+        }
+      },
       "guestChat": {
         "defaultBotName": "AI bot",
         "inputPlaceholder": "Ask something...",
@@ -608,10 +572,35 @@
         "errors": {
           "limitReached": "You have reached the daily limit. Please try again later.",
           "sendFailed": "Couldn't send the message. Please try again."
+        },
+        "debug": {
+          "persistHistoryFailed": "Failed to persist guest chat history",
+          "persistSessionFailed": "Failed to persist guest chat session",
+          "sendFailedLog": "Failed to send guest AI message",
+          "parseHistoryFailed": "Failed to parse stored guest chat history",
+          "loadDataFailed": "Failed to load guest chat data"
         }
       }
     },
     "chat": {
+      "messages": {
+        "title": {
+          "privateChat": "Private chat"
+        },
+        "debug": {
+          "scrollToPinnedFailed": "Failed to scroll to pinned message",
+          "deleteMessageFailed": "Failed to delete message",
+          "clearHistoryFailed": "Failed to clear chat history"
+        },
+        "snackbar": {
+          "reportSent": "Report sent.",
+          "messageDeleted": "Message deleted.",
+          "deleteMessageFailed": "Failed to delete the message.",
+          "copied": "Copied.",
+          "historyCleared": "Chat history cleared.",
+          "clearHistoryFailed": "Failed to clear chat history."
+        }
+      },
       "limitNotice": {
         "message": "Message limit reached",
         "adReady": "Ad ready to play",
@@ -651,12 +640,61 @@
       },
       "messageItem": {
         "deleted": "Message deleted"
+      },
+      "list": {
+        "debug": {
+          "deleteChatFailed": "Failed to delete chat"
+        },
+        "snackbar": {
+          "chatDeleted": "Chat deleted.",
+          "deleteChatFailed": "Failed to delete chat."
+        }
       }
     },
     "forceUpdate": {
       "title": "Update required",
       "description": "A new version of the app is available. Please update to continue.",
       "button": "Update"
+    },
+    "account": {
+      "changePassword": {
+        "snackbar": {
+          "updated": "Password updated.",
+          "error": "An error occurred while changing the password."
+        }
+      },
+      "settings": {
+        "snackbar": {
+          "updated": "Updated successfully.",
+          "error": "An error occurred."
+        }
+      }
+    },
+    "profile": {
+      "edit": {
+        "snackbar": {
+          "noChanges": "Nothing has changed.",
+          "updated": "Profile updated.",
+          "error": "An error occurred while updating the profile.",
+          "photoUploadSuccess": "Photo uploaded successfully.",
+          "photoUploadError": "Failed to upload the photo.",
+          "noPhotoToRemove": "There is no photo to remove.",
+          "invalidFilePath": "Invalid file path.",
+          "photoRemoveSuccess": "Photo removed successfully.",
+          "photoRemoveError": "Failed to remove the photo."
+        },
+        "debug": {
+          "compressImageFailed": "compressImage failed, falling back to original image",
+          "onPressSelectError": "onPressSelect error:",
+          "onPressRemoveError": "onPressRemove error:"
+        }
+      },
+      "socialProfiles": {
+        "snackbar": {
+          "updated": "Social profiles updated.",
+          "error": "An error occurred while updating social profiles."
+        }
+      }
     },
     "ads": {
       "rewardedTokens": {
@@ -673,13 +711,6 @@
   },
   "screens": {
     "dashboard": {
-      "header": {
-        "title": "AiAstrology",
-        "subtitle": "Daily horoscope guidance",
-        "accessibility": {
-          "openFilters": "Open filters"
-        }
-      },
       "tabs": {
         "all": "All"
       },
@@ -694,6 +725,13 @@
           "closePreview": "Close preview"
         },
         "uploadPrompt": "Tap here to upload a photo you want to bring to life!"
+      },
+      "header": {
+        "title": "AiAstrology",
+        "subtitle": "Daily horoscope guidance",
+        "accessibility": {
+          "openFilters": "Open filters"
+        }
       },
       "horoscope": {
         "dateFormat": "dddd, D MMMM",
@@ -805,7 +843,12 @@
         "createdAtLabel": "Created"
       },
       "gallery": {
-        "empty": "The creator hasn't added photos yet."
+        "empty": "The creator hasn't added photos yet.",
+        "locked": {
+          "title": "Ad required",
+          "cta": "Watch an ad to view",
+          "success": "Image unlocked"
+        }
       },
       "common": {
         "categories": {
@@ -814,7 +857,12 @@
           "для-прикола": "For fun",
           "романтический": "Romantic",
           "роли": "Roles",
-          "история": "History"
+          "история": "History",
+          "language": "Language",
+          "romantic": "Romantic",
+          "useful": "Useful",
+          "scenario": "Scenario",
+          "fun": "Fun"
         },
         "errors": {
           "openProfile": "Failed to open bot profile"
@@ -855,6 +903,10 @@
             "lastName": {
               "label": "Last name",
               "placeholder": "Enter the agent's last name"
+            },
+            "gender": {
+              "label": "Gender",
+              "placeholder": "Select gender"
             },
             "profession": {
               "label": "Profession or role",
@@ -942,6 +994,10 @@
               "label": "Last name",
               "placeholder": "Agent's last name"
             },
+            "gender": {
+              "label": "Gender",
+              "placeholder": "Select gender"
+            },
             "profession": {
               "label": "Profession",
               "placeholder": "For example, designer"
@@ -987,18 +1043,6 @@
       }
     },
     "onboarding": {
-      "steps": {
-        "language": {
-          "title": "🌐 Choose your language",
-          "description": "Select your interface language to personalize your experience with the app."
-        },
-        "zodiac": {
-          "title": "✨ What's your zodiac sign?",
-          "description": "We will use it to tailor horoscopes and recommendations just for you."
-        }
-      },
-      "stepCounter": "{{current}} of {{total}}",
-      "back": "Back",
       "slides": {
         "language": {
           "title": "🌐 Choose your language",
@@ -1023,7 +1067,19 @@
       },
       "skip": "Skip",
       "next": "Next",
-      "start": "Start"
+      "start": "Start",
+      "steps": {
+        "language": {
+          "title": "🌐 Choose your language",
+          "description": "Select your interface language to personalize your experience with the app."
+        },
+        "zodiac": {
+          "title": "✨ What's your zodiac sign?",
+          "description": "We will use it to tailor horoscopes and recommendations just for you."
+        }
+      },
+      "stepCounter": "{{current}} of {{total}}",
+      "back": "Back"
     },
     "profile": {
       "tabs": {
@@ -1047,17 +1103,17 @@
         "bot": "Bot"
       },
       "searchPlaceholder": "Search...",
-      "natalChartModal": {
-        "title": "Build your natal chart to start chatting",
-        "description": "Generate your natal chart first to unlock access to the chat.",
-        "action": "Build natal chart"
-      },
       "messages": {
         "reply": "Reply",
         "photoPlaceholder": "photo",
         "placeholder": "Message",
         "editing": "Editing",
         "clearHistory": "Clear chat history"
+      },
+      "natalChartModal": {
+        "title": "Build your natal chart to start chatting",
+        "description": "Generate your natal chart first to unlock access to the chat.",
+        "action": "Build natal chart"
       }
     },
     "docs": {
@@ -1126,6 +1182,146 @@
           }
         }
       }
+    }
+  },
+  "stores": {
+    "aiBot": {
+      "snackbar": {
+        "mainPageBotsError": "Failed to load the list of bots. Please try refreshing the page later.",
+        "fetchAiBotError": "Failed to load AI bot.",
+        "fetchMyAiBotsError": "Failed to load your AI bots.",
+        "fetchSubscriptionsError": "Failed to load AI bot subscriptions.",
+        "updateSubscriptionError": "Failed to update subscription status.",
+        "createSuccess": "AI bot created.",
+        "createFailed": "Failed to create AI bot.",
+        "updateSuccess": "The AI bot has been updated.",
+        "updateFailed": "Failed to update AI bot.",
+        "deleteSuccess": "The AI bot has been removed.",
+        "renewSubscriptionFailed": "Failed to renew your subscription.",
+        "photosSaved": "Photos saved.",
+        "photosSaveFailed": "Failed to upload photos.",
+        "photosDeleted": "Photos deleted.",
+        "photosDeleteFailed": "Failed to delete photos."
+      },
+      "creationError": {
+        "loginRequired": "Please log in!"
+      },
+      "errors": {
+        "createAiAgent": "Failed to create AI agent"
+      },
+      "debug": {
+        "fetchAiProfilesFailed": "Error fetching AI profiles",
+        "fetchMainPageBotsFailed": "Failed to load AI bots for admin main page",
+        "fetchAiBotFailed": "Failed to load AI bot",
+        "fetchUserAiBotsFailed": "Failed to load user AI bots",
+        "fetchMyAiBotsFailed": "Failed to load my AI bots",
+        "fetchSubscribedAiBotsFailed": "Failed to load subscribed AI bots",
+        "updateFollowFailed": "Failed to update follow status",
+        "updateAiBotFailed": "Failed to update AI agent",
+        "fetchBotDetailsFailed": "Failed to fetch AI bot details",
+        "uploadPhotosFailed": "Failed to upload AI bot photos",
+        "deletePhotosFailed": "Failed to delete AI bot photos"
+      }
+    },
+    "auth": {
+      "debug": {
+        "sendPushTokenFailed": "Failed to send push token"
+      }
+    },
+    "chat": {
+      "snackbar": {
+        "sendFailed": "Failed to send message"
+      }
+    },
+    "imageGeneration": {
+      "errors": {
+        "generic": "Something went wrong. Please try again later.",
+        "noImageSelected": "No image selected."
+      }
+    },
+    "profile": {
+      "updated": "Profile updated",
+      "followUpdateFailed": "Failed to update subscription",
+      "userBlocked": "User has been blocked",
+      "reportSent": "Report submitted",
+      "deleteAccountRequestSent": "Deletion request sent"
+    }
+  },
+  "navigation": {
+    "chats": {
+      "title": "Chats",
+      "messagesTitle": "Messages"
+    },
+    "common": {
+      "back": "Back"
+    },
+    "tabs": {
+      "dashboard": "Home",
+      "library": "Library",
+      "chats": "Chats",
+      "profile": "Profile"
+    }
+  },
+  "notifications": {
+    "aiBots": {
+      "mainPageError": "Failed to load the list of AI bots. Please try again later.",
+      "singleLoadError": "Failed to load the AI bot",
+      "myBotsError": "Failed to load your AI bots",
+      "subscriptionsError": "Failed to load AI bot subscriptions",
+      "followUpdateError": "Failed to update subscription status",
+      "createSuccess": "AI bot created",
+      "createError": "Failed to create AI bot",
+      "authRequired": "Please sign in",
+      "updateSuccess": "AI bot updated",
+      "updateError": "Failed to update AI bot",
+      "deleteSuccess": "AI bot deleted",
+      "subscriptionError": "Failed to update subscription",
+      "photosSaveSuccess": "Photos saved",
+      "photosSaveError": "Failed to upload photos",
+      "photosDeleteSuccess": "Photos deleted",
+      "photosDeleteError": "Failed to delete photos"
+    },
+    "profile": {
+      "updateSuccess": "Profile updated",
+      "followError": "Failed to update subscription",
+      "blockSuccess": "User blocked",
+      "reportSuccess": "Report sent",
+      "deleteRequestSent": "Request submitted",
+      "noChanges": "No changes made",
+      "photoUploadSuccess": "Photo uploaded",
+      "photoUploadError": "Failed to upload photo",
+      "noPhotoToRemove": "No photo to remove",
+      "invalidFilePath": "Invalid file path",
+      "photoDeleteSuccess": "Photo deleted",
+      "photoDeleteError": "Failed to delete photo"
+    }
+  },
+  "reports": {
+    "reasons": {
+      "user": {
+        "spamOrFraud": "Spam or fraud",
+        "harassmentOrBullying": "Harassment or bullying",
+        "inappropriateContent": "Inappropriate content",
+        "fakeProfile": "Fake profile"
+      },
+      "post": {
+        "spamOrMisleading": "Spam or misleading content",
+        "hateOrDiscrimination": "Hate or discrimination",
+        "violenceOrThreats": "Violence or threats",
+        "sexualContent": "Sexual content",
+        "harassmentOrBullying": "Harassment or bullying"
+      },
+      "common": {
+        "other": "Other"
+      }
+    }
+  },
+  "errors": {
+    "common": {
+      "generic": "Something went wrong. Please try again later."
+    },
+    "imageGeneration": {
+      "noImageSelected": "No image selected"
     }
   },
   "library": {
