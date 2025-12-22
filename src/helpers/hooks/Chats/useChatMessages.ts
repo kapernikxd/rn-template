@@ -9,6 +9,8 @@ import { useRootStore } from '../../../store/StoreProvider';
 import { generateMessagesWithDates } from '../../../helpers/utils/date';
 import { getUserAvatar, getUserFullName } from '../../../helpers/utils/user';
 import { saveImageToPhotos, shareImageFromUrl } from '../../utils/media';
+import { getStoredNatalChart } from '../../astrology/natalChartStorage';
+import type { NatalChartPayload } from '../../../types/astrology';
 
 import type { ChatsStackParamList } from '../../../navigation';
 import type { ImageAsset } from 'rn-vs-lb';
@@ -57,6 +59,8 @@ export function useChatMessages() {
 
   const [editMode, setEditMode] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<MessageDTOWithAction | null>(null);
+  const [natalChartPayload, setNatalChartPayload] = useState<NatalChartPayload | null>(null);
+  const [natalChartSignature, setNatalChartSignature] = useState<string | null>(null);
 
   const toggleMode = () => setEditMode(prev => !prev);
   const exitEditMode = () => {
@@ -86,7 +90,27 @@ export function useChatMessages() {
   const chatImg = getUserAvatar(user!);
   const isGroupChat = chatStore.isGroupChat;
 
-  // первичная и рефокус-инициализация
+  useEffect(() => {
+    let isMounted = true;
+
+    // Rehydrate the most recently generated natal chart so it can be sent with messages.
+    getStoredNatalChart()
+      .then((stored) => {
+        if (!isMounted || !stored) return;
+
+        setNatalChartPayload(stored.chart);
+        setNatalChartSignature(stored.chartSignature);
+      })
+      .catch((error) => {
+        console.warn('Failed to load stored natal chart', error);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Primary load and re-focus initialization for the chat screen.
   useFocusEffect(
     useCallback(() => {
       if (!myId) return;
@@ -134,7 +158,7 @@ export function useChatMessages() {
     }, [chatId, myId, chatStore, onlineStore])
   );
 
-  // автопрочтение входящего последнего сообщения
+  // Auto-mark the latest incoming message as read so badges stay in sync.
   useEffect(() => {
     const hasId = !!lastMessage?._id;
     const notMine = lastMessage?.sender?._id !== myId;
@@ -143,7 +167,7 @@ export function useChatMessages() {
     }
   }, [lastMessage, chatId, myId, chatStore]);
 
-  // подстановка текста при входе в режим редактирования
+  // Prefill the input when switching into edit mode.
   useEffect(() => {
     if (selectedMessage?.actionType === 'edit') {
       setInputMessage(selectedMessage.content);
@@ -159,14 +183,14 @@ export function useChatMessages() {
     setRefreshing(false);
   }, [chatId, chatStore]);
 
-  /** onSubmit(images?) → bool для <InputMessage/> */
+  /** onSubmit(images?) → bool for <InputMessage/> */
   const handleSubmitFromInput = useCallback(
     async (images?: ImageAsset[]) => {
       try {
         const isEdit = selectedMessage?.actionType === 'edit';
         const currentInput = inputMessage;
 
-        // очистить поле сразу
+        // Clear the input immediately to keep the UI responsive.
         setInputMessage('');
 
         if (isEdit && selectedMessage?._id) {
@@ -180,7 +204,14 @@ export function useChatMessages() {
             height: img.height ?? 0,
           })) as ImagePicker.ImagePickerAsset[];
 
-          await chatStore.sendMessage(currentInput, chatId, replyId, expoLike);
+          await chatStore.sendMessage(
+            currentInput,
+            chatId,
+            replyId,
+            expoLike,
+            natalChartPayload ?? undefined,
+            natalChartSignature ?? undefined,
+          );
         }
 
         setSelectedMessage(null);
@@ -189,7 +220,7 @@ export function useChatMessages() {
         return false;
       }
     },
-    [chatId, chatStore, inputMessage, selectedMessage]
+    [chatId, chatStore, inputMessage, natalChartPayload, natalChartSignature, selectedMessage]
   );
 
   const handleTypingStart = useCallback(() => {

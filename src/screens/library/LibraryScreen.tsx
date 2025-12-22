@@ -42,6 +42,7 @@ import { buildExportPayload } from "./utils/buildExportPayload";
 import { clampNumber } from "./utils/clampNumber";
 import { makeSummaryText } from "./utils/makeSummaryText";
 import { makeStyles } from "./styles";
+import { saveNatalChart } from "../../helpers/astrology/natalChartStorage";
 
 const FORM_STORAGE_KEY = "libraryFormState";
 
@@ -421,6 +422,15 @@ export const LibraryScreen = () => {
     () => (chartPayload ? JSON.stringify(chartPayload) : ""),
     [chartPayload],
   );
+
+  useEffect(() => {
+    if (!chartPayload || !chartSignature) return;
+
+    // Cache the generated chart so chat messages can attach it later without rebuilding.
+    saveNatalChart(chartPayload, chartSignature).catch((error) => {
+      console.warn("Failed to cache natal chart payload", error);
+    });
+  }, [chartPayload, chartSignature]);
 
   useEffect(() => {
     let isActive = true;

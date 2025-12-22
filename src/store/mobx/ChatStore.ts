@@ -3,6 +3,7 @@ import ChatService from "../../services/chat/ChatService";
 import * as ImagePicker from 'expo-image-picker';
 import { RootStore } from "../rootStore";
 import { ChatDTO, MessageDTO } from "../../types";
+import type { NatalChartPayload } from "../../types/astrology";
 import { ChatById, FetchChatsOptions, ReadedMessageResponse } from "../../types/chat";
 import { BaseStore, StoreListener } from "./BaseStore";
 import { isEmpty } from "../../helpers/utils/common";
@@ -336,14 +337,19 @@ export class ChatStore {
     message: string,
     chatId: string,
     replyToMessageId?: string,
-    images?: ImagePicker.ImagePickerAsset[]
+    images?: ImagePicker.ImagePickerAsset[],
+    natalChart?: NatalChartPayload,
+    natalChartSignature?: string,
   ) {
     try {
+      // Forward any cached natal chart data so the backend can associate it with this message.
       const { data } = await this.chatService.sendMessage(
         message,
         chatId,
         replyToMessageId,
-        images
+        images,
+        natalChart,
+        natalChartSignature,
       );
 
       const messageData = {
