@@ -3,8 +3,9 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import { CHAT_LIMIT } from '../../../constants';
-import { FetchChatsOptions } from '../../../types/chat';
+import { FetchChatsOptions, ChatListItem } from '../../../types/chat';
 import { useRootStore } from '../../../store/StoreProvider';
+import { AnalyticsEvent, trackEvent } from '../../../services/analytics/events';
 
 export enum ChatTab {
   Person = 'person',
@@ -67,25 +68,39 @@ export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
 
   const handleLoadMore = useCallback(() => {
     if (!chatStore.hasMoreChats || chatStore.isLoadingChats) return;
-    setPage(p => p + 1);
-  }, [chatStore.hasMoreChats, chatStore.isLoadingChats]);
+    setPage((p) => {
+      const nextPage = p + 1;
+      void trackEvent(AnalyticsEvent.ChatsLoadMore, {
+        tab: activeTab,
+        nextPage,
+      });
+      return nextPage;
+    });
+  }, [activeTab, chatStore.hasMoreChats, chatStore.isLoadingChats]);
 
   const handleRefresh = useCallback(async () => {
     setRefreshing(true);
     setPage(1);
+    void trackEvent(AnalyticsEvent.ChatsRefreshed, {
+      tab: activeTab,
+    });
     await loadChats(activeTab, 1, searchQuery);
     setRefreshing(false);
   }, [activeTab, searchQuery, loadChats]);
 
   const handleDeleteChat = useCallback(
-    async (chatId: string) => {
+    async (chat: ChatListItem) => {
       try {
-        await chatStore.deleteChat(chatId);
-        setChatIds(prev => prev.filter(id => id !== chatId));
+        await chatStore.deleteChat(chat._id);
+        setChatIds(prev => prev.filter(id => id !== chat._id));
         uiStore.showSnackbar(
           t('components.chat.list.snackbar.chatDeleted'),
           'success',
         );
+        void trackEvent(AnalyticsEvent.ChatDeleted, {
+          chatId: chat._id,
+          chatType: chat.isBotChat ? 'bot' : chat.isGroupChat ? 'group' : 'private',
+        });
       } catch (error) {
         console.error(
           t('components.chat.list.debug.deleteChatFailed'),
@@ -121,6 +136,12 @@ export function useChats({ debounceMs = 300 }: UseChatsOptions = {}) {
     searchTimerRef.current = setTimeout(() => {
       setPage(1);
       loadChats(activeTab, 1, searchQuery);
+      if (searchQuery.trim()) {
+        void trackEvent(AnalyticsEvent.ChatsSearchPerformed, {
+          tab: activeTab,
+          queryLength: searchQuery.trim().length,
+        });
+      }
     }, debounceMs);
 
     return clearSearchTimer;
