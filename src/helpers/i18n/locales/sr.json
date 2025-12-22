@@ -627,6 +627,10 @@
         "refreshBalanceDescription": "Zatraži ažurno stanje tokena",
         "whatAreTokens": "Šta su tokeni?",
         "whatAreTokensDescription": "Kako funkcionišu i gde ih dobiti",
+        "tokenInfoOverview": "Tokeni ti omogućavaju da nastaviš dopisivanje kada potrošiš besplatni limit poruka.",
+        "tokenInfoUsage": "Potroši ih da otključaš dodatne poruke dok je tajmer aktivan.",
+        "tokenInfoEarn": "Dobij još gledanjem nagradnih reklama.",
+        "tokenInfoClose": "Zatvori",
         "unavailableSuffix": "(nedostupno)"
       },
       "swipeable": {

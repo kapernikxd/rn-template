@@ -627,6 +627,10 @@
         "refreshBalanceDescription": "Request the latest tokens",
         "whatAreTokens": "What are tokens?",
         "whatAreTokensDescription": "How they work and where to get them",
+        "tokenInfoOverview": "Tokens let you keep chatting when you hit the free message limit.",
+        "tokenInfoUsage": "Spend them to unlock extra messages while the timer is running.",
+        "tokenInfoEarn": "Get more by watching rewarded ads.",
+        "tokenInfoClose": "Close",
         "unavailableSuffix": "(unavailable)"
       },
       "swipeable": {

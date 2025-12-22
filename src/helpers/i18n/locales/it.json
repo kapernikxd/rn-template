@@ -627,6 +627,10 @@
         "refreshBalanceDescription": "Richiedi i token aggiornati",
         "whatAreTokens": "Cosa sono i token?",
         "whatAreTokensDescription": "Come funzionano e dove ottenerli",
+        "tokenInfoOverview": "I token ti permettono di continuare a chattare quando raggiungi il limite di messaggi gratuiti.",
+        "tokenInfoUsage": "Usali per sbloccare messaggi extra mentre il timer è attivo.",
+        "tokenInfoEarn": "Ottieni altri guardando annunci con ricompensa.",
+        "tokenInfoClose": "Chiudi",
         "unavailableSuffix": "(non disponibile)"
       },
       "swipeable": {

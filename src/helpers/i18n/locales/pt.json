@@ -627,6 +627,10 @@
         "refreshBalanceDescription": "Solicitar tokens atualizados",
         "whatAreTokens": "O que são tokens?",
         "whatAreTokensDescription": "Como funcionam e onde obter",
+        "tokenInfoOverview": "Tokens permitem continuar conversando quando você atinge o limite de mensagens gratuitas.",
+        "tokenInfoUsage": "Use-os para desbloquear mensagens extras enquanto o cronômetro está ativo.",
+        "tokenInfoEarn": "Consiga mais assistindo a anúncios recompensados.",
+        "tokenInfoClose": "Fechar",
         "unavailableSuffix": "(indisponível)"
       },
       "swipeable": {
