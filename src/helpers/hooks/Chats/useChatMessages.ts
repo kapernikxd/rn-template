@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AppState, FlatList } from 'react-native';
 import { useFocusEffect, useRoute, type RouteProp } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
@@ -11,6 +11,7 @@ import { getUserAvatar, getUserFullName } from '../../../helpers/utils/user';
 import { saveImageToPhotos, shareImageFromUrl } from '../../utils/media';
 import { getStoredNatalChart } from '../../astrology/natalChartStorage';
 import type { NatalChartPayload } from '../../../types/astrology';
+import { AnalyticsEvent, trackEvent } from '../../../services/analytics/events';
 
 import type { ChatsStackParamList } from '../../../navigation';
 import type { ImageAsset } from 'rn-vs-lb';
@@ -56,6 +57,7 @@ export function useChatMessages() {
 
   const myId = authStore.getMyId();
   const flatListRef = useRef<FlatList>(null);
+  const viewedChatIdRef = useRef<string | null>(null);
 
   const [editMode, setEditMode] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<MessageDTOWithAction | null>(null);
@@ -72,6 +74,10 @@ export function useChatMessages() {
     if (chatStore.messages.length >= skip + OFFSET) {
       const next = skip + OFFSET;
       setSkip(next);
+      void trackEvent(AnalyticsEvent.ChatMessagesLoadMore, {
+        chatId,
+        nextOffset: next,
+      });
       await chatStore.fetchChatMessages(chatId, next);
     }
   }, [chatId, skip, chatStore]);
@@ -158,6 +164,20 @@ export function useChatMessages() {
     }, [chatId, myId, chatStore, onlineStore])
   );
 
+  useEffect(() => {
+    const chat = chatStore.selectedChat;
+    if (!chat?._id) return;
+
+    if (viewedChatIdRef.current !== chat._id) {
+      viewedChatIdRef.current = chat._id;
+      const chatType = chat.isBotChat ? 'bot' : chat.isGroupChat ? 'group' : 'private';
+      void trackEvent(AnalyticsEvent.ChatMessagesViewed, {
+        chatId: chat._id,
+        chatType,
+      });
+    }
+  }, [chatStore.selectedChat]);
+
   // Auto-mark the latest incoming message as read so badges stay in sync.
   useEffect(() => {
     const hasId = !!lastMessage?._id;
@@ -176,6 +196,9 @@ export function useChatMessages() {
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
+    void trackEvent(AnalyticsEvent.ChatMessagesRefreshed, {
+      chatId,
+    });
     await chatStore.fetchChatMessages(chatId);
     if (!chatStore.isGroupChat && chatStore.opponentId) {
       await chatStore.getLastReadedMessage({ chatId, userId: chatStore.opponentId });
@@ -195,6 +218,11 @@ export function useChatMessages() {
 
         if (isEdit && selectedMessage?._id) {
           await chatStore.editMessage(selectedMessage._id, currentInput);
+          void trackEvent(AnalyticsEvent.ChatMessageEdited, {
+            chatId,
+            messageId: selectedMessage._id,
+            hasText: Boolean(currentInput.trim()),
+          });
         } else {
           const replyId = selectedMessage?.actionType === 'reply' ? selectedMessage._id : undefined;
 
@@ -212,6 +240,13 @@ export function useChatMessages() {
             natalChartPayload ?? undefined,
             natalChartSignature ?? undefined,
           );
+          void trackEvent(AnalyticsEvent.ChatMessageSent, {
+            chatId,
+            replyToId: replyId,
+            hasText: Boolean(currentInput.trim()),
+            imagesCount: images?.length ?? 0,
+            hasNatalChart: Boolean(natalChartPayload),
+          });
         }
 
         setSelectedMessage(null);
@@ -224,15 +259,21 @@ export function useChatMessages() {
   );
 
   const handleTypingStart = useCallback(() => {
+    void trackEvent(AnalyticsEvent.ChatTypingStarted, { chatId });
     onlineStore.emitTyping(chatId);
   }, [onlineStore, chatId]);
 
   const handleTypingStop = useCallback(() => {
+    void trackEvent(AnalyticsEvent.ChatTypingStopped, { chatId });
     onlineStore.emitStopTyping(chatId);
   }, [onlineStore, chatId]);
 
   const handlePinnedMessagePress = useCallback(
     (messageId: string) => {
+      void trackEvent(AnalyticsEvent.ChatPinnedMessageOpened, {
+        chatId,
+        messageId,
+      });
       const index = groupedMessages.findIndex(m => m._id === messageId);
       if (index !== -1 && flatListRef.current) {
         try {
@@ -251,8 +292,12 @@ export function useChatMessages() {
   const handleUnpinMessage = useCallback(
     (messageId: string) => {
       chatStore.unpinMessage(messageId);
+      void trackEvent(AnalyticsEvent.ChatMessageUnpinned, {
+        chatId,
+        messageId,
+      });
     },
-    [chatStore]
+    [chatId, chatStore]
   );
 
   const handleDownloadImage = useCallback(async (url: string) => {
@@ -274,6 +319,10 @@ export function useChatMessages() {
         t('components.chat.messages.snackbar.reportSent'),
         'success',
       );
+      void trackEvent(AnalyticsEvent.ChatMessageReported, {
+        chatId,
+        messageId: selectedMessage._id,
+      });
       setSelectedMessage(null);
       toggleMode();
     },
@@ -285,6 +334,10 @@ export function useChatMessages() {
           t('components.chat.messages.snackbar.messageDeleted'),
           'success',
         );
+        void trackEvent(AnalyticsEvent.ChatMessageDeleted, {
+          chatId,
+          messageId: selectedMessage._id,
+        });
       } catch (error) {
         console.error(
           t('components.chat.messages.debug.deleteMessageFailed'),
@@ -307,14 +360,27 @@ export function useChatMessages() {
         t('components.chat.messages.snackbar.copied'),
         'success',
       );
+      void trackEvent(AnalyticsEvent.ChatMessageCopied, {
+        chatId,
+        messageId: selectedMessage._id,
+      });
       toggleMode();
     },
     togglePinSelected: () => {
       if (!selectedMessage) return;
-      if (chatStore.isMessagePinned(selectedMessage._id)) {
+      const isPinned = chatStore.isMessagePinned(selectedMessage._id);
+      if (isPinned) {
         chatStore.unpinMessage(selectedMessage._id);
+        void trackEvent(AnalyticsEvent.ChatMessageUnpinned, {
+          chatId,
+          messageId: selectedMessage._id,
+        });
       } else {
         chatStore.pinMessage(selectedMessage);
+        void trackEvent(AnalyticsEvent.ChatMessagePinned, {
+          chatId,
+          messageId: selectedMessage._id,
+        });
       }
       setSelectedMessage(null);
       toggleMode();
@@ -328,6 +394,10 @@ export function useChatMessages() {
     setReplyMode: () => {
       if (!selectedMessage) return;
       setSelectedMessage({ ...selectedMessage, actionType: 'reply' });
+      void trackEvent(AnalyticsEvent.ChatMessageReplyStarted, {
+        chatId,
+        messageId: selectedMessage._id,
+      });
       toggleMode();
     },
     clearSelected: () => setSelectedMessage(null),
@@ -339,6 +409,9 @@ export function useChatMessages() {
           t('components.chat.messages.snackbar.historyCleared'),
           'success',
         );
+        void trackEvent(AnalyticsEvent.ChatHistoryCleared, {
+          chatId,
+        });
       } catch (error) {
         console.error(
           t('components.chat.messages.debug.clearHistoryFailed'),
