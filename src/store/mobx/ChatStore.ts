@@ -340,6 +340,7 @@ export class ChatStore {
     images?: ImagePicker.ImagePickerAsset[],
     natalChart?: NatalChartPayload,
     natalChartSignature?: string,
+    lang?: string,
   ) {
     try {
       // Forward any cached natal chart data so the backend can associate it with this message.
@@ -350,6 +351,7 @@ export class ChatStore {
         images,
         natalChart,
         natalChartSignature,
+        lang,
       );
 
       const messageData = {

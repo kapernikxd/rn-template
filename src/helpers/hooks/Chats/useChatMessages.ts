@@ -49,7 +49,7 @@ export function useChatMessages() {
   const chatId = route.params.chatId;
 
   const { chatStore, authStore, uiStore, onlineStore } = useRootStore();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -239,6 +239,7 @@ export function useChatMessages() {
             expoLike,
             natalChartPayload ?? undefined,
             natalChartSignature ?? undefined,
+            i18n.resolvedLanguage ?? i18n.language,
           );
           void trackEvent(AnalyticsEvent.ChatMessageSent, {
             chatId,
@@ -255,7 +256,16 @@ export function useChatMessages() {
         return false;
       }
     },
-    [chatId, chatStore, inputMessage, natalChartPayload, natalChartSignature, selectedMessage]
+    [
+      chatId,
+      chatStore,
+      i18n.language,
+      i18n.resolvedLanguage,
+      inputMessage,
+      natalChartPayload,
+      natalChartSignature,
+      selectedMessage,
+    ]
   );
 
   const handleTypingStart = useCallback(() => {

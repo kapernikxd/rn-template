@@ -64,10 +64,12 @@ export default class ChatService {
     images?: ImagePickerAsset[],
     natalChart?: NatalChartPayload,
     natalChartSignature?: string,
+    lang?: string,
   ): Promise<AxiosResponse<{ data: MessageDTO }>> {
     const formData = new FormData();
     formData.append('content', message);
     formData.append('chatId', chatId);
+    if (lang) formData.append('lang', lang);
     if (replyToMessageId) formData.append('replyTo', replyToMessageId);
     if (natalChart) {
       // Send natal chart JSON so the backend can log astrology context with the message.
