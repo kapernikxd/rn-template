@@ -740,7 +740,18 @@
           "unfollow": "Otprati"
         },
         "reportTitle": "Prijavi korisnika",
-        "reportPlaceholder": "Dodatni detalji (opciono)"
+        "reportPlaceholder": "Dodatni detalji (opciono)",
+        "reportReasons": {
+          "spam": "Spam ili prevara",
+          "harassment": "Uznemiravanje ili zastrašivanje",
+          "inappropriateContent": "Neprimeren sadržaj",
+          "fakeProfile": "Lažan profil",
+          "postSpam": "Spam ili obmanjujući materijali",
+          "hate": "Govor mržnje ili diskriminacija",
+          "violence": "Nasilje ili pretnje",
+          "sexual": "Seksualni sadržaj",
+          "other": "Drugo"
+        }
       },
       "hero": {
         "badge": "AI agent",

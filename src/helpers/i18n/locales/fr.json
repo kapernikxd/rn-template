@@ -740,7 +740,18 @@
           "unfollow": "Se désabonner"
         },
         "reportTitle": "Signaler l’utilisateur",
-        "reportPlaceholder": "Détails supplémentaires (optionnel)"
+        "reportPlaceholder": "Détails supplémentaires (optionnel)",
+        "reportReasons": {
+          "spam": "Spam ou fraude",
+          "harassment": "Harcèlement ou intimidation",
+          "inappropriateContent": "Contenu inapproprié",
+          "fakeProfile": "Faux profil",
+          "postSpam": "Spam ou contenus trompeurs",
+          "hate": "Discours de haine ou discrimination",
+          "violence": "Violence ou menaces",
+          "sexual": "Contenu sexuel",
+          "other": "Autre"
+        }
       },
       "hero": {
         "badge": "Agent IA",

@@ -740,7 +740,18 @@
           "unfollow": "Dejar de seguir"
         },
         "reportTitle": "Reportar usuario",
-        "reportPlaceholder": "Detalles adicionales (opcional)"
+        "reportPlaceholder": "Detalles adicionales (opcional)",
+        "reportReasons": {
+          "spam": "Spam o fraude",
+          "harassment": "Acoso o intimidación",
+          "inappropriateContent": "Contenido inapropiado",
+          "fakeProfile": "Perfil falso",
+          "postSpam": "Spam o materiales engañosos",
+          "hate": "Discurso de odio o discriminación",
+          "violence": "Violencia o amenazas",
+          "sexual": "Contenido sexual",
+          "other": "Otro"
+        }
       },
       "hero": {
         "badge": "Agente IA",
