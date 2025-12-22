@@ -1002,6 +1002,11 @@
         "bot": "Bot"
       },
       "searchPlaceholder": "Pretraga...",
+      "natalChartModal": {
+        "title": "Napravite natalnu kartu da biste ćaskali",
+        "description": "Prvo generišite natalnu kartu da biste otključali chat.",
+        "action": "Napravi natalnu kartu"
+      },
       "messages": {
         "reply": "Odgovori",
         "photoPlaceholder": "fotografija",

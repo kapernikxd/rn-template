@@ -1002,6 +1002,11 @@
         "bot": "Bot"
       },
       "searchPlaceholder": "Buscar...",
+      "natalChartModal": {
+        "title": "Crea tu carta natal para empezar a chatear",
+        "description": "Primero genera tu carta natal para desbloquear el acceso al chat.",
+        "action": "Crear carta natal"
+      },
       "messages": {
         "reply": "Responder",
         "photoPlaceholder": "foto",

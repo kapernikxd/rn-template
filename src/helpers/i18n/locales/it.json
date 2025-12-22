@@ -1002,6 +1002,11 @@
         "bot": "Bot"
       },
       "searchPlaceholder": "Cerca...",
+      "natalChartModal": {
+        "title": "Crea il tuo tema natale per iniziare a chattare",
+        "description": "Genera prima il tuo tema natale per sbloccare l'accesso alla chat.",
+        "action": "Crea il tema natale"
+      },
       "messages": {
         "reply": "Rispondi",
         "photoPlaceholder": "foto",

@@ -1002,6 +1002,11 @@
         "bot": "Bot"
       },
       "searchPlaceholder": "Buscar...",
+      "natalChartModal": {
+        "title": "Crie seu mapa natal para começar a conversar",
+        "description": "Gere primeiro seu mapa natal para liberar o acesso ao chat.",
+        "action": "Criar mapa natal"
+      },
       "messages": {
         "reply": "Responder",
         "photoPlaceholder": "foto",

@@ -1002,6 +1002,11 @@
         "bot": "Bot"
       },
       "searchPlaceholder": "Recherche...",
+      "natalChartModal": {
+        "title": "Crée ta carte natale pour discuter",
+        "description": "Génère d'abord ta carte natale pour accéder au chat.",
+        "action": "Créer la carte natale"
+      },
       "messages": {
         "reply": "Répondre",
         "photoPlaceholder": "photo",

@@ -1002,6 +1002,11 @@
         "bot": "Bot"
       },
       "searchPlaceholder": "Suchen...",
+      "natalChartModal": {
+        "title": "Erstelle dein Geburtshoroskop, um zu chatten",
+        "description": "Erstelle zuerst dein Geburtshoroskop, um Zugriff auf den Chat zu erhalten.",
+        "action": "Geburtshoroskop erstellen"
+      },
       "messages": {
         "reply": "Antworten",
         "photoPlaceholder": "Foto",
