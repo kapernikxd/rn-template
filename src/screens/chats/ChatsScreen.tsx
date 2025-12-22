@@ -15,6 +15,9 @@ import { useRootStore } from '../../store/StoreProvider';
 import type { UserDTO } from '../../types';
 import { ChatTab, useChats } from '../../helpers/hooks/Chats/useChats';
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
+import { ROUTES } from '../../navigation';
+import { useChatNatalChartRequirement } from '../../helpers/hooks/Chats/useChatNatalChartRequirement';
+import { NatalChartRequiredModal } from '../../components/chat/NatalChartRequiredModal';
 
 export const ChatsScreen: FC = observer(() => {
   const { theme, isDark } = useTheme();
@@ -22,7 +25,7 @@ export const ChatsScreen: FC = observer(() => {
   const styles = getStyles({ theme });
   const { t } = useTranslation();
 
-  const { goToChatMessages } = usePortalNavigation();
+  const { goToChatMessages, goToMain } = usePortalNavigation();
   const { authStore, onlineStore } = useRootStore();
 
   const {
@@ -39,6 +42,7 @@ export const ChatsScreen: FC = observer(() => {
 
   const scrollY = useRef(new Animated.Value(0)).current;
 
+  const { isCheckingNatalChart, isNatalChartModalVisible } = useChatNatalChartRequirement();
 
   useEffect(() => {
     setColors({
@@ -123,6 +127,11 @@ export const ChatsScreen: FC = observer(() => {
 
   return (
     <View style={styles.container}>
+      <NatalChartRequiredModal
+        visible={!isCheckingNatalChart && isNatalChartModalVisible}
+        onAction={() => goToMain(ROUTES.LibraryTab)}
+      />
+
       <Spacer />
 
       {/* здесь можно добавить TabSwitcher, который дергает setActiveTab */}

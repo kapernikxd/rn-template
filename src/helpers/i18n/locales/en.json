@@ -1036,6 +1036,11 @@
         "bot": "Bot"
       },
       "searchPlaceholder": "Search...",
+      "natalChartModal": {
+        "title": "Build your natal chart to start chatting",
+        "description": "Generate your natal chart first to unlock access to the chat.",
+        "action": "Build natal chart"
+      },
       "messages": {
         "reply": "Reply",
         "photoPlaceholder": "photo",
