@@ -23,11 +23,15 @@ class AstrologyService {
     category: HoroscopeCategory,
     profile: ProfileInfoData,
     languageCode?: string,
+    previousHoroscope?: string | null,
   ): Promise<HoroscopeResponse> {
     const lang = this.getLanguageParam(languageCode);
+    const payload = (previousHoroscope?.trim()?.length ?? 0) > 0
+      ? { ...profile, previousHoroscope }
+      : profile;
     const response: AxiosResponse<HoroscopeResponse> = await $api.post(
       `astrology/${category}`,
-      profile,
+      payload,
       { params: { lang } },
     );
 
