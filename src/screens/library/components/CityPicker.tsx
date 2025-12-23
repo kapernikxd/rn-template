@@ -147,7 +147,8 @@ export const CityPicker = memo(
             placeholder={placeholder}
             placeholderTextColor={theme.greyText}
             onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
+            // Delay the blur handler so taps on suggestions can register
+            onBlur={() => setTimeout(() => setFocused(false), 50)}
           />
 
           {value.trim().length > 0 ? (
@@ -170,7 +171,11 @@ export const CityPicker = memo(
 
           {showSuggestions ? (
             <View style={s.suggestionsContainer}>
-              <ScrollView nestedScrollEnabled contentContainerStyle={s.suggestionsContent}>
+              <ScrollView
+                nestedScrollEnabled
+                keyboardShouldPersistTaps="handled"
+                contentContainerStyle={s.suggestionsContent}
+              >
                 {suggestions.map((suggestion) => (
                   <TouchableOpacity
                     key={suggestion._id}
