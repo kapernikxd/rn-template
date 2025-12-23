@@ -30,7 +30,10 @@ export const formatTimeValue = (value: string) => {
   }
 
   const minutesNumber = Math.min(Number(minutesRaw), 59);
-  const minutesString = minutesNumber.toString().padStart(2, "0");
+  const minutesString =
+    digits.length === 3
+      ? minutesRaw
+      : minutesNumber.toString().padStart(2, "0");
 
   return `${hoursString}:${minutesString}`;
 };
