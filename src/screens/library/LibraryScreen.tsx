@@ -40,6 +40,7 @@ import { useDebouncedEffect } from "./hooks/useDebouncedEffect";
 
 import { buildExportPayload } from "./utils/buildExportPayload";
 import { clampNumber } from "./utils/clampNumber";
+import { formatTimeValue, sanitizeNumericInput } from "./utils/inputFormatters";
 import { makeSummaryText } from "./utils/makeSummaryText";
 import { makeStyles } from "./styles";
 import { saveNatalChart } from "../../helpers/astrology/natalChartStorage";
@@ -121,6 +122,22 @@ export const LibraryScreen = () => {
   const [readingErrors, setReadingErrors] = useState<Record<string, string | undefined>>({});
   const [activeReadingKey, setActiveReadingKey] = useState<string | null>(null);
   const [loadingReadingKey, setLoadingReadingKey] = useState<string | null>(null);
+
+  const handleDayChange = useCallback((text: string) => {
+    setDay(sanitizeNumericInput(text, 31, 2));
+  }, []);
+
+  const handleMonthChange = useCallback((text: string) => {
+    setMonth(sanitizeNumericInput(text, 12, 2));
+  }, []);
+
+  const handleYearChange = useCallback((text: string) => {
+    setYear(sanitizeNumericInput(text, 9999, 4));
+  }, []);
+
+  const handleTimeChange = useCallback((text: string) => {
+    setTime(formatTimeValue(text));
+  }, []);
 
   // city picker
   const [isCityFocused, setIsCityFocused] = useState(false);
@@ -691,16 +708,32 @@ export const LibraryScreen = () => {
         }
       >
         <View style={styles.formRow}>
-          <LabeledInput label={t("library.form.fields.day")} value={day} onChangeText={setDay} keyboardType="numeric" />
-          <LabeledInput label={t("library.form.fields.month")} value={month} onChangeText={setMonth} keyboardType="numeric" />
-          <LabeledInput label={t("library.form.fields.year")} value={year} onChangeText={setYear} keyboardType="numeric" />
+          <LabeledInput
+            label={t("library.form.fields.day")}
+            value={day}
+            onChangeText={handleDayChange}
+            keyboardType="numeric"
+          />
+          <LabeledInput
+            label={t("library.form.fields.month")}
+            value={month}
+            onChangeText={handleMonthChange}
+            keyboardType="numeric"
+          />
+          <LabeledInput
+            label={t("library.form.fields.year")}
+            value={year}
+            onChangeText={handleYearChange}
+            keyboardType="numeric"
+          />
         </View>
 
         <View style={styles.formRow}>
           <LabeledInput
             label={t("library.form.fields.time")}
             value={time}
-            onChangeText={setTime}
+            onChangeText={handleTimeChange}
+            keyboardType="numeric"
             placeholder={t("library.form.fields.timePlaceholder")}
           />
           <CityPicker
