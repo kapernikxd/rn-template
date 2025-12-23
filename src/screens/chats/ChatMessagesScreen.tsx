@@ -214,7 +214,7 @@ export const ChatMessagesScreen: FC = observer(() => {
             }
           />
 
-          <ImageBackground source={chatBackground} style={styles.background} imageStyle={{ opacity: 0.5 }}>
+          <ImageBackground source={chatBackground} style={styles.background}>
             {hasPinnedMessages ? (
               <View style={styles.pinnedWrapper}>
                 <PinnedMessagesBar
