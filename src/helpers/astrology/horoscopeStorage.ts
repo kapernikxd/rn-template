@@ -10,9 +10,12 @@ export type StoredHoroscopes = Partial<Record<HoroscopeCategory, string>>;
 type HoroscopeStoragePayload = {
   date: string;
   data: StoredHoroscopes;
+  previousDate?: string;
+  previousData?: StoredHoroscopes;
 };
 
 const getTodayKey = () => dayjs().format('YYYY-MM-DD');
+const getYesterdayKey = () => dayjs().subtract(1, 'day').format('YYYY-MM-DD');
 
 const readStorage = async (): Promise<HoroscopeStoragePayload | null> => {
   try {
@@ -28,14 +31,20 @@ const readStorage = async (): Promise<HoroscopeStoragePayload | null> => {
       parsedValue && typeof parsedValue === 'object' && parsedValue.data && typeof parsedValue.data === 'object'
         ? (parsedValue.data as StoredHoroscopes)
         : {};
-
-    if (date !== getTodayKey()) {
-      return null;
-    }
+    const previousDate =
+      parsedValue && typeof parsedValue.previousDate === 'string'
+        ? parsedValue.previousDate
+        : undefined;
+    const previousData =
+      parsedValue && parsedValue.previousData && typeof parsedValue.previousData === 'object'
+        ? (parsedValue.previousData as StoredHoroscopes)
+        : undefined;
 
     return {
       date,
       data,
+      previousDate,
+      previousData,
     };
   } catch (error) {
     console.warn('Failed to read horoscope cache', error);
@@ -55,10 +64,22 @@ const writeStorage = async (payload: HoroscopeStoragePayload) => {
 
 export const getStoredHoroscopesForToday = async (): Promise<StoredHoroscopes> => {
   const storedValue = await readStorage();
-  return storedValue?.data ?? {};
+  return storedValue?.date === getTodayKey() ? storedValue.data : {};
 };
 
 export const getStoredHoroscopeForToday = async (
+  category: HoroscopeCategory,
+): Promise<string | null> => {
+  const storedValue = await readStorage();
+
+  if (!storedValue || storedValue.date !== getTodayKey()) {
+    return null;
+  }
+
+  return storedValue.data?.[category] ?? null;
+};
+
+export const getStoredHoroscopeForYesterday = async (
   category: HoroscopeCategory,
 ): Promise<string | null> => {
   const storedValue = await readStorage();
@@ -67,7 +88,17 @@ export const getStoredHoroscopeForToday = async (
     return null;
   }
 
-  return storedValue.data?.[category] ?? null;
+  const yesterdayKey = getYesterdayKey();
+
+  if (storedValue.date === yesterdayKey) {
+    return storedValue.data?.[category] ?? null;
+  }
+
+  if (storedValue.date === getTodayKey() && storedValue.previousDate === yesterdayKey) {
+    return storedValue.previousData?.[category] ?? null;
+  }
+
+  return null;
 };
 
 export const saveHoroscopeForToday = async (
@@ -78,6 +109,8 @@ export const saveHoroscopeForToday = async (
   const storedValue = await readStorage();
 
   const baseData = storedValue?.date === today ? storedValue.data ?? {} : {};
+  const previousDate = storedValue?.date === today ? storedValue.previousDate : storedValue?.date;
+  const previousData = storedValue?.date === today ? storedValue.previousData : storedValue?.data;
 
   const updatedData: StoredHoroscopes = {
     ...baseData,
@@ -87,6 +120,8 @@ export const saveHoroscopeForToday = async (
   await writeStorage({
     date: today,
     data: updatedData,
+    previousDate,
+    previousData,
   });
 
   return updatedData;

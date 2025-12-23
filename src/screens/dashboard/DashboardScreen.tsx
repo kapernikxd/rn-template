@@ -19,6 +19,7 @@ import type { HoroscopeCategory } from '../../types/astrology';
 import {
   getStoredHoroscopesForToday,
   getStoredHoroscopeForToday,
+  getStoredHoroscopeForYesterday,
   saveHoroscopeForToday,
   type StoredHoroscopes,
 } from '../../helpers/astrology/horoscopeStorage';
@@ -282,11 +283,15 @@ export const DashboardScreen = () => {
       setErrorsByCategory((prev) => ({ ...prev, [category]: undefined }));
 
       try {
-        const profileInfo = await getProfileInfo();
+        const [profileInfo, previousHoroscope] = await Promise.all([
+          getProfileInfo(),
+          getStoredHoroscopeForYesterday(category),
+        ]);
         const response = await astrologyService.generateHoroscope(
           category,
           profileInfo,
           i18n.language,
+          previousHoroscope,
         );
         const normalizedHoroscope =
           typeof response.horoscope === 'string' ? response.horoscope.trim() : '';
