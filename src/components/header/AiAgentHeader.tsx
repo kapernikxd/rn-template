@@ -1,9 +1,9 @@
 import React, { memo, ReactNode } from "react";
 import { StyleSheet, View, Text, ViewStyle, TextStyle, StyleProp } from "react-native";
 import { ThemeType } from "rn-vs-lb/theme";
-import { ThreeDotsMenu } from "rn-vs-lb";
 
 import { BackButton, ShareIconButton } from "../buttons";
+import { ThreeDotsMenu } from "../chat/ThreeDotsMenu";
 
 type AiAgentHeaderProps = {
   theme: ThemeType;

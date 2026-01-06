@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 
-export const isDev = process.env.NODE_ENV !== "development";
+export const isDev = process.env.NODE_ENV === "development";
 
 export const BASE_URL = isDev
   ? "http://192.168.0.20:5001/"

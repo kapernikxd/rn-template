@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Animated, Easing, Image, Platform } from "react-native";
 import Swiper from "react-native-swiper";
 import { useTheme } from 'rn-vs-lb/theme';
