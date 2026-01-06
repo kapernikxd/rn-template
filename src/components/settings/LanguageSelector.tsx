@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useTheme, ThemeType, SizesType, GlobalStyleSheetType } from 'rn-vs-lb/theme';
 import { LANGUAGE_OPTIONS, normalizeLanguageCode, LanguageOption } from '../../constants/languages';
 import { setPreferredLanguage } from '../../helpers/i18n/languageStorage';
+import { AnalyticsEvent, trackEvent } from '../../services/analytics/events';
 
 export const LanguageSelector: FC = () => {
   const { theme, sizes, globalStyleSheet } = useTheme();
@@ -32,6 +33,7 @@ export const LanguageSelector: FC = () => {
     try {
       await setPreferredLanguage(language.code);
       await i18n.changeLanguage(language.code);
+      void trackEvent(AnalyticsEvent.LanguageSelected, { language: language.code, source: 'settings' });
     } catch (error) {
       console.warn('Failed to change language', error);
     } finally {

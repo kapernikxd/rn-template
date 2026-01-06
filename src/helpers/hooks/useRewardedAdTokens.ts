@@ -7,19 +7,20 @@ import { ensureTrackingTransparencyPermission } from "../../services/privacy/tra
 import { useRootStore, useStoreData } from "../../store/StoreProvider";
 import {
   addTokens,
+  addTokenBalanceListener,
   getTokenBalance,
 } from "../tokenStorage";
 import { DEFAULT_TOKEN_BALANCE } from "../../constants/links";
 
 const isIos = Platform.OS === "ios";
 
-type UseRewardedAdTokensResult = {
+export type UseRewardedAdTokensResult = {
   balance: number;
   isAdLoaded: boolean;
   showRewardedAd: () => void;
 };
 
-type UseRewardedAdTokensOptions = {
+export type UseRewardedAdTokensOptions = {
   onRewardEarned?: (balance: number) => void;
   shouldAwardTokens?: boolean;
 };
@@ -81,11 +82,14 @@ export const useRewardedAdTokens = (
   useEffect(() => {
     isMountedRef.current = true;
 
+    const unsubscribeFromBalanceUpdates = addTokenBalanceListener(updateBalance);
+
     return () => {
       isMountedRef.current = false;
       cancelPendingShow();
+      unsubscribeFromBalanceUpdates();
     };
-  }, [cancelPendingShow]);
+  }, [cancelPendingShow, updateBalance]);
 
   useEffect(() => {
     const loadBalanceAndAd = async () => {

@@ -6363,6 +6363,11 @@ yaml@^2.6.1:
   resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.8.1.tgz#1870aa02b631f7e8328b93f8bc574fac5d6c4d79"
   integrity sha512-lcYcMxX2PO9XMGvAJkJ3OsNMw+/7FKes7/hgerGUYWIoWu5j/+YQqcZr5JnPZWzOsEBgMbSbiSTn/dv/69Mkpw==
 
+yandex-mobile-ads@7.16.0:
+  version "7.16.0"
+  resolved "https://registry.yarnpkg.com/yandex-mobile-ads/-/yandex-mobile-ads-7.16.0.tgz#00e89038d5105a3e9a2ddc0f2283b68c30cfbec6"
+  integrity sha512-fNisnoGpmUUGmx58v8VX0Yv3Go+6d/he+rz2vbuCcATwQXQBwEf7JGl9yJzHHQv6xub/YtNxrcR5RvoICDXHpw==
+
 yargs-parser@^21.1.1:
   version "21.1.1"
   resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-21.1.1.tgz#9096bceebf990d21bb31fa9516e0ede294a77d35"

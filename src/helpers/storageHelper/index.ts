@@ -1,9 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Application from "expo-application";
-import * as Device from "expo-device";
-import { Platform } from "react-native";
-import uuid from "react-native-uuid";
 import type { AuthUser } from "../../types/auth";
+export { getLocalUserId, removeLocalUserId, setLocalUserId } from "./userId";
 
 const REFRESH_TOKEN = "refreshToken";
 const ACCESS_TOKEN = "accessToken";
@@ -48,126 +45,6 @@ export const getAuthUser = async (): Promise<AuthUser | null> => {
     }
 };
 export const removeAuthUser = async () => removeItem(AUTH_USER);
-
-// Работа с ID пользователя
-const LOCAL_USER_ID_KEY = "userId";
-const DEVICE_USER_ID_PREFIX = "device-";
-const APP_GENERATED_USER_ID_PREFIX = "app-";
-const ANONYMOUS_USER_ID_KEY = "anonymousUserId";
-
-const sanitizeUserId = (value: string) => value.replace(/[^a-zA-Z0-9_-]/g, "");
-
-const withPrefix = (value: string) =>
-    value.startsWith(DEVICE_USER_ID_PREFIX) ? value : `${DEVICE_USER_ID_PREFIX}${value}`;
-
-const isGeneratedUserId = (value: string) =>
-    value.startsWith(DEVICE_USER_ID_PREFIX) || value.startsWith(APP_GENERATED_USER_ID_PREFIX);
-
-const createFallbackUserId = () => `${APP_GENERATED_USER_ID_PREFIX}${uuid.v4()}`;
-
-const ensureGeneratedUserId = async (): Promise<string> => {
-    const deviceUserId = await deriveDeviceUserId();
-    return deviceUserId ?? createFallbackUserId();
-};
-
-const deriveDeviceUserId = async (): Promise<string | null> => {
-    try {
-        if (Platform.OS === "android") {
-            const androidId = await Application.getAndroidId();
-            if (androidId) {
-                const sanitized = sanitizeUserId(androidId);
-                if (sanitized) {
-                    return withPrefix(sanitized);
-                }
-            }
-        }
-
-        if (Platform.OS === "ios") {
-            const iosId = await Application.getIosIdForVendorAsync();
-            if (iosId) {
-                const sanitized = sanitizeUserId(iosId);
-                if (sanitized) {
-                    return withPrefix(sanitized);
-                }
-            }
-        }
-
-        const manufacturer = Device.manufacturer ?? null; // string | null
-        let deviceType: number | null = null;
-        try {
-            // В некоторых версиях deviceType уже доступен синхронно
-            // (если нет — получаем асинхронно)
-            deviceType = (Device as any).deviceType ?? (await Device.getDeviceTypeAsync());
-        } catch {
-            deviceType = null;
-        }
-
-        const fallbackParts = [
-            manufacturer ?? Device.manufacturer ?? undefined,
-            Device.modelName ?? undefined,
-            Device.osBuildId ?? Device.osInternalBuildId ?? undefined,
-            deviceType != null ? `type-${deviceType}` : undefined,
-        ].filter(Boolean) as string[];
-
-        if (fallbackParts.length > 0) {
-            const sanitized = sanitizeUserId(fallbackParts.join("-").toLowerCase());
-            if (sanitized) {
-                return withPrefix(sanitized);
-            }
-        }
-    } catch (error) {
-        console.warn("Failed to derive device-based user id", error);
-    }
-
-    return null;
-};
-
-export const setLocalUserId = async (userId: string) => {
-    const sanitized = sanitizeUserId(userId);
-    const valueToStore = sanitized || createFallbackUserId();
-    await removeLocalUserId();
-    await setItem(LOCAL_USER_ID_KEY, valueToStore);
-
-    if (isGeneratedUserId(valueToStore)) {
-        await setItem(ANONYMOUS_USER_ID_KEY, valueToStore);
-    }
-};
-
-export const getLocalUserId = async (): Promise<string> => {
-    try {
-        const storedUserId = await getItem(LOCAL_USER_ID_KEY);
-        if (storedUserId) {
-            if (isGeneratedUserId(storedUserId)) {
-                await setItem(ANONYMOUS_USER_ID_KEY, storedUserId);
-            }
-            return storedUserId;
-        }
-
-        const newUserId = await ensureGeneratedUserId();
-
-        await setItem(LOCAL_USER_ID_KEY, newUserId);
-        await setItem(ANONYMOUS_USER_ID_KEY, newUserId);
-        return newUserId;
-    } catch (e) {
-        console.error("Error getting user ID:", e);
-        throw e;
-    }
-};
-
-export const removeLocalUserId = async () => {
-    await removeItem(LOCAL_USER_ID_KEY);
-};
-
-export const getAnonymousUserId = async (): Promise<string> => {
-    const storedAnonymousUserId = await getItem(ANONYMOUS_USER_ID_KEY);
-    if (storedAnonymousUserId) {
-        return storedAnonymousUserId;
-    }
-
-    const newUserId = await ensureGeneratedUserId();
-    await setItem(ANONYMOUS_USER_ID_KEY, newUserId);
-    return newUserId;
-};
 
 // Работа с просмотренными событиями
 export const addViewedEvent = async (eventId: string): Promise<void> => {

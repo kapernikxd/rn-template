@@ -1,12 +1,13 @@
 import { isAxiosError } from "axios";
-import i18n from "i18next";
 import { $api, registerTokenRefreshFailureHandler, registerTokenRefreshHandler } from "../../helpers";
 import { makeAutoObservable, runInAction } from "mobx";
 import AuthService from "../../services/auth/AuthService";
+import i18n from "../../helpers/i18n";
+import { normalizeLanguageCode } from "../../constants/languages";
 import {
     getAccessToken,
     getAuthUser,
-    getAnonymousUserId,
+    getLocalUserId,
     getRefreshToken,
     removeAccessToken,
     removeAuthUser,
@@ -266,7 +267,6 @@ export class AuthStore {
         }
     }
 
-
     async registration(props: RegistrationParams, expoPushToken?: string) {
         try {
             this.setLoading(true);
@@ -365,6 +365,13 @@ export class AuthStore {
         }
     }
 
+    /**
+     * Восстанавливает авторизацию при старте приложения:
+     * 1) читает accessToken и пользователя из стораджа; если токен ещё валиден — ставит пользователя в стор;
+     * 2) если access недоступен, пробует refreshToken и получает новые токены/пользователя с бэкенда;
+     * 3) при ошибке/отсутствии refresh сбрасывает сохранённые токены и пытается авторизоваться по userId (демо);
+     * 4) в любом случае помечает попытку автологина и уведомляет подписчиков.
+     */
     async refreshAccessToken() {
         let didRestoreSession = false;
         let accessToken: string | null = null;
@@ -381,7 +388,6 @@ export class AuthStore {
                 getAccessToken(),
                 getAuthUser(),
             ]);
-
             if (accessToken && storedUser && isTokenValid(accessToken)) {
                 await this.setAuthenticatedUser(storedUser, accessToken);
                 didRestoreSession = true;
@@ -430,8 +436,9 @@ export class AuthStore {
     }
 
     async sendPushToken(token: string) {
+        const language = normalizeLanguageCode(i18n.resolvedLanguage ?? i18n.language);
         try {
-            await AuthService.sendPushToken(token);
+            await AuthService.sendPushToken(token, language);
         } catch (e) {
             console.warn(i18n.t('stores.auth.debug.sendPushTokenFailed'), e);
         }
@@ -453,7 +460,7 @@ export class AuthStore {
 
     private async loginWithStoredUserId(): Promise<boolean> {
         try {
-            const userId = await getAnonymousUserId();
+            const userId = await getLocalUserId();
             const { data } = await AuthService.loginByUserId(userId);
 
             const normalizedUser = this.normalizeUser(data.user);
@@ -470,6 +477,5 @@ export class AuthStore {
             return false;
         }
     }
-
 }
 

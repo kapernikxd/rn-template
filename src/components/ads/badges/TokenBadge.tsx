@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Modal,
   Platform,
@@ -15,7 +15,9 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useTheme, ThemeType } from "rn-vs-lb/theme";
 import { useTranslation } from "react-i18next";
 
-import { useRewardedAdTokens } from "../../../helpers/hooks/useRewardedAdTokens";
+import { useRewardedAdTokensBySource } from "../../../helpers/hooks/useRewardedAdTokensBySource";
+import { useRootStore, useStoreData } from "../../../store/StoreProvider";
+import { resolveAdSource, type AdSource } from "../../../types/ads";
 
 const formatTokens = (value: number, locale: string) =>
   Number.isFinite(value) ? value.toLocaleString(locale) : String(value);
@@ -28,6 +30,8 @@ type TokenBadgeProps = {
   valueStyle?: StyleProp<TextStyle>;
   iconColor?: string;
   iconSize?: number;
+  onBalanceChange?: (balance: number) => void;
+  adSource?: AdSource;
 };
 
 export const TokenBadge = memo(
@@ -39,10 +43,33 @@ export const TokenBadge = memo(
     valueStyle,
     iconColor,
     iconSize = 18,
+    adSource,
+    onBalanceChange,
   }: TokenBadgeProps) => {
     const { theme } = useTheme();
     const styles = getStyles(theme);
-    const { balance: storedBalance, isAdLoaded, showRewardedAd } = useRewardedAdTokens();
+    const { configStore } = useRootStore();
+    const adsSourceFromConfig = useStoreData(
+      configStore,
+      (store) => store.adsConfig.ADS_SOURCE,
+    );
+    const resolvedAdSource = useMemo(
+      () => resolveAdSource(adSource ?? adsSourceFromConfig),
+      [adSource, adsSourceFromConfig],
+    );
+    const handleRewardEarned = useCallback(
+      (updatedBalance: number) => {
+        onBalanceChange?.(updatedBalance);
+      },
+      [onBalanceChange],
+    );
+
+    const rewarded = useRewardedAdTokensBySource(
+      { onRewardEarned: handleRewardEarned },
+      resolvedAdSource,
+    );
+
+    const { balance: storedBalance, isAdLoaded, showRewardedAd } = rewarded;
     const [isMenuVisible, setIsMenuVisible] = useState(false);
     const [pendingShowAfterClose, setPendingShowAfterClose] = useState(false);
     const { t, i18n } = useTranslation();
@@ -52,6 +79,18 @@ export const TokenBadge = memo(
       [balance, storedBalance],
     );
 
+    useEffect(() => {
+      onBalanceChange?.(currentBalance);
+    }, [currentBalance, onBalanceChange]);
+
+    useEffect(() => {
+      if (typeof balance !== "number" || balance === storedBalance) {
+        return;
+      }
+
+      onBalanceChange?.(storedBalance);
+    }, [balance, storedBalance, onBalanceChange]);
+
     const locale = i18n.language || "en";
     const formattedBalance = useMemo(
       () => formatTokens(currentBalance, locale),
@@ -60,12 +99,12 @@ export const TokenBadge = memo(
 
     const accessibilityLabelText = label
       ? t("ads.tokenBadge.accessibility.withLabel", {
-          label,
-          balance: formattedBalance,
-        })
+        label,
+        balance: formattedBalance,
+      })
       : t("ads.tokenBadge.accessibility.balance", {
-          balance: formattedBalance,
-        });
+        balance: formattedBalance,
+      });
 
     const menuStatusText = t(
       isAdLoaded ? "ads.tokenBadge.adReady" : "ads.tokenBadge.adLoading",

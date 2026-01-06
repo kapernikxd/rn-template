@@ -2,7 +2,7 @@
 import axios, { AxiosResponse, isAxiosError } from "axios";
 import $api from "../../helpers/http";
 import { AuthRejection, AuthResponse, AuthResponseExtend, LoginParams, NewPasswordParams, ParamsVerificateEmail, RegistrationParams, ResetPasswordParams } from "../../types/auth";
-import { API_URL } from "../../constants/links";
+import { API_URL, SITE_NAME } from "../../constants/links";
 
 export default class AuthService {
   static async login({
@@ -101,7 +101,7 @@ export default class AuthService {
     }
   }
 
-  static async sendPushToken(pushToken: string): Promise<void> {
-    return $api.post("/push/mobile", { pushToken });
+  static async sendPushToken(pushToken: string, language?: string): Promise<void> {
+    return $api.post("/push/mobile", { pushToken, appName: SITE_NAME, language });
   }
 }

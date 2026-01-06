@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React, { useMemo, useRef } from 'react';
+import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet, View } from 'react-native';
 
@@ -12,17 +12,25 @@ import { TermsOfUseScreen } from '../screens/docs';
 import { AiAgentScreen, AiAgentCreateScreen, AiAgentEditScreen } from '../screens/aibot';
 import Onboarding from '../screens/onboarding/Onboarding';
 import { useOnboarding } from '../helpers/hooks/useOnboarding';
+import { AnalyticsEvent, trackEvent } from '../services/analytics/events';
 import { BottomAdBanner } from '../components/ads/BottomAdBanner';
+import { resolveAdSource } from '../types/ads';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export const AppNavigator = () => {
+  const navigationRef = useRef<NavigationContainerRef<RootStackParamList> | null>(null);
+  const routeNameRef = useRef<string | undefined>();
   const { authStore, configStore } = useRootStore();
   const hasAttemptedAutoLogin = useStoreData(
     authStore,
     (store) => store.hasAttemptedAutoLogin,
   );
   const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
+  const adsSource = useStoreData(
+    configStore,
+    (store) => store.adsConfig.ADS_SOURCE,
+  );
 
   const screenOptions = useMemo(
     () => ({
@@ -52,11 +60,33 @@ export const AppNavigator = () => {
       />
     );
   }
-
   return (
     <View style={styles.appContainer}>
       <View style={styles.navigatorContainer}>
-        <NavigationContainer>
+        <NavigationContainer
+          ref={navigationRef}
+          onReady={() => {
+            const currentRoute = navigationRef.current?.getCurrentRoute();
+            routeNameRef.current = currentRoute?.name;
+
+            if (currentRoute?.name) {
+              void trackEvent(AnalyticsEvent.ScreenView, {
+                route: currentRoute.name,
+              });
+            }
+          }}
+          onStateChange={() => {
+            const currentRoute = navigationRef.current?.getCurrentRoute();
+            if (!currentRoute?.name || routeNameRef.current === currentRoute.name) {
+              return;
+            }
+
+            routeNameRef.current = currentRoute.name;
+            void trackEvent(AnalyticsEvent.ScreenView, {
+              route: currentRoute.name,
+            });
+          }}
+        >
           <RootStack.Navigator initialRouteName={ROUTES.RootTabs} screenOptions={screenOptions}>
             <RootStack.Screen name={ROUTES.RootTabs}>
               {() => (
@@ -91,7 +121,7 @@ export const AppNavigator = () => {
           </RootStack.Navigator>
         </NavigationContainer>
       </View>
-      {adsEnabled ? <BottomAdBanner /> : null}
+      {adsEnabled ? <BottomAdBanner source={resolveAdSource(adsSource)} /> : null}
     </View>
   );
 };

@@ -4,6 +4,7 @@ import ChatService from "../../services/chat/ChatService";
 import * as ImagePicker from 'expo-image-picker';
 import { RootStore } from "../rootStore";
 import { ChatDTO, MessageDTO } from "../../types";
+import type { NatalChartPayload } from "../../types/astrology";
 import { ChatById, FetchChatsOptions, ReadedMessageResponse } from "../../types/chat";
 import { BaseStore, StoreListener } from "./BaseStore";
 import { isEmpty } from "../../helpers/utils/common";
@@ -33,6 +34,7 @@ export class ChatStore {
   private currentChatSubscribedId: string | null = null;
 
   private chatService: ChatService;
+  private startedInitialChatsFor = new Set<string>();
 
   constructor(root: RootStore) {
     this.root = root;
@@ -42,6 +44,7 @@ export class ChatStore {
       subscribe: false,
       notify: false,
       root: false,
+      startedInitialChatsFor: false,
     } as any);
     this.chatService = new ChatService();
   }
@@ -335,14 +338,21 @@ export class ChatStore {
     message: string,
     chatId: string,
     replyToMessageId?: string,
-    images?: ImagePicker.ImagePickerAsset[]
+    images?: ImagePicker.ImagePickerAsset[],
+    natalChart?: NatalChartPayload,
+    natalChartSignature?: string,
+    lang?: string,
   ) {
     try {
+      // Forward any cached natal chart data so the backend can associate it with this message.
       const { data } = await this.chatService.sendMessage(
         message,
         chatId,
         replyToMessageId,
-        images
+        images,
+        natalChart,
+        natalChartSignature,
+        lang,
       );
 
       const messageData = {
@@ -584,6 +594,27 @@ export class ChatStore {
     } catch (err) {
       console.error("Error marking messages as read:", err);
     }
+  }
+
+  async startInitialChats(userIds?: string[]) {
+    if (!userIds?.length) return;
+
+    const pendingUserIds = userIds.filter((id) => id && !this.startedInitialChatsFor.has(id));
+
+    if (!pendingUserIds.length) return;
+
+    pendingUserIds.forEach((id) => this.startedInitialChatsFor.add(id));
+
+    await Promise.all(
+      pendingUserIds.map(async (id) => {
+        try {
+          await this.messageById(id);
+        } catch (error) {
+          console.error(`Failed to start chat with user ${id}:`, error);
+          this.startedInitialChatsFor.delete(id);
+        }
+      }),
+    );
   }
 
   async messageById(id: string) {

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   ActionSheetIOS,
@@ -62,6 +62,10 @@ const ChatLimitLockedNotice = ({
 
   const hasBalance = !Number.isNaN(effectiveTokenBalance);
 
+  const [tokenInfoVisible, setTokenInfoVisible] = useState(false);
+  const openTokenInfo = useCallback(() => setTokenInfoVisible(true), []);
+  const closeTokenInfo = useCallback(() => setTokenInfoVisible(false), []);
+
   // --- Меню: iOS — ActionSheet, Android/Web — Modal ---
   const [menuVisible, setMenuVisible] = useState(false);
   const closeMenu = useCallback(() => setMenuVisible(false), []);
@@ -80,9 +84,7 @@ const ChatLimitLockedNotice = ({
         (idx) => {
           if (idx === 0 && isAdLoaded) showRewardedAd();
           else if (idx === 1) void onTokenBalanceRefresh?.();
-          else if (idx === 2) {
-            // роут на FAQ/модалку — на твой вкус
-          }
+          else if (idx === 2) openTokenInfo();
         },
       );
     } else {
@@ -91,6 +93,7 @@ const ChatLimitLockedNotice = ({
   }, [
     isAdLoaded,
     onTokenBalanceRefresh,
+    openTokenInfo,
     showRewardedAd,
     t,
   ]);
@@ -225,11 +228,60 @@ const ChatLimitLockedNotice = ({
             icon={<Ionicons name="help-circle-outline" size={18} color={theme.text} />}
             title={t('components.chat.limitNotice.whatAreTokens')}
             subtitle={t('components.chat.limitNotice.whatAreTokensDescription')}
-            onPress={closeMenu}
+            onPress={() => {
+              closeMenu();
+              openTokenInfo();
+            }}
             typography={typography}
             theme={theme}
           />
           <View style={{ height: 6 }} />
+        </View>
+      </Modal>
+
+      <Modal
+        visible={tokenInfoVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={closeTokenInfo}
+      >
+        <Pressable style={modalStyles.backdrop} onPress={closeTokenInfo} />
+        <View style={[modalStyles.infoSheet, { backgroundColor: theme.card }]}>
+          <View style={modalStyles.infoHeader}>
+            <Ionicons name="help-circle-outline" size={18} color={theme.primary} />
+            <Text style={[typography.bodyBold, { color: theme.title }]} numberOfLines={2}>
+              {t('components.chat.limitNotice.whatAreTokens')}
+            </Text>
+          </View>
+          <View style={modalStyles.infoBody}>
+            <Text style={[typography.body, { color: theme.text }]}>
+              {t('components.chat.limitNotice.tokenInfoOverview')}
+            </Text>
+            <View style={modalStyles.infoBulletRow}>
+              <Text style={modalStyles.infoBullet}>•</Text>
+              <Text style={[typography.body, { color: theme.text, flex: 1 }]}>
+                {t('components.chat.limitNotice.tokenInfoUsage')}
+              </Text>
+            </View>
+            <View style={modalStyles.infoBulletRow}>
+              <Text style={modalStyles.infoBullet}>•</Text>
+              <Text style={[typography.body, { color: theme.text, flex: 1 }]}>
+                {t('components.chat.limitNotice.tokenInfoEarn')}
+              </Text>
+            </View>
+          </View>
+          <Pressable
+            onPress={closeTokenInfo}
+            style={({ pressed }) => [
+              modalStyles.infoCloseBtn,
+              { backgroundColor: theme.primary, opacity: pressed ? 0.9 : 1 },
+            ]}
+            accessibilityRole="button"
+          >
+            <Text style={[typography.body, { color: theme.white }]}>
+              {t('components.chat.limitNotice.tokenInfoClose')}
+            </Text>
+          </Pressable>
         </View>
       </Modal>
     </>
@@ -365,6 +417,39 @@ const modalStyles = StyleSheet.create({
     borderRadius: 12,
     paddingVertical: 6,
     paddingHorizontal: 8,
+  },
+  infoSheet: {
+    position: 'absolute',
+    left: 16,
+    right: 16,
+    bottom: 24,
+    borderRadius: 14,
+    padding: 14,
+    gap: 12,
+  },
+  infoHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  infoBody: {
+    gap: 8,
+  },
+  infoBulletRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  infoBullet: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  infoCloseBtn: {
+    alignSelf: 'flex-end',
+    paddingHorizontal: 12,
+    height: 32,
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

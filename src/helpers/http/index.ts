@@ -11,11 +11,15 @@ import {
   removeLocalUserId
 } from "../storageHelper";
 import { logToServer } from "../utils/logger";
-import { API_URL } from "../../constants/links";
+import { API_URL, onApiUrlChange } from "../../constants/links";
 
 // Создаем экземпляр Axios
 const $api = axios.create({
   baseURL: API_URL,
+});
+
+onApiUrlChange((url) => {
+  $api.defaults.baseURL = url;
 });
 
 type TokenRefreshPayload = {

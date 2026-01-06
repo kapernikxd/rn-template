@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { Platform } from "react-native";
 
-import { DEFAULT_ADS_CONFIG, DEFAULT_APP_VERSION_CONFIG } from "../../constants/links";
+import { DEFAULT_ADS_CONFIG, DEFAULT_APP_VERSION_CONFIG, DEFAULT_CITY_SEARCH_API, setApiUrl } from "../../constants/links";
 import { DEFAULT_CHAT_LIMIT_CONFIG } from "../../constants/ads";
 import type { NormalizedAppConfig, AdsConfig, AppVersionConfig, ChatLimitConfig } from "../../types/config";
 import { AppConfigService } from "../../services/config/AppConfigService";
@@ -17,7 +17,8 @@ export class ConfigStore {
     appVer: { ...DEFAULT_APP_VERSION_CONFIG },
     ads: { ...DEFAULT_ADS_CONFIG },
     chatLimit: { ...DEFAULT_CHAT_LIMIT_CONFIG },
-    urls: {},
+    urls: { CITY_SEARCH_API: DEFAULT_CITY_SEARCH_API },
+    initialChatUserIds: [],
   };
 
   loading = false;
@@ -63,6 +64,10 @@ export class ConfigStore {
     return this.config.chatLimit;
   }
 
+  get initialChatUserIds(): string[] {
+    return this.config.initialChatUserIds;
+  }
+
   get adsEnabled(): boolean {
     const { ADS_ENABLED, ADS_ENABLED_ANDROID, ADS_ENABLED_IOS } = this.adsConfig;
 
@@ -85,15 +90,26 @@ export class ConfigStore {
     try {
       const response = await AppConfigService.fetchConfig(appId);
       runInAction(() => {
+        const apiUrlFromConfig = response.API_URL ?? response.urls?.API_URL ?? response.urls?.apiUrl;
+        setApiUrl(apiUrlFromConfig);
+
+        const citySearchApiUrl = response.urls?.CITY_SEARCH_API ?? DEFAULT_CITY_SEARCH_API;
+
         this.config = {
           appVer: { ...DEFAULT_APP_VERSION_CONFIG, ...response.appVer },
           ads: { ...DEFAULT_ADS_CONFIG, ...(response.ads ?? {}) },
           chatLimit: { ...DEFAULT_CHAT_LIMIT_CONFIG, ...(response.chatLimit ?? {}) },
-          urls: { ...(response.urls ?? {}) }
+          urls: {
+            CITY_SEARCH_API: citySearchApiUrl,
+            ...(response.urls ?? {}),
+            ...(response.API_URL ? { API_URL: response.API_URL } : {}),
+          },
+          initialChatUserIds: response.initialChatUserIds ?? [],
         };
         this.loading = false;
       });
     } catch (error) {
+      setApiUrl(null);
       runInAction(() => {
         this.loading = false;
         this.error = error instanceof Error ? error.message : String(error);
