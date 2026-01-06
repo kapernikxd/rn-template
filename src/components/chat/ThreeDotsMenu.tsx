@@ -25,11 +25,22 @@ export type ThreeDotsMenuItem = {
 type Props = {
   items: ThreeDotsMenuItem[];
   triggerStyle?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
+  iconColor?: string;
+  positionLeft?: number;
+  positionTop?: number;
 };
 
 const MENU_WIDTH = 200;
 
-export const ThreeDotsMenu: React.FC<Props> = ({ items, triggerStyle }) => {
+export const ThreeDotsMenu: React.FC<Props> = ({
+  items,
+  triggerStyle,
+  style,
+  iconColor,
+  positionLeft,
+  positionTop,
+}) => {
   const { theme, typography, globalStyleSheet } = useTheme();
   const [menuVisible, setMenuVisible] = useState(false);
   const [position, setPosition] = useState<LayoutRectangle | null>(null);
@@ -53,8 +64,12 @@ export const ThreeDotsMenu: React.FC<Props> = ({ items, triggerStyle }) => {
 
   return (
     <View>
-      <TouchableOpacity ref={buttonRef as any} onPress={openMenu} style={triggerStyle}>
-        <Ionicons name="ellipsis-horizontal-sharp" size={20} color={theme.primary} />
+      <TouchableOpacity ref={buttonRef as any} onPress={openMenu} style={triggerStyle ?? style}>
+        <Ionicons
+          name="ellipsis-horizontal-sharp"
+          size={20}
+          color={iconColor ?? theme.primary}
+        />
       </TouchableOpacity>
 
       <Modal transparent visible={menuVisible} animationType="fade" onRequestClose={closeMenu}>
@@ -65,8 +80,11 @@ export const ThreeDotsMenu: React.FC<Props> = ({ items, triggerStyle }) => {
               style={[
                 styles.dropdown,
                 {
-                  top: position.y + position.height + 4,
-                  left: Math.max(position.x + position.width - MENU_WIDTH, 12),
+                  top: position.y + position.height + (positionTop ?? 4),
+                  left:
+                    positionLeft !== undefined
+                      ? position.x - positionLeft + position.width
+                      : Math.max(position.x + position.width - MENU_WIDTH, 12),
                   width: MENU_WIDTH,
                 },
               ]}
@@ -142,7 +160,11 @@ const getStyles = (theme: ThemeType) =>
       marginRight: 12,
     },
     label: {
+      flex: 1,
       flexShrink: 1,
+      flexWrap: 'wrap',
+      paddingRight: 5,
+      textAlign: 'right',
     },
   });
 
