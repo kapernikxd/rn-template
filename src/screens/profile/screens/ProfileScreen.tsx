@@ -14,6 +14,7 @@ import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
 import { type AiBotCardEntity } from '../../../components/aibot/AiBotCard';
 import { getAiBotIdentifier } from '../../../helpers/utils/agent-create';
 import { AiBotPlaceCardList } from '../../../components/aibot/AiBotPlaceCardList';
+import { AnalyticsEvent, trackEvent } from '../../../services/analytics/events';
 
 // NB: этот экран обёрнут withAuthGuard в ProfileStack, поэтому доступен только авторизованным пользователям.
 type NavigationProp = NativeStackNavigationProp<
@@ -115,6 +116,7 @@ export const ProfileScreen = () => {
   }, [navigation]);
 
   const handleOpenSettings = useCallback(() => {
+    void trackEvent(AnalyticsEvent.ProfileSettingsOpened);
     navigation.navigate(ROUTES.ProfileSettings);
   }, [navigation]);
 
@@ -154,12 +156,20 @@ export const ProfileScreen = () => {
       uiStore.showSnackbar(t('screens.aibot.common.errors.openProfile'), 'error');
       return;
     }
+    void trackEvent(AnalyticsEvent.ProfileBotOpened, {
+      botId,
+      tab: activeTabIndex === 0 ? 'my-bots' : 'subscribed-bots',
+    });
     goToAiBotProfile(botId);
-  }, [goToAiBotProfile, t, uiStore]);
+  }, [activeTabIndex, goToAiBotProfile, t, uiStore]);
 
   const handleTabChange = useCallback((index: number) => {
     setActiveTabIndex(index);
-  }, []);
+    const nextTab = tabs[index];
+    void trackEvent(AnalyticsEvent.ProfileTabChanged, {
+      tab: nextTab?.key ?? 'my-bots',
+    });
+  }, [tabs]);
 
   const currentBots = useMemo(
     () => (activeTabIndex === 0 ? myBots : subscribedBots),
@@ -181,6 +191,7 @@ export const ProfileScreen = () => {
 
     setIsRefreshing(true);
     try {
+      void trackEvent(AnalyticsEvent.ProfileRefreshed);
       await Promise.all([
         profileStore.fetchMyProfile(),
         notificationStore.fetchLastNotifications(),

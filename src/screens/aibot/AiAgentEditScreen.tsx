@@ -30,6 +30,7 @@ import type { AvatarFile } from "../../types/profile";
 import { categoryOptions } from "../../helpers/data/agent-create";
 import { BackButton } from "../../components/buttons";
 import { useTranslation } from "react-i18next";
+import { AnalyticsEvent, trackEvent } from "../../services/analytics/events";
 
 const FALLBACK_IMAGE_TYPE = "image/jpeg";
 
@@ -97,6 +98,13 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
   }, [setColors, theme.background]);
 
   useEffect(() => {
+    void trackEvent(AnalyticsEvent.AiAgentEditStepChanged, {
+      aiBotId,
+      step: activeStep,
+    });
+  }, [activeStep, aiBotId]);
+
+  useEffect(() => {
     void aiBotStore.fetchAiBotById(aiBotId);
     void aiBotStore.fetchBotDetails(aiBotId);
   }, [aiBotId, aiBotStore]);
@@ -120,8 +128,11 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
     const file = asset ? toAvatarFile(asset, 0) : null;
     if (file) {
       handleAvatarSelect(file);
+      void trackEvent(AnalyticsEvent.AiAgentEditAvatarAdded, {
+        aiBotId,
+      });
     }
-  }, [handleAvatarSelect]);
+  }, [aiBotId, handleAvatarSelect]);
 
   const handlePickGallery = useCallback(async () => {
     if (!canUploadPhotos || !aiAgent) return;
@@ -141,8 +152,59 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
 
     if (files.length) {
       await uploadGalleryFiles(files);
+      void trackEvent(AnalyticsEvent.AiAgentEditGalleryAdded, {
+        aiBotId,
+        count: files.length,
+      });
     }
-  }, [aiAgent, botPhotos.length, canUploadPhotos, maxGalleryItems, uploadGalleryFiles]);
+  }, [aiAgent, aiBotId, botPhotos.length, canUploadPhotos, maxGalleryItems, uploadGalleryFiles]);
+
+  const handleAvatarRemovePress = useCallback(() => {
+    void trackEvent(AnalyticsEvent.AiAgentEditAvatarRemoved, {
+      aiBotId,
+    });
+    handleAvatarRemove();
+  }, [aiBotId, handleAvatarRemove]);
+
+  const handleToggleCategoryPress = useCallback(
+    (category: string) => {
+      void trackEvent(AnalyticsEvent.AiAgentEditCategoryToggled, {
+        aiBotId,
+        category,
+      });
+      toggleCategory(category);
+    },
+    [aiBotId, toggleCategory],
+  );
+
+  const handleAddUsefulnessPress = useCallback(() => {
+    void trackEvent(AnalyticsEvent.AiAgentEditUsefulnessAdded, {
+      aiBotId,
+      length: usefulnessInput.trim().length,
+    });
+    handleAddUsefulness();
+  }, [aiBotId, handleAddUsefulness, usefulnessInput]);
+
+  const handleRemoveUsefulnessPress = useCallback(
+    (value: string) => {
+      void trackEvent(AnalyticsEvent.AiAgentEditUsefulnessRemoved, {
+        aiBotId,
+        length: value.length,
+      });
+      handleRemoveUsefulness(value);
+    },
+    [aiBotId, handleRemoveUsefulness],
+  );
+
+  const handleRemovePhotoPress = useCallback(
+    (photo: string) => {
+      void trackEvent(AnalyticsEvent.AiAgentEditGalleryRemoved, {
+        aiBotId,
+      });
+      handleRemovePhoto(photo);
+    },
+    [aiBotId, handleRemovePhoto],
+  );
 
   const handleNext = useCallback(() => {
     if (activeStep < steps.length - 1) {
@@ -150,9 +212,12 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
       return;
     }
     if (!isSubmitting) {
+      void trackEvent(AnalyticsEvent.AiAgentEditSubmitted, {
+        aiBotId,
+      });
       void submit();
     }
-  }, [activeStep, isSubmitting, steps.length, submit]);
+  }, [activeStep, aiBotId, isSubmitting, steps.length, submit]);
 
   if (isLoading && !aiAgent) {
     return <ScreenLoader />;
@@ -208,7 +273,7 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
         </TouchableOpacity>
         <View style={styles.avatarInfo}>
           <Text style={styles.avatarHint}>{t('screens.aibot.edit.identity.avatar.hint')}</Text>
-          <Button title={t('common.delete')} type="gray-outline" onPress={handleAvatarRemove} />
+          <Button title={t('common.delete')} type="gray-outline" onPress={handleAvatarRemovePress} />
         </View>
       </View>
 
@@ -267,7 +332,7 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
             <TouchableOpacity
               key={category}
               style={[styles.chip, isActive && styles.chipActive]}
-              onPress={() => toggleCategory(category)}
+              onPress={() => handleToggleCategoryPress(category)}
             >
               <Text style={[styles.chipText, isActive && styles.chipTextActive]}>
                 {getCategoryLabel(category)}
@@ -286,16 +351,16 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
           placeholder={t('screens.aibot.edit.focus.usefulnessPlaceholder')}
           containerStyle={styles.usefulnessField}
           inputStyle={styles.usefulnessInput}
-          onSubmitEditing={handleAddUsefulness}
+          onSubmitEditing={handleAddUsefulnessPress}
           returnKeyType="done"
         />
-        <Button leftIcon={<FontAwesome6 name="add" color={theme.white} size={24} />} onPress={handleAddUsefulness} disabled={!usefulnessInput.trim()} />
+        <Button leftIcon={<FontAwesome6 name="add" color={theme.white} size={24} />} onPress={handleAddUsefulnessPress} disabled={!usefulnessInput.trim()} />
       </View>
       <View style={styles.usefulnessList}>
         {formState.usefulness.map((item) => (
           <View key={item} style={styles.usefulnessChip}>
             <Text style={styles.usefulnessText}>{item}</Text>
-            <TouchableOpacity onPress={() => handleRemoveUsefulness(item)} style={styles.usefulnessRemove}>
+            <TouchableOpacity onPress={() => handleRemoveUsefulnessPress(item)} style={styles.usefulnessRemove}>
               <Ionicons name="close" size={14} color={theme.greyText} />
             </TouchableOpacity>
           </View>
@@ -366,7 +431,7 @@ export const AiAgentEditScreen: React.FC<Props> = ({ navigation, route }) => {
         {botPhotos.map((photo) => (
           <View key={photo} style={styles.galleryItem}>
             <Image source={{ uri: photo }} style={styles.galleryImage} />
-            <TouchableOpacity style={styles.galleryRemove} onPress={() => handleRemovePhoto(photo)}>
+            <TouchableOpacity style={styles.galleryRemove} onPress={() => handleRemovePhotoPress(photo)}>
               <Ionicons name="trash" size={16} color={theme.white} />
             </TouchableOpacity>
           </View>
@@ -665,5 +730,3 @@ const createStyles = ({
       borderColor: theme.border,
     },
   });
-
-
