@@ -11,6 +11,7 @@ import { usePortalNavigation } from '../../helpers/hooks';
 import { MAIN_HORIZONTAL_PADDING } from '../../constants/layout';
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 import { capitalizeFirstLetter } from '../../helpers/utils/common';
+import { AnalyticsEvent, trackEvent } from '../../services/analytics/events';
 
 const COLUMN_GAP = 2;
 
@@ -116,8 +117,23 @@ export const DashboardScreen = () => {
   );
 
   const handleOpenBotProfile = useCallback((botId: string) => {
+    void trackEvent(AnalyticsEvent.DashboardBotOpened, {
+      botId,
+      tab: activeTab?.key ?? 'all',
+    });
     goToAiBotProfile(botId);
-  }, [goToAiBotProfile]);
+  }, [activeTab?.key, goToAiBotProfile]);
+
+  const handleTabChange = useCallback(
+    (nextIndex: number) => {
+      setIndex(nextIndex);
+      const nextTab = tabs[nextIndex];
+      void trackEvent(AnalyticsEvent.DashboardTabChanged, {
+        tab: nextTab?.key ?? 'all',
+      });
+    },
+    [tabs],
+  );
 
   const renderItem = useCallback(
     ({ item }: { item: AiBotMainPageBot }) => (
@@ -137,11 +153,14 @@ export const DashboardScreen = () => {
 
     setIsRefreshing(true);
     try {
+      void trackEvent(AnalyticsEvent.DashboardRefreshed, {
+        tab: activeTab?.key ?? 'all',
+      });
       await aiBotStore.fetchMainPageBots();
     } finally {
       setIsRefreshing(false);
     }
-  }, [aiBotStore, isLoading, isRefreshing]);
+  }, [activeTab?.key, aiBotStore, isLoading, isRefreshing]);
 
   const renderEmptyComponent = useCallback(() => (
     <View style={styles.emptyState}>
@@ -158,7 +177,7 @@ export const DashboardScreen = () => {
       <TabBarAi
         tabs={tabs}
         activeIndex={index}
-        onChange={setIndex}
+        onChange={handleTabChange}
         // кастомизация под твой тёмный UI
         activeColor={theme.black}
         inactiveColor={theme.black}

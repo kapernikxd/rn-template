@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import { LANGUAGE_OPTIONS, normalizeLanguageCode } from "../../constants/languages";
 import { setPreferredLanguage } from "../../helpers/i18n/languageStorage";
 import * as Notifications from "expo-notifications";
+import { AnalyticsEvent, trackEvent } from "../../services/analytics/events";
 
 interface Slide {
   key: SlideKey;
@@ -96,6 +97,7 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
 
   const handleFinish = useCallback(async () => {
     await requestNotificationPermission();
+    void trackEvent(AnalyticsEvent.OnboardingCompleted);
     onFinish();
   }, [onFinish, requestNotificationPermission]);
 
@@ -157,12 +159,27 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
       try {
         await i18n.changeLanguage(languageCode);
         await setPreferredLanguage(languageCode);
+        void trackEvent(AnalyticsEvent.LanguageSelected, {
+          language: languageCode,
+          source: "onboarding",
+        });
       } catch (error) {
         console.warn('Failed to change language during onboarding', error);
       }
     },
     [i18n],
   );
+
+  useEffect(() => {
+    const slide = slides[currentIndex];
+    if (!slide) {
+      return;
+    }
+    void trackEvent(AnalyticsEvent.OnboardingSlideViewed, {
+      index: currentIndex,
+      key: slide.key,
+    });
+  }, [currentIndex, slides]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -252,7 +269,13 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
             <View style={styles.footer}>
               <TouchableOpacity
                 accessibilityRole="button"
-                onPress={handleFinish}
+                onPress={() => {
+                  void trackEvent(AnalyticsEvent.OnboardingSkipped, {
+                    index,
+                    key: slide.key,
+                  });
+                  void handleFinish();
+                }}
                 style={[styles.skipBtn, slide.key === "language" && !selectedLanguage && styles.disabledBtn]}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 disabled={slide.key === "language" && !selectedLanguage}
@@ -266,7 +289,14 @@ const Onboarding: React.FC<Props> = ({ onFinish }) => {
 
               <TouchableOpacity
                 accessibilityRole="button"
-                onPress={() => handleNext(index)}
+                onPress={() => {
+                  void trackEvent(AnalyticsEvent.OnboardingNext, {
+                    index,
+                    key: slide.key,
+                    isLast: index === slides.length - 1,
+                  });
+                  handleNext(index);
+                }}
                 style={[styles.nextBtn, slide.key === "language" && !selectedLanguage && styles.disabledBtn]}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                 disabled={slide.key === "language" && !selectedLanguage}

@@ -29,6 +29,7 @@ import type { AvatarFile } from "../../types/profile";
 import { usePortalNavigation } from "../../helpers/hooks";
 import { BackButton } from "../../components/buttons";
 import { useTranslation } from "react-i18next";
+import { AnalyticsEvent, trackEvent } from "../../services/analytics/events";
 
 const FALLBACK_IMAGE_TYPE = "image/jpeg";
 
@@ -91,9 +92,26 @@ export const AiAgentCreateScreen: React.FC = () => {
     });
   }, [setColors, theme.background]);
 
+  useEffect(() => {
+    void trackEvent(AnalyticsEvent.AiAgentCreateStepViewed, {
+      step,
+    });
+  }, [step]);
+
+  useEffect(() => {
+    if (completed) {
+      void trackEvent(AnalyticsEvent.AiAgentCreateCompleted, {
+        aiBotId: createdBot?._id,
+      });
+    }
+  }, [completed, createdBot?._id]);
+
   const handleCancel = useCallback(() => {
+    void trackEvent(AnalyticsEvent.AiAgentCreateCanceled, {
+      step,
+    });
     goBack();
-  }, [goBack]);
+  }, [goBack, step]);
 
   const handleStepPress = useCallback(
     (targetStep: number) => {
@@ -101,9 +119,14 @@ export const AiAgentCreateScreen: React.FC = () => {
         return;
       }
 
+      void trackEvent(AnalyticsEvent.AiAgentCreateStepAdvanced, {
+        fromStep: step,
+        toStep: targetStep,
+        source: "step_progress",
+      });
       goToStep(targetStep);
     },
-    [completed, goToStep],
+    [completed, goToStep, step],
   );
 
   const handlePickAvatar = useCallback(async () => {
@@ -118,10 +141,14 @@ export const AiAgentCreateScreen: React.FC = () => {
     const asset = result.assets?.[0];
     const file = asset ? toAvatarFile(asset, 0) : null;
     await setAvatarFile(file);
+    if (file) {
+      void trackEvent(AnalyticsEvent.AiAgentCreateAvatarAdded);
+    }
   }, [setAvatarFile]);
 
   const handleRemoveAvatar = useCallback(() => {
     setAvatarFile(null);
+    void trackEvent(AnalyticsEvent.AiAgentCreateAvatarRemoved);
   }, [setAvatarFile]);
 
   const handlePickGallery = useCallback(async () => {
@@ -144,6 +171,9 @@ export const AiAgentCreateScreen: React.FC = () => {
 
     if (files.length) {
       await addGalleryFiles(files);
+      void trackEvent(AnalyticsEvent.AiAgentCreateGalleryAdded, {
+        count: files.length,
+      });
     }
   }, [addGalleryFiles, gallery.length, maxGalleryItems]);
 
@@ -154,6 +184,10 @@ export const AiAgentCreateScreen: React.FC = () => {
       const next = exists
         ? form.categories.filter((item) => item.trim().toLowerCase() !== normalized)
         : [...form.categories, category];
+      void trackEvent(AnalyticsEvent.AiAgentCreateCategoryToggled, {
+        category,
+        selected: !exists,
+      });
       handleChange("categories", next);
     },
     [form.categories, handleChange],
@@ -169,6 +203,9 @@ export const AiAgentCreateScreen: React.FC = () => {
     }
     handleChange("usefulness", [...form.usefulness, value]);
     setUsefulnessDraft("");
+    void trackEvent(AnalyticsEvent.AiAgentCreateUsefulnessAdded, {
+      length: value.length,
+    });
   }, [form.usefulness, handleChange, usefulnessDraft]);
 
   const handleRemoveUsefulness = useCallback(
@@ -177,6 +214,9 @@ export const AiAgentCreateScreen: React.FC = () => {
         "usefulness",
         form.usefulness.filter((item) => item !== value),
       );
+      void trackEvent(AnalyticsEvent.AiAgentCreateUsefulnessRemoved, {
+        length: value.length,
+      });
     },
     [form.usefulness, handleChange],
   );
@@ -185,8 +225,16 @@ export const AiAgentCreateScreen: React.FC = () => {
     if (!currentStepComplete || isSubmitting) {
       return;
     }
+    void trackEvent(AnalyticsEvent.AiAgentCreateStepAdvanced, {
+      fromStep: step,
+      toStep: Math.min(step + 1, steps.length - 1),
+      source: "footer_button",
+    });
+    if (step === steps.length - 1) {
+      void trackEvent(AnalyticsEvent.AiAgentCreateSubmitted);
+    }
     goNext();
-  }, [currentStepComplete, goNext, isSubmitting]);
+  }, [currentStepComplete, goNext, isSubmitting, step, steps.length]);
 
   const remainingGallerySlots = Math.max(0, maxGalleryItems - gallery.length);
 
@@ -397,7 +445,10 @@ export const AiAgentCreateScreen: React.FC = () => {
             <Image source={{ uri: item.preview }} style={styles.galleryImage} />
             <TouchableOpacity
               style={styles.galleryRemove}
-              onPress={() => removeGalleryItem(item.id)}
+              onPress={() => {
+                void trackEvent(AnalyticsEvent.AiAgentCreateGalleryRemoved);
+                removeGalleryItem(item.id);
+              }}
             >
               <Ionicons name="trash" size={16} color={theme.white} />
             </TouchableOpacity>
@@ -427,6 +478,9 @@ export const AiAgentCreateScreen: React.FC = () => {
     if (!createdBot?._id) {
       return;
     }
+    void trackEvent(AnalyticsEvent.AiAgentCreateProfileOpened, {
+      aiBotId: createdBot._id,
+    });
     getAiProfile(createdBot._id);
   }, [createdBot, getAiProfile]);
 
@@ -455,11 +509,19 @@ export const AiAgentCreateScreen: React.FC = () => {
           title={t('screens.aibot.create.completed.createAnother')}
           type="primary-outline"
           onPress={() => {
+            void trackEvent(AnalyticsEvent.AiAgentCreateAnotherStarted);
             resetFlow();
             setUsefulnessDraft("");
           }}
         />
-        <Button title={t('common.done')} type="gray-outline" onPress={() => goBack()} />
+        <Button
+          title={t('common.done')}
+          type="gray-outline"
+          onPress={() => {
+            void trackEvent(AnalyticsEvent.AiAgentCreateDone);
+            goBack();
+          }}
+        />
       </View>
     </View>
   );
@@ -791,4 +853,3 @@ const createStyles = ({
       gap: sizes.sm as number,
     },
   });
-
