@@ -32,9 +32,10 @@ export const useRewardedAdTokens = (
   const { uiStore, configStore } = useRootStore();
   const { t } = useTranslation();
 
-  const { adsConfig, rewardAmount } = useStoreData(configStore, (store) => ({
+  const { adsConfig, rewardAmount, adsEnabled } = useStoreData(configStore, (store) => ({
     adsConfig: store.adsConfig,
     rewardAmount: store.tokenRewardAmount,
+    adsEnabled: store.adsEnabled,
   }));
 
   const [balance, setBalance] = useState<number>(DEFAULT_TOKEN_BALANCE);
@@ -105,6 +106,10 @@ export const useRewardedAdTokens = (
         }
       }
 
+      if (!adsEnabled) {
+        return;
+      }
+
       try {
         await ensureTrackingTransparencyPermission();
       } catch {
@@ -115,19 +120,27 @@ export const useRewardedAdTokens = (
         return;
       }
 
+      if (isLoaded) {
+        return;
+      }
+
       if (!isLoaded) {
         load();
       }
     };
 
     void loadBalanceAndAd();
-  }, [isLoaded, load, uiStore, updateBalance, t]);
+  }, [adsEnabled, isLoaded, load, uiStore, updateBalance, t]);
 
   useEffect(() => {
+    if (!adsEnabled) {
+      return;
+    }
+
     if (isClosed && !isLoaded) {
       load();
     }
-  }, [isClosed, isLoaded, load]);
+  }, [adsEnabled, isClosed, isLoaded, load]);
 
   useEffect(() => {
     if (!isEarnedReward) {
@@ -182,7 +195,7 @@ export const useRewardedAdTokens = (
   ]);
 
   useEffect(() => {
-    if (!error) {
+    if (!adsEnabled || !error) {
       return;
     }
 
@@ -202,7 +215,7 @@ export const useRewardedAdTokens = (
     }
 
     load();
-  }, [cancelPendingShow, error, load, uiStore, t]);
+  }, [adsEnabled, cancelPendingShow, error, load, uiStore, t]);
 
   const handleFailedShow = useCallback(() => {
     pendingShowIntentRef.current = true;
@@ -246,6 +259,10 @@ export const useRewardedAdTokens = (
   }, [handleFailedShow, show]);
 
   const handleShowRewardedAd = useCallback(() => {
+    if (!adsEnabled) {
+      return;
+    }
+
     pendingShowIntentRef.current = true;
 
     if (!isLoaded) {
@@ -258,13 +275,17 @@ export const useRewardedAdTokens = (
     }
 
     scheduleShow();
-  }, [isLoaded, load, scheduleShow, uiStore, t]);
+  }, [adsEnabled, isLoaded, load, scheduleShow, uiStore, t]);
 
   useEffect(() => {
+    if (!adsEnabled) {
+      return;
+    }
+
     if (isLoaded && pendingShowIntentRef.current) {
       scheduleShow();
     }
-  }, [isLoaded, scheduleShow]);
+  }, [adsEnabled, isLoaded, scheduleShow]);
 
   return {
     balance,
