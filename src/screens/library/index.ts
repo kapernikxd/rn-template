@@ -1,1 +1,1 @@
-export { LibraryScreen } from "./LibraryScreen";
+export { NatalChartScreen } from "./NatalChartScreen";

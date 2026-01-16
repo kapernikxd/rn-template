@@ -24,7 +24,8 @@ import { useActions } from '../../helpers/hooks';
 
 type SettingsRoute =
   | typeof ROUTES.ProfleSettings
-  | typeof ROUTES.ProfileNotificationSettings;
+  | typeof ROUTES.ProfileNotificationSettings
+  | typeof ROUTES.NatalChart;
 
 
 
@@ -60,6 +61,7 @@ export const SettingsScreen: FC = () => {
 
   const PROFILE = [
     { icon: 'user-o', label: t('settings.section.userTitle'), action: navigateTo(ROUTES.ProfleSettings) },
+    { icon: 'star-o', label: t('library.title'), action: navigateTo(ROUTES.NatalChart) },
     { icon: 'bell', label: t('settings.section.accountManagement.notifications'), action: navigateTo(ROUTES.ProfileNotificationSettings) },
   ];
 
@@ -182,4 +184,3 @@ const getStyles = ({ sizes, globalStyleSheet, theme }: { theme: ThemeType, sizes
     padding: sizes.xs,
   },
 });
-

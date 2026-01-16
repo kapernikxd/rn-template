@@ -76,7 +76,7 @@ const NATAL_READING_CARDS: Omit<NatalReadingCardConfig, "title">[] = [
   { key: "shadow", accent: "#5E5CE6" },
 ];
 
-export const LibraryScreen = () => {
+export const NatalChartScreen = () => {
   const { theme, typography, sizes } = useTheme();
   const { t } = useTranslation();
   const styles = useMemo(
@@ -850,4 +850,4 @@ export const LibraryScreen = () => {
   );
 };
 
-export default LibraryScreen;
+export default NatalChartScreen;
