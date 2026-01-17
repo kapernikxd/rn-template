@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { ChatsStack } from './stacks/ChatsStack';
 import { DashboardStack } from './stacks/DashboardStack';
 import { ProfileStack } from './stacks/ProfileStack';
-import type { MainTabParamList } from './types';
+import { ROUTES, type MainTabParamList } from './types';
 import { useTheme } from 'rn-vs-lb/theme';
 import { useRootStore, useStoreData } from '../store/StoreProvider';
 import { Dot } from 'rn-vs-lb';
@@ -75,9 +75,27 @@ const MainTabBar = ({ state, descriptors, navigation, insets, showLabels = true 
         const isFocused = state.index === index;
         const iconColor = isFocused ? isDark ? theme.black : theme.white : theme.black;
 
+        const getNestedRouteName = () => {
+          const state = route.state as { index?: number; routes?: Array<{ name?: string }> } | undefined;
+          const nestedIndex = state?.index ?? 0;
+          return state?.routes?.[nestedIndex]?.name;
+        };
+
         const onPress = () => {
           const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
-          if (!isFocused && !event.defaultPrevented) {
+          if (event.defaultPrevented) {
+            return;
+          }
+
+          if (route.name === ROUTES.ChatsTab) {
+            const nestedRouteName = getNestedRouteName();
+            if (!isFocused || nestedRouteName !== ROUTES.Chats) {
+              navigation.navigate(ROUTES.ChatsTab, { screen: ROUTES.Chats });
+            }
+            return;
+          }
+
+          if (!isFocused) {
             navigation.navigate(route.name as any, route.params as never);
           }
         };
