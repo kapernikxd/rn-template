@@ -2,8 +2,7 @@
 import React, { FC, useCallback } from 'react';
 import { Linking } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { MessageItem } from 'rn-vs-lb';
-import type { MessageItemProps } from 'rn-vs-lb';
+import { MessageItem, type MessageItemProps } from 'rn-vs-lb';
 import { useLinkPreview } from '../../helpers/hooks';
 import { extractFirstUrl } from '../../helpers/utils/common';
 
