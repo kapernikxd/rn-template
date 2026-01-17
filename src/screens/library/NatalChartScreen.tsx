@@ -19,11 +19,6 @@ import type { CitySearchItem } from "../../types/citySearch";
 import astrologyService from "../../services/astrology/AstrologyService";
 import { useRewardedAdTokensBySource } from "../../helpers/hooks/useRewardedAdTokensBySource";
 import { resolveAdSource } from "../../types/ads";
-import {
-  getStoredNatalReading,
-  getStoredNatalReadings,
-  saveNatalReading,
-} from "../../helpers/astrology/natalReadingStorage";
 import { AnalyticsEvent, trackEvent } from "../../services/analytics/events";
 
 import { CollapsibleCard } from "./components/CollapsibleCard";
@@ -44,6 +39,10 @@ import { formatTimeValue, sanitizeNumericInput } from "./utils/inputFormatters";
 import { makeSummaryText } from "./utils/makeSummaryText";
 import { makeStyles } from "./styles";
 import { saveNatalChart } from "../../helpers/astrology/natalChartStorage";
+import { AiAgentHeader } from "../aibot/components";
+import { usePortalNavigation } from "../../helpers/hooks";
+import { useNatalReadings } from "../../helpers/hooks/natalCharts/useNatalReadings";
+import { NATAL_READING_CARDS } from "../../constants/natalChart";
 
 const FORM_STORAGE_KEY = "libraryFormState";
 
@@ -57,25 +56,6 @@ type FormState = {
   longitude: string;
 };
 
-type NatalReadingCardConfig = {
-  key: string;
-  title: string;
-  accent: string;
-};
-
-const NATAL_READING_CARDS: Omit<NatalReadingCardConfig, "title">[] = [
-  { key: "energy", accent: "#8E7DFF" },
-  { key: "personality", accent: "#FF8FB1" },
-  { key: "emotions", accent: "#6DD3C2" },
-  { key: "relationships", accent: "#F3B14C" },
-  { key: "mind", accent: "#6EB5FF" },
-  { key: "purpose", accent: "#C792EA" },
-  { key: "career", accent: "#7ED957" },
-  { key: "social", accent: "#FFA552" },
-  { key: "inner", accent: "#A0AEC0" },
-  { key: "shadow", accent: "#5E5CE6" },
-];
-
 export const NatalChartScreen = () => {
   const { theme, typography, sizes } = useTheme();
   const { t } = useTranslation();
@@ -85,19 +65,18 @@ export const NatalChartScreen = () => {
   );
 
   const rootStore = useRootStore();
-  const citySearchState = useStoreData(
-    rootStore.citySearchStore,
-    (store) => ({
-      cities: store.cities,
-      isLoading: store.isLoading,
-      error: store.error,
-    }),
-  );
+  const citySearchState = useStoreData(rootStore.citySearchStore, (store) => ({
+    cities: store.cities,
+    isLoading: store.isLoading,
+    error: store.error,
+  }));
 
   const { adsEnabled, adsSource } = useStoreData(rootStore.configStore, (store) => ({
     adsEnabled: store.adsEnabled,
     adsSource: store.adsConfig.ADS_SOURCE,
   }));
+
+  const { goBack } = usePortalNavigation();
 
   const { showRewardedAd } = useRewardedAdTokensBySource(
     { shouldAwardTokens: false },
@@ -118,10 +97,6 @@ export const NatalChartScreen = () => {
   const [copyMessage, setCopyMessage] = useState<string | null>(null);
   const [horoscope, setHoroscope] = useState<Horoscope | null>(null);
   const [formLoaded, setFormLoaded] = useState(false);
-  const [natalReadings, setNatalReadings] = useState<Record<string, string>>({});
-  const [readingErrors, setReadingErrors] = useState<Record<string, string | undefined>>({});
-  const [activeReadingKey, setActiveReadingKey] = useState<string | null>(null);
-  const [loadingReadingKey, setLoadingReadingKey] = useState<string | null>(null);
 
   const handleDayChange = useCallback((text: string) => {
     setDay(sanitizeNumericInput(text, 31, 2));
@@ -149,14 +124,6 @@ export const NatalChartScreen = () => {
   const [isChartCollapsed, setIsChartCollapsed] = useState(false);
 
   const { animate } = useLayoutAnimation();
-  const isMountedRef = useRef(true);
-  const openedReadingKeysRef = useRef<Set<string>>(new Set());
-
-  useEffect(() => {
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
 
   /* ---------------- form collapse ---------------- */
 
@@ -227,7 +194,6 @@ export const NatalChartScreen = () => {
     if (!formLoaded || loading || horoscope || !hasAllFormValues) {
       return;
     }
-
     handleGenerate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formLoaded, loading, horoscope, hasAllFormValues]);
@@ -331,7 +297,7 @@ export const NatalChartScreen = () => {
 
   const handleGenerate = useCallback(() => {
     setError(null);
-    setActiveReadingKey(null);
+    setCopyMessage(null);
 
     void trackEvent(AnalyticsEvent.NatalChartGenerateStarted, {
       hasCoordinates: Boolean(latitude.trim()) && Boolean(longitude.trim()),
@@ -380,7 +346,6 @@ export const NatalChartScreen = () => {
       });
 
       setHoroscope(next);
-      setCopyMessage(null);
 
       collapseForm();
       setIsChartCollapsed(false);
@@ -408,7 +373,6 @@ export const NatalChartScreen = () => {
     longitude,
     collapseForm,
     t,
-    trackEvent,
   ]);
 
   const handleCopyResults = useCallback(async () => {
@@ -428,7 +392,7 @@ export const NatalChartScreen = () => {
         success: false,
       });
     }
-  }, [horoscope, t, trackEvent]);
+  }, [horoscope, t]);
 
   const chartPayload = useMemo(
     () => (horoscope ? buildExportPayload(horoscope) : null),
@@ -444,47 +408,12 @@ export const NatalChartScreen = () => {
     if (!chartPayload || !chartSignature) return;
 
     // Cache the generated chart so chat messages can attach it later without rebuilding.
-    saveNatalChart(chartPayload, chartSignature).catch((error) => {
-      console.warn("Failed to cache natal chart payload", error);
+    saveNatalChart(chartPayload, chartSignature).catch((cacheError) => {
+      console.warn("Failed to cache natal chart payload", cacheError);
     });
   }, [chartPayload, chartSignature]);
 
-  useEffect(() => {
-    let isActive = true;
-
-    const loadStoredReadings = async () => {
-      if (!chartSignature) {
-        if (isActive) {
-          setNatalReadings({});
-          setReadingErrors({});
-        }
-        return;
-      }
-
-      try {
-        const stored = await getStoredNatalReadings();
-        if (!isActive) return;
-
-        const filtered: Record<string, string> = {};
-        Object.entries(stored).forEach(([key, value]) => {
-          if (value.chartSignature === chartSignature) {
-            filtered[key] = value.reading;
-          }
-        });
-
-        setNatalReadings(filtered);
-        setReadingErrors({});
-      } catch (storageError) {
-        console.warn("Failed to read natal readings", storageError);
-      }
-    };
-
-    loadStoredReadings().catch(console.warn);
-
-    return () => {
-      isActive = false;
-    };
-  }, [chartSignature]);
+  /* ---------------- readings ---------------- */
 
   const readingCards = useMemo(
     () =>
@@ -495,188 +424,16 @@ export const NatalChartScreen = () => {
     [t],
   );
 
-  const fetchNatalReading = useCallback(
-    async (key: string, options?: { force?: boolean }) => {
-      if (!horoscope || !chartPayload || !chartSignature) {
-        setError(t("library.errors.noChart"));
-
-        void trackEvent(AnalyticsEvent.NatalReadingLoadFailed, {
-          key,
-          reason: "no_chart",
-        });
-        return null;
-      }
-
-      if (!options?.force) {
-        const cached = natalReadings[key];
-        if (cached) {
-          void trackEvent(AnalyticsEvent.NatalReadingLoadSuccess, {
-            key,
-            source: "memory",
-          });
-          return cached;
-        }
-
-        const stored = await getStoredNatalReading(key, chartSignature);
-        if (stored) {
-          if (isMountedRef.current) {
-            setNatalReadings((prev) => ({ ...prev, [key]: stored }));
-            setReadingErrors((prev) => ({ ...prev, [key]: undefined }));
-          }
-
-          void trackEvent(AnalyticsEvent.NatalReadingLoadSuccess, {
-            key,
-            source: "storage",
-          });
-
-          return stored;
-        }
-      }
-
-      if (!isMountedRef.current) {
-        return null;
-      }
-
-      setLoadingReadingKey(key);
-      setReadingErrors((prev) => ({ ...prev, [key]: undefined }));
-
-      try {
-        const themeTitle =
-          readingCards.find((item) => item.key === key)?.title ?? key;
-
-        const response = await astrologyService.generateNatalReading(
-          { chart: chartPayload, theme: themeTitle },
-          undefined,
-        );
-
-        const normalized =
-          typeof response.reading === "string" ? response.reading.trim() : "";
-
-        await saveNatalReading(key, normalized, chartSignature);
-
-        if (isMountedRef.current) {
-          setNatalReadings((prev) => ({ ...prev, [key]: normalized }));
-        }
-
-        void trackEvent(AnalyticsEvent.NatalReadingLoadSuccess, {
-          key,
-          source: "api",
-        });
-
-        return normalized;
-      } catch (requestError) {
-        const message =
-          requestError instanceof Error
-            ? requestError.message
-            : t("library.errors.readingFetch");
-
-        if (isMountedRef.current) {
-          setReadingErrors((prev) => ({ ...prev, [key]: message }));
-        }
-
-        void trackEvent(AnalyticsEvent.NatalReadingLoadFailed, {
-          key,
-          error: message,
-        });
-
-        return null;
-      } finally {
-        if (isMountedRef.current) {
-          setLoadingReadingKey((prev) => (prev === key ? null : prev));
-        }
-      }
-    },
-    [
-      chartPayload,
-      chartSignature,
-      horoscope,
-      natalReadings,
-      readingCards,
-      t,
-      trackEvent,
-    ],
-  );
-
-  const handleOpenReading = useCallback(
-    (key: string) => {
-      if (!horoscope) {
-        setError(t("library.errors.noChart"));
-
-        void trackEvent(AnalyticsEvent.NatalReadingLoadFailed, {
-          key,
-          reason: "no_chart",
-        });
-        return;
-      }
-
-      const shouldShowRewardedAd =
-        adsEnabled &&
-        !natalReadings[key] &&
-        !openedReadingKeysRef.current.has(key);
-
-      void trackEvent(AnalyticsEvent.NatalReadingOpen, {
-        key,
-        hasCached: Boolean(natalReadings[key]),
-        rewarded: shouldShowRewardedAd,
-      });
-
-      if (shouldShowRewardedAd) {
-        openedReadingKeysRef.current.add(key);
-        showRewardedAd();
-      }
-
-      setActiveReadingKey(key);
-      fetchNatalReading(key).catch((err) => {
-        console.warn(`Failed to load natal reading for ${key}`, err);
-
-        void trackEvent(AnalyticsEvent.NatalReadingLoadFailed, {
-          key,
-          error: err instanceof Error ? err.message : String(err),
-        });
-      });
-    },
-    [
-      adsEnabled,
-      fetchNatalReading,
-      horoscope,
-      natalReadings,
-      showRewardedAd,
-      trackEvent,
-    ],
-  );
-
-  const handleRetryReading = useCallback(() => {
-    if (!activeReadingKey) return;
-
-    void trackEvent(AnalyticsEvent.NatalReadingRetry, {
-      key: activeReadingKey,
-    });
-
-    fetchNatalReading(activeReadingKey, { force: true }).catch((err) => {
-      console.warn(`Failed to reload natal reading for ${activeReadingKey}`, err);
-    });
-  }, [activeReadingKey, fetchNatalReading, trackEvent]);
-
-  const closeReadingModal = useCallback(() => {
-    setActiveReadingKey(null);
-  }, []);
-
-  const activeCard = useMemo(
-    () => readingCards.find((card) => card.key === activeReadingKey),
-    [activeReadingKey, readingCards],
-  );
-
-  const activeReading = activeReadingKey
-    ? natalReadings[activeReadingKey]
-    : undefined;
-
-  const activeReadingError = activeReadingKey
-    ? readingErrors[activeReadingKey]
-    : undefined;
-
-  const activeReadingLoading = activeReadingKey
-    ? loadingReadingKey === activeReadingKey
-    : false;
+  const readings = useNatalReadings({
+    enabled: Boolean(horoscope),
+    adsEnabled,
+    showRewardedAd,
+    tNoChartError: t("library.errors.noChart"),
+    tReadingFetchError: t("library.errors.readingFetch"),
+    chartPayload,
+    chartSignature,
+    readingCards,
+  });
 
   /* ---------------- render ---------------- */
 
@@ -686,165 +443,191 @@ export const NatalChartScreen = () => {
         contentContainerStyle={styles.container}
         keyboardShouldPersistTaps="handled"
       >
-      <Text style={styles.title}>{t("library.title")}</Text>
-      <Spacer />
+        <AiAgentHeader theme={theme} onBack={goBack} title={t("library.title")} />
+        <Spacer />
 
-      {/* ---------- FORM ---------- */}
-      <CollapsibleCard
-        collapsed={isFormCollapsed}
-        header={
-          <FormHeader
-            title={t("library.form.title")}
-            subtitle={summaryText}
-            collapsed={isFormCollapsed}
-            hasResult={Boolean(horoscope)}
-            onPress={toggleForm}
-          />
-        }
-        collapsedFooter={
-          <TouchableOpacity style={styles.smallAction} onPress={expandForm}>
-            <Text style={styles.smallActionText}>{t("library.form.edit")}</Text>
-          </TouchableOpacity>
-        }
-      >
-        <View style={styles.formRow}>
-          <LabeledInput
-            label={t("library.form.fields.day")}
-            value={day}
-            onChangeText={handleDayChange}
-            keyboardType="numeric"
-          />
-          <LabeledInput
-            label={t("library.form.fields.month")}
-            value={month}
-            onChangeText={handleMonthChange}
-            keyboardType="numeric"
-          />
-          <LabeledInput
-            label={t("library.form.fields.year")}
-            value={year}
-            onChangeText={handleYearChange}
-            keyboardType="numeric"
-          />
-        </View>
-
-        <View style={styles.formRow}>
-          <LabeledInput
-            label={t("library.form.fields.time")}
-            value={time}
-            onChangeText={handleTimeChange}
-            keyboardType="numeric"
-            placeholder={t("library.form.fields.timePlaceholder")}
-          />
-          <CityPicker
-            value={city}
-            onChange={setCity}
-            onSelect={handleSelectCity}
-            onClear={handleClearCity}
-            isFocused={isCityFocused}
-            setFocused={setIsCityFocused}
-            isSelected={isCitySelected}
-            setSelected={setIsCitySelected}
-            inputRef={cityInputRef}
-            suggestions={citySearchState.cities}
-            isLoading={citySearchState.isLoading}
-            error={citySearchState.error}
-            label={t("library.form.fields.city")}
-            placeholder={t("library.form.fields.cityPlaceholder")}
-            errorText={t("library.form.fields.cityError")}
-          />
-        </View>
-
-        <View style={styles.formRow}>
-          <LabeledInput label={t("library.form.fields.latitude")} value={latitude} onChangeText={setLatitude} keyboardType="numeric" />
-          <LabeledInput label={t("library.form.fields.longitude")} value={longitude} onChangeText={setLongitude} keyboardType="numeric" />
-        </View>
-
-        <TouchableOpacity style={styles.button} onPress={handleGenerate} disabled={loading}>
-          {loading ? (
-            <ActivityIndicator color={theme.white} />
-          ) : (
-            <Text style={styles.buttonText}>{t("library.form.actions.build")}</Text>
-          )}
-        </TouchableOpacity>
-
-        {horoscope && (
-          <TouchableOpacity style={[styles.button, styles.copyButton]} onPress={handleCopyResults}>
-            <Text style={[styles.buttonText, styles.copyButtonText]}>
-              {t("library.form.actions.copy")}
-            </Text>
-          </TouchableOpacity>
-        )}
-
-        {error && <Text style={styles.errorText}>{error}</Text>}
-        {copyMessage && <Text style={styles.copyMessage}>{copyMessage}</Text>}
-      </CollapsibleCard>
-
-      <Spacer />
-      {/* ---------- CHART ---------- */}
-      <CollapsibleCard
-        collapsed={isChartCollapsed}
-        header={
-          <ChartHeader
-            collapsed={isChartCollapsed}
-            hasResult={Boolean(horoscope)}
-            subtitle={chartSubtitle}
-            onPress={toggleChart}
-            title={t("library.chart.title")}
-          />
-        }
-        collapsedFooter={
-          horoscope ? (
-            <TouchableOpacity style={styles.smallAction} onPress={expandChart}>
-              <Text style={styles.smallActionText}>{t("library.chart.show")}</Text>
-            </TouchableOpacity>
-          ) : null
-        }
-      >
-        {horoscope ? (
-          <View style={styles.chartWrapper}>
-            <NatalChart horoscope={horoscope} />
-          </View>
-        ) : (
-          <View style={styles.chartWrapper}>
-            <Text style={styles.sectionTitle}>{t("library.chart.placeholder.title")}</Text>
-            <Text style={styles.description}>{t("library.chart.placeholder.description")}</Text>
-          </View>
-        )}
-      </CollapsibleCard>
-
-      <View style={styles.readingsSection}>
-        <Text style={styles.sectionTitle}>{t("library.readings.title")}</Text>
-        <Text style={styles.sectionDescription}>
-          {t("library.readings.description")}
-        </Text>
-
-        <View style={styles.readingsList}>
-          {readingCards.map((card) => (
-            <NatalReadingCard
-              key={card.key}
-              title={card.title}
-              accent={card.accent}
-              preview={natalReadings[card.key]}
-              isSaved={Boolean(natalReadings[card.key])}
-              isLoading={loadingReadingKey === card.key}
-              disabled={!horoscope}
-              onPress={() => handleOpenReading(card.key)}
+        {/* ---------- FORM ---------- */}
+        <CollapsibleCard
+          collapsed={isFormCollapsed}
+          header={
+            <FormHeader
+              title={t("library.form.title")}
+              subtitle={summaryText}
+              collapsed={isFormCollapsed}
+              hasResult={Boolean(horoscope)}
+              onPress={toggleForm}
             />
-          ))}
+          }
+          collapsedFooter={
+            <TouchableOpacity style={styles.smallAction} onPress={expandForm}>
+              <Text style={styles.smallActionText}>{t("library.form.edit")}</Text>
+            </TouchableOpacity>
+          }
+        >
+          <View style={styles.formRow}>
+            <LabeledInput
+              label={t("library.form.fields.day")}
+              value={day}
+              onChangeText={handleDayChange}
+              keyboardType="numeric"
+            />
+            <LabeledInput
+              label={t("library.form.fields.month")}
+              value={month}
+              onChangeText={handleMonthChange}
+              keyboardType="numeric"
+            />
+            <LabeledInput
+              label={t("library.form.fields.year")}
+              value={year}
+              onChangeText={handleYearChange}
+              keyboardType="numeric"
+            />
+          </View>
+
+          <View style={styles.formRow}>
+            <LabeledInput
+              label={t("library.form.fields.time")}
+              value={time}
+              onChangeText={handleTimeChange}
+              keyboardType="numeric"
+              placeholder={t("library.form.fields.timePlaceholder")}
+            />
+            <CityPicker
+              value={city}
+              onChange={setCity}
+              onSelect={handleSelectCity}
+              onClear={handleClearCity}
+              isFocused={isCityFocused}
+              setFocused={setIsCityFocused}
+              isSelected={isCitySelected}
+              setSelected={setIsCitySelected}
+              inputRef={cityInputRef}
+              suggestions={citySearchState.cities}
+              isLoading={citySearchState.isLoading}
+              error={citySearchState.error}
+              label={t("library.form.fields.city")}
+              placeholder={t("library.form.fields.cityPlaceholder")}
+              errorText={t("library.form.fields.cityError")}
+            />
+          </View>
+
+          <View style={styles.formRow}>
+            <LabeledInput
+              label={t("library.form.fields.latitude")}
+              value={latitude}
+              onChangeText={setLatitude}
+              keyboardType="numeric"
+            />
+            <LabeledInput
+              label={t("library.form.fields.longitude")}
+              value={longitude}
+              onChangeText={setLongitude}
+              keyboardType="numeric"
+            />
+          </View>
+
+          <TouchableOpacity
+            style={styles.button}
+            onPress={handleGenerate}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color={theme.white} />
+            ) : (
+              <Text style={styles.buttonText}>
+                {t("library.form.actions.build")}
+              </Text>
+            )}
+          </TouchableOpacity>
+
+          {horoscope && (
+            <TouchableOpacity
+              style={[styles.button, styles.copyButton]}
+              onPress={handleCopyResults}
+            >
+              <Text style={[styles.buttonText, styles.copyButtonText]}>
+                {t("library.form.actions.copy")}
+              </Text>
+            </TouchableOpacity>
+          )}
+
+          {error && <Text style={styles.errorText}>{error}</Text>}
+          {copyMessage && <Text style={styles.copyMessage}>{copyMessage}</Text>}
+        </CollapsibleCard>
+
+        <Spacer />
+
+        {/* ---------- CHART ---------- */}
+        <CollapsibleCard
+          collapsed={isChartCollapsed}
+          header={
+            <ChartHeader
+              collapsed={isChartCollapsed}
+              hasResult={Boolean(horoscope)}
+              subtitle={chartSubtitle}
+              onPress={toggleChart}
+              title={t("library.chart.title")}
+            />
+          }
+          collapsedFooter={
+            horoscope ? (
+              <TouchableOpacity style={styles.smallAction} onPress={expandChart}>
+                <Text style={styles.smallActionText}>
+                  {t("library.chart.show")}
+                </Text>
+              </TouchableOpacity>
+            ) : null
+          }
+        >
+          {horoscope ? (
+            <View style={styles.chartWrapper}>
+              <NatalChart horoscope={horoscope} />
+            </View>
+          ) : (
+            <View style={styles.chartWrapper}>
+              <Text style={styles.sectionTitle}>
+                {t("library.chart.placeholder.title")}
+              </Text>
+              <Text style={styles.description}>
+                {t("library.chart.placeholder.description")}
+              </Text>
+            </View>
+          )}
+        </CollapsibleCard>
+
+        <View style={styles.readingsSection}>
+          <Text style={styles.sectionTitle}>{t("library.readings.title")}</Text>
+          <Text style={styles.sectionDescription}>
+            {t("library.readings.description")}
+          </Text>
+
+          <View style={styles.readingsList}>
+            {readingCards.map((card) => (
+              <NatalReadingCard
+                key={card.key}
+                title={card.title}
+                accent={card.accent}
+                preview={readings.natalReadings[card.key]}
+                isSaved={Boolean(readings.natalReadings[card.key])}
+                isLoading={readings.loadingReadingKey === card.key}
+                disabled={!horoscope}
+                onPress={() => readings.openReading(card.key)}
+              />
+            ))}
+          </View>
         </View>
-      </View>
       </ScrollView>
 
       <NatalReadingModal
-        visible={Boolean(activeReadingKey)}
-        onClose={closeReadingModal}
-        title={activeCard?.title ?? ""}
-        accent={activeCard?.accent ?? theme.primary}
-        reading={activeReading}
-        isLoading={activeReadingLoading}
-        errorMessage={activeReadingError ?? undefined}
-        onRetry={handleRetryReading}
+        visible={readings.modal.visible}
+        onClose={readings.modal.close}
+        title={readings.modal.activeCard?.title ?? ""}
+        accent={readings.modal.activeCard?.accent ?? theme.primary}
+        reading={readings.modal.activeReading}
+        isLoading={readings.modal.activeReadingLoading}
+        errorMessage={readings.modal.activeReadingError ?? undefined}
+        onRetry={readings.modal.retryActive}
       />
     </>
   );

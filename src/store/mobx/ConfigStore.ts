@@ -93,8 +93,7 @@ export class ConfigStore {
         const apiUrlFromConfig = response.API_URL ?? response.urls?.API_URL ?? response.urls?.apiUrl;
         setApiUrl(apiUrlFromConfig);
 
-        const citySearchApiUrl =
-          response.CITY_SEARCH_API ?? response.urls?.CITY_SEARCH_API ?? DEFAULT_CITY_SEARCH_API;
+        const citySearchApiUrl = response.urls?.CITY_SEARCH_API ?? DEFAULT_CITY_SEARCH_API;
 
         this.config = {
           appVer: { ...DEFAULT_APP_VERSION_CONFIG, ...response.appVer },
