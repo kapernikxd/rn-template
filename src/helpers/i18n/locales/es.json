@@ -1299,6 +1299,8 @@
     "title": "Carta natal",
     "form": {
       "title": "Datos de nacimiento",
+      "myTitle": "Mi carta natal",
+      "partnerTitle": "Carta natal de la pareja",
       "edit": "Editar datos",
       "summaryPlaceholder": "Introduce los datos para calcular la carta natal",
       "status": {

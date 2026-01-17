@@ -1299,6 +1299,8 @@
     "title": "Tema natale",
     "form": {
       "title": "Dati di nascita",
+      "myTitle": "Il mio tema natale",
+      "partnerTitle": "Tema natale del partner",
       "edit": "Modifica dati",
       "summaryPlaceholder": "Inserisci i dati per calcolare il tema natale",
       "status": {

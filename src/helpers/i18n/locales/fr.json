@@ -1299,6 +1299,8 @@
     "title": "Thème natal",
     "form": {
       "title": "Données de naissance",
+      "myTitle": "Mon thème astral",
+      "partnerTitle": "Thème astral du partenaire",
       "edit": "Modifier les données",
       "summaryPlaceholder": "Saisissez les données pour calculer le thème natal",
       "status": {
