@@ -14,6 +14,7 @@ import type { MainTabParamList } from './types';
 import { useTheme } from 'rn-vs-lb/theme';
 import { useRootStore, useStoreData } from '../store/StoreProvider';
 import { Dot } from 'rn-vs-lb';
+import { HoroscopeStack } from './stacks/HoroscopeStack';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -27,6 +28,7 @@ type TabConfig = {
 
 const TABS: TabConfig[] = [
   { name: 'DashboardTab', labelKey: 'navigation.tabs.dashboard', icon: 'dashboard', component: DashboardStack },
+  { name: 'HoroscopeTab', labelKey: 'navigation.tabs.dashboard', icon: 'auto-awesome', component: HoroscopeStack },
   { name: 'ChatsTab', labelKey: 'navigation.tabs.chats', icon: 'chat-bubble-outline', component: ChatsStack },
   { name: 'ProfileTab', labelKey: 'navigation.tabs.profile', icon: 'settings', component: ProfileStack },
 ];

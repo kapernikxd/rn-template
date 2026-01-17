@@ -1,527 +1,257 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import {
-  ListRenderItem,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ThemeType, SizesType, useTheme } from 'rn-vs-lb/theme';
+import { ActivityIndicator, FlatList, RefreshControl, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTheme } from 'rn-vs-lb/theme';
+import { Spacer, TabBarAi } from 'rn-vs-lb';
 import { useTranslation } from 'react-i18next';
-import * as Notifications from 'expo-notifications';
 
-import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
-import astrologyService from '../../services/astrology/AstrologyService';
-import type { HoroscopeCategory } from '../../types/astrology';
-import {
-  getStoredHoroscopesForToday,
-  getStoredHoroscopeForToday,
-  getStoredHoroscopeForYesterday,
-  saveHoroscopeForToday,
-  type StoredHoroscopes,
-} from '../../helpers/astrology/horoscopeStorage';
-import { getProfileInfo, type ProfileInfoData } from '../../helpers/profile/profileInfoStorage';
-import { ROUTES, type DashboardScreenProps } from '../../navigation/types';
-import { usePushNotifications } from '../../helpers/hooks';
-import { HoroscopeDescription } from './components/HoroscopeDescription';
-import { HoroscopeCard } from './components/HoroscopeCard';
-import { HoroscopeCardsCarousel, useHoroscopeCards } from './components/HoroscopeCardsCarousel';
-import { HoroscopeModal } from './components/HoroscopeModal';
-import { DashboardHeader } from './components/DashboardHeader';
-import { HoroscopeTabBar } from './components/HoroscopeTabBar';
-import { ProfileCompletionBanner } from './components/ProfileCompletionBanner';
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
-import { getTokenBalance, subtractTokens } from '../../helpers/tokenStorage';
+import type { AiBotMainPageBot } from '../../types';
+import { AiBotCard } from '../../components/aibot/AiBotCard';
+import { usePortalNavigation } from '../../helpers/hooks';
+import { MAIN_HORIZONTAL_PADDING } from '../../constants/layout';
+import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
+import { capitalizeFirstLetter } from '../../helpers/utils/common';
 import { AnalyticsEvent, trackEvent } from '../../services/analytics/events';
-import { ScreenLoader } from '../../components';
 
-type HoroscopeCardCategory = Exclude<HoroscopeCategory, 'general'>;
-
-type HoroscopeCardData = {
-  key: HoroscopeCardCategory;
-  title: string;
-  description?: string;
-  icon: React.ComponentProps<typeof MaterialCommunityIcons>['name'];
-  accent: string;
-};
-
-export const CARD_WIDTH = 280;
-
-const PROFILE_COMPLETION_THRESHOLD = 0.6;
-const PROFILE_BANNER_DISMISSED_STORAGE_KEY = 'profileCompletionBannerDismissed';
-const CARD_UNLOCK_COST = 5;
-const PUSH_PERMISSION_PROMPTED_STORAGE_KEY = 'pushPermissionPrompted';
-
-const calculateProfileCompletion = (profileInfo: ProfileInfoData): number => {
-  const values = Object.values(profileInfo);
-  const totalFields = values.length;
-
-  if (totalFields === 0) {
-    return 0;
-  }
-
-  const filledFields = values.filter((value) => `${value ?? ''}`.trim().length > 0).length;
-
-  return Math.min(1, filledFields / totalFields);
-};
-
+const COLUMN_GAP = 2;
 
 export const DashboardScreen = () => {
-  const { theme, sizes } = useTheme();
-  const { t, i18n } = useTranslation();
-  const insets = useSafeAreaInsets();
+  const { aiBotStore } = useRootStore();
   const { setColors } = useSafeAreaColors();
-  const { uiStore, configStore, authStore } = useRootStore();
-  const navigation = useNavigation<DashboardScreenProps['navigation']>();
-  const cards = useHoroscopeCards();
-  const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
-  const hasAttemptedAutoLogin = useStoreData(authStore, (store) => store.hasAttemptedAutoLogin);
-  const isAuthenticated = useStoreData(authStore, (store) => store.isAuth);
-  const isAuthReady = hasAttemptedAutoLogin && isAuthenticated;
-  const { expoPushToken, registerForPushNotificationsAsync } = usePushNotifications({
-    autoRegister: false,
-  });
-  const [activeTab, setActiveTab] = useState(1);
-  const [horoscopes, setHoroscopes] = useState<StoredHoroscopes>({});
-  const [loadingByCategory, setLoadingByCategory] = useState<
-    Partial<Record<HoroscopeCategory, boolean>>
-  >({});
-  const [errorsByCategory, setErrorsByCategory] = useState<
-    Partial<Record<HoroscopeCategory, string>>
-  >({});
-  const [activeModalCategory, setActiveModalCategory] = useState<
-    HoroscopeCardCategory | null
-  >(null);
-  const [profileCompletion, setProfileCompletion] = useState(0);
-  const [shouldShowProfileBanner, setShouldShowProfileBanner] = useState(false);
-  const [tokenBalance, setTokenBalance] = useState<number | null>(null);
-  const isMountedRef = useRef(true);
-  const horoscopesRef = useRef<StoredHoroscopes>({});
+  const bots = useStoreData(aiBotStore, (store) => store.mainPageBots);
+  const isLoading = useStoreData(aiBotStore, (store) => store.isLoadingMainPageBots);
+  const error = useStoreData(aiBotStore, (store) => store.mainPageBotsError);
+  const { width } = useWindowDimensions();
+  const { theme } = useTheme();
+  const { goToAiBotProfile } = usePortalNavigation();
+  const { t } = useTranslation();
 
-  const handleOpenFilters = useCallback(() => {
-    console.log('filters');
-  }, []);
-
-  const requestPushPermission = useCallback(async () => {
-    if (!isAuthReady) {
-      return;
-    }
-
-    try {
-      const permissionStatus = await Notifications.getPermissionsAsync();
-
-      if (permissionStatus.status === 'granted') {
-        if (!expoPushToken) {
-          const token = await registerForPushNotificationsAsync();
-          if (token) {
-            await authStore.sendPushToken(token);
-          }
-        }
-
-        void trackEvent(AnalyticsEvent.NotificationsAccepted, {
-          status: 'already_granted',
-        });
-
-        return;
-      }
-
-      const isPrompted = await AsyncStorage.getItem(PUSH_PERMISSION_PROMPTED_STORAGE_KEY);
-
-      if (isPrompted === 'true' || !permissionStatus.canAskAgain) {
-        return;
-      }
-
-      const { status } = await Notifications.requestPermissionsAsync();
-      await AsyncStorage.setItem(PUSH_PERMISSION_PROMPTED_STORAGE_KEY, 'true');
-
-      if (status === 'granted') {
-        const token = await registerForPushNotificationsAsync();
-        if (token) {
-          await authStore.sendPushToken(token);
-        }
-
-        void trackEvent(AnalyticsEvent.NotificationsAccepted, {
-          status: 'granted_after_prompt',
-        });
-      }
-    } catch (error) {
-      console.warn('Failed to request push permissions on dashboard', error);
-    }
-  }, [authStore, expoPushToken, isAuthReady, registerForPushNotificationsAsync]);
-
-  useEffect(() => {
-    return () => {
-      isMountedRef.current = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    horoscopesRef.current = horoscopes;
-  }, [horoscopes]);
+  const [index, setIndex] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     setColors({
       topColor: theme.background,
-      bottomColor: theme.background,
+      bottomColor: theme.white,
     });
-  }, [setColors, theme.background]);
+  }, [theme, setColors]);
 
-  const evaluateProfileCompletion = useCallback(async () => {
-    try {
-      const [profileInfo, dismissedValue] = await Promise.all([
-        getProfileInfo(),
-        AsyncStorage.getItem(PROFILE_BANNER_DISMISSED_STORAGE_KEY),
-      ]);
+  const normalizeCategory = useCallback((category: string) => category.trim().toLowerCase().replace(/\s+/g, '-'), []);
 
-      if (!isMountedRef.current) {
-        return;
-      }
-
-      const completionRatio = calculateProfileCompletion(profileInfo);
-      const isDismissed = dismissedValue === 'true';
-
-      setProfileCompletion(completionRatio);
-      setShouldShowProfileBanner(!isDismissed && completionRatio < PROFILE_COMPLETION_THRESHOLD);
-    } catch (error) {
-      console.warn('Failed to evaluate profile completion state', error);
-    }
-  }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      void evaluateProfileCompletion();
-      void requestPushPermission();
-
-      return () => {};
-    }, [evaluateProfileCompletion, requestPushPermission]),
+  const getCategoryLabel = useCallback(
+    (categoryKey: string, fallback: string) => {
+      const key = `screens.aibot.common.categories.${categoryKey}`;
+      const translated = t(key);
+      return translated === key ? capitalizeFirstLetter(fallback) : translated;
+    },
+    [t],
   );
 
-  if (!isAuthReady) {
-    return <ScreenLoader />;
-  }
+  const categories = useMemo(() => {
+    const uniqueCategories = new Map<string, string>();
 
-  useEffect(() => {
-    let cancelled = false;
-
-    const loadStoredHoroscopes = async () => {
-      try {
-        const stored = await getStoredHoroscopesForToday();
-
-        if (!cancelled && isMountedRef.current && Object.keys(stored).length) {
-          setHoroscopes(stored);
-        }
-      } catch (error) {
-        console.warn('Failed to preload horoscopes', error);
-      }
-    };
-
-    loadStoredHoroscopes();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!adsEnabled) {
-      setTokenBalance(null);
-      return;
-    }
-
-    const loadBalance = async () => {
-      try {
-        const balance = await getTokenBalance();
-        setTokenBalance(balance);
-      } catch (error) {
-        console.warn('Failed to load token balance', error);
-        uiStore.showSnackbar('Не удалось получить баланс токенов.', 'error');
-      }
-    };
-
-    void loadBalance();
-  }, [adsEnabled, uiStore]);
-
-  const loadHoroscope = useCallback(
-    async (category: HoroscopeCategory, { force = false }: { force?: boolean } = {}) => {
-      try {
-        if (!force) {
-          const existing = horoscopesRef.current?.[category];
-
-          if (existing) {
-            if (isMountedRef.current) {
-              setErrorsByCategory((prev) => ({ ...prev, [category]: undefined }));
-              setLoadingByCategory((prev) => ({ ...prev, [category]: false }));
-            }
-
-            return existing;
-          }
-
-          const cached = await getStoredHoroscopeForToday(category);
-
-          if (cached) {
-            if (isMountedRef.current) {
-              setHoroscopes((prev) => ({ ...prev, [category]: cached }));
-              setErrorsByCategory((prev) => ({ ...prev, [category]: undefined }));
-              setLoadingByCategory((prev) => ({ ...prev, [category]: false }));
-            }
-
-            return cached;
+    bots.forEach((bot) => {
+      bot.details?.categories?.forEach((category) => {
+        const trimmedCategory = category?.trim();
+        if (trimmedCategory) {
+          const normalizedCategory = normalizeCategory(trimmedCategory);
+          if (!uniqueCategories.has(normalizedCategory)) {
+            uniqueCategories.set(normalizedCategory, trimmedCategory);
           }
         }
-      } catch (error) {
-        console.warn('Failed to get cached horoscope', error);
-      }
+      });
+    });
 
-      if (!isMountedRef.current) {
-        return null;
-      }
+    return Array.from(uniqueCategories.entries()).map(([key, original]) => ({ key, original }));
+  }, [bots, normalizeCategory]);
 
-      setLoadingByCategory((prev) => ({ ...prev, [category]: true }));
-      setErrorsByCategory((prev) => ({ ...prev, [category]: undefined }));
-
-      try {
-        const [profileInfo, previousHoroscope] = await Promise.all([
-          getProfileInfo(),
-          getStoredHoroscopeForYesterday(category),
-        ]);
-        const response = await astrologyService.generateHoroscope(
-          category,
-          profileInfo,
-          i18n.language,
-          previousHoroscope,
-        );
-        const normalizedHoroscope =
-          typeof response.horoscope === 'string' ? response.horoscope.trim() : '';
-
-        const updatedHoroscopes = await saveHoroscopeForToday(
-          category,
-          normalizedHoroscope,
-        );
-
-        if (isMountedRef.current) {
-          setHoroscopes(updatedHoroscopes);
-          setErrorsByCategory((prev) => ({ ...prev, [category]: undefined }));
-        }
-
-        return normalizedHoroscope;
-      } catch (error) {
-        const message =
-          error instanceof Error ? error.message : t('screens.dashboard.horoscope.fetchError');
-
-        if (isMountedRef.current) {
-          setErrorsByCategory((prev) => ({ ...prev, [category]: message }));
-        }
-
-        throw error;
-      } finally {
-        if (isMountedRef.current) {
-          setLoadingByCategory((prev) => ({ ...prev, [category]: false }));
-        }
-      }
-    },
-    [i18n.language, t],
+  const tabs = useMemo(
+    () => [
+      { key: 'all', label: t('screens.dashboard.tabs.all') },
+      ...categories.map(({ key, original }) => ({
+        key,
+        label: getCategoryLabel(key, original),
+      })),
+    ],
+    [categories, getCategoryLabel, t],
   );
 
   useEffect(() => {
-    loadHoroscope('general').catch((error) => {
-      console.warn('Failed to load general horoscope', error);
-    });
-  }, [loadHoroscope]);
+    if (index >= tabs.length) {
+      setIndex(0);
+    }
+  }, [index, tabs.length]);
 
-  const styles = useMemo(
-    () => createStyles({ theme, sizes, topInset: insets.top }),
-    [theme, sizes, insets.top],
-  );
+  const activeTab = tabs[index] ?? tabs[0];
 
-  const handleTabPress = useCallback((index: number) => {
-    setActiveTab(index);
-  }, []);
-
-  const handleCardPress = useCallback(
-    async (category: HoroscopeCardCategory) => {
-      void trackEvent(AnalyticsEvent.HoroscopeCardOpened, { category });
-
-      if (activeModalCategory === category || horoscopesRef.current?.[category]) {
-        setActiveModalCategory(category);
-        return;
-      }
-
-      if (!adsEnabled) {
-        setActiveModalCategory(category);
-        return;
-      }
-
-      try {
-        const balance = await getTokenBalance();
-        setTokenBalance(balance);
-
-        if (balance < CARD_UNLOCK_COST) {
-          uiStore.showSnackbar('Недостаточно токенов для открытия карточки.', 'warning');
-          return;
-        }
-
-        const updatedBalance = await subtractTokens(CARD_UNLOCK_COST);
-        setTokenBalance(updatedBalance);
-        setActiveModalCategory(category);
-      } catch (error) {
-        console.warn('Failed to spend tokens for card', error);
-        uiStore.showSnackbar('Не удалось списать токены. Попробуйте позже.', 'error');
-      }
-    },
-    [activeModalCategory, adsEnabled, uiStore],
-  );
-
-  const handleBannerPress = useCallback(() => {
-    navigation.navigate(ROUTES.ProfileTab, {
-      screen: ROUTES.ProfleSettings,
-    });
-  }, [navigation]);
-
-  const handleBannerDismiss = useCallback(() => {
-    if (!isMountedRef.current) {
-      return;
+  const filteredBots = useMemo(() => {
+    if (!activeTab || activeTab.key === 'all') {
+      return bots;
     }
 
-    setShouldShowProfileBanner(false);
-
-    AsyncStorage.setItem(PROFILE_BANNER_DISMISSED_STORAGE_KEY, 'true').catch((error) => {
-      console.warn('Failed to persist profile banner dismissal', error);
-    });
-  }, []);
+    return bots.filter((bot) =>
+      bot.details?.categories?.some((category) =>
+        category ? normalizeCategory(category) === activeTab.key : false,
+      ),
+    );
+  }, [activeTab, bots, normalizeCategory]);
 
   useEffect(() => {
-    if (!activeModalCategory) {
-      return;
+    if (!bots.length && !isLoading) {
+      void aiBotStore.fetchMainPageBots();
     }
+  }, [aiBotStore, bots.length, isLoading]);
 
-    loadHoroscope(activeModalCategory).catch((error) => {
-      console.warn(`Failed to load ${activeModalCategory} horoscope`, error);
+  const cardWidth = useMemo(() => {
+    return (width - MAIN_HORIZONTAL_PADDING * 2 - COLUMN_GAP) / 2;
+  }, [width]);
+
+  const renderHeader = useCallback(
+    () => (
+      <View style={styles.header}>
+        <Text style={styles.heading}>{t('screens.dashboard.heading')}</Text>
+        <Text style={styles.subheading}>{t('screens.dashboard.subheading')}</Text>
+      </View>
+    ),
+    [t],
+  );
+
+  const handleOpenBotProfile = useCallback((botId: string) => {
+    void trackEvent(AnalyticsEvent.DashboardBotOpened, {
+      botId,
+      tab: activeTab?.key ?? 'all',
     });
-  }, [activeModalCategory, loadHoroscope]);
+    goToAiBotProfile(botId);
+  }, [activeTab?.key, goToAiBotProfile]);
 
-  const renderCard: ListRenderItem<HoroscopeCardData> = useCallback(
-    ({ item }) => (
-      <HoroscopeCard
-        item={item}
-        content={horoscopes[item.key]}
-        isLoading={Boolean(loadingByCategory[item.key])}
-        isUnlocked={Boolean(horoscopes[item.key])}
-        adsEnabled={adsEnabled}
-        unlockCost={CARD_UNLOCK_COST}
-        onPress={() => handleCardPress(item.key)}
+  const handleTabChange = useCallback(
+    (nextIndex: number) => {
+      setIndex(nextIndex);
+      const nextTab = tabs[nextIndex];
+      void trackEvent(AnalyticsEvent.DashboardTabChanged, {
+        tab: nextTab?.key ?? 'all',
+      });
+    },
+    [tabs],
+  );
+
+  const renderItem = useCallback(
+    ({ item }: { item: AiBotMainPageBot }) => (
+      <AiBotCard
+        bot={item}
+        style={{ width: cardWidth }}
+        onPress={() => handleOpenBotProfile(item.id)}
       />
     ),
-    [adsEnabled, handleCardPress, horoscopes, loadingByCategory],
+    [cardWidth, handleOpenBotProfile],
   );
 
-  const closeModal = useCallback(() => {
-    setActiveModalCategory(null);
-  }, []);
-
-  const retryModalRequest = useCallback(() => {
-    if (!activeModalCategory) {
+  const handleRefresh = useCallback(async () => {
+    if (isLoading || isRefreshing) {
       return;
     }
 
-    loadHoroscope(activeModalCategory, { force: true }).catch((error) => {
-      console.warn(`Failed to reload ${activeModalCategory} horoscope`, error);
-    });
-  }, [activeModalCategory, loadHoroscope]);
+    setIsRefreshing(true);
+    try {
+      void trackEvent(AnalyticsEvent.DashboardRefreshed, {
+        tab: activeTab?.key ?? 'all',
+      });
+      await aiBotStore.fetchMainPageBots();
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [activeTab?.key, aiBotStore, isLoading, isRefreshing]);
 
-  const modalCard = useMemo(
-    () => cards.find((card) => card.key === activeModalCategory) ?? null,
-    [activeModalCategory, cards],
-  );
-
-  const modalHoroscope = activeModalCategory
-    ? horoscopes[activeModalCategory]
-    : undefined;
-
-  const modalLoading = activeModalCategory
-    ? Boolean(loadingByCategory[activeModalCategory])
-    : false;
-
-  const modalError = activeModalCategory
-    ? errorsByCategory[activeModalCategory]
-    : undefined;
+  const renderEmptyComponent = useCallback(() => (
+    <View style={styles.emptyState}>
+      {isLoading ? (
+        <ActivityIndicator color={theme.white} />
+      ) : (
+        <Text style={styles.emptyText}>{error ?? t('screens.dashboard.empty.default')}</Text>
+      )}
+    </View>
+  ), [error, isLoading, t, theme.white]);
 
   return (
-    <View style={styles.container}>
-      <ScrollView
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      {/* <TabBarAi
+        tabs={tabs}
+        activeIndex={index}
+        onChange={handleTabChange}
+        // кастомизация под твой тёмный UI
+        activeColor={theme.black}
+        inactiveColor={theme.black}
+        indicatorColor={theme.black}
+        indicatorHeight={2}
+        fontSize={16}
+        fontWeightActive="500"
+        fontWeightInactive="300"
+        gap={18}
+      /> */}
+      <Spacer size='xs' />
+      <FlatList
+        data={filteredBots}
+        keyExtractor={(item) => item.id}
+        numColumns={2}
+        renderItem={renderItem}
+        contentContainerStyle={[styles.content, bots.length === 0 && styles.emptyContent]}
+        columnWrapperStyle={bots.length ? styles.columnWrapper : undefined}
+        // ListHeaderComponent={renderHeader}
+        ListEmptyComponent={renderEmptyComponent}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        <DashboardHeader
-          onPressFilters={handleOpenFilters}
-          adsEnabled={adsEnabled}
-          tokenBalance={tokenBalance}
-          onBalanceChange={setTokenBalance}
-        />
-        {shouldShowProfileBanner ? (
-          <ProfileCompletionBanner
-            completion={profileCompletion}
-            onPress={handleBannerPress}
-            onClose={handleBannerDismiss}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={handleRefresh}
+            tintColor={theme.black}
+            colors={[theme.black]}
           />
-        ) : null}
-        {/* <HoroscopeTabBar activeIndex={activeTab} onChange={handleTabPress} /> */}
-        <HoroscopeDescription
-          horoscope={horoscopes.general}
-          isLoading={Boolean(loadingByCategory.general)}
-          errorMessage={errorsByCategory.general}
-          onRetry={() =>
-            loadHoroscope('general', { force: true }).catch((error) => {
-              console.warn('Failed to reload general horoscope', error);
-            })
-          }
-        />
-        <HoroscopeCardsCarousel
-          cards={cards}
-          renderItem={renderCard}
-          extraData={{
-            horoscopes,
-            loadingByCategory,
-            adsEnabled,
-          }}
-        />
-      </ScrollView>
-
-      <HoroscopeModal
-        visible={Boolean(activeModalCategory)}
-        onClose={closeModal}
-        title={modalCard?.title ?? ''}
-        accent={modalCard?.accent ?? theme.card}
-        horoscope={modalHoroscope}
-        isLoading={modalLoading}
-        errorMessage={modalError}
-        onRetry={retryModalRequest}
+        }
       />
     </View>
   );
 };
 
-type CreateStylesParams = {
-  theme: ThemeType;
-  sizes: SizesType;
-  topInset: number;
-};
-
-const createStyles = ({ theme, sizes, topInset }: CreateStylesParams) =>
-  StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: theme.background,
-    },
-    scrollContent: {
-      gap: sizes.lg as number,
-      paddingTop: 0,
-      paddingBottom: sizes.xl as number,
-      paddingHorizontal: sizes.xxs as number,
-    },
-  });
-
-
-export default DashboardScreen;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  content: {
+    paddingBottom: 32,
+    paddingTop: 16,
+    gap: 2,
+  },
+  emptyContent: {
+    flexGrow: 1,
+  },
+  columnWrapper: {
+    gap: COLUMN_GAP,
+    marginBottom: 2,
+  },
+  header: {
+    gap: 8,
+    marginBottom: 8,
+  },
+  heading: {
+    fontSize: 26,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  subheading: {
+    fontSize: 14,
+    lineHeight: 20,
+    color: 'rgba(255, 255, 255, 0.72)',
+  },
+  emptyState: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+    gap: 12,
+  },
+  emptyText: {
+    fontSize: 14,
+    textAlign: 'center',
+    color: 'rgba(255, 255, 255, 0.65)',
+  },
+});

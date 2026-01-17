@@ -19,7 +19,7 @@ class AiBotDetailsService {
 
   public async fetchAiBotsForMainPage(languageCode?: string): Promise<AxiosResponse<AiBotMainPageBot[]>> {
     const lang = this.getLanguageParam(languageCode);
-    return $api.get("/profile/ai-bots/fetchAiBotsForMainPage", { params: { lang } });
+    return $api.get("/profile/ai-bots/fetchAiBotsForMainPage", { params: { lang, category: 'astrology' } });
   }
   /**
    * Получить список созданных AI-ботов.

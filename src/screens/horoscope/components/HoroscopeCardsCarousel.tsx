@@ -5,7 +5,7 @@ import {
   View,
 } from 'react-native';
 import { SIZES, useTheme } from 'rn-vs-lb/theme';
-import { CARD_WIDTH } from '../DashboardScreen';
+import { CARD_WIDTH } from '../HoroscopeScreen';
 import { HoroscopeCardData } from './HoroscopeCard';
 import { useTranslation } from 'react-i18next';
 

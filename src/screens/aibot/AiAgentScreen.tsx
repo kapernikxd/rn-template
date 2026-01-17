@@ -24,6 +24,7 @@ import { createAiAgentStyles } from "./styles";
 import { postReasonOptions, userReasonOptions } from "../../constants";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
+import { AnalyticsEvent, trackEvent } from "../../services/analytics/events";
 
 
 type Props = NativeStackScreenProps<RootStackParamList, typeof ROUTES.AiAgent>;
@@ -117,13 +118,19 @@ export const AiAgentScreen = ({ route }: Props) => {
       await Share.share({
         message: `${displayName}\n${profession}`.trim(),
       });
+      void trackEvent(AnalyticsEvent.AiAgentShare, {
+        aiBotId,
+      });
     } catch (error) {
       console.error("Failed to share AI agent", error);
     }
-  }, [aiBot, displayName, profession]);
+  }, [aiBot, aiBotId, displayName, profession]);
 
   const handleEdit = useCallback(() => {
     if (canEdit && aiBotId) {
+      void trackEvent(AnalyticsEvent.AiAgentEditOpened, {
+        aiBotId,
+      });
       goToAiBotEdit(aiBotId)
     }
   }, [aiBotId, canEdit, goToAiBotEdit]);
@@ -161,6 +168,9 @@ export const AiAgentScreen = ({ route }: Props) => {
     }
 
     if (isDeleted) {
+      void trackEvent(AnalyticsEvent.AiAgentDeleteSuccess, {
+        aiBotId,
+      });
       handleAiAgentDeletedBase();
     }
   }, [aiBotId, aiBotStore, handleAiAgentDeletedBase, isDeleting]);
@@ -179,6 +189,9 @@ export const AiAgentScreen = ({ route }: Props) => {
           text: t('common.delete'),
           style: "destructive",
           onPress: () => {
+            void trackEvent(AnalyticsEvent.AiAgentDeleteConfirmed, {
+              aiBotId,
+            });
             void handleDeleteBot();
           },
         },
@@ -188,6 +201,10 @@ export const AiAgentScreen = ({ route }: Props) => {
   }, [aiBotId, handleDeleteBot, isDeleting, t]);
 
   const handleStartChatPress = useCallback(() => {
+    void trackEvent(AnalyticsEvent.AiAgentChatStarted, {
+      aiBotId,
+      isAuthenticated,
+    });
     if (isAuthenticated) {
       handleStartChat();
       return;
@@ -198,7 +215,12 @@ export const AiAgentScreen = ({ route }: Props) => {
     }
   }, [aiBotId, handleStartChat, isAuthenticated]);
 
-  const handleOpenReport = useCallback(() => setIsReportVisible(true), []);
+  const handleOpenReport = useCallback(() => {
+    void trackEvent(AnalyticsEvent.AiAgentReportOpened, {
+      aiBotId,
+    });
+    setIsReportVisible(true);
+  }, [aiBotId]);
   const handleCloseReport = useCallback(() => setIsReportVisible(false), []);
   const handleCloseGuestChat = useCallback(() => setIsGuestChatVisible(false), []);
   const handleReportSubmit = useCallback(
@@ -206,6 +228,11 @@ export const AiAgentScreen = ({ route }: Props) => {
       if (!aiBotId) return;
       try {
         await profileStore.reportAiBot({ targetId: aiBotId, reason, details });
+        void trackEvent(AnalyticsEvent.AiAgentReportSubmitted, {
+          aiBotId,
+          reason,
+          detailsLength: details.trim().length,
+        });
       } catch (error) {
         console.error("Failed to submit AI agent report", error);
       }
@@ -270,6 +297,9 @@ export const AiAgentScreen = ({ route }: Props) => {
 
     setIsRefreshing(true);
     try {
+      void trackEvent(AnalyticsEvent.AiAgentRefreshed, {
+        aiBotId,
+      });
       await Promise.all([
         aiBotStore.fetchAiBotById(aiBotId),
         aiBotStore.fetchBotDetails(aiBotId),
@@ -278,6 +308,24 @@ export const AiAgentScreen = ({ route }: Props) => {
       setIsRefreshing(false);
     }
   }, [aiBotId, aiBotStore, isLoading, isRefreshing]);
+
+  const handleToggleFollowPress = useCallback(() => {
+    void trackEvent(AnalyticsEvent.AiAgentFollowToggled, {
+      aiBotId,
+      isFollowing: Boolean(isFollowing),
+    });
+    handleToggleFollow();
+  }, [aiBotId, handleToggleFollow, isFollowing]);
+
+  useEffect(() => {
+    if (!aiBotId) {
+      return;
+    }
+    void trackEvent(AnalyticsEvent.AiAgentTabChanged, {
+      aiBotId,
+      tab: activeTab,
+    });
+  }, [activeTab, aiBotId]);
 
   if (isLoading && !aiBot) {
     return <ScreenLoader />;
@@ -321,7 +369,7 @@ export const AiAgentScreen = ({ route }: Props) => {
             profession={profession}
             categories={categories}
             followButtonTitle={followButtonTitle}
-            onToggleFollow={handleToggleFollow}
+            onToggleFollow={handleToggleFollowPress}
             isFollowUpdating={isFollowUpdating}
             disableFollowAction={disableFollowAction}
             onStartChat={handleStartChatPress}
@@ -390,4 +438,3 @@ export const AiAgentScreen = ({ route }: Props) => {
     </KeyboardAvoidingView>
   );
 };
-

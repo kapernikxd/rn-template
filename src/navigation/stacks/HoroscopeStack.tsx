@@ -1,11 +1,10 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { HoroscopeStackParamList, ROUTES } from '../types';
+import { HoroscopeScreen } from '../../screens/horoscope/HoroscopeScreen';
 
-import { DashboardScreen } from '../../screens/dashboard/DashboardScreen';
-import type { DashboardStackParamList } from '../types';
+const Stack = createNativeStackNavigator<HoroscopeStackParamList>();
 
-const Stack = createNativeStackNavigator<DashboardStackParamList>();
-
-export const DashboardStack = () => (
+export const HoroscopeStack = () => (
   <Stack.Navigator
     screenOptions={{
       headerShown: false,
@@ -13,8 +12,8 @@ export const DashboardStack = () => (
     }}
   >
     <Stack.Screen
-      name="Dashboard"
-      component={DashboardScreen}
+      name={ROUTES.Horoscope}
+      component={HoroscopeScreen}
       options={{
         headerShown: false,
       }}

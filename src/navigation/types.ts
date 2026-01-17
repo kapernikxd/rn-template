@@ -30,6 +30,7 @@ export const ROUTES = {
   DashboardTab: 'DashboardTab',
   ChatsTab: 'ChatsTab',
   ProfileTab: 'ProfileTab',
+  HoroscopeTab: 'HoroscopeTab',
 
   // Dashboard stack
   Dashboard: 'Dashboard',
@@ -48,6 +49,7 @@ export const ROUTES = {
   // Root-level (модалки/auth и т.п.)
   RootTabs: 'RootTabs',
   Auth: 'Auth',
+  Horoscope: 'Horoscope',
 
   //docs
   TermsOfUse: 'TermsOfUse',
@@ -64,6 +66,10 @@ export type RouteName = typeof ROUTES[keyof typeof ROUTES];
 export type DashboardStackParamList = {
   [ROUTES.Dashboard]: undefined;
   [ROUTES.DashboardDetails]: { card: DashboardExperience };
+};
+
+export type HoroscopeStackParamList = {
+  [ROUTES.Horoscope]: undefined;
 };
 
 export type ChatsStackParamList = {
@@ -83,6 +89,7 @@ export type SettingsParamList = {
  */
 export type MainTabParamList = {
   [ROUTES.DashboardTab]: NavigatorScreenParams<DashboardStackParamList>;
+  [ROUTES.HoroscopeTab]: NavigatorScreenParams<HoroscopeStackParamList>;
   [ROUTES.ChatsTab]: NavigatorScreenParams<ChatsStackParamList>;
   [ROUTES.ProfileTab]: NavigatorScreenParams<SettingsParamList>;
 };

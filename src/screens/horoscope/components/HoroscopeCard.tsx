@@ -9,7 +9,7 @@ import {
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useTheme } from 'rn-vs-lb/theme';
 import type { HoroscopeCategory } from '../../../types/astrology';
-import { CARD_WIDTH } from '../DashboardScreen';
+import { CARD_WIDTH } from '../HoroscopeScreen';
 import { splitHoroscopeIntoParagraphs } from './HoroscopeDescription';
 import { useTranslation } from 'react-i18next';
 
