@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 import { Directory, File, Paths } from 'expo-file-system';
 import uuid from 'react-native-uuid';
 import { launchImageLibrary } from 'react-native-image-picker';
@@ -9,11 +9,12 @@ import { useRootStore } from '../../../store/StoreProvider';
 import { useImageCompressor, usePortalNavigation } from '../../../helpers/hooks';
 import { UpdateProfileProps } from '../../../types/profile';
 import { getUserAvatar } from '../../../helpers/utils/user';
+import { getProfileInfo, mergeProfileInfo } from '../../profile/profileInfoStorage';
 
 type EditProfileFormValues = Pick<
   UpdateProfileProps,
   'name' | 'lastname' | 'profession' | 'phone' | 'userBio' | 'gender'
->;
+> & { zodiacSign: string };
 
 function safeCreateDirectory(dir: Directory) {
   try {
@@ -36,8 +37,10 @@ export const useEditProfile = () => {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [localImageUri, setLocalImageUri] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [storedZodiacSign, setStoredZodiacSign] = useState('');
+  const zodiacInitializedRef = useRef(false);
 
-  const initialValues = useMemo(
+  const profileDefaultValues = useMemo(
     () => ({
       name: profileStore.myProfile?.name,
       lastname: profileStore.myProfile?.lastname,
@@ -56,7 +59,16 @@ export const useEditProfile = () => {
     ],
   );
 
+  const initialValues = useMemo(
+    () => ({
+      ...profileDefaultValues,
+      zodiacSign: '',
+    }),
+    [profileDefaultValues],
+  );
+
   const methods = useForm<EditProfileFormValues>({ defaultValues: initialValues });
+  const zodiacSignValue = useWatch({ control: methods.control, name: 'zodiacSign' });
 
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
@@ -68,9 +80,11 @@ export const useEditProfile = () => {
     methods.handleSubmit(async data => {
       setIsSubmitting(true);
       try {
+        const { zodiacSign, ...profileData } = data;
         const changedFields = Object.fromEntries(
-          Object.entries(data).filter(
-            ([key, value]) => value !== initialValues[key as keyof typeof initialValues],
+          Object.entries(profileData).filter(
+            ([key, value]) =>
+              value !== profileDefaultValues[key as keyof typeof profileDefaultValues],
           ),
         ) as Partial<EditProfileFormValues>;
 
@@ -96,26 +110,57 @@ export const useEditProfile = () => {
         setIsSubmitting(false);
       }
     }),
-    [methods, initialValues, profileStore, uiStore, t],
+    [methods, profileDefaultValues, profileStore, uiStore, t],
   );
 
   const reset = useCallback(() => {
     methods.reset({
-      name: profileStore.myProfile?.name,
-      lastname: profileStore.myProfile?.lastname,
-      profession: profileStore.myProfile?.profession,
-      phone: profileStore.myProfile?.phone,
-      userBio: profileStore.myProfile?.userBio,
-      gender: profileStore.myProfile?.gender,
+      ...profileDefaultValues,
+      zodiacSign: storedZodiacSign,
     });
-  }, [
-    methods,
-    profileStore.myProfile?.name,
-    profileStore.myProfile?.lastname,
-    profileStore.myProfile?.profession,
-    profileStore.myProfile?.phone,
-    profileStore.myProfile?.userBio,
-  ]);
+  }, [methods, profileDefaultValues, storedZodiacSign]);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const loadZodiacSign = async () => {
+      const profileInfo = await getProfileInfo();
+      if (!isActive) {
+        return;
+      }
+      const zodiacSign = profileInfo.zodiacSign ?? '';
+      setStoredZodiacSign(zodiacSign);
+      methods.setValue('zodiacSign', zodiacSign, { shouldDirty: false });
+      zodiacInitializedRef.current = true;
+    };
+
+    loadZodiacSign();
+
+    return () => {
+      isActive = false;
+    };
+  }, [methods]);
+
+  useEffect(() => {
+    if (!zodiacInitializedRef.current) {
+      return;
+    }
+    if (zodiacSignValue === storedZodiacSign) {
+      return;
+    }
+
+    const nextValue = zodiacSignValue ?? '';
+    const saveZodiacSign = async () => {
+      try {
+        await mergeProfileInfo({ zodiacSign: nextValue });
+        setStoredZodiacSign(nextValue);
+      } catch (error) {
+        console.warn('Failed to save zodiac sign', error);
+      }
+    };
+
+    saveZodiacSign();
+  }, [storedZodiacSign, zodiacSignValue]);
 
   const imageUriFromStore = useMemo(
     () =>

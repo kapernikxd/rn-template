@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next';
 type EditProfileFormValues = Pick<
   UpdateProfileProps,
   'name' | 'lastname' | 'profession' | 'phone' | 'userBio'
->;
+> & { zodiacSign: string };
 
 type EditProfileViewProps = {
   methods: UseFormReturn<EditProfileFormValues>;
