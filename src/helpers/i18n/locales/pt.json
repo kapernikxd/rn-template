@@ -1299,6 +1299,8 @@
     "title": "Mapa natal",
     "form": {
       "title": "Dados de nascimento",
+      "myTitle": "Meu mapa natal",
+      "partnerTitle": "Mapa natal do parceiro",
       "edit": "Editar dados",
       "summaryPlaceholder": "Insira os dados para calcular o mapa natal",
       "status": {

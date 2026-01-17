@@ -49,6 +49,21 @@ type FormState = {
   longitude: string;
 };
 
+type StoredFormState = {
+  me: FormState;
+  partner: FormState;
+};
+
+const normalizeFormState = (input?: Partial<FormState>): FormState => ({
+  day: input?.day ?? "",
+  month: input?.month ?? "",
+  year: input?.year ?? "",
+  time: input?.time ?? "",
+  city: input?.city ?? "",
+  latitude: input?.latitude ?? "",
+  longitude: input?.longitude ?? "",
+});
+
 export const NatalChartScreen = () => {
   const { theme, typography, sizes } = useTheme();
   const { t } = useTranslation();
@@ -74,6 +89,13 @@ export const NatalChartScreen = () => {
   const [city, setCity] = useState("");
   const [latitude, setLatitude] = useState("");
   const [longitude, setLongitude] = useState("");
+  const [partnerDay, setPartnerDay] = useState("");
+  const [partnerMonth, setPartnerMonth] = useState("");
+  const [partnerYear, setPartnerYear] = useState("");
+  const [partnerTime, setPartnerTime] = useState("");
+  const [partnerCity, setPartnerCity] = useState("");
+  const [partnerLatitude, setPartnerLatitude] = useState("");
+  const [partnerLongitude, setPartnerLongitude] = useState("");
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -97,13 +119,33 @@ export const NatalChartScreen = () => {
     setTime(formatTimeValue(text));
   }, []);
 
+  const handlePartnerDayChange = useCallback((text: string) => {
+    setPartnerDay(sanitizeNumericInput(text, 31, 2));
+  }, []);
+
+  const handlePartnerMonthChange = useCallback((text: string) => {
+    setPartnerMonth(sanitizeNumericInput(text, 12, 2));
+  }, []);
+
+  const handlePartnerYearChange = useCallback((text: string) => {
+    setPartnerYear(sanitizeNumericInput(text, 9999, 4));
+  }, []);
+
+  const handlePartnerTimeChange = useCallback((text: string) => {
+    setPartnerTime(formatTimeValue(text));
+  }, []);
+
   // city picker
   const [isCityFocused, setIsCityFocused] = useState(false);
   const [isCitySelected, setIsCitySelected] = useState(false);
   const cityInputRef = useRef<TextInput>(null);
+  const [isPartnerCityFocused, setIsPartnerCityFocused] = useState(false);
+  const [isPartnerCitySelected, setIsPartnerCitySelected] = useState(false);
+  const partnerCityInputRef = useRef<TextInput>(null);
 
   // collapsible states
   const [isFormCollapsed, setIsFormCollapsed] = useState(false);
+  const [isPartnerFormCollapsed, setIsPartnerFormCollapsed] = useState(false);
   const [isChartCollapsed, setIsChartCollapsed] = useState(false);
 
   const { animate } = useLayoutAnimation();
@@ -115,9 +157,19 @@ export const NatalChartScreen = () => {
     setIsFormCollapsed((v) => !v);
   }, [animate]);
 
+  const togglePartnerForm = useCallback(() => {
+    animate();
+    setIsPartnerFormCollapsed((v) => !v);
+  }, [animate]);
+
   const expandForm = useCallback(() => {
     animate();
     setIsFormCollapsed(false);
+  }, [animate]);
+
+  const expandPartnerForm = useCallback(() => {
+    animate();
+    setIsPartnerFormCollapsed(false);
   }, [animate]);
 
   const collapseForm = useCallback(() => {
@@ -148,6 +200,15 @@ export const NatalChartScreen = () => {
     Boolean(latitude.trim()) ||
     Boolean(longitude.trim());
 
+  const hasAnyPartnerFormValue =
+    Boolean(partnerDay.trim()) ||
+    Boolean(partnerMonth.trim()) ||
+    Boolean(partnerYear.trim()) ||
+    Boolean(partnerTime.trim()) ||
+    Boolean(partnerCity.trim()) ||
+    Boolean(partnerLatitude.trim()) ||
+    Boolean(partnerLongitude.trim());
+
   const hasAllFormValues = useMemo(() => {
     if (!day.trim() || !month.trim() || !year.trim() || !time.trim()) {
       return false;
@@ -174,6 +235,12 @@ export const NatalChartScreen = () => {
   }, [formLoaded]);
 
   useEffect(() => {
+    if (!formLoaded) return;
+    setIsPartnerFormCollapsed(hasAnyPartnerFormValue);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formLoaded]);
+
+  useEffect(() => {
     if (!formLoaded || loading || horoscope || !hasAllFormValues) {
       return;
     }
@@ -186,15 +253,37 @@ export const NatalChartScreen = () => {
       try {
         const saved = await AsyncStorage.getItem(FORM_STORAGE_KEY);
         if (saved) {
-          const parsed = JSON.parse(saved) as Partial<FormState>;
-          setDay(parsed.day ?? "");
-          setMonth(parsed.month ?? "");
-          setYear(parsed.year ?? "");
-          setTime(parsed.time ?? "");
-          setCity(parsed.city ?? "");
-          setLatitude(parsed.latitude ?? "");
-          setLongitude(parsed.longitude ?? "");
-          setIsCitySelected(Boolean(parsed.city?.trim()));
+          const parsed = JSON.parse(saved) as
+            | Partial<StoredFormState>
+            | Partial<FormState>;
+          const hasNested =
+            typeof parsed === "object" &&
+            parsed !== null &&
+            ("me" in parsed || "partner" in parsed);
+          const meState = normalizeFormState(
+            hasNested ? (parsed as Partial<StoredFormState>).me : parsed,
+          );
+          const partnerState = normalizeFormState(
+            hasNested ? (parsed as Partial<StoredFormState>).partner : undefined,
+          );
+
+          setDay(meState.day);
+          setMonth(meState.month);
+          setYear(meState.year);
+          setTime(meState.time);
+          setCity(meState.city);
+          setLatitude(meState.latitude);
+          setLongitude(meState.longitude);
+          setIsCitySelected(Boolean(meState.city?.trim()));
+
+          setPartnerDay(partnerState.day);
+          setPartnerMonth(partnerState.month);
+          setPartnerYear(partnerState.year);
+          setPartnerTime(partnerState.time);
+          setPartnerCity(partnerState.city);
+          setPartnerLatitude(partnerState.latitude);
+          setPartnerLongitude(partnerState.longitude);
+          setIsPartnerCitySelected(Boolean(partnerState.city?.trim()));
         }
       } finally {
         setFormLoaded(true);
@@ -207,21 +296,48 @@ export const NatalChartScreen = () => {
   useDebouncedEffect(
     () => {
       if (!formLoaded) return;
-      const payload: FormState = {
-        day,
-        month,
-        year,
-        time,
-        city,
-        latitude,
-        longitude,
+      const payload: StoredFormState = {
+        me: {
+          day,
+          month,
+          year,
+          time,
+          city,
+          latitude,
+          longitude,
+        },
+        partner: {
+          day: partnerDay,
+          month: partnerMonth,
+          year: partnerYear,
+          time: partnerTime,
+          city: partnerCity,
+          latitude: partnerLatitude,
+          longitude: partnerLongitude,
+        },
       };
       AsyncStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(payload)).catch(
         console.warn,
       );
     },
     400,
-    [formLoaded, day, month, year, time, city, latitude, longitude],
+    [
+      formLoaded,
+      day,
+      month,
+      year,
+      time,
+      city,
+      latitude,
+      longitude,
+      partnerDay,
+      partnerMonth,
+      partnerYear,
+      partnerTime,
+      partnerCity,
+      partnerLatitude,
+      partnerLongitude,
+    ],
   );
 
   /* ---------------- city search ---------------- */
@@ -234,6 +350,18 @@ export const NatalChartScreen = () => {
     },
     1000,
     [city, isCityFocused, isCitySelected],
+  );
+
+  useDebouncedEffect(
+    () => {
+      const q = partnerCity.trim();
+      if (!q || q.length < 2 || !isPartnerCityFocused || isPartnerCitySelected) {
+        return;
+      }
+      void rootStore.citySearchStore.searchCities(q);
+    },
+    1000,
+    [partnerCity, isPartnerCityFocused, isPartnerCitySelected],
   );
 
   const handleSelectCity = useCallback((c: CitySearchItem) => {
@@ -256,6 +384,26 @@ export const NatalChartScreen = () => {
     }, 0);
   }, []);
 
+  const handleSelectPartnerCity = useCallback((c: CitySearchItem) => {
+    setPartnerCity(c.city);
+    setPartnerLatitude(String(c.lat));
+    setPartnerLongitude(String(c.lng));
+    setIsPartnerCitySelected(true);
+    setIsPartnerCityFocused(false);
+  }, []);
+
+  const handleClearPartnerCity = useCallback(() => {
+    setPartnerCity("");
+    setPartnerLatitude("");
+    setPartnerLongitude("");
+    setIsPartnerCitySelected(false);
+
+    setTimeout(() => {
+      partnerCityInputRef.current?.focus();
+      setIsPartnerCityFocused(true);
+    }, 0);
+  }, []);
+
   /* ---------------- generate ---------------- */
 
   const summaryText = useMemo(
@@ -265,6 +413,21 @@ export const NatalChartScreen = () => {
         t("library.form.summaryPlaceholder"),
       ),
     [city, day, month, t, time, year],
+  );
+
+  const partnerSummaryText = useMemo(
+    () =>
+      makeSummaryText(
+        {
+          day: partnerDay,
+          month: partnerMonth,
+          year: partnerYear,
+          time: partnerTime,
+          city: partnerCity,
+        },
+        t("library.form.summaryPlaceholder"),
+      ),
+    [partnerCity, partnerDay, partnerMonth, partnerTime, partnerYear, t],
   );
 
   const chartSubtitle = useMemo(() => {
@@ -412,7 +575,7 @@ export const NatalChartScreen = () => {
           collapsed={isFormCollapsed}
           header={
             <FormHeader
-              title={t("library.form.title")}
+              title={t("library.form.myTitle")}
               subtitle={summaryText}
               collapsed={isFormCollapsed}
               hasResult={Boolean(horoscope)}
@@ -515,6 +678,93 @@ export const NatalChartScreen = () => {
 
           {error && <Text style={styles.errorText}>{error}</Text>}
           {copyMessage && <Text style={styles.copyMessage}>{copyMessage}</Text>}
+        </CollapsibleCard>
+
+        <Spacer />
+
+        {/* ---------- PARTNER FORM ---------- */}
+        <CollapsibleCard
+          collapsed={isPartnerFormCollapsed}
+          header={
+            <FormHeader
+              title={t("library.form.partnerTitle")}
+              subtitle={partnerSummaryText}
+              collapsed={isPartnerFormCollapsed}
+              hasResult={false}
+              onPress={togglePartnerForm}
+            />
+          }
+          collapsedFooter={
+            <TouchableOpacity
+              style={styles.smallAction}
+              onPress={expandPartnerForm}
+            >
+              <Text style={styles.smallActionText}>{t("library.form.edit")}</Text>
+            </TouchableOpacity>
+          }
+        >
+          <View style={styles.formRow}>
+            <LabeledInput
+              label={t("library.form.fields.day")}
+              value={partnerDay}
+              onChangeText={handlePartnerDayChange}
+              keyboardType="numeric"
+            />
+            <LabeledInput
+              label={t("library.form.fields.month")}
+              value={partnerMonth}
+              onChangeText={handlePartnerMonthChange}
+              keyboardType="numeric"
+            />
+            <LabeledInput
+              label={t("library.form.fields.year")}
+              value={partnerYear}
+              onChangeText={handlePartnerYearChange}
+              keyboardType="numeric"
+            />
+          </View>
+
+          <View style={styles.formRow}>
+            <LabeledInput
+              label={t("library.form.fields.time")}
+              value={partnerTime}
+              onChangeText={handlePartnerTimeChange}
+              keyboardType="numeric"
+              placeholder={t("library.form.fields.timePlaceholder")}
+            />
+            <CityPicker
+              value={partnerCity}
+              onChange={setPartnerCity}
+              onSelect={handleSelectPartnerCity}
+              onClear={handleClearPartnerCity}
+              isFocused={isPartnerCityFocused}
+              setFocused={setIsPartnerCityFocused}
+              isSelected={isPartnerCitySelected}
+              setSelected={setIsPartnerCitySelected}
+              inputRef={partnerCityInputRef}
+              suggestions={citySearchState.cities}
+              isLoading={citySearchState.isLoading}
+              error={citySearchState.error}
+              label={t("library.form.fields.city")}
+              placeholder={t("library.form.fields.cityPlaceholder")}
+              errorText={t("library.form.fields.cityError")}
+            />
+          </View>
+
+          <View style={styles.formRow}>
+            <LabeledInput
+              label={t("library.form.fields.latitude")}
+              value={partnerLatitude}
+              onChangeText={setPartnerLatitude}
+              keyboardType="numeric"
+            />
+            <LabeledInput
+              label={t("library.form.fields.longitude")}
+              value={partnerLongitude}
+              onChangeText={setPartnerLongitude}
+              keyboardType="numeric"
+            />
+          </View>
         </CollapsibleCard>
 
         <Spacer />

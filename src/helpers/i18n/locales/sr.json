@@ -1299,6 +1299,8 @@
     "title": "Natalna karta",
     "form": {
       "title": "Podaci o rođenju",
+      "myTitle": "Moja natalna karta",
+      "partnerTitle": "Natalna karta partnera",
       "edit": "Izmeni podatke",
       "summaryPlaceholder": "Unesite podatke da biste izračunali natalnu kartu",
       "status": {

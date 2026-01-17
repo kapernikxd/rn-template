@@ -1299,6 +1299,8 @@
     "title": "Geburtsradix",
     "form": {
       "title": "Geburtsdaten",
+      "myTitle": "Mein Geburtshoroskop",
+      "partnerTitle": "Geburtshoroskop des Partners",
       "edit": "Daten bearbeiten",
       "summaryPlaceholder": "Daten eingeben, um das Geburtshoroskop zu berechnen",
       "status": {

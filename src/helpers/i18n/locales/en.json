@@ -1332,6 +1332,8 @@
     "title": "Natal chart",
     "form": {
       "title": "Birth details",
+      "myTitle": "My natal chart",
+      "partnerTitle": "Partner natal chart",
       "edit": "Edit details",
       "summaryPlaceholder": "Enter data to calculate the natal chart",
       "status": {
