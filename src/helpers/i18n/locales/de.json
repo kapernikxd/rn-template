@@ -1112,7 +1112,8 @@
         "photoPlaceholder": "Foto",
         "placeholder": "Nachricht",
         "editing": "Bearbeiten",
-        "clearHistory": "Chatverlauf löschen"
+        "clearHistory": "Chatverlauf löschen",
+        "partnerNatalChartMissing": "Füge das Geburtshoroskop deines Partners hinzu, um fortzufahren."
       },
       "natalChartModal": {
         "title": "Erstelle dein Geburtshoroskop, um zu chatten",

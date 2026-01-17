@@ -4,7 +4,7 @@ import $api from "../../helpers/http";
 import { MessageDTO } from "../../types";
 import { DeleteMessageResponse, FetchChatsOptions, FetchChatsResponse, FormDataImage, MessageByIdResponse, UnreadStatus, UploadImage } from "../../types/chat";
 import { ImagePickerAsset } from "expo-image-picker";
-import type { NatalChartPayload } from "../../types/astrology";
+import type { ChatMessageContext } from "../../types/chat";
 
 export default class ChatService {
   async fetchChats(
@@ -62,8 +62,7 @@ export default class ChatService {
     chatId: string,
     replyToMessageId?: string,
     images?: ImagePickerAsset[],
-    natalChart?: NatalChartPayload,
-    natalChartSignature?: string,
+    messageContext?: ChatMessageContext,
     lang?: string,
   ): Promise<AxiosResponse<{ data: MessageDTO }>> {
     const formData = new FormData();
@@ -71,13 +70,22 @@ export default class ChatService {
     formData.append('chatId', chatId);
     if (lang) formData.append('lang', lang);
     if (replyToMessageId) formData.append('replyTo', replyToMessageId);
-    if (natalChart) {
+    if (messageContext?.natalChart) {
       // Send natal chart JSON so the backend can log astrology context with the message.
-      formData.append('natalChart', JSON.stringify(natalChart));
+      formData.append('natalChart', JSON.stringify(messageContext.natalChart));
     }
-    if (natalChartSignature) {
+    if (messageContext?.natalChartSignature) {
       // Signature lets the server and clients verify the chart version matches any readings.
-      formData.append('natalChartSignature', natalChartSignature);
+      formData.append('natalChartSignature', messageContext.natalChartSignature);
+    }
+    if (messageContext?.zodiacSign) {
+      formData.append('zodiacSign', messageContext.zodiacSign);
+    }
+    if (messageContext?.birthDate) {
+      formData.append('birthDate', messageContext.birthDate);
+    }
+    if (messageContext?.relationshipCharts?.length) {
+      formData.append('relationshipCharts', JSON.stringify(messageContext.relationshipCharts));
     }
 
     images?.forEach((img, index) => {
@@ -124,4 +132,3 @@ export default class ChatService {
     return $api.delete(`/messages/${messageId}/pin`);
   }
 }
-

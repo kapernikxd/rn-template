@@ -33,7 +33,7 @@ import { clampNumber } from "./utils/clampNumber";
 import { formatTimeValue, sanitizeNumericInput } from "./utils/inputFormatters";
 import { makeSummaryText } from "./utils/makeSummaryText";
 import { makeStyles } from "./styles";
-import { saveNatalChart } from "../../helpers/astrology/natalChartStorage";
+import { saveNatalChart, savePartnerNatalChart } from "../../helpers/astrology/natalChartStorage";
 import { AiAgentHeader } from "../aibot/components";
 import { usePortalNavigation } from "../../helpers/hooks";
 
@@ -692,6 +692,16 @@ export const NatalChartScreen = () => {
     [chartPayload],
   );
 
+  const partnerChartPayload = useMemo(
+    () => (partnerHoroscope ? buildExportPayload(partnerHoroscope) : null),
+    [partnerHoroscope],
+  );
+
+  const partnerChartSignature = useMemo(
+    () => (partnerChartPayload ? JSON.stringify(partnerChartPayload) : ""),
+    [partnerChartPayload],
+  );
+
   useEffect(() => {
     if (!chartPayload || !chartSignature) return;
 
@@ -700,6 +710,16 @@ export const NatalChartScreen = () => {
       console.warn("Failed to cache natal chart payload", cacheError);
     });
   }, [chartPayload, chartSignature]);
+
+  useEffect(() => {
+    if (!partnerChartPayload || !partnerChartSignature) return;
+
+    savePartnerNatalChart(partnerChartPayload, partnerChartSignature).catch(
+      (cacheError) => {
+        console.warn("Failed to cache partner natal chart payload", cacheError);
+      },
+    );
+  }, [partnerChartPayload, partnerChartSignature]);
 
   /* ---------------- render ---------------- */
 

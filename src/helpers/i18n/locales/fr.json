@@ -1112,7 +1112,8 @@
         "photoPlaceholder": "photo",
         "placeholder": "Message",
         "editing": "Modification",
-        "clearHistory": "Effacer l’historique du chat"
+        "clearHistory": "Effacer l’historique du chat",
+        "partnerNatalChartMissing": "Ajoutez le thème natal de votre partenaire pour continuer."
       },
       "natalChartModal": {
         "title": "Crée ta carte natale pour discuter",

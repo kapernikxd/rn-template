@@ -1112,7 +1112,8 @@
         "photoPlaceholder": "фото",
         "placeholder": "Сообщение",
         "editing": "Редактирование",
-        "clearHistory": "Очистить историю чата"
+        "clearHistory": "Очистить историю чата",
+        "partnerNatalChartMissing": "Заполните натальную карту партнера."
       },
       "natalChartModal": {
         "title": "Постройте натальную карту, чтобы перейти к чатам",

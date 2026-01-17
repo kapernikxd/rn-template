@@ -1112,7 +1112,8 @@
         "photoPlaceholder": "foto",
         "placeholder": "Messaggio",
         "editing": "Modifica",
-        "clearHistory": "Cancella cronologia chat"
+        "clearHistory": "Cancella cronologia chat",
+        "partnerNatalChartMissing": "Aggiungi il tema natale del partner per continuare."
       },
       "natalChartModal": {
         "title": "Crea il tuo tema natale per iniziare a chattare",

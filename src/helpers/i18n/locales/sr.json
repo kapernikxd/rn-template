@@ -1112,7 +1112,8 @@
         "photoPlaceholder": "fotografija",
         "placeholder": "Poruka",
         "editing": "Uređivanje",
-        "clearHistory": "Obriši istoriju četa"
+        "clearHistory": "Obriši istoriju četa",
+        "partnerNatalChartMissing": "Dodajte natalnu kartu partnera da biste nastavili."
       },
       "natalChartModal": {
         "title": "Napravite natalnu kartu da biste ćaskali",
