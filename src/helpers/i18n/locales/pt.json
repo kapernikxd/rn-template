@@ -1330,7 +1330,7 @@
       "subtitleStats": "{{bodies}} planetas · {{houses}} casas · {{aspects}} aspectos",
       "show": "Mostrar mapa",
       "placeholder": {
-        "title": "Seu mapa aparecerá aqui",
+        "title": "Aqui aparecerá o mapa dos planetas",
         "description": "Preencha os dados e toque em «Gerar mapa»"
       },
       "status": {

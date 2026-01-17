@@ -1330,7 +1330,7 @@
       "subtitleStats": "{{bodies}} planetas · {{houses}} casas · {{aspects}} aspectos",
       "show": "Mostrar carta",
       "placeholder": {
-        "title": "Tu carta aparecerá aquí",
+        "title": "Aquí aparecerá el mapa de los planetas",
         "description": "Introduce los datos y toca «Generar carta»"
       },
       "status": {

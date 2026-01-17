@@ -1330,7 +1330,7 @@
       "subtitleStats": "{{bodies}} pianeti · {{houses}} case · {{aspects}} aspetti",
       "show": "Mostra tema",
       "placeholder": {
-        "title": "Il tuo tema apparirà qui",
+        "title": "Ici apparaîtra la carte des planètes",
         "description": "Inserisci i dati e tocca «Genera tema»"
       },
       "status": {

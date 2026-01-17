@@ -1363,7 +1363,7 @@
       "subtitleStats": "{{bodies}} planets · {{houses}} houses · {{aspects}} aspects",
       "show": "Show chart",
       "placeholder": {
-        "title": "Your chart will appear here",
+        "title": "The planetary map will appear here",
         "description": "Fill in the data and tap \"Generate chart\""
       },
       "status": {

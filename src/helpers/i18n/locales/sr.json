@@ -1330,7 +1330,7 @@
       "subtitleStats": "{{bodies}} planeta · {{houses}} kuća · {{aspects}} aspekata",
       "show": "Prikaži kartu",
       "placeholder": {
-        "title": "Vaša karta će se pojaviti ovde",
+        "title": "Ovde će se pojaviti mapa planeta",
         "description": "Unesite podatke i dodirnite „Generiši kartu“"
       },
       "status": {

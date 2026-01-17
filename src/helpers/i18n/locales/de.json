@@ -1330,7 +1330,7 @@
       "subtitleStats": "{{bodies}} Planeten · {{houses}} Häuser · {{aspects}} Aspekte",
       "show": "Horoskop anzeigen",
       "placeholder": {
-        "title": "Dein Horoskop erscheint hier",
+        "title": "Hier wird die Planetenkarte angezeigt",
         "description": "Gib die Daten ein und tippe auf „Horoskop erstellen“"
       },
       "status": {
