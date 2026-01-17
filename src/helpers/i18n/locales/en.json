@@ -1112,7 +1112,8 @@
         "photoPlaceholder": "photo",
         "placeholder": "Message",
         "editing": "Editing",
-        "clearHistory": "Clear chat history"
+        "clearHistory": "Clear chat history",
+        "partnerNatalChartMissing": "Add your partner's natal chart to continue."
       },
       "natalChartModal": {
         "title": "Build your natal chart to start chatting",

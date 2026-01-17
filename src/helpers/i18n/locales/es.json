@@ -1112,7 +1112,8 @@
         "photoPlaceholder": "foto",
         "placeholder": "Mensaje",
         "editing": "Editando",
-        "clearHistory": "Limpiar historial del chat"
+        "clearHistory": "Limpiar historial del chat",
+        "partnerNatalChartMissing": "Añade la carta natal de tu pareja para continuar."
       },
       "natalChartModal": {
         "title": "Crea tu carta natal para empezar a chatear",

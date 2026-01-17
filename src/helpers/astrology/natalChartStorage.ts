@@ -14,6 +14,7 @@ type StoredNatalChart = {
 
 // Single key to avoid scattering natal chart data across multiple storage entries.
 const STORAGE_KEY = 'natalChartPayload';
+const PARTNER_STORAGE_KEY = 'partnerNatalChartPayload';
 
 export const getStoredNatalChart = async (): Promise<StoredNatalChart | null> => {
   try {
@@ -47,5 +48,40 @@ export const saveNatalChart = async (
     await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
   } catch (error) {
     console.warn('Failed to save natal chart payload', error);
+  }
+};
+
+export const getStoredPartnerNatalChart = async (): Promise<StoredNatalChart | null> => {
+  try {
+    const raw = await AsyncStorage.getItem(PARTNER_STORAGE_KEY);
+
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw) as StoredNatalChart | null;
+
+    if (!parsed || typeof parsed !== 'object' || !parsed.chart) return null;
+
+    return parsed;
+  } catch (error) {
+    console.warn('Failed to read stored partner natal chart', error);
+    await AsyncStorage.removeItem(PARTNER_STORAGE_KEY);
+    return null;
+  }
+};
+
+export const savePartnerNatalChart = async (
+  chart: NatalChartPayload,
+  chartSignature: string,
+): Promise<void> => {
+  try {
+    const payload: StoredNatalChart = {
+      chart,
+      chartSignature,
+      savedAt: new Date().toISOString(),
+    };
+
+    await AsyncStorage.setItem(PARTNER_STORAGE_KEY, JSON.stringify(payload));
+  } catch (error) {
+    console.warn('Failed to save partner natal chart payload', error);
   }
 };

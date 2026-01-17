@@ -9,6 +9,7 @@ export interface ChatById {
   chatName?: string;
   postId?: string; // ID связанного поста
   post?: any; //
+  categories?: string[];
 }
 
 export type ReadedMessageResponse = {

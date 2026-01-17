@@ -9,8 +9,7 @@ import { useRootStore } from '../../../store/StoreProvider';
 import { generateMessagesWithDates } from '../../../helpers/utils/date';
 import { getUserAvatar, getUserFullName } from '../../../helpers/utils/user';
 import { saveImageToPhotos, shareImageFromUrl } from '../../utils/media';
-import { getStoredNatalChart } from '../../astrology/natalChartStorage';
-import type { NatalChartPayload } from '../../../types/astrology';
+import { resolveMessageContextForCategories } from '../../aiChat/resolveMessageContext';
 import { AnalyticsEvent, trackEvent } from '../../../services/analytics/events';
 
 import type { ChatsStackParamList } from '../../../navigation';
@@ -61,8 +60,6 @@ export function useChatMessages() {
 
   const [editMode, setEditMode] = useState(false);
   const [selectedMessage, setSelectedMessage] = useState<MessageDTOWithAction | null>(null);
-  const [natalChartPayload, setNatalChartPayload] = useState<NatalChartPayload | null>(null);
-  const [natalChartSignature, setNatalChartSignature] = useState<string | null>(null);
 
   const toggleMode = () => setEditMode(prev => !prev);
   const exitEditMode = () => {
@@ -96,25 +93,7 @@ export function useChatMessages() {
   const chatImg = getUserAvatar(user!);
   const isGroupChat = chatStore.isGroupChat;
 
-  useEffect(() => {
-    let isMounted = true;
-
-    // Rehydrate the most recently generated natal chart so it can be sent with messages.
-    getStoredNatalChart()
-      .then((stored) => {
-        if (!isMounted || !stored) return;
-
-        setNatalChartPayload(stored.chart);
-        setNatalChartSignature(stored.chartSignature);
-      })
-      .catch((error) => {
-        console.warn('Failed to load stored natal chart', error);
-      });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const botCategories = chatStore.selectedChat?.categories ?? [];
 
   // Primary load and re-focus initialization for the chat screen.
   useFocusEffect(
@@ -170,7 +149,7 @@ export function useChatMessages() {
 
     if (viewedChatIdRef.current !== chat._id) {
       viewedChatIdRef.current = chat._id;
-      const chatType = chat.isBotChat ? 'bot' : chat.isGroupChat ? 'group' : 'private';
+      const chatType = chat.categories?.length ? 'bot' : chat.isGroupChat ? 'group' : 'private';
       void trackEvent(AnalyticsEvent.ChatMessagesViewed, {
         chatId: chat._id,
         chatType,
@@ -232,13 +211,22 @@ export function useChatMessages() {
             height: img.height ?? 0,
           })) as ImagePicker.ImagePickerAsset[];
 
+          const { context, warnings } = await resolveMessageContextForCategories(
+            botCategories,
+          );
+          if (warnings.includes('partnerNatalChartMissing')) {
+            uiStore.showSnackbar(
+              t('screens.chats.messages.partnerNatalChartMissing'),
+              'warning',
+            );
+          }
+
           await chatStore.sendMessage(
             currentInput,
             chatId,
             replyId,
             expoLike,
-            natalChartPayload ?? undefined,
-            natalChartSignature ?? undefined,
+            context ?? undefined,
             i18n.resolvedLanguage ?? i18n.language,
           );
           void trackEvent(AnalyticsEvent.ChatMessageSent, {
@@ -246,7 +234,7 @@ export function useChatMessages() {
             replyToId: replyId,
             hasText: Boolean(currentInput.trim()),
             imagesCount: images?.length ?? 0,
-            hasNatalChart: Boolean(natalChartPayload),
+            hasNatalChart: Boolean(context?.natalChart || context?.relationshipCharts?.length),
           });
         }
 
@@ -259,12 +247,13 @@ export function useChatMessages() {
     [
       chatId,
       chatStore,
+      botCategories,
       i18n.language,
       i18n.resolvedLanguage,
       inputMessage,
-      natalChartPayload,
-      natalChartSignature,
       selectedMessage,
+      t,
+      uiStore,
     ]
   );
 
