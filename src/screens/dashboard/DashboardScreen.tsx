@@ -13,14 +13,16 @@ import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 import { capitalizeFirstLetter } from '../../helpers/utils/common';
 import { AnalyticsEvent, trackEvent } from '../../services/analytics/events';
 import { HoroscopeHeader } from '../horoscope/components/HoroscopeHeader';
+import { getTokenBalance } from '../../helpers/tokenStorage';
 
 const COLUMN_GAP = 2;
 
 export const DashboardScreen = () => {
-  const { aiBotStore } = useRootStore();
+  const { aiBotStore, configStore } = useRootStore();
   const { setColors } = useSafeAreaColors();
   const bots = useStoreData(aiBotStore, (store) => store.mainPageBots);
   const isLoading = useStoreData(aiBotStore, (store) => store.isLoadingMainPageBots);
+  const adsEnabled = useStoreData(configStore, (store) => store.adsEnabled);
   const error = useStoreData(aiBotStore, (store) => store.mainPageBotsError);
   const { width } = useWindowDimensions();
   const { theme } = useTheme();
@@ -29,6 +31,8 @@ export const DashboardScreen = () => {
 
   const [index, setIndex] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const [tokenBalance, setTokenBalance] = useState<number | null>(null);
 
   useEffect(() => {
     setColors({
@@ -96,6 +100,24 @@ export const DashboardScreen = () => {
       ),
     );
   }, [activeTab, bots, normalizeCategory]);
+
+  useEffect(() => {
+    if (!adsEnabled) {
+      setTokenBalance(null);
+      return;
+    }
+
+    const loadBalance = async () => {
+      try {
+        const balance = await getTokenBalance();
+        setTokenBalance(balance);
+      } catch (error) {
+        console.warn('Failed to load token balance', error);
+      }
+    };
+
+    void loadBalance();
+  }, [adsEnabled]);
 
   useEffect(() => {
     if (!bots.length && !isLoading) {
@@ -189,7 +211,12 @@ export const DashboardScreen = () => {
         fontWeightInactive="300"
         gap={18}
       /> */}
-      <HoroscopeHeader desciption={"Твой персональный астрогид"}/>
+      <HoroscopeHeader
+        desciption={"Твой персональный астрогид"}
+        adsEnabled={adsEnabled}
+        tokenBalance={tokenBalance}
+        onBalanceChange={setTokenBalance}
+      />
       <Spacer size='xs' />
       <FlatList
         data={filteredBots}

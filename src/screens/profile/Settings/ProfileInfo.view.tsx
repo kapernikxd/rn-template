@@ -1,3 +1,5 @@
+//this page for horoscope
+
 import React, { FC, useCallback, useEffect, useMemo } from 'react';
 import {
   KeyboardAvoidingView,

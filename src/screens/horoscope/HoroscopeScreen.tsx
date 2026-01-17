@@ -460,13 +460,13 @@ export const HoroscopeScreen = () => {
           tokenBalance={tokenBalance}
           onBalanceChange={setTokenBalance}
         />
-        {shouldShowProfileBanner ? (
+        {/* {shouldShowProfileBanner ? (
           <ProfileCompletionBanner
             completion={profileCompletion}
             onPress={handleBannerPress}
             onClose={handleBannerDismiss}
           />
-        ) : null}
+        ) : null} */}
         {/* <HoroscopeTabBar activeIndex={activeTab} onChange={handleTabPress} /> */}
         <HoroscopeDescription
           horoscope={horoscopes.general}
@@ -519,7 +519,7 @@ const createStyles = ({ theme, sizes, topInset }: CreateStylesParams) =>
       gap: sizes.lg as number,
       paddingTop: 0,
       paddingBottom: sizes.xl as number,
-      paddingHorizontal: sizes.xxs as number,
+      // paddingHorizontal: sizes.xxs as number,
     },
   });
 

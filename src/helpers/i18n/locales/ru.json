@@ -732,7 +732,7 @@
       },
       "header": {
         "title": "AiAstrology",
-        "subtitle": "Ежедневные астрологические подсказки",
+        "subtitle": "Твой ежедневный гороскоп",
         "accessibility": {
           "openFilters": "Открыть фильтры"
         }

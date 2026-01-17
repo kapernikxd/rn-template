@@ -1,10 +1,12 @@
 import React, { FC } from 'react';
 import { observer } from 'mobx-react-lite';
 
-import { ProfileInfoView } from './ProfileInfo.view';
+import { useEditProfile } from '../../../helpers/hooks/ProfileSettings/useEditProfile';
+import { EditProfileView } from './EditProfile.view';
 
 export const ProfileInfoSettingsScreen: FC = observer(() => {
+  const props = useEditProfile();
 
-  return <ProfileInfoView />;
+  return <EditProfileView {...props} />;
 });
 

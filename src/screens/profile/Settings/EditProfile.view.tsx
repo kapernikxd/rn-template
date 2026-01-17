@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useMemo } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -12,7 +12,7 @@ import { ThemeType, useTheme } from 'rn-vs-lb/theme';
 import { FormProvider, UseFormReturn } from 'react-hook-form';
 import { IOScrollView } from 'react-native-intersection-observer';
 
-import { TextArea, TextInput } from '../../../components/form';
+import { Select, TextArea, TextInput } from '../../../components/form';
 import { UpdateProfileProps } from '../../../types/profile';
 import { useSafeAreaColors } from '../../../store/SafeAreaColorProvider';
 import { useTranslation } from 'react-i18next';
@@ -67,6 +67,24 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
     });
   }, [theme, setColors]);
 
+  const zodiacOptions = useMemo(
+    () => [
+      { label: t('common.zodiac.aries'), value: 'aries' },
+      { label: t('common.zodiac.taurus'), value: 'taurus' },
+      { label: t('common.zodiac.gemini'), value: 'gemini' },
+      { label: t('common.zodiac.cancer'), value: 'cancer' },
+      { label: t('common.zodiac.leo'), value: 'leo' },
+      { label: t('common.zodiac.virgo'), value: 'virgo' },
+      { label: t('common.zodiac.libra'), value: 'libra' },
+      { label: t('common.zodiac.scorpio'), value: 'scorpio' },
+      { label: t('common.zodiac.sagittarius'), value: 'sagittarius' },
+      { label: t('common.zodiac.capricorn'), value: 'capricorn' },
+      { label: t('common.zodiac.aquarius'), value: 'aquarius' },
+      { label: t('common.zodiac.pisces'), value: 'pisces' },
+    ],
+    [t],
+  );
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -112,7 +130,7 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
                   required: t('settings.editProfile.validation.nameRequired'),
                 }}
               />
-              <Spacer />
+              <Spacer size='md'/>
 
               <TextInput
                 name="lastname"
@@ -124,32 +142,44 @@ export const EditProfileView: FC<EditProfileViewProps> = ({
                   required: t('settings.editProfile.validation.lastnameRequired'),
                 }}
               />
-              <Spacer />
+              <Spacer size='md'/>
 
-              <TextInput
+              <Select
+                name="zodiacSign"
+                label={t('settings.editProfile.fields.zodiacSign.label')}
+                placeholder={t('settings.editProfile.fields.zodiacSign.placeholder')}
+                options={zodiacOptions}
+                control={methods.control}
+                rules={{ required: t('settings.editProfile.validation.zodiacSignRequired') }}
+                dropdownPosition={'top'}
+              />
+
+              {/* <TextInput
                 name="profession"
                 label={t('settings.editProfile.fields.profession.label')}
                 placeholder={t('settings.editProfile.fields.profession.placeholder')}
                 control={methods.control}
                 keyboardType="default"
-              />
-              <Spacer />
+              /> */}
+              {/* <Spacer /> */}
 
-              <TextInput
+              {/* <TextInput
                 name="phone"
                 label={t('settings.editProfile.fields.phone.label')}
                 placeholder={t('settings.editProfile.fields.phone.placeholder')}
                 control={methods.control}
                 keyboardType="numeric"
-              />
-              <Spacer />
+              /> */}
+              {/* <Spacer /> */}
 
-              <TextArea
+              {/* <TextArea
                 name="userBio"
                 label={t('settings.editProfile.fields.userBio.label')}
                 placeholder={t('settings.editProfile.fields.userBio.placeholder')}
                 control={methods.control}
-              />
+              /> */}
+
+              <Spacer size='md' />
             </View>
 
             <View style={styles.footer}>
