@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { SettingsScreen } from '../../screens/settings';
+import { NatalChartScreen } from '../../screens/library';
 import { ROUTES, type SettingsParamList } from '../types';
 import { NotificationSettingsScreen, ProfileInfoSettingsScreen } from '../../screens/profile/Settings';
 
@@ -30,6 +31,13 @@ export const ProfileStack = () => (
     <Stack.Screen
       name={ROUTES.ProfileNotificationSettings}
       component={NotificationSettingsScreen}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <Stack.Screen
+      name={ROUTES.NatalChart}
+      component={NatalChartScreen}
       options={{
         headerShown: false,
       }}

@@ -144,7 +144,11 @@ export const ChatsScreen: FC = observer(() => {
     <View style={styles.container}>
       <NatalChartRequiredModal
         visible={!isCheckingNatalChart && isNatalChartModalVisible}
-        onAction={() => goToMain(ROUTES.LibraryTab)}
+        onAction={() =>
+          goToMain(ROUTES.ProfileTab, {
+            screen: ROUTES.NatalChart,
+          })
+        }
       />
 
       <Spacer />

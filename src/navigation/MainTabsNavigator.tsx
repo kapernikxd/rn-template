@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next';
 
 import { ChatsStack } from './stacks/ChatsStack';
 import { DashboardStack } from './stacks/DashboardStack';
-import { LibraryStack } from './stacks/LibraryStack';
 import { ProfileStack } from './stacks/ProfileStack';
 import type { MainTabParamList } from './types';
 import { useTheme } from 'rn-vs-lb/theme';
@@ -28,7 +27,6 @@ type TabConfig = {
 
 const TABS: TabConfig[] = [
   { name: 'DashboardTab', labelKey: 'navigation.tabs.dashboard', icon: 'dashboard', component: DashboardStack },
-  { name: 'LibraryTab', labelKey: 'navigation.tabs.library', icon: 'auto-awesome', component: LibraryStack },
   { name: 'ChatsTab', labelKey: 'navigation.tabs.chats', icon: 'chat-bubble-outline', component: ChatsStack },
   { name: 'ProfileTab', labelKey: 'navigation.tabs.profile', icon: 'settings', component: ProfileStack },
 ];
