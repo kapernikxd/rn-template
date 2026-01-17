@@ -1,5 +1,5 @@
 import React, { useMemo, useRef } from 'react';
-import { NavigationContainer, NavigationContainerRef } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StyleSheet, View } from 'react-native';
 
@@ -15,11 +15,11 @@ import { useOnboarding } from '../helpers/hooks/useOnboarding';
 import { AnalyticsEvent, trackEvent } from '../services/analytics/events';
 import { BottomAdBanner } from '../components/ads/BottomAdBanner';
 import { resolveAdSource } from '../types/ads';
+import { pushNavigatorRef, usePushNavigator } from '../helpers/hooks/usePushNavigator';
 
 const RootStack = createNativeStackNavigator<RootStackParamList>();
 
 export const AppNavigator = () => {
-  const navigationRef = useRef<NavigationContainerRef<RootStackParamList> | null>(null);
   const routeNameRef = useRef<string | undefined>();
   const { authStore, configStore } = useRootStore();
   const hasAttemptedAutoLogin = useStoreData(
@@ -45,6 +45,8 @@ export const AppNavigator = () => {
     markSeen: markOnboardingSeen,
   } = useOnboarding();
 
+  usePushNavigator();
+
   if (!hasAttemptedAutoLogin || !isOnboardingReady) {
     return <ScreenLoader />;
   }
@@ -64,9 +66,9 @@ export const AppNavigator = () => {
     <View style={styles.appContainer}>
       <View style={styles.navigatorContainer}>
         <NavigationContainer
-          ref={navigationRef}
+          ref={pushNavigatorRef}
           onReady={() => {
-            const currentRoute = navigationRef.current?.getCurrentRoute();
+            const currentRoute = pushNavigatorRef.getCurrentRoute();
             routeNameRef.current = currentRoute?.name;
 
             if (currentRoute?.name) {
@@ -76,7 +78,7 @@ export const AppNavigator = () => {
             }
           }}
           onStateChange={() => {
-            const currentRoute = navigationRef.current?.getCurrentRoute();
+            const currentRoute = pushNavigatorRef.getCurrentRoute();
             if (!currentRoute?.name || routeNameRef.current === currentRoute.name) {
               return;
             }
