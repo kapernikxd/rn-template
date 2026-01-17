@@ -121,6 +121,17 @@ export const useEditProfile = () => {
   }, [methods, profileDefaultValues, storedZodiacSign]);
 
   useEffect(() => {
+    if (methods.formState.isDirty) {
+      return;
+    }
+
+    methods.reset({
+      ...profileDefaultValues,
+      zodiacSign: storedZodiacSign,
+    });
+  }, [methods, profileDefaultValues, storedZodiacSign]);
+
+  useEffect(() => {
     let isActive = true;
 
     const loadZodiacSign = async () => {
