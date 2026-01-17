@@ -10,6 +10,7 @@ import {
 import { ThemeType, SizesType, useTheme } from 'rn-vs-lb/theme';
 import { useTranslation } from 'react-i18next';
 import i18n from '../../../helpers/i18n';
+import { renderBoldText } from '../../../helpers/utils/text';
 import 'dayjs/locale/en';
 import 'dayjs/locale/ru';
 import 'dayjs/locale/sr';
@@ -73,6 +74,9 @@ export const HoroscopeDescription: React.FC<HoroscopeDescriptionProps> = ({
           ...typography.body,
           lineHeight: 22,
         },
+        boldText: {
+          fontWeight: '700',
+        },
         loadingContainer: {
           flexDirection: 'row',
           alignItems: 'center',
@@ -131,7 +135,7 @@ export const HoroscopeDescription: React.FC<HoroscopeDescriptionProps> = ({
       ) : paragraphs.length > 0 ? (
         paragraphs.map((paragraph, index) => (
           <Text key={index} style={styles.text}>
-            {paragraph}
+            {renderBoldText(paragraph, styles.boldText, `horoscope-${index}`)}
           </Text>
         ))
       ) : (

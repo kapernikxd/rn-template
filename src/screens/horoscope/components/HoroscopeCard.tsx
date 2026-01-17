@@ -12,6 +12,7 @@ import type { HoroscopeCategory } from '../../../types/astrology';
 import { CARD_WIDTH } from '../HoroscopeScreen';
 import { splitHoroscopeIntoParagraphs } from './HoroscopeDescription';
 import { useTranslation } from 'react-i18next';
+import { renderBoldText } from '../../../helpers/utils/text';
 
 type HoroscopeCardCategory = Exclude<HoroscopeCategory, 'general'>;
 
@@ -147,6 +148,9 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
           ...typography.body,
           color: theme.title,
         },
+        boldText: {
+          fontWeight: '700',
+        },
         descriptionLocked: {
           opacity: 0.7,
         },
@@ -227,7 +231,7 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
             ]}
             numberOfLines={3}
           >
-            {previewText}
+            {renderBoldText(previewText, styles.boldText, `card-${item.key}`)}
           </Text>
         ) : null}
 

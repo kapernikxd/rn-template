@@ -12,6 +12,7 @@ import { Feather } from '@expo/vector-icons';
 import { useTheme } from 'rn-vs-lb/theme';
 import { useTranslation } from 'react-i18next';
 import { getTodayTitle, splitHoroscopeIntoParagraphs } from './HoroscopeDescription';
+import { renderBoldText } from '../../../helpers/utils/text';
 
 type HoroscopeModalProps = {
     visible: boolean;
@@ -87,6 +88,9 @@ export const HoroscopeModal: React.FC<HoroscopeModalProps> = ({
                 paragraph: {
                     ...typography.body,
                     lineHeight: 22,
+                },
+                boldText: {
+                    fontWeight: '700',
                 },
                 loadingContainer: {
                     flexDirection: 'row',
@@ -168,7 +172,7 @@ export const HoroscopeModal: React.FC<HoroscopeModalProps> = ({
                             <View style={styles.body}>
                                 {paragraphs.map((p, i) => (
                                     <Text key={i} style={styles.paragraph}>
-                                        {p}
+                                        {renderBoldText(p, styles.boldText, `modal-${i}`)}
                                     </Text>
                                 ))}
                             </View>
