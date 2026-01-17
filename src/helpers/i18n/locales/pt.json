@@ -738,6 +738,7 @@
         }
       },
       "horoscope": {
+        "horoscopeHeader": "Seu guia astrológico pessoal",
         "dateFormat": "dddd, D MMMM",
         "loading": "Preparando o seu horóscopo...",
         "errorTitle": "Falha ao carregar o horóscopo.",

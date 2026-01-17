@@ -36,7 +36,7 @@ export const resolveMessageContextForCategories = async (
   const context: ChatMessageContext = {};
   const warnings: MessageContextWarning[] = [];
 
-  if (hasCategory(normalizedCategories, "horoscope") || hasCategory(normalizedCategories, "relationships")) {
+  if (hasCategory(normalizedCategories, "horoscope")) {
     const profileInfo = await getProfileInfo();
     if (profileInfo.zodiacSign) {
       context.zodiacSign = profileInfo.zodiacSign;

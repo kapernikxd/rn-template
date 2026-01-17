@@ -738,6 +738,7 @@
         }
       },
       "horoscope": {
+        "horoscopeHeader": "Tvoj lični astro vodič",
         "dateFormat": "dddd, D MMMM",
         "loading": "Pripremamo tvoj horoskop...",
         "errorTitle": "Neuspešno učitavanje horoskopa.",

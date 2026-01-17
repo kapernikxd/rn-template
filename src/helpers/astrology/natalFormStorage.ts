@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const FORM_STORAGE_KEY = "libraryFormState";
+export const FORM_STORAGE_KEY = "libraryFormState";
 
 export type NatalFormState = {
   day: string;
@@ -41,18 +41,33 @@ export const getStoredNatalFormState = async (): Promise<StoredNatalFormState | 
 
     const hasNested = "me" in parsed || "partner" in parsed;
     const meState = normalizeFormState(
-      hasNested ? (parsed as Partial<StoredNatalFormState>).me : (parsed as Partial<NatalFormState>),
+      hasNested
+        ? (parsed as Partial<StoredNatalFormState>).me
+        : (parsed as Partial<NatalFormState>),
     );
     const partnerState = normalizeFormState(
       hasNested ? (parsed as Partial<StoredNatalFormState>).partner : undefined,
     );
 
-    return {
-      me: meState,
-      partner: partnerState,
-    };
+    return { me: meState, partner: partnerState };
   } catch (error) {
     console.warn("Failed to read natal form state", error);
     return null;
+  }
+};
+
+export const saveNatalFormState = async (state: StoredNatalFormState): Promise<void> => {
+  try {
+    await AsyncStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(state));
+  } catch (error) {
+    console.warn("Failed to save natal form state", error);
+  }
+};
+
+export const clearNatalFormState = async (): Promise<void> => {
+  try {
+    await AsyncStorage.removeItem(FORM_STORAGE_KEY);
+  } catch (error) {
+    console.warn("Failed to clear natal form state", error);
   }
 };

@@ -36,33 +36,8 @@ import { makeStyles } from "./styles";
 import { saveNatalChart, savePartnerNatalChart } from "../../helpers/astrology/natalChartStorage";
 import { AiAgentHeader } from "../aibot/components";
 import { usePortalNavigation } from "../../helpers/hooks";
+import { getStoredNatalFormState, saveNatalFormState } from "../../helpers/astrology/natalFormStorage";
 
-const FORM_STORAGE_KEY = "libraryFormState";
-
-type FormState = {
-  day: string;
-  month: string;
-  year: string;
-  time: string;
-  city: string;
-  latitude: string;
-  longitude: string;
-};
-
-type StoredFormState = {
-  me: FormState;
-  partner: FormState;
-};
-
-const normalizeFormState = (input?: Partial<FormState>): FormState => ({
-  day: input?.day ?? "",
-  month: input?.month ?? "",
-  year: input?.year ?? "",
-  time: input?.time ?? "",
-  city: input?.city ?? "",
-  latitude: input?.latitude ?? "",
-  longitude: input?.longitude ?? "",
-});
 
 export const NatalChartScreen = () => {
   const { theme, typography, sizes } = useTheme();
@@ -310,40 +285,29 @@ export const NatalChartScreen = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const saved = await AsyncStorage.getItem(FORM_STORAGE_KEY);
-        if (saved) {
-          const parsed = JSON.parse(saved) as
-            | Partial<StoredFormState>
-            | Partial<FormState>;
-          const hasNested =
-            typeof parsed === "object" &&
-            parsed !== null &&
-            ("me" in parsed || "partner" in parsed);
-          const meState = normalizeFormState(
-            hasNested ? (parsed as Partial<StoredFormState>).me : parsed,
-          );
-          const partnerState = normalizeFormState(
-            hasNested ? (parsed as Partial<StoredFormState>).partner : undefined,
-          );
+        const saved = await getStoredNatalFormState();
+        if (!saved) return;
 
-          setDay(meState.day);
-          setMonth(meState.month);
-          setYear(meState.year);
-          setTime(meState.time);
-          setCity(meState.city);
-          setLatitude(meState.latitude);
-          setLongitude(meState.longitude);
-          setIsCitySelected(Boolean(meState.city?.trim()));
+        const meState = saved.me;
+        const partnerState = saved.partner;
 
-          setPartnerDay(partnerState.day);
-          setPartnerMonth(partnerState.month);
-          setPartnerYear(partnerState.year);
-          setPartnerTime(partnerState.time);
-          setPartnerCity(partnerState.city);
-          setPartnerLatitude(partnerState.latitude);
-          setPartnerLongitude(partnerState.longitude);
-          setIsPartnerCitySelected(Boolean(partnerState.city?.trim()));
-        }
+        setDay(meState.day);
+        setMonth(meState.month);
+        setYear(meState.year);
+        setTime(meState.time);
+        setCity(meState.city);
+        setLatitude(meState.latitude);
+        setLongitude(meState.longitude);
+        setIsCitySelected(Boolean(meState.city?.trim()));
+
+        setPartnerDay(partnerState.day);
+        setPartnerMonth(partnerState.month);
+        setPartnerYear(partnerState.year);
+        setPartnerTime(partnerState.time);
+        setPartnerCity(partnerState.city);
+        setPartnerLatitude(partnerState.latitude);
+        setPartnerLongitude(partnerState.longitude);
+        setIsPartnerCitySelected(Boolean(partnerState.city?.trim()));
       } finally {
         setFormLoaded(true);
       }
@@ -355,16 +319,9 @@ export const NatalChartScreen = () => {
   useDebouncedEffect(
     () => {
       if (!formLoaded) return;
-      const payload: StoredFormState = {
-        me: {
-          day,
-          month,
-          year,
-          time,
-          city,
-          latitude,
-          longitude,
-        },
+
+      void saveNatalFormState({
+        me: { day, month, year, time, city, latitude, longitude },
         partner: {
           day: partnerDay,
           month: partnerMonth,
@@ -374,10 +331,7 @@ export const NatalChartScreen = () => {
           latitude: partnerLatitude,
           longitude: partnerLongitude,
         },
-      };
-      AsyncStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(payload)).catch(
-        console.warn,
-      );
+      });
     },
     400,
     [

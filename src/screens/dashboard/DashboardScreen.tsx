@@ -212,7 +212,7 @@ export const DashboardScreen = () => {
         gap={18}
       /> */}
       <HoroscopeHeader
-        desciption={"Твой персональный астрогид"}
+        desciption={t('screens.dashboard.horoscope.horoscopeHeader')}
         adsEnabled={adsEnabled}
         tokenBalance={tokenBalance}
         onBalanceChange={setTokenBalance}

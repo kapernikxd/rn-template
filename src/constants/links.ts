@@ -3,7 +3,7 @@ import Constants from 'expo-constants';
 export const isDev = process.env.NODE_ENV === "development";
 
 export const BASE_URL = isDev
-  ? "http://192.168.0.20:5001/"
+  ? "http://192.168.0.22:5001/"
   : "https://aipair.pro/";
 
 const ensureTrailingSlash = (url: string) => (url.endsWith("/") ? url : `${url}/`);

@@ -738,6 +738,7 @@
         }
       },
       "horoscope": {
+        "horoscopeHeader": "Твой персональный астрогид",
         "dateFormat": "dddd, D MMMM",
         "loading": "Готовим ваш гороскоп...",
         "errorTitle": "Не удалось загрузить гороскоп.",

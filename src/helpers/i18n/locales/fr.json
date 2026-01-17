@@ -738,6 +738,7 @@
         }
       },
       "horoscope": {
+        "horoscopeHeader": "Ton guide astrologique personnel",
         "dateFormat": "dddd, D MMMM",
         "loading": "Préparation de votre horoscope...",
         "errorTitle": "Échec du chargement de l’horoscope.",

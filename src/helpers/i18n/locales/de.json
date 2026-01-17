@@ -738,6 +738,7 @@
         }
       },
       "horoscope": {
+        "horoscopeHeader": "Dein persönlicher Astro-Guide",
         "dateFormat": "dddd, D. MMMM",
         "loading": "Dein Horoskop wird vorbereitet...",
         "errorTitle": "Horoskop konnte nicht geladen werden.",
