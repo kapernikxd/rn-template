@@ -82,6 +82,21 @@ export const makeStyles = ({ theme, typography, sizes }: any) =>
       ...typography.body,
       color: theme.primary,
     },
+    sectionDivider: {
+      flexDirection: "row",
+      alignItems: "center",
+      gap: sizes.sm as number,
+      marginVertical: sizes.xs as number,
+    },
+    sectionDividerLine: {
+      flex: 1,
+      height: 1,
+      backgroundColor: theme.border,
+    },
+    sectionDividerText: {
+      ...typography.titleH4,
+      color: theme.title,
+    },
     readingsSection: {
       marginTop: sizes.lg as number,
       gap: sizes.sm as number,
