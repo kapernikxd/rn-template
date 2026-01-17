@@ -12,6 +12,7 @@ import { MAIN_HORIZONTAL_PADDING } from '../../constants/layout';
 import { useSafeAreaColors } from '../../store/SafeAreaColorProvider';
 import { capitalizeFirstLetter } from '../../helpers/utils/common';
 import { AnalyticsEvent, trackEvent } from '../../services/analytics/events';
+import { HoroscopeHeader } from '../horoscope/components/HoroscopeHeader';
 
 const COLUMN_GAP = 2;
 
@@ -188,6 +189,7 @@ export const DashboardScreen = () => {
         fontWeightInactive="300"
         gap={18}
       /> */}
+      <HoroscopeHeader desciption={"Твой персональный астрогид"}/>
       <Spacer size='xs' />
       <FlatList
         data={filteredBots}

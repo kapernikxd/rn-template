@@ -30,7 +30,7 @@ import { HoroscopeDescription } from './components/HoroscopeDescription';
 import { HoroscopeCard } from './components/HoroscopeCard';
 import { HoroscopeCardsCarousel, useHoroscopeCards } from './components/HoroscopeCardsCarousel';
 import { HoroscopeModal } from './components/HoroscopeModal';
-import { DashboardHeader } from './components/DashboardHeader';
+import { HoroscopeHeader } from './components/HoroscopeHeader';
 import { HoroscopeTabBar } from './components/HoroscopeTabBar';
 import { ProfileCompletionBanner } from './components/ProfileCompletionBanner';
 import { useRootStore, useStoreData } from '../../store/StoreProvider';
@@ -454,7 +454,7 @@ export const HoroscopeScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        <DashboardHeader
+        <HoroscopeHeader
           onPressFilters={handleOpenFilters}
           adsEnabled={adsEnabled}
           tokenBalance={tokenBalance}

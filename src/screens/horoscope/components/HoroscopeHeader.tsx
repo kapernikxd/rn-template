@@ -9,13 +9,15 @@ type DashboardHeaderProps = {
   adsEnabled?: boolean;
   tokenBalance?: number | null;
   onBalanceChange?: (balance: number) => void;
+  desciption?: string;
 };
 
-export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
+export const HoroscopeHeader: React.FC<DashboardHeaderProps> = ({
   adsEnabled,
   tokenBalance,
   onBalanceChange,
   onPressFilters,
+  desciption,
 }) => {
   const { theme, typography, sizes } = useTheme();
   const { t } = useTranslation();
@@ -80,7 +82,7 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           <Text style={styles.moon}> 🌙</Text>
         </View>
         <Text style={styles.subtitle}>
-          {t('screens.dashboard.header.subtitle')}
+          { desciption ? desciption : t('screens.dashboard.header.subtitle')}
         </Text>
       </View>
 
