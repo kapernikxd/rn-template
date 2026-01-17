@@ -515,6 +515,11 @@ export const NatalChartScreen = () => {
     setError(null);
     setCopyMessage(null);
 
+    if (!hasAllFormValues) {
+      setError(t("library.form.summaryPlaceholder"));
+      return;
+    }
+
     void trackEvent(AnalyticsEvent.NatalChartGenerateStarted, {
       hasCoordinates: Boolean(latitude.trim()) && Boolean(longitude.trim()),
       hasCity: Boolean(city.trim()),
@@ -588,11 +593,17 @@ export const NatalChartScreen = () => {
     latitude,
     longitude,
     collapseForm,
+    hasAllFormValues,
     t,
   ]);
 
   const handleGeneratePartner = useCallback(() => {
     setPartnerError(null);
+
+    if (!hasAllPartnerFormValues) {
+      setPartnerError(t("library.form.summaryPlaceholder"));
+      return;
+    }
 
     const parsedDay = clampNumber(Number(partnerDay), 1, 31);
     const parsedMonth = clampNumber(Number(partnerMonth) - 1, 0, 11);
@@ -648,6 +659,7 @@ export const NatalChartScreen = () => {
     partnerTime,
     partnerLatitude,
     partnerLongitude,
+    hasAllPartnerFormValues,
     t,
   ]);
 
