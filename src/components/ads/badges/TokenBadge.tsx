@@ -124,18 +124,24 @@ export const TokenBadge = memo(
         return;
       }
 
-      // 1) Закрываем модалку
-      closeMenu();
-
-      // 2) Ставим флаг, что после закрытия надо показать рекламу
-      setPendingShowAfterClose(true);
-
-      // 3) Через небольшой таймаут (особенно важно для iOS) вызываем показ
-      const delay = Platform.OS === "ios" ? 350 : 0;
-      setTimeout(() => {
-        setPendingShowAfterClose(false);
+      // почему то в яндексе не показывается поэтому показывает сразу
+      if (adsSourceFromConfig === 'YANDEX') {
         showRewardedAd();
-      }, delay);
+      }
+      else {
+        // 1) Закрываем модалку
+        closeMenu();
+
+        // 2) Ставим флаг, что после закрытия надо показать рекламу
+        setPendingShowAfterClose(true);
+
+        // 3) Через небольшой таймаут (особенно важно для iOS) вызываем показ
+        const delay = Platform.OS === "ios" ? 350 : 0;
+        setTimeout(() => {
+          setPendingShowAfterClose(false);
+          showRewardedAd();
+        }, delay);
+      }
     }, [closeMenu, isAdLoaded, showRewardedAd]);
 
     return (
