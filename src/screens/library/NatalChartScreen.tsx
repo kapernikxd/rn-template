@@ -16,9 +16,6 @@ import { useTranslation } from "react-i18next";
 
 import { useRootStore, useStoreData } from "../../store/StoreProvider";
 import type { CitySearchItem } from "../../types/citySearch";
-import astrologyService from "../../services/astrology/AstrologyService";
-import { useRewardedAdTokensBySource } from "../../helpers/hooks/useRewardedAdTokensBySource";
-import { resolveAdSource } from "../../types/ads";
 import { AnalyticsEvent, trackEvent } from "../../services/analytics/events";
 
 import { CollapsibleCard } from "./components/CollapsibleCard";
@@ -27,8 +24,6 @@ import { ChartHeader } from "./components/ChartHeader";
 import { LabeledInput } from "./components/LabeledInput";
 import { CityPicker } from "./components/CityPicker";
 import { NatalChart } from "./components/NatalChart";
-import { NatalReadingCard } from "./components/NatalReadingCard";
-import { NatalReadingModal } from "./components/NatalReadingModal";
 
 import { useLayoutAnimation } from "./hooks/useLayoutAnimation";
 import { useDebouncedEffect } from "./hooks/useDebouncedEffect";
@@ -41,8 +36,6 @@ import { makeStyles } from "./styles";
 import { saveNatalChart } from "../../helpers/astrology/natalChartStorage";
 import { AiAgentHeader } from "../aibot/components";
 import { usePortalNavigation } from "../../helpers/hooks";
-import { useNatalReadings } from "../../helpers/hooks/natalCharts/useNatalReadings";
-import { NATAL_READING_CARDS } from "../../constants/natalChart";
 
 const FORM_STORAGE_KEY = "libraryFormState";
 
@@ -71,17 +64,7 @@ export const NatalChartScreen = () => {
     error: store.error,
   }));
 
-  const { adsEnabled, adsSource } = useStoreData(rootStore.configStore, (store) => ({
-    adsEnabled: store.adsEnabled,
-    adsSource: store.adsConfig.ADS_SOURCE,
-  }));
-
   const { goBack } = usePortalNavigation();
-
-  const { showRewardedAd } = useRewardedAdTokensBySource(
-    { shouldAwardTokens: false },
-    resolveAdSource(adsSource),
-  );
 
   // form state
   const [day, setDay] = useState("");
@@ -413,28 +396,6 @@ export const NatalChartScreen = () => {
     });
   }, [chartPayload, chartSignature]);
 
-  /* ---------------- readings ---------------- */
-
-  const readingCards = useMemo(
-    () =>
-      NATAL_READING_CARDS.map((card) => ({
-        ...card,
-        title: t(`library.readings.cards.${card.key}`),
-      })),
-    [t],
-  );
-
-  const readings = useNatalReadings({
-    enabled: Boolean(horoscope),
-    adsEnabled,
-    showRewardedAd,
-    tNoChartError: t("library.errors.noChart"),
-    tReadingFetchError: t("library.errors.readingFetch"),
-    chartPayload,
-    chartSignature,
-    readingCards,
-  });
-
   /* ---------------- render ---------------- */
 
   return (
@@ -596,39 +557,7 @@ export const NatalChartScreen = () => {
           )}
         </CollapsibleCard>
 
-        <View style={styles.readingsSection}>
-          <Text style={styles.sectionTitle}>{t("library.readings.title")}</Text>
-          <Text style={styles.sectionDescription}>
-            {t("library.readings.description")}
-          </Text>
-
-          <View style={styles.readingsList}>
-            {readingCards.map((card) => (
-              <NatalReadingCard
-                key={card.key}
-                title={card.title}
-                accent={card.accent}
-                preview={readings.natalReadings[card.key]}
-                isSaved={Boolean(readings.natalReadings[card.key])}
-                isLoading={readings.loadingReadingKey === card.key}
-                disabled={!horoscope}
-                onPress={() => readings.openReading(card.key)}
-              />
-            ))}
-          </View>
-        </View>
       </ScrollView>
-
-      <NatalReadingModal
-        visible={readings.modal.visible}
-        onClose={readings.modal.close}
-        title={readings.modal.activeCard?.title ?? ""}
-        accent={readings.modal.activeCard?.accent ?? theme.primary}
-        reading={readings.modal.activeReading}
-        isLoading={readings.modal.activeReadingLoading}
-        errorMessage={readings.modal.activeReadingError ?? undefined}
-        onRetry={readings.modal.retryActive}
-      />
     </>
   );
 };
