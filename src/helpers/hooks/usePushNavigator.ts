@@ -1,80 +1,59 @@
-// import { createNavigationContainerRef } from '@react-navigation/native';
-// import { useRootStore } from '../../store/StoreProvider';
+import { useEffect } from 'react';
+import { createNavigationContainerRef } from '@react-navigation/native';
+import * as Notifications from 'expo-notifications';
 
-// type PushNavigationParams = {
-//     type:
-//     | 'chat'
-//     | 'newEvent'
-//     | 'invitation'
-//     | 'follow'
-//     | 'newParticipate'
-//     | 'confirmParticipate'
-//     | 'rejectParticipate'
-//     | 'requestParticipate'
-//     | 'newLike'
-//     | 'pollInvite'
-//     | 'pollAnswer',
-//     chatId?: string,
-//     eventId?: string,
-//     userId?: string,
-//     pollId?: string,
-//     invitationId?: string,
-// }
+import { ROUTES, type RootStackParamList } from '../../navigation/types';
 
-// export const pushNavigatorRef = createNavigationContainerRef<RootStackParamList>();
+type PushNavigationData = {
+  screen?: string;
+};
 
+export const pushNavigatorRef = createNavigationContainerRef<RootStackParamList>();
 
-// // Ждём готовность навигатора (убирает setTimeout-лестницу)
-// async function waitNavReady() {
-//     let tries = 0;
-//     while (!pushNavigatorRef.isReady() && tries < 40) { // ~2s
-//         await new Promise(r => setTimeout(r, 50));
-//         tries++;
-//     }
-// }
+const waitForNavigationReady = async () => {
+  let tries = 0;
+  while (!pushNavigatorRef.isReady() && tries < 40) {
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    tries += 1;
+  }
+};
 
-// export async function handlePushNavigationAsync(data: PushNavigationParams) {
-//     const { onlineStore } = useRootStore();
-//     if (!data) return;
+const handlePushNavigation = async (data?: PushNavigationData) => {
+  if (!data?.screen) return;
 
-//     // 1) Сначала готовим сокет/комнаты, если нужно
-//     if (data.type === 'chat' && data.chatId) {
-//         await onlineStore.ensureConnectedAndJoined([data.chatId]);
-//     }
+  await waitForNavigationReady();
 
-//     // 2) Ждём готовность навигатора, затем роутим
-//     await waitNavReady();
+  switch (data.screen) {
+    case 'horoscope':
+      pushNavigatorRef.navigate(ROUTES.RootTabs, {
+        screen: ROUTES.HoroscopeTab,
+        params: {
+          screen: ROUTES.Horoscope,
+        },
+      });
+      break;
+    default:
+      break;
+  }
+};
 
-//     switch (data.type) {
-//         case 'chat':
-//             if (data.chatId) pushNavigatorRef.navigate('chatMessages', { chatId: data.chatId });
-//             break;
-//         case 'newEvent':
-//         case 'follow':
-//             if (data.userId) pushNavigatorRef.navigate('userProfile', { id: data.userId });
-//             break;
-//         case 'invitation':
-//             if (data.invitationId) pushNavigatorRef.navigate('eventInvitation', { invitationId: data.invitationId });
-//             else pushNavigatorRef.navigate('profileActivity');
-//             break;
-//         case 'newParticipate':
-//         case 'confirmParticipate':
-//         case 'rejectParticipate':
-//         case 'requestParticipate':
-//         case 'newLike':
-//             pushNavigatorRef.navigate('profileActivity');
-//             break;
-//         case 'pollInvite':
-//         case 'pollAnswer':
-//             if (data.pollId) pushNavigatorRef.navigate('poll', { id: data.pollId });
-//             break;
-//         default:
-//             console.warn('📭 Unknown push type or missing data:', data);
-//     }
-// }
+export const usePushNavigator = () => {
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+      const data = response.notification.request.content.data as PushNavigationData | undefined;
+      void handlePushNavigation(data);
+    });
 
+    void (async () => {
+      const response = await Notifications.getLastNotificationResponseAsync();
+      if (response) {
+        const data = response.notification.request.content.data as PushNavigationData | undefined;
+        await handlePushNavigation(data);
+      }
+    })();
 
-// export function handlePushNavigation(data: PushNavigationParams) {
-//   // Deprecated — не используем, оставлено для совместимости
-//   void handlePushNavigationAsync(data);
-// }
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+};
