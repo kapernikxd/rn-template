@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { ProfileNav, ROUTES } from '../../navigation';
 import { useNavigation } from '@react-navigation/native';
 import { useActions } from '../../helpers/hooks';
+import { useAds } from '../../ads/AdsContext';
 
 type SettingsRoute =
   | typeof ROUTES.ProfleSettings
@@ -35,6 +36,7 @@ export const SettingsScreen: FC = () => {
   const { t } = useTranslation();
   const navigation = useNavigation<ProfileNav>();
   const { handleShareAppLink } = useActions();
+  const { formAvailable, showPrivacyOptions } = useAds();
 
 
   const styles = getStyles({ globalStyleSheet, theme, sizes });
@@ -116,6 +118,16 @@ export const SettingsScreen: FC = () => {
                 style={styles.section}
               ><CardContainer style={styles.card}>
                   <RewardedAdSettingsCard style={{ padding: 0, backgroundColor: theme.card }} />
+                  {formAvailable && (
+                    <ListItem
+                      icon="lock"
+                      iconColor={theme.text}
+                      label={t('settings.section.adsPrivacyOptions', 'Privacy options')}
+                      action={() => void showPrivacyOptions()}
+                      hideArrow
+                      hideBottomLine
+                    />
+                  )}
                 </CardContainer>
               </SettingsSection>}
 

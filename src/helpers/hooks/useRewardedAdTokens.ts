@@ -11,6 +11,7 @@ import {
   getTokenBalance,
 } from "../tokenStorage";
 import { DEFAULT_TOKEN_BALANCE } from "../../constants/links";
+import { useAds } from "../../ads/AdsContext";
 
 const isIos = Platform.OS === "ios";
 
@@ -31,6 +32,7 @@ export const useRewardedAdTokens = (
   const { onRewardEarned, shouldAwardTokens = true } = options;
   const { uiStore, configStore } = useRootStore();
   const { t } = useTranslation();
+  const { canRequestAds } = useAds();
 
   const { adsConfig, rewardAmount } = useStoreData(configStore, (store) => ({
     adsConfig: store.adsConfig,
@@ -92,7 +94,7 @@ export const useRewardedAdTokens = (
   }, [cancelPendingShow, updateBalance]);
 
   useEffect(() => {
-    const loadBalanceAndAd = async () => {
+    const loadBalance = async () => {
       try {
         const storedBalance = await getTokenBalance();
         updateBalance(storedBalance);
@@ -104,7 +106,19 @@ export const useRewardedAdTokens = (
           );
         }
       }
+    };
 
+    void loadBalance();
+  }, [uiStore, updateBalance, t]);
+
+  useEffect(() => {
+    if (!canRequestAds) {
+      cancelPendingShow();
+      pendingShowIntentRef.current = false;
+      return;
+    }
+
+    const loadAd = async () => {
       try {
         await ensureTrackingTransparencyPermission();
       } catch {
@@ -120,17 +134,21 @@ export const useRewardedAdTokens = (
       }
     };
 
-    void loadBalanceAndAd();
-  }, [isLoaded, load, uiStore, updateBalance, t]);
+    void loadAd();
+  }, [cancelPendingShow, canRequestAds, isLoaded, load]);
 
   useEffect(() => {
+    if (!canRequestAds) {
+      return;
+    }
+
     if (isClosed && !isLoaded) {
       load();
     }
-  }, [isClosed, isLoaded, load]);
+  }, [canRequestAds, isClosed, isLoaded, load]);
 
   useEffect(() => {
-    if (!isEarnedReward) {
+    if (!isEarnedReward || !canRequestAds) {
       hasAppliedRewardRef.current = false;
       return;
     }
@@ -172,6 +190,7 @@ export const useRewardedAdTokens = (
 
     void applyReward();
   }, [
+    canRequestAds,
     isEarnedReward,
     onRewardEarned,
     rewardAmount,
@@ -182,7 +201,7 @@ export const useRewardedAdTokens = (
   ]);
 
   useEffect(() => {
-    if (!error) {
+    if (!canRequestAds || !error) {
       return;
     }
 
@@ -202,10 +221,14 @@ export const useRewardedAdTokens = (
     }
 
     load();
-  }, [cancelPendingShow, error, load, uiStore, t]);
+  }, [cancelPendingShow, canRequestAds, error, load, uiStore, t]);
 
   const handleFailedShow = useCallback(() => {
     pendingShowIntentRef.current = true;
+
+    if (!canRequestAds) {
+      return;
+    }
     uiStore.showSnackbar(
       t("components.ads.rewardedTokens.snackbar.showFailed"),
       "error",
@@ -258,17 +281,21 @@ export const useRewardedAdTokens = (
     }
 
     scheduleShow();
-  }, [isLoaded, load, scheduleShow, uiStore, t]);
+  }, [canRequestAds, isLoaded, load, scheduleShow, uiStore, t]);
 
   useEffect(() => {
+    if (!canRequestAds) {
+      return;
+    }
+
     if (isLoaded && pendingShowIntentRef.current) {
       scheduleShow();
     }
-  }, [isLoaded, scheduleShow]);
+  }, [canRequestAds, isLoaded, scheduleShow]);
 
   return {
     balance,
-    isAdLoaded: isLoaded,
+    isAdLoaded: canRequestAds && isLoaded,
     showRewardedAd: handleShowRewardedAd,
   };
 };

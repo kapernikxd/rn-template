@@ -54,7 +54,8 @@
         "react-native-google-mobile-ads",
         {
           "androidAppId": "ca-app-pub-4139428747088857~8392254625",
-          "iosAppId": "ca-app-pub-4139428747088857~9092275002"
+          "iosAppId": "ca-app-pub-4139428747088857~9092275002",
+          "delayAppMeasurementInit": true
         }
       ],
       "./plugins/remove-read-media-permissions",

@@ -9,6 +9,7 @@ import { Host } from 'react-native-portalize';
 import CustomSnackbar from './src/components/CustomSnackbar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ForceUpdateWrapper } from './src/components/layouts/ForceUpdateWrapper';
+import { AdsProvider } from './src/ads/AdsProvider';
 
 import i18n from './src/helpers/i18n';
 import { getPreferredLanguage } from './src/helpers/i18n/languageStorage';
@@ -62,9 +63,11 @@ export default function App() {
         <SafeAreaProvider>
           <ThemeProvider theme={Theme}>
             <AppStatusBar />
-            <StoreProvider>
-              <AppWithConfig />
-            </StoreProvider>
+            <AdsProvider>
+              <StoreProvider>
+                <AppWithConfig />
+              </StoreProvider>
+            </AdsProvider>
           </ThemeProvider>
         </SafeAreaProvider>
       </GestureHandlerRootView>
