@@ -95,6 +95,14 @@ const MainTabBar = ({ state, descriptors, navigation, insets, showLabels = true 
             return;
           }
 
+          if (route.name === ROUTES.ProfileTab) {
+            const nestedRouteName = getNestedRouteName();
+            if (!isFocused || nestedRouteName !== ROUTES.Settings) {
+              navigation.navigate(ROUTES.ProfileTab, { screen: ROUTES.Settings });
+            }
+            return;
+          }
+
           if (!isFocused) {
             navigation.navigate(route.name as any, route.params as never);
           }
